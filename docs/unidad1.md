@@ -1,1036 +1,755 @@
-# **Unidad 1: Fundamentos de la Programación en Java**
 
-### **Duración estimada:** 24 horas (3 semanas)
-### **Resultado de Aprendizaje (RA1):** Reconoce la estructura de un programa informático, identificando y relacionando los elementos propios del lenguaje de programación utilizado.
+---
 
-***
-## **Semana 1: Los Ladrillos del Código: Variables, Datos y Constantes**
+# SPRINT 1. ALGORÍTMICA Y FUNDAMENTOS DE PROGRAMACIÓN (24 HORAS)
 
-### **PLAN DE TRABAJO (8 horas)**
+---
 
-*   **Sesión 1 (Teoría, 2 horas):** Variables, tipos de datos primitivos, constantes y literales.
-*   **Sesión 2 (Práctica, 3 horas):** La Ficha de Datos del Evento.
-*   **Sesión 3 (Práctica, 3 horas):** Valores Inmutables y Literales.
+## SEMANA 1: FUNDAMENTOS, ESTRUCTURA DEL PROGRAMA Y VARIABLES (8 HORAS)
 
-***
-### **TEORÍA - SESIÓN 1**
+---
 
-**(Página 1 de 4)**
+### DÍA 1 (Lunes - 2 horas): Pensamiento computacional, estructura básica de Java y variables numéricas
 
-### **1.- Variables, Datos y Constantes**
+#### 1. Caso práctico narrativo
+Es lunes a primera hora en **AzaharTech**. **Laia Claramunt** reúne al equipo (Alba Torres, Pau Ferrer y el nuevo desarrollador junior). Sobre la mesa hay un plano del vestíbulo del **IES El Caminàs**:
+> *«Antes de programar ventanas o lectores de códigos, debemos construir el motor de procesamiento. Un ordenador no es inteligente: solo ejecuta instrucciones secuenciales a una velocidad descomunal. Para nuestro cliente, el primer paso es registrar datos numéricos básicos del acceso (el número de aula y la hora de entrada). Hoy aprenderemos a definir variables numéricas en memoria y a crear nuestro primer programa en Java»*.
 
-¡Bienvenidos de nuevo al desarrollo de `EventDEV`! En el módulo de "Entornos de Desarrollo" montasteis vuestro taller y creasteis el esqueleto del proyecto. Ahora, en "Programación", vamos a empezar a construir con los ladrillos fundamentales de cualquier software: los datos.
+#### 2. Fundamento teórico
+* **Algoritmo:** Conjunto ordenado y finito de pasos para resolver un problema: Entrada de datos $\rightarrow$ Procesamiento $\rightarrow$ Salida de resultados.
+* **Estructura de un programa Java:**
+    * Todo código reside dentro de una clase (`public class NombreClase`).
+    * El punto de entrada universal es el método principal: `public static void main(String[] args)`.
+* **Variables numéricas primitivas:** Espacios en memoria RAM con nombre y tipo:
+    * `int`: Números enteros de 32 bits (desde $-2.147.483.648$ hasta $+2.147.483.647$).
+    * `double`: Números reales con decimales de doble precisión (64 bits, coma flotante).
+* **Entrada y salida básica:** Clase `Scanner` para leer del teclado y `System.out.println()` para mostrar mensajes.
 
-Un programa necesita manejar información que puede cambiar: el nombre de un evento, el número de asistentes, el precio de una entrada... Para ello, la almacena en **variables**.
-
-Una **variable** es un espacio con nombre que reservamos en la memoria del ordenador para guardar un dato. El nombre que le damos se llama **identificador** y nos permite acceder y modificar ese dato.
-
-#### **Caso práctico**
-
-Laia Claramunt reúne a Alba y a Pau. "Equipo, el siguiente paso en `EventDEV` es definir la información básica de un evento. Necesitamos una forma de almacenar su nombre, aforo, precio, si es benéfico y una categoría. En Java, esto se hace con variables, pero hay una regla clave: debemos declarar de antemano qué **tipo de dato** guardará cada variable. Hoy aprenderéis a elegir el tipo correcto para cada pieza de información."
-
-#### **1.1.- Creando Variables: Declaración e Inicialización**
-Antes de usar una variable, debemos crearla. Este proceso tiene dos pasos:
-1.  **Declaración:** Anunciar el tipo de dato y el nombre de la variable. `tipoDeDato nombreDeVariable;`
-2.  **Inicialización:** Asignar un valor inicial con el operador `=`. `nombreDeVariable = valor;`
-
-Es una práctica común y recomendada realizar ambos pasos en una sola línea para asegurar que las variables siempre tengan un valor conocido desde el principio.
-
-`tipoDeDato nombreDeVariable = valor;`
-
-```java
-// Declaración e inicialización combinadas
-String nombreEvento = "Concierto de Rock";
-int numeroDeAsistentes = 150;
-double precioEntrada = 75.50;
-char categoriaEvento = 'C'; // C de Concierto
-boolean estaAgotado = false;
+#### 3. Andamiaje didáctico (PSeInt $\rightarrow$ Java)
+* **PSeInt (`pr/pseudocodigo/dia1_variables_numericas.psc`):**
+```psc
+Algoritmo Dia1VariablesNumericas
+    // 1. Declaracion de variables
+    Definir aula Como Entero
+    Definir temperaturaVestibulo Como Real
+    
+    // 2. Entrada de datos
+    Escribir "=== AZAHARTECH: TERMINAL IES EL CAMINAS ==="
+    Escribir "Introduce el numero de aula asignada:"
+    Leer aula
+    Escribir "Introduce la temperatura actual del vestibulo (grados):"
+    Leer temperaturaVestibulo
+    
+    // 3. Salida de datos
+    Escribir "Aula configurada: ", aula
+    Escribir "Sensor termico: ", temperaturaVestibulo, " C"
+FinAlgoritmo
 ```
-> #### **Buenas Prácticas: Nombrando Variables**
-> *   **Usa `camelCase`:** La primera palabra en minúscula, las siguientes en mayúscula (`precioEntradaVip`).
-> *   **Sé descriptivo:** `nombreUsuario` es mejor que `nu`. El código debe ser auto-explicativo.
-> *   **Evita abreviaturas confusas.**
 
----
-**(Página 2 de 4)**
-
-### **2.- Tipos de Datos Primitivos**
-
-Java, para ser eficiente, proporciona un conjunto de ocho tipos de datos básicos, conocidos como **tipos primitivos**. Son la materia prima con la que representaremos toda la información. Se dividen en cuatro grupos principales.
-
-#### **2.1.- Tipos Numéricos Enteros**
-Para números sin decimales. La elección depende del rango de valores que necesitemos.
-
-| Tipo      | Tamaño | Rango de Valores Aproximado      | Uso Típico en `EventDEV`          |
-| :-------- | :----- | :------------------------------- | :-------------------------------- |
-| **`byte`**  | 8 bits | -128 a 127                       | Número de ponentes en una charla. |
-| **`short`** | 16 bits| -32,768 a 32,767                 | Asientos en una sala pequeña.     |
-| **`int`**   | 32 bits| -2 mil millones a 2 mil millones | **El estándar:** aforo, ID de usuario.|
-| **`long`**  | 64 bits| -9 trillones a 9 trillones       | ID de una transacción bancaria.   |
-
-**`int` es el tipo entero por defecto y el más utilizado** por su eficiencia en los procesadores modernos. Úsalo a menos que tengas una razón específica para necesitar un rango mayor (`long`) o para ahorrar memoria en grandes colecciones de datos (`byte`).
-
-#### **2.2.- Tipos Numéricos en Coma Flotante (Decimales)**
-Para números con decimales. La diferencia principal es la precisión (número de decimales exactos).
-
-| Tipo       | Tamaño | Precisión Aproximada | Uso Típico en `EventDEV`        |
-| :--------- | :----- | :------------------- | :------------------------------ |
-| **`float`**  | 32 bits| ~7 dígitos decimales | Coordenadas, cálculos gráficos. |
-| **`double`** | 64 bits| ~15 dígitos decimales| **El estándar:** precios, valoraciones.|
-
-**`double` es el tipo decimal por defecto**. Su mayor precisión lo hace más seguro para la mayoría de los cálculos, especialmente los financieros.
-
-#### **2.3.- El Tipo Carácter: `char`**
-Almacena un **único carácter Unicode**, que puede ser una letra, un número o un símbolo. Se escribe entre **comillas simples (`'`)**. Es ideal para códigos de categoría, iniciales o respuestas de tipo 'S'/'N'.
-
-`char categoria = 'A'; // 'A' para Adultos`
-`char simboloMoneda = '€';`
-
-#### **2.4.- El Tipo Lógico: `boolean`**
-Es el tipo más simple. Solo puede tener dos valores: `true` (verdadero) o `false` (falso). Es la base de toda la lógica y toma de decisiones en un programa.
-
-`boolean esBenefico = true;`
-`boolean entradasDisponibles = false;`
-
-> #### **Para Saber Más: El `String` no es primitivo**
-> El tipo `String`, que usamos para texto (`"Concierto de Rock"`), **no es un tipo primitivo**. Es un **objeto**, una estructura más compleja que aprenderemos a manejar en profundidad más adelante. Por ahora, es suficiente saber que se usa para guardar cualquier cadena de texto entre **comillas dobles (`"`)**.
-
----
-**(Página 3 de 4)**
-
-### **3.- Literales y Constantes**
-
-#### **3.1.- Literales: Valores Fijos en el Código**
-
-Un **literal** es un valor que escribimos directamente en nuestro código fuente. Cuando haces `int aforo = 500;`, `500` es un literal entero. Comprender su sintaxis es clave para evitar errores.
-
-| Tipo de Dato | Ejemplo de Literal  | Notas                               |
-| :----------- | :------------------ | :---------------------------------- |
-| `int`        | `123`               | El tipo entero por defecto.         |
-| `long`       | `9876543210L`       | **Obligatorio** el sufijo `L` (o `l`).|
-| `double`     | `85.99`             | El tipo decimal por defecto.        |
-| `float`      | `4.5F`              | **Obligatorio** el sufijo `F` (o `f`).|
-| `char`       | `'A'`               | Siempre con comillas simples.       |
-| `boolean`    | `true`              | Palabra clave reservada (`true` o `false`).|
-
-Un error muy común es olvidar la `F` al asignar un valor decimal a una variable `float`. El compilador protestará porque, por defecto, interpreta el literal decimal como `double` y no cabe en un `float` sin una conversión explícita.
-
-`float valoracion = 4.7; // ¡ERROR DE COMPILACIÓN!`
-`float valoracion = 4.7F; // CORRECTO`
-
-#### **3.2.- Constantes: Variables que No Deben Cambiar**
-Hay valores en un programa que son fijos por naturaleza, como el valor de PI o el porcentaje de IVA. Si usamos una variable normal, corremos el riesgo de modificarla por error, causando bugs. Para evitarlo, usamos **constantes**.
-
-Una constante es una "variable de solo lectura", cuyo valor no puede ser modificado después de su inicialización. Se declara usando la palabra clave **`final`**.
-
-`final tipoDeDato NOMBRE_DE_LA_CONSTANTE = valor;`
-
-**Convenciones para Constantes:**
-1.  **Usa `final`:** Siempre.
-2.  **Nómbralas en `UPPER_SNAKE_CASE`:** Todo en mayúsculas, separando palabras con guion bajo. Esto las hace instantáneamente reconocibles.
-
+* **Traducción inmediata a Java en IntelliJ (`pr/src/Dia1VariablesNumericas.java`):**
 ```java
-// Constante para el IVA cultural que se aplicará en EventDEV
-final double IVA_CULTURAL = 0.10;
+import java.util.Scanner;
 
-// Constante para el número máximo de entradas que un usuario puede comprar
-final int MAX_ENTRADAS_POR_USUARIO = 4;
-
-// Esta línea, si la escribiéramos, provocaría un error de compilación
-// MAX_ENTRADAS_POR_USUARIO = 5; // ERROR: Cannot assign a value to final variable
-```
-El uso de constantes aporta tres grandes ventajas:
-*   **Seguridad:** Evita modificaciones accidentales.
-*   **Legibilidad:** `precio * IVA_CULTURAL` es mucho más claro que `precio * 0.10`.
-*   **Mantenibilidad:** Si el IVA cambia, solo tienes que modificarlo en un único lugar: la declaración de la constante.
-
----
-**(Página 4 de 4)**
-
-### **RESUMEN DE LA SEMANA 1 Y AUTOEVALUACIÓN**
-
-En esta primera sesión teórica, hemos sentado las bases para trabajar con datos en Java. Has aprendido los conceptos fundamentales que utilizarás en cada programa que escribas a partir de ahora.
-
-**Conceptos Clave:**
-*   **Variable:** Un espacio en memoria con nombre para guardar un dato que puede cambiar. Se debe **declarar** (indicar tipo y nombre) e **inicializar** (dar un valor).
-*   **Tipos Primitivos:** Los ocho tipos de datos básicos de Java (`int`, `double`, `boolean`, `char`, etc.) que son la base para representar toda la información.
-*   **Literal:** Un valor fijo escrito directamente en el código (ej. `100`, `"Hola"`, `true`). Recuerda los sufijos `L` para `long` y `F` para `float`.
-*   **Constante:** Una variable declarada con `final` cuyo valor no puede cambiar. Es una buena práctica para valores fijos, mejorando la seguridad, legibilidad y mantenimiento del código.
-
-**Diagrama de Flujo Conceptual:**
-
-[DIAGRAMA: Un esquema simple. "Necesito guardar un dato" -> "¿Cambiará su valor?" (Sí -> Variable, No -> Constante (`final`)) -> "Elegir el tipo primitivo adecuado (`int`, `double`...)" -> "Declarar e inicializar" -> "Dato almacenado en memoria".]
-
-> #### **Cita para pensar**
-> "Los programas, en su esencia, son máquinas que transforman datos. Elegir la representación correcta para esos datos es el primer paso, y el más importante, para construir una máquina que funcione bien." - Anónimo
-
-> #### **Autoevaluación**
->
-> 1.  Elige el tipo de dato primitivo más apropiado para cada uno de los siguientes datos del proyecto `EventDEV`:
->     *   a) El número de valoraciones que ha recibido un evento.
->     *   b) Si un evento requiere autorización paterna o no.
->     *   c) El precio exacto de los gastos de gestión (ej: 2.50 €).
->     *   d) El código de una zona en un estadio (ej: 'F').
->
-> 2.  ¿Cuál es la diferencia principal entre una variable y una constante?
-> 3.  Escribe la línea de código para declarar una constante entera llamada `AFORO_MAXIMO_LEGAL` con el valor 1000.
->
-> *(Respuestas: 1. a) `int` (o `long` si se esperan millones), b) `boolean`, c) `double`, d) `char`. 2. El valor de una variable puede cambiar, el de una constante (`final`) no. 3. `final int AFORO_MAXIMO_LEGAL = 1000;`)*
-
-***
-### **PRÁCTICA - SESIÓN 2**
-
-**(Página 1 de 2)**
-
-### **La Ficha de Datos del Evento**
-
-#### **Caso práctico**
-
-Laia se acerca a Pau. —Bien, Pau. Ya tienes la teoría fresca. Ahora vamos a aplicarla. Abre el proyecto `EventDEV` que creaste en el otro módulo. Vamos a borrar el `println` de bienvenida y, en su lugar, vamos a definir la "ficha técnica" de un evento de prueba. Crearemos una variable para cada dato fundamental, eligiendo el tipo correcto, y luego las mostraremos por la consola. Es el primer paso para dar vida a nuestra aplicación.
-
-#### **Objetivos de la Sesión**
-
-Al finalizar esta práctica, serás capaz de:
-*   Abrir y modificar un proyecto existente en IntelliJ IDEA.
-*   Declarar, inicializar y utilizar variables de los principales tipos primitivos.
-*   Concatenar cadenas de texto con variables para generar una salida formateada.
-*   Resolver problemas de forma autónoma aplicando los conceptos de variables y tipos.
-
-#### **Desarrollo Paso a Paso (Parte Guiada)**
-
-1.  **Abre tu proyecto `EventDEV`** en IntelliJ IDEA.
-2.  **Localiza y limpia el método `main`:** Navega hasta `App.java` y borra la línea `System.out.println(...)` que contiene.
-3.  **Declara e inicializa las variables del evento** dentro del `main`:
-    ```java
-    // --- FICHA DE DATOS DEL EVENTO ---
-    String nombreEvento = "Concierto de Leyendas del Rock";
-    int aforo = 5000;
-    double precioEntrada = 75.50;
-    char categoria = 'M'; // M: Musical, D: Deportivo, C: Cultural
-    boolean esBenefico = false;
-    ```
-4.  **Muestra los datos por consola** usando concatenación:
-    ```java
-    // --- MOSTRANDO LOS DATOS POR PANTALLA ---
-    System.out.println("--- Ficha del Evento en EventDEV ---");
-    System.out.println("Nombre: " + nombreEvento);
-    System.out.println("Aforo: " + aforo + " personas");
-    System.out.println("Precio: " + precioEntrada + " EUR");
-    System.out.println("Categoría: " + categoria);
-    System.out.println("Es benéfico: " + esBenefico);
-    System.out.println("------------------------------------");
-    ```
-5.  **Ejecuta el programa** (clic en el triángulo verde o `Shift + F10`) y verifica que la salida es la esperada.
-
-#### **Experimenta y Aprende**
-Antes de pasar a los retos, dedica unos minutos a "romper" el código para entender mejor cómo funciona Java. Prueba lo siguiente y observa los errores que te muestra IntelliJ:
-*   ¿Qué pasa si intentas asignar un texto a una variable `int`? (`aforo = "muchagente";`)
-*   ¿Y si usas comillas simples para un `String`? (`nombreEvento = 'Concierto';`)
-*   ¿Qué error da si olvidas el punto y coma al final de una línea?
-
----
-**(Página 2 de 2)**
-
-#### **¡Ahora tú! (Retos)**
-
-Ahora que has completado la parte guiada, resuelve los siguientes retos creando nuevos proyectos o modificando el actual.
-
-**Reto 1: Ficha de Usuario (Consolidación)**
-Crea un nuevo programa (o añade el código al final del `main` actual) para definir y mostrar una **ficha de usuario** para la app `EventDEV`. Debe incluir las siguientes variables:
-*   Nombre de usuario (`String`), ej: "AlbaT".
-*   Edad (`int`), ej: 28.
-*   Saldo en la cuenta (`double`), ej: 250.75.
-*   Inicial del nombre (`char`), ej: 'A'.
-*   Si es un usuario VIP o no (`boolean`), ej: `true`.
-
-Imprime todos estos datos por consola de forma clara y ordenada, similar a la ficha del evento.
-
-**Reto 2: Mensaje de Bienvenida Personalizado (Ampliación)**
-Crea un tercer programa. Usando variables de la ficha de evento y de la ficha de usuario que ya has creado, construye y muestra por pantalla una única `String` que contenga un mensaje de bienvenida personalizado. El mensaje debe ser similar a este:
-
-`"¡Hola AlbaT! Te informamos que el evento 'Concierto de Leyendas del Rock' (categoría M) ya está disponible. Como usuario VIP, tienes acceso preferente."`
-
-*Pista: Necesitarás concatenar múltiples variables y literales de texto en una sola instrucción `System.out.println()`.*
-
-> #### **Autoevaluación**
-> *   ¿He modificado el proyecto `EventDEV` sin problemas? **[ SÍ / NO ]**
-> *   ¿He resuelto el Reto 1, eligiendo los tipos de datos correctos para el usuario? **[ SÍ / NO ]**
-> *   ¿He conseguido construir el mensaje personalizado del Reto 2? **[ SÍ / NO ]**
-> *   ¿Entiendo por qué Java da errores cuando intento asignar un tipo de dato incorrecto a una variable? **[ SÍ / NO ]**
-
-***
-### **PRÁCTICA - SESIÓN 3**
-
-**(Página 1 de 2)**
-
-### **Valores Inmutables: Constantes y Literales**
-
-#### **Caso práctico**
-
-Laia revisa el código de Alba: `double precioFinal = precioBase * 1.10;`.
-—Alba, esto funciona, pero podemos mejorarlo —dice Laia—. Ese `1.10` es un "número mágico". Decláralo como una constante `IVA_CULTURAL`. Hará el código más legible y fácil de mantener si el IVA cambia en el futuro.
-
-#### **Objetivos de la Sesión**
-
-Al finalizar esta práctica, serás capaz de:
-*   Declarar y utilizar constantes (`final`) para mejorar la legibilidad y mantenibilidad del código.
-*   Comprender el concepto de inmutabilidad y el error de compilación asociado.
-*   Utilizar correctamente los sufijos de literales (`L` y `F`) para `long` y `float`.
-*   Resolver un escenario de depuración relacionado con tipos y constantes.
-
-#### **Desarrollo Paso a Paso (Parte Guiada)**
-
-1.  **Abre tu proyecto `EventDEV`**.
-2.  **Declara constantes de negocio** dentro del método `main`:
-    ```java
-    final double IVA_CULTURAL = 0.10;
-    final int AFORO_MAXIMO_LEGAL = 50000;
-    ```
-3.  **Usa las constantes en cálculos:**
-    ```java
-    double precioBaseEntrada = 45.0;
-    double precioFinalEntrada = precioBaseEntrada + (precioBaseEntrada * IVA_CULTURAL);
-    System.out.println("Precio Final con IVA: " + precioFinalEntrada + " EUR");
-    ```
-4.  **Comprueba la inmutabilidad:** Escribe la línea `AFORO_MAXIMO_LEGAL = 60000;`. Observa el error que reporta IntelliJ: "**Cannot assign a value to final variable...**". Bórrala para continuar.
-5.  **Practica con literales `long` y `float`:**
-    ```java
-    long idTransaccion = 1234567890123L;
-    float valoracionMediaEvento = 4.7F;
-    System.out.println("ID de la última transacción: " + idTransaccion);
-    System.out.println("Valoración media del evento: " + valoracionMediaEvento);
-    ```
-6.  **Ejecuta el programa** y verifica que la salida es la correcta.
-
-#### **Experimenta y Aprende**
-*   Quita el sufijo `L` de la variable `idTransaccion`. Si el número es suficientemente grande, IntelliJ te dará un error: "Integer number too large". ¿Por qué? Porque sin la `L`, Java intenta tratarlo como un `int`, y el número no cabe.
-*   Quita el sufijo `F` de la variable `valoracionMediaEvento`. IntelliJ te dará un error: "incompatible types: possible lossy conversion from double to float". ¿Por qué? Porque sin la `F`, Java lo trata como `double`, que es más grande que `float`.
-
----
-**(Página 2 de 2)**
-
-#### **¡Ahora tú! (Retos)**
-
-**Reto 1: Calculadora Geométrica (Consolidación)**
-Crea un nuevo programa que calcule el área y el perímetro de una circunferencia, que podría representar el radio de acción de un evento.
-1.  Declara una constante `double` para el número **PI** (usa `3.14159`).
-2.  Declara una variable `double` para el **radio** (dale el valor que quieras).
-3.  Crea una expresión para calcular el **área** (`PI * radio * radio`).
-4.  Crea una expresión para calcular el **perímetro** (`2 * PI * radio`).
-5.  Muestra los resultados por consola, indicando claramente qué es cada valor.
-
-**Reto 2: Depuración de Código (Ampliación)**
-Copia el siguiente fragmento de código en un nuevo proyecto. Contiene varios errores relacionados con los conceptos de esta sesión. Usa los mensajes de error de IntelliJ para encontrar y corregir todos los bugs hasta que el programa se ejecute correctamente.
-
-```java
-// CÓDIGO CON ERRORES
-public class DepuracionTipos {
+public class Dia1VariablesNumericas {
     public static void main(String[] args) {
+        // Objeto Scanner para capturar datos desde el teclado
+        Scanner teclado = new Scanner(System.in);
         
-        final String NOMBRE_APP = "EventDEV";
-        int version = 1;
+        // Declaración de variables numéricas
+        int aula;
+        double temperaturaVestibulo;
         
-        System.out.println("Iniciando la versión " + version + " de " + NOMBRE_APP);
+        // Entrada de datos
+        System.out.println("=== AZAHARTECH: TERMINAL IES EL CAMINAS ===");
+        System.out.print("Introduce el numero de aula asignada: ");
+        aula = teclado.nextInt();
         
-        // Se intenta actualizar la versión, pero es una constante
-        NOMBRE_APP = "EventDEV 2.0";
+        System.out.print("Introduce la temperatura actual del vestibulo (grados): ");
+        temperaturaVestibulo = teclado.nextDouble();
         
-        // Se declara un float sin el sufijo 'F'
-        float costeDesarrollo = 1500.50;
+        // Salida de información por consola
+        System.out.println("Aula configurada: " + aula);
+        System.out.println("Sensor termico: " + temperaturaVestibulo + " C");
         
-        // Se declara un long que no cabe en un int sin el sufijo 'L'
-        long lineasDeCodigo = 4000000000;
-        
-        System.out.println("Coste: " + costeDesarrollo);
-        System.out.println("Líneas de código: " + lineasDeCodigo);
+        teclado.close();
     }
 }
 ```
 
-> #### **Autoevaluación**
-> *   ¿Entiendo por qué y cómo se utiliza la palabra clave `final`? **[ SÍ / NO ]**
-> *   ¿He resuelto el Reto 1 usando constantes y variables correctamente? **[ SÍ / NO ]**
-> *   ¿He sido capaz de encontrar y corregir todos los errores del Reto 2? **[ SÍ / NO ]**
-> *   ¿Sé cuándo y por qué debo usar los sufijos `L` y `F` en los literales numéricos? **[ SÍ / NO ]**
-
-***
-## **Semana 2: Dando Vida a los Datos: Operaciones y Expresiones**
-
-### **PLAN DE TRABAJO (8 horas)**
-
-*   **Sesión 4 (Teoría, 2 horas):** Operadores (aritméticos, de asignación, relacionales, lógicos) y precedencia.
-*   **Sesión 5 (Práctica, 3 horas):** La Calculadora de Tickets (uso de operadores aritméticos y relacionales).
-*   **Sesión 6 (Práctica, 3 horas):** El Validador de Acceso (uso de operadores lógicos).
-
-***
-### **TEORÍA - SESIÓN 4**
-
-**(Página 1 de 4)**
-
-### **3.- Operadores y Expresiones: La Lógica en Acción**
-
-En la primera semana aprendimos a crear "cajas" (variables) y a guardar datos en ellas. Pero un programa que solo guarda datos es como una calculadora sin botones de operaciones: inútil. La verdadera potencia de la programación reside en la capacidad de **manipular** esos datos: realizar cálculos, compararlos y tomar decisiones basadas en ellos. Para ello, utilizamos **operadores**.
-
-Un **operador** es un símbolo especial que le indica al compilador que realice una manipulación matemática o lógica específica. Los valores, variables o constantes sobre los que actúa un operador se llaman **operandos**.
-
-`int recaudacionTotal = precioEntrada * numeroDeAsistentes;`
-
-En esta línea, `*` es el operador de multiplicación, y `precioEntrada` y `numeroDeAsistentes` son los operandos.
-
-Una **expresión** es una combinación de operandos y operadores que, al ser evaluada por Java, produce un único valor como resultado. En el ejemplo anterior, `precioEntrada * numeroDeAsistentes` es una expresión, y su resultado es el valor que se asignará a `recaudacionTotal`.
-
-#### **Caso práctico**
-
-Alba y Pau están diseñando la lógica para la venta de entradas en `EventDEV`.
-—Vale, ya tenemos el precio de la entrada y la cantidad que quiere el usuario guardados en variables —dice Pau—. Ahora necesitamos calcular el subtotal. Eso es fácil, ¿no? Solo hay que multiplicar.
-—Correcto —responde Alba—. Usaremos el operador aritmético `*`. La expresión será `precioUnitario * cantidad`. Pero la cosa se complica. Laia nos ha pedido que apliquemos un descuento si el cliente es VIP **y** la compra supera los 100€.
-—Ah, eso ya no es un solo cálculo —reflexiona Pau—. Primero, necesitamos una forma de comprobar si el cliente es VIP. Eso será una expresión que nos devuelva `true` o `false`. Luego, otra para comprobar si la compra supera los 100€. Y finalmente, una forma de unir esas dos comprobaciones para que solo se cumpla si ambas son verdad.
-—Exacto. Para eso no nos valen los operadores aritméticos. Necesitaremos operadores relacionales para comparar y operadores lógicos para combinar. Hoy vamos a montar ese puzzle.
-
-#### **3.1.- Operadores Aritméticos**
-Son los que ya conoces de las matemáticas y se usan con tipos de datos numéricos.
-
-| Operador | Nombre          | Ejemplo | Resultado             |
-| :------- | :-------------- | :------ | :-------------------- |
-| **`+`**  | Suma            | `10 + 5`| `15`                  |
-| **`-`**  | Resta           | `10 - 5`| `5`                   |
-| **`*`**  | Multiplicación  | `10 * 5`| `50`                  |
-| **`/`**  | División        | `10 / 4`| `2` (división entera) |
-| **`%`**  | Módulo (Resto)  | `10 % 4`| `2` (resto de `10 / 4`)|
-
-> #### **Error Común: La División Entera**
-> ¡Mucho cuidado con esto! Cuando los dos operandos de una división `/` son de tipo entero (`byte`, `short`, `int`, `long`), Java realiza una **división entera**, lo que significa que descarta por completo cualquier resto decimal.
-> *   `10 / 3` da como resultado `3`.
-> *   `7 / 2` da como resultado `3`.
-> *   `1 / 2` da como resultado `0`.
->
-> Este comportamiento es útil en algunos casos, pero una fuente de errores muy común si lo que esperas es un resultado decimal. En la próxima semana, aprenderemos la técnica para manejar estas situaciones y obtener el resultado preciso.
+#### 4. Actividad del día para el proyecto propio
+Cada estudiante identifica **dos datos numéricos** (uno entero y uno decimal) indispensables para su proyecto de la bolsa de proyectos (ej. aforo máximo y precio por hora, capacidad de almacén y peso de un producto), diseñando el algoritmo en PSeInt y codificándolo en Java.
 
 ---
-**(Página 2 de 4)**
 
-#### **3.2.- Operadores de Asignación**
-Se utilizan para asignar un valor a una variable. El más básico es `=`, pero existen operadores combinados que realizan una operación y una asignación en un solo paso, haciendo el código más conciso.
+### DÍA 2 (Martes - 2 horas): Tipos de datos alfanuméricos (`char`, `String`) y booleanos (`boolean`)
 
-| Operador | Ejemplo | Equivalente a | Significado |
-| :--- | :--- | :--- | :--- |
-| **`=`** | `x = 10;` | - | Asigna 10 a `x`. |
-| **`+=`** | `x += 5;` | `x = x + 5;` | Incrementa `x` en 5. |
-| **`-=`** | `x -= 5;` | `x = x - 5;` | Decrementa `x` en 5. |
-| **`*=`** | `x *= 5;` | `x = x * 5;` | Multiplica `x` por 5. |
+#### 1. Caso práctico narrativo
+**Pau Ferrer** muestra un avance a Laia: el terminal ya guarda números, pero no puede identificar qué alumno está cruzando la puerta. Laia explica:
+> *«Los números por sí solos no explican la realidad. Necesitamos registrar texto para el nombre del alumno, caracteres únicos para la letra del DNI o el grupo, y valores lógicos que nos indiquen si el alumno tiene la matrícula activa o suspendida. Hoy ampliaremos los tipos de datos de memoria»*.
 
-```java
-int numeroAsistentes = 100;
-numeroAsistentes += 5; // Llega un grupo de 5. Ahora numeroAsistentes vale 105.
-```
+#### 2. Fundamento teórico
+* **Carácter individual (`char`):** Representa un único símbolo tipográfico, delimitado siempre por comillas simples (`' '`). Ocupa 16 bits y se basa en la tabla Unicode (`'A'`, `'8'`, `'@'`).
+* **Cadena de texto (`String`):** No es un tipo primitivo estricto, sino una clase que permite almacenar secuencias de texto de longitud arbitraria, delimitadas por comillas dobles (`" "`).
+* **Tipo lógico (`boolean`):** Solo puede almacenar dos estados posibles: `true` (verdadero) o `false` (falso). Ocupa conceptualmente 1 bit.
 
-#### **3.3.- Operadores Relacionales (de Comparación)**
-Comparan dos valores y el resultado de la expresión es siempre un valor booleano (`true` o `false`). Son la base para la toma de decisiones en los programas.
-
-| Operador | Nombre             | Ejemplo       | Resultado si aforo=100, max=100 |
-| :------- | :----------------- | :------------ | :------------------------------ |
-| **`==`** | Igual a            | `aforo == max`| `true`                          |
-| **`!=`** | Distinto de        | `aforo != max`| `false`                         |
-| **`>`**  | Mayor que          | `aforo > max` | `false`                         |
-| **`<`**  | Menor que          | `aforo < max` | `false`                         |
-| **`>=`** | Mayor o igual que  | `aforo >= max`| `true`                          |
-| **`<=`** | Menor o igual que  | `aforo <= max`| `true`                          |
-
-> #### **¡El Error Más Famoso de la Programación! (`==` vs `=`)**
-> Un error extremadamente común es confundir el operador de comparación `==` con el de asignación `=`.
-> *   `if (estaLleno = true)` **ASIGNA** el valor `true` a `estaLleno`.
-> *   `if (estaLleno == true)` **COMPARA** si el valor de `estaLleno` es igual a `true`.
->
-> En Java, el primer caso suele dar un error de compilación dentro de un `if`, lo que ayuda a prevenir el bug.
-
-#### **3.4.- Operadores Lógicos**
-Se utilizan para combinar dos o más expresiones booleanas, permitiéndonos crear condiciones complejas.
-
-| Operador | Nombre    | Ejemplo                      | Resultado                                             |
-| :------- | :-------- | :--------------------------- | :---------------------------------------------------- |
-| **`&&`** | Y (AND)   | `(edad >= 18) && tieneEntrada` | `true` solo si **ambas** condiciones son verdaderas.      |
-| **`||`** | O (OR)    | `esVip || tieneDescuento`    | `true` si **al menos una** de las condiciones es verdadera.|
-| **`!`**  | NO (NOT)  | `!estaAgotado`               | Invierte el valor booleano (`true` a `false` y viceversa).|
-
-**Ejemplo de uso en `EventDEV`:** Para obtener un descuento, un usuario debe ser mayor de 65 años O ser estudiante.
-```java
-int edadUsuario = 22;
-boolean esEstudiante = true;
-boolean tieneDerechoADescuento = (edadUsuario > 65) || esEstudiante;
-// (false) || (true)  -->  El resultado de la expresión es true.
-```
-
----
-**(Página 3 de 4)**
-
-### **4.- Precedencia de Operadores**
-
-En una expresión con múltiples operadores, como `5 + 10 * 2`, Java no los evalúa simplemente de izquierda a derecha. Al igual que en matemáticas, los operadores tienen un **orden de precedencia** que dicta qué operaciones se realizan antes. La multiplicación y la división tienen mayor precedencia que la suma y la resta. Por lo tanto, en el ejemplo, el resultado es `5 + 20 = 25`.
-
-**Orden de Precedencia (simplificado, de mayor a menor):**
-1.  Operadores unarios (`++`, `--`, `!`)
-2.  Multiplicativos (`*`, `/`, `%`)
-3.  Aditivos (`+`, `-`)
-4.  Relacionales (`>`, `<`, `==`, etc.)
-5.  Lógicos (`&&`, `||`)
-6.  Asignación (`=`, `+=`, etc.)
-
-**La regla de oro:** Cuando tengas la más mínima duda o simplemente quieras que tu código sea más claro para otros, **utiliza paréntesis `()`**. Las expresiones dentro de los paréntesis siempre se evalúan primero.
-
-`int resultado = (5 + 10) * 2; // Ahora el resultado es 30, sin ambigüedad.`
-
-> #### **Para Saber Más: Evaluación de "Cortocircuito"**
-> Los operadores `&&` y `||` son eficientes. En una expresión `A && B`, si `A` es `false`, Java ya sabe que el resultado total será `false`, por lo que **no se molesta en evaluar `B`**.
-> De igual forma, en una expresión `A || B`, si `A` es `true`, Java ya sabe que el resultado total será `true` y **no evalúa `B`**.
-> Esto se llama "evaluación de cortocircuito" y es un concepto importante en la optimización y prevención de errores.
-
----
-**(Página 4 de 4)**
-
-### **RESUMEN DE LA SEMANA 2 Y AUTOEVALUACIÓN**
-
-En esta sesión hemos aprendido a manipular los datos, pasando de un almacenamiento estático a la creación de lógica dinámica.
-
-**Conceptos Clave:**
-*   **Operador:** Un símbolo (`+`, `*`, `>`,`&&`) que realiza una operación sobre operandos.
-*   **Expresión:** Una combinación de operandos y operadores que se evalúa para producir un único valor.
-*   **Clasificación de Operadores:**
-    *   **Aritméticos:** Para cálculos matemáticos. Cuidado con la división entera.
-    *   **Relacionales:** Para comparaciones que resultan en `true` o `false`.
-    *   **Lógicos:** Para combinar expresiones booleanas.
-*   **Precedencia:** El orden en el que se evalúan los operadores. Usa paréntesis para asegurar la claridad y el orden deseado.
-
-**Diagrama de Flujo Conceptual:**
-
-[DIAGRAMA: Un esquema. "Tengo datos en variables" -> "Necesito calcular/comparar" -> "Elijo los operadores adecuados (`+`, `*`, `>`, `&&`...)" -> "Construyo una expresión (considerando la precedencia y paréntesis)" -> "El resultado es un nuevo valor" -> "Asigno el resultado a otra variable".]
-
-> #### **Cita para pensar**
-> "Escribir código es el proceso de traducir la lógica humana, llena de condiciones y cálculos, a un lenguaje estricto que una máquina pueda ejecutar sin ambigüedad. Los operadores son el vocabulario de esa traducción." - Anónimo
-
-> #### **Autoevaluación**
->
-> 1.  ¿Cuál es el resultado de la expresión `int resultado = 10 % 3 + 5 / 2;`?
->     *   a) 3
->     *   b) 3.5
->     *   c) 1
->
-> 2.  Evalúa la siguiente expresión booleana: `(10 > 5) && !(8 == 4 * 2)`.
->
-> 3.  Si `x` es `10`, ¿qué valor tendrá `x` después de ejecutar `x += 5 * 2;`?
->
-> *(Respuestas: 1. a) 3 (1 + 2). 2. `false` (`true && !true` -> `true && false`). 3. 20 (`x = 10 + 10`).)*
-
-***
-### **PRÁCTICA - SESIÓN 5**
-
-**(Página 1 de 2)**
-
-### **La Calculadora de Tickets de Evento**
-
-#### **Caso práctico**
-
-Laia le pide al equipo que implemente la lógica de cálculo de un ticket de compra en `EventDEV`. "Necesitamos calcular el subtotal, ver si el cliente tiene derecho a un descuento por volumen y finalmente, calcular el total. Es hora de que esos operadores trabajen."
-
-#### **Objetivos de la Sesión**
-
-Al finalizar esta práctica, serás capaz de:
-*   Utilizar operadores aritméticos (`*`, `+`) para implementar una lógica de cálculo.
-*   Utilizar operadores relacionales (`>`) para comprobar condiciones.
-*   Utilizar operadores de asignación combinados (`-=`).
-*   Resolver un escenario de depuración con operadores.
-
-#### **Desarrollo Paso a Paso (Parte Guiada)**
-
-1.  **Crea un nuevo proyecto Java en IntelliJ** llamado `CalculadoraTicket`.
-2.  **Declara las variables y constantes** dentro del `main`:
-    ```java
-    String nombreProducto = "Entrada General Concierto";
-    int cantidad = 3;
-    double precioUnitario = 89.95;
-    final double UMBRAL_DESCUENTO = 200.0;
-    final double DESCUENTO = 25.0;
-    ```
-3.  **Realiza los cálculos:**
-    ```java
-    double subtotal = cantidad * precioUnitario;
-    boolean aplicaDescuento = subtotal > UMBRAL_DESCUENTO;
-    double total = subtotal;
+#### 3. Andamiaje didáctico (PSeInt $\rightarrow$ Java)
+* **PSeInt (`pr/pseudocodigo/dia2_alfanumericos.psc`):**
+```psc
+Algoritmo Dia2Alfanumericos
+    Definir nombreEstudiante Como Cadena
+    Definir letraGrupo Como Caracter
+    Definir matriculaActiva Como Logico
     
-    // La estructura 'if' la veremos en detalle, pero ejecuta el código
-    // de dentro solo si la condición es 'true'.
-    if (aplicaDescuento == true) {
-        total -= DESCUENTO; // total = total - DESCUENTO
-    }
-    ```
-4.  **Imprime el ticket por consola:**
-    ```java
-    System.out.println("--- TICKET DE COMPRA ---");
-    System.out.println("Producto: " + nombreProducto);
-    System.out.println("Subtotal: " + subtotal + " EUR");
-    System.out.println("¿Tiene descuento?: " + aplicaDescuento);
-    System.out.println("TOTAL A PAGAR: " + total + " EUR");
-    ```
-5.  **Ejecuta el programa (`Shift + F10`)** y comprueba el resultado. Con los datos iniciales, el descuento debería aplicarse.
+    Escribir "Introduce el nombre del estudiante:"
+    Leer nombreEstudiante
+    Escribir "Introduce la letra del grupo (A, B, C):"
+    Leer letraGrupo
+    
+    // Asignamos directamente un valor booleano
+    matriculaActiva <- Verdadero
+    
+    Escribir "--- FICHA DE ACCESO ---"
+    Escribir "Estudiante: ", nombreEstudiante
+    Escribir "Grupo: ", letraGrupo
+    Escribir "Estado de matricula activo: ", matriculaActiva
+FinAlgoritmo
+```
 
----
-**(Página 2 de 2)**
-
-#### **¡Ahora tú! (Retos)**
-
-**Reto 1: Calculadora de IVA (Consolidación)**
-Crea un nuevo programa que, dado un precio base, calcule y muestre el IVA y el precio final.
-1.  Crea una constante `double` para el `IVA` (usa `0.21`).
-2.  Crea una variable `double` para el `precioBase` (ej: `120.0`).
-3.  Calcula el `valorIva` (el importe del impuesto).
-4.  Calcula el `precioFinal` (precio base + IVA).
-5.  Imprime un resumen claro: "Precio Base: X, IVA: Y, Total: Z".
-
-**Reto 2: Repartidor de Botín (Ampliación)**
-Imagina un videojuego donde 5 aventureros consiguen un botín de 103 monedas de oro. El oro se reparte a partes iguales entre ellos.
-1.  Crea variables `int` para `monedasOro` y `numeroAventureros`.
-2.  Calcula cuántas monedas le tocan a cada aventurero.
-3.  Calcula cuántas monedas **sobran** después del reparto.
-4.  Imprime: "Cada aventurero recibe X monedas. Sobran Y monedas para el tesoro del gremio."
-*Pista: Necesitarás los operadores `/` y `%`.*
-
-**Reto 3: Depuración de Código**
-Copia el siguiente código en un nuevo proyecto. Tiene un error lógico sutil. El subtotal es 150, por lo que el descuento no debería aplicarse y el total debería ser 150. Sin embargo, al ejecutarlo, el total es 135. Encuentra y corrige el bug.
-
+* **Traducción inmediata a Java en IntelliJ (`pr/src/Dia2Alfanumericos.java`):**
 ```java
-// CÓDIGO CON ERROR
-public class DepuracionOperadores {
+import java.util.Scanner;
+
+public class Dia2Alfanumericos {
     public static void main(String[] args) {
-        double subtotal = 150.0;
-        double descuento = 15.0;
-        double total = subtotal;
+        Scanner teclado = new Scanner(System.in);
         
-        // Se quiere aplicar el descuento SOLO si el subtotal es MAYOR a 200
-        if (subtotal = 200.0) { // ¡Cuidado aquí!
-            total -= descuento;
-        }
+        System.out.print("Introduce el nombre del estudiante: ");
+        String nombreEstudiante = teclado.nextLine();
         
-        System.out.println("Total a pagar: " + total);
+        System.out.print("Introduce la letra del grupo (A, B, C): ");
+        char letraGrupo = teclado.next().charAt(0); // Captura el primer carácter
+        
+        boolean matriculaActiva = true; // Variable booleana
+        
+        System.out.println("--- FICHA DE ACCESO ---");
+        System.out.println("Estudiante: " + nombreEstudiante);
+        System.out.println("Grupo: " + letraGrupo);
+        System.out.println("Estado de matricula activo: " + matriculaActiva);
+        
+        teclado.close();
     }
 }
-```*Pista: Relee la sección de "Errores Comunes" de la teoría.*
-
-> #### **Autoevaluación**
-> *   ¿He utilizado operadores aritméticos para calcular el subtotal? **[ SÍ / NO ]**
-> *   ¿He resuelto el Reto 2 usando correctamente los operadores de división y módulo? **[ SÍ / NO ]**
-> *   ¿He encontrado y corregido el bug de asignación vs. comparación del Reto 3? **[ SÍ / NO ]**
-
-***
-### **PRÁCTICA - SESIÓN 6**
-
-**(Página 1 de 2)**
-
-### **El Validador de Acceso al Evento**
-
-#### **Caso práctico**
-"Equipo, una funcionalidad clave de `EventDEV` es validar si un usuario puede acceder a un evento o a zonas especiales", dice Laia. "Vamos a crear un simulador que, dados los datos de un usuario, nos diga si puede entrar a un evento para mayores de 18 y si tiene acceso a la zona VIP."
-
-#### **Objetivos de la Sesión**
-*   Declarar y utilizar variables booleanas para representar estados.
-*   Construir expresiones complejas utilizando operadores lógicos `&&` (Y) y `||` (O).
-*   Imprimir los resultados de las validaciones lógicas y experimentar con ellos.
-
-#### **Desarrollo Paso a Paso (Parte Guiada)**
-
-1.  **Crea un nuevo proyecto Java** llamado `ValidadorAcceso`.
-2.  **Declara las variables de estado** de un usuario de prueba dentro del `main`:
-    ```java
-    int edadUsuario = 25;
-    boolean tieneEntrada = true;
-    boolean esVip = false;
-    boolean autorizacionPaterna = false;
-    ```
-3.  **Crea las expresiones de validación** usando operadores lógicos:
-    ```java
-    // Para entrar al evento, debe tener entrada Y ser mayor o igual de 18.
-    boolean puedeEntrar = tieneEntrada && (edadUsuario >= 18);
-    
-    // Para acceder a la zona VIP, primero debe poder entrar Y además ser VIP.
-    boolean tieneAccesoZonaVip = puedeEntrar && esVip;
-    ```
-4.  **Imprime los resultados** de las validaciones:
-    ```java
-    System.out.println("--- VALIDACIÓN DE ACCESO ---");
-    System.out.println("Edad del usuario: " + edadUsuario);
-    System.out.println("¿Tiene entrada?: " + tieneEntrada);
-    System.out.println("¿Es VIP?: " + esVip);
-    System.out.println("----------------------------");
-    System.out.println("¿Puede entrar al evento?: " + puedeEntrar);
-    System.out.println("¿Tiene acceso a la zona VIP?: " + tieneAccesoZonaVip);
-    ```
-5.  **Ejecuta el programa (`Shift + F10`)** y comprueba el resultado.
-
-#### **Experimenta y Aprende**
-Cambia los valores de las variables iniciales una por una y vuelve a ejecutar el programa para ver cómo afectan al resultado final.
-*   Cambia `edadUsuario` a `17`. ¿Qué resultado esperas? ¿Y cuál obtienes?
-*   Con `edadUsuario = 17`, cambia `tieneEntrada` a `false`. ¿Cambia el resultado de `puedeEntrar`? ¿Por qué?
-*   Vuelve a poner `edadUsuario = 25` y `tieneEntrada = true`. Ahora cambia `esVip` a `true`. ¿Qué resultado esperas para `tieneAccesoZonaVip`?
-
----
-**(Página 2 de 2)**
-
-#### **¡Ahora tú! (Retos)**
-
-**Reto 1: Acceso para Menores (Consolidación)**
-La política de acceso cambia. Ahora, un menor de edad (menos de 18) también puede entrar si tiene entrada **Y** cuenta con autorización paterna.
-1.  Modifica la expresión de la variable `puedeEntrar`.
-2.  La nueva lógica es: `(tieneEntrada Y (es mayor de 18 O tiene autorización paterna))`.
-3.  Necesitarás combinar los operadores `&&` y `||`, y usar paréntesis `()` para asegurar el orden correcto de las operaciones.
-4.  Prueba tu nueva lógica con diferentes combinaciones de valores (un mayor de edad, un menor con autorización, un menor sin autorización).
-
-**Reto 2: Política de Descuentos Compleja (Ampliación)**
-Un usuario de `EventDEV` tiene un 10% de descuento en la tienda del evento si cumple **alguna** de las siguientes condiciones:
-*   Es VIP.
-*   Es mayor de 65 años.
-*   Es menor de 18 años y tiene entrada.
-
-1.  Crea un nuevo programa.
-2.  Declara variables para `esVip` (`boolean`), `edad` (`int`) y `tieneEntrada` (`boolean`).
-3.  Crea una única variable booleana `aplicaDescuentoTienda` que contenga toda la lógica.
-4.  Prueba el programa con varios perfiles de usuario para verificar que la lógica es correcta:
-    *   Un VIP de 30 años.
-    *   Un no-VIP de 70 años.
-    *   Un no-VIP de 16 años con entrada.
-    *   Un no-VIP de 16 años sin entrada.
-    *   Un no-VIP de 40 años.
-
-> #### **Autoevaluación**
-> *   ¿He utilizado el operador `&&` y `||` para combinar condiciones? **[ SÍ / NO ]**
-> *   ¿Entiendo la importancia de los paréntesis para agrupar expresiones lógicas? **[ SÍ / NO ]**
-> *   ¿He resuelto el Reto 1, modificando la lógica de acceso para menores? **[ SÍ / NO ]**
-> *   ¿He sido capaz de traducir la política de descuentos del Reto 2 a una única expresión lógica? **[ SÍ / NO ]**
-
-***
-## **Semana 3: El Arte de la Conversión de Tipos**
-
-### **PLAN DE TRABAJO (8 horas)**
-*   **Sesión 7 (Teoría, 2 horas):** Conversión de tipo implícita (promoción) y explícita (casting).
-*   **Sesión 8 (Práctica, 3 horas):** El Laboratorio de Conversiones.
-*   **Sesión 9 (Práctica, 3 horas):** Práctica Final: Resumen Financiero del Evento.
-
-***
-### **TEORÍA - SESIÓN 7**
-
-**(Página 1 de 4)**
-
-### **4.- Conversión de Tipos**
-
-En la semana anterior, vimos cómo funcionan los operadores, pero dejamos una pregunta importante en el aire: ¿qué pasa cuando operamos con tipos de datos diferentes, como un `int` y un `double`? ¿Y cómo solucionamos el problema de la división entera? La respuesta a ambas preguntas está en la **conversión de tipos**.
-
-Java, al ser un lenguaje fuertemente tipado, es muy estricto con los tipos de datos. Por norma general, no puedes, por ejemplo, meter un dato de tipo `double` en una "caja" (variable) de tipo `int` sin más. Sin embargo, Java proporciona mecanismos para manejar estas situaciones de forma segura.
-
-#### **Caso práctico**
-María está frustrada. "Laia, estoy intentando calcular la valoración media de un evento. Han votado 3 personas (`int`) con un total de 10 estrellas (`int`). Mi programa me dice que la media es 3.0, ¡y no 3.33! He guardado el resultado en una variable `double`, pero no funciona."
-Laia sonríe. "Un rito de iniciación para todo programador en Java. Has caído en la trampa de la división entera. Tu programa está dividiendo dos números enteros, y el resultado es un entero (`3`). Es después de esa operación cuando se convierte a `double` (`3.0`), pero ya es demasiado tarde. Tienes que 'forzar' a que la división se haga con decimales desde el principio. Hoy aprenderás la técnica para hacerlo: el casting."
-
-#### **4.1.- Conversión Implícita (Promoción)**
-Este tipo de conversión es automática y segura. Ocurre cuando asignamos un tipo de dato "pequeño" a uno "grande". Se llama **promoción** porque el tipo más pequeño se "promociona" al más grande. Como no hay riesgo de perder información, Java lo hace por nosotros sin quejarse.
-
-Es como verter el contenido de un vaso pequeño en una jarra grande; siempre cabrá.
-
-```java
-int numVotos = 150;
-double numeroDeVotosDouble = numVotos; // CORRECTO: numVotos (int) se promociona a double.
-                                       // numeroDeVotosDouble valdrá 150.0
 ```
-Esto también ocurre dentro de las expresiones:
-```java
-int numAsistentes = 100;
-double precioEntrada = 75.50;
 
-// Antes de multiplicar, Java promociona numAsistentes a 100.0 (double).
-// Luego multiplica dos doubles: 100.0 * 75.50.
-double recaudacion = numAsistentes * precioEntrada;
-```
-La jerarquía de promoción para evitar pérdida de datos es la siguiente:
-`byte` -> `short` -> `int` -> `long` -> `float` -> `double`
-Un `char` también puede ser promocionado a `int` (y superiores), usando su valor numérico Unicode.
+#### 4. Actividad del día para el proyecto propio
+El estudiante incorpora a su proyecto propio variables de tipo `String` (nombre, identificador o descripción), `char` (código de categoría o zona) y `boolean` (estado operativo o disponibilidad), creando el código en PSeInt y Java.
 
 ---
-**(Página 2 de 4)**
 
-### **4.2.- Conversión Explícita (Casting)**
+### DÍA 3 (Miércoles - 2 horas): Operadores aritméticos elementales y concatenación de cadenas
 
-Este tipo de conversión es manual y potencialmente peligrosa. Ocurre cuando queremos forzar la conversión de un tipo "grande" a uno "pequeño". Como aquí **sí hay riesgo de perder información**, Java no lo hace automáticamente. Nos obliga a decirle explícitamente: "Sé lo que estoy haciendo y asumo las consecuencias".
+#### 1. Caso práctico narrativo
+**Alba Torres** está revisando los datos que imprime el terminal en consola y detecta un error de presentación: los mensajes salen entrecortados y algunos números se pegan al texto. Laia explica:
+> *«En Java, el símbolo más (`+`) tiene doble función. Si suma dos números, realiza una operación matemática; si uno de los elementos es una cadena de texto, actúa como **operador de concatenación**, uniendo los textos. Debemos aprender a estructurar mensajes informativos fluidos y controlar cómo se evalúan las sumas»*.
 
-Es como intentar verter el contenido de una jarra grande en un vaso pequeño; es muy probable que parte del líquido se derrame.
+#### 2. Fundamento teórico
+* **Operadores aritméticos binarios:** Suma (`+`), Resta (`-`), Multiplicación (`*`).
+* **Sobrecarga del operador `+`:**
+    * `5 + 3` resulta `8` (aritmética).
+    * `"Total: " + 5 + 3` resulta `"Total: 53"` (concatenación de izquierda a derecha).
+    * `"Total: " + (5 + 3)` resulta `"Total: 8"` (los paréntesis fuerzan la suma antes de unir).
 
-La sintaxis para este "molde" o **casting** es poner el tipo de destino entre paréntesis antes de la variable o expresión a convertir.
-
-`(tipo_destino) valor_a_convertir;`
-
-#### **El Error de "Pérdida de Precisión"**
-Si intentas hacer una conversión de grande a pequeño sin un casting, el IDE y el compilador te darán un error.
-
-```java
-double precioConDecimales = 75.99;
-
-// La siguiente línea da un error de compilación: 
-// "incompatible types: possible lossy conversion from double to int"
-// int precioEntero = precioConDecimales;
-```
-IntelliJ IDEA subraya el código en rojo y te avisa del peligro.
-
-#### **Solucionándolo con Casting**
-Para que el código compile, debemos añadir el casting explícito. Al hacerlo, aceptamos la posible pérdida de datos.
-
-```java
-double precioConDecimales = 75.99;
-
-// Añadimos (int) para forzar la conversión.
-// Java TRUNCA (corta) la parte decimal. No redondea.
-int precioEntero = (int) precioConDecimales; // precioEntero ahora valdrá 75
-```**Otros ejemplos de casting:**
-```java
-long numeroGrande = 100L;
-int numeroPequeño = (int) numeroGrande; // Casting de long a int
-
-float valorFloat = 3.14F;
-short valorShort = (short) valorFloat; // valorShort valdrá 3
-```
-> #### **Para Saber Más: El Peligro del Desbordamiento (Overflow)**
-> El casting de un número grande a un tipo pequeño puede dar resultados inesperados si el número no cabe.
-> `int numeroMuyGrande = 300;`
-> `byte numeroByte = (byte) numeroMuyGrande;`
-> El rango de `byte` es -128 a 127. `300` no cabe. `numeroByte` no valdrá `127` ni dará un error en ejecución. Tomará un valor extraño (`44` en este caso) debido a cómo se representan los números en binario. Es un bug difícil de detectar. ¡Usa el casting con cuidado!
-
----
-**(Página 3 de 4)**
-
-### **4.3.- Aplicación Práctica: Resolviendo la División Entera**
-
-Ahora tenemos la herramienta para resolver el problema que planteamos en la Semana 2 y que sufría María en el caso práctico.
-
-Recordemos el problema:
-```java
-int totalEstrellas = 10;
-int numeroVotos = 3;
-
-// Java evalúa '10 / 3' como una división entera. El resultado es 3.
-// Luego, el 3 (int) se promociona a 3.0 (double) para asignarlo a la variable.
-// Pero ya es demasiado tarde, la precisión se ha perdido.
-double mediaIncorrecta = totalEstrellas / numeroVotos; // El resultado es 3.0
-```
-La solución es usar un casting para asegurarnos de que la división se realice con números de coma flotante desde el principio. Solo necesitamos convertir **uno** de los operandos.
-
-**Solución correcta:**
-```java
-int totalEstrellas = 10;
-int numeroVotos = 3;
-
-// 1. Casteamos totalEstrellas a double. El valor se convierte en 10.0.
-// 2. La expresión se convierte en 10.0 / 3.
-// 3. Como un operando es double, Java promociona el otro (3 se convierte en 3.0).
-// 4. Se realiza una división de doubles: 10.0 / 3.0.
-// 5. El resultado (3.333...) se asigna a la variable.
-double mediaCorrecta = (double) totalEstrellas / numeroVotos;
-```
-También funcionaría casteando el segundo operando, o ambos:
-`double mediaAlternativa1 = totalEstrellas / (double) numeroVotos;`
-`double mediaAlternativa2 = (double) totalEstrellas / (double) numeroVotos;`
-
-La clave es que, en el momento de la división, al menos uno de los dos operandos sea de tipo `double` o `float`.
-
-> #### **Cita para pensar**
-> "La programación es el arte de ser explícito. La conversión implícita es una comodidad que nos ofrece el lenguaje, pero la conversión explícita es una declaración de intenciones del programador." - Anónimo
-
----
-**(Página 4 de 4)**
-
-### **RESUMEN DE LA SEMANA 3 Y AUTOEVALUACIÓN**
-
-En esta sesión hemos aprendido cómo Java maneja las operaciones entre diferentes tipos de datos, un concepto fundamental para escribir código robusto y sin errores de cálculo.
-
-**Conceptos Clave:**
-*   **Conversión Implícita (Promoción):**
-    *   Automática y segura.
-    *   Ocurre de un tipo de dato pequeño a uno grande.
-    *   Java lo hace por nosotros (`int` a `double`).
-*   **Conversión Explícita (Casting):**
-    *   Manual y potencialmente peligrosa (pérdida de datos).
-    *   Ocurre de un tipo de dato grande a uno pequeño.
-    *   Se usa la sintaxis `(tipo_destino)`.
-    *   Es **esencial** para solucionar el problema de la división entera.
-*   **Truncamiento:** Al castear de `double` a `int`, la parte decimal se corta, no se redondea. `(int) 9.9` es `9`.
-
-**Diagrama de Decisión:**
-
-[DIAGRAMA: Un esquema. "¿Voy a asignar un valor a una variable de otro tipo?" -> "¿Es una conversión de 'pequeño' a 'grande' (ej. int a double)?" (Sí -> Conversión Implícita, Java se encarga. No -> Es de 'grande' a 'pequeño' (ej. double a int)) -> "Necesito Conversión Explícita (Casting). ¿Estoy seguro de que la posible pérdida de datos es aceptable?" (Sí -> Escribo `(tipo)valor`. No -> Reconsidero el diseño, quizás la variable destino debería ser de un tipo más grande). ]
-
-> #### **Autoevaluación**
->
-> 1.  ¿Qué valor contendrá la variable `resultado` tras ejecutar `int resultado = (int) 2.7 + 5;`?
->     *   a) 7
->     *   b) 7.7
->     *   c) 8
->
-> 2.  ¿Cuál de las siguientes líneas de código **no** producirá un error de compilación?
->     *   a) `int x = 3.0;`
->     *   b) `float y = 3.0;`
->     *   c) `double z = 3;`
->
-> 3.  Tienes `int a = 5;` y `int b = 2;`. ¿Qué expresión escribirías para que una variable `double resultado` contenga el valor `2.5`?
->
-> *(Respuestas: 1. a) 7 (`2 + 5`). 2. c) (es una promoción implícita). 3. `double resultado = (double) a / b;` o `double resultado = a / (double) b;`)*
-
-***
-### **PRÁCTICA - SESIÓN 8**
-
-**(Página 1 de 2)**
-
-### **El Laboratorio de Conversiones en EventDEV**
-
-#### **Caso práctico**
-"Equipo, hoy vamos a experimentar", dice Laia. "Quiero que veáis con vuestros propios ojos cómo Java maneja los tipos, cuándo os ayuda automáticamente y cuándo os obliga a tomar una decisión explícita con un casting. Vamos a reproducir el problema de la media de valoraciones de María y a solucionarlo."
-
-#### **Objetivos de la Sesión**
-*   Observar una conversión de tipo implícita en una operación.
-*   Provocar y entender el error de compilación por "pérdida de precisión".
-*   Utilizar el casting explícito para convertir tipos y resolver el problema de la división entera.
-
-#### **Desarrollo Paso a Paso (Parte Guiada)**
-
-1.  **Crea un nuevo proyecto Java** llamado `LaboratorioConversiones`.
-2.  **Paso 1: Conversión implícita.** Escribe y ejecuta este código:
-    ```java
-    int numAsistentes = 150;
-    double gastosGestion = 2.50;
-    double totalOperacion = numAsistentes * gastosGestion;
-    System.out.println("Total (implícito): " + totalOperacion);
-    ```
-3.  **Paso 2: Provoca el error.** Intenta asignar un `double` a un `int`:
-    ```java
-    double recaudacion = 54321.99;
-    // La siguiente línea da error, obsérvalo en IntelliJ.
-    // int recaudacionEntera = recaudacion;
-    ```
-4.  **Paso 3: Soluciónalo con casting.** Corrige la línea anterior:
-    ```java
-    int recaudacionEntera = (int) recaudacion;
-    System.out.println("Recaudación entera (casting): " + recaudacionEntera);
-    ```
-
----
-**(Página 2 de 2)**
-
-5.  **Paso 4: El problema de la división entera.**
-    ```java
-    int totalEstrellas = 10;
-    int numeroVotos = 3;
-    double mediaIncorrecta = totalEstrellas / numeroVotos;
-    System.out.println("Media incorrecta: " + mediaIncorrecta);
-    ```
-6.  **Paso 5: La solución.**
-    ```java
-    double mediaCorrecta = (double) totalEstrellas / numeroVotos;
-    System.out.println("Media correcta: " + mediaCorrecta);
-    ```
-7.  **Ejecuta el programa (`Shift + F10`)** y analiza cada una de las salidas en la consola, especialmente la diferencia entre el paso 4 y el 5.
-
-#### **¡Ahora tú! (Retos)**
-
-**Reto 1: Porcentaje de Ocupación (Consolidación)**
-Tienes dos variables `int`: `entradasVendidas = 85` y `aforoTotal = 200`. Calcula y muestra el **porcentaje de ocupación** del evento con decimales.
-*Pista: La fórmula es `(entradasVendidas / aforoTotal) * 100`, pero si no usas un casting, la división `85 / 200` dará `0`.*
-
-**Reto 2: Conversión de Caracteres a Números (Ampliación)**
-Cada `char` en Java tiene un valor numérico Unicode asociado.
-1.  Declara un `char` `letra = 'A';`.
-2.  Declara un `int` `codigoLetra` y asígnale el valor de `letra`. ¿Necesitas un casting? (No, es una promoción implícita). Imprime el código numérico.
-3.  Declara un `int` `codigoSiguiente = codigoLetra + 1;`.
-4.  Declara un `char` `letraSiguiente` y asígnale el valor de `codigoSiguiente`. ¿Necesitas un casting? (Sí, de `int` a `char`). Imprime la letra siguiente. El resultado debería ser 'B'.
-
-> #### **Autoevaluación**
-> *   ¿Entiendo cuándo Java convierte tipos automáticamente? **[ SÍ / NO ]**
-> *   ¿He resuelto el Reto 1, evitando la división entera con un casting? **[ SÍ / NO ]**
-> *   ¿He completado el Reto 2 y entiendo la relación numérica de los `char`? **[ SÍ / NO ]**
-
----
-### **PRÁCTICA - SESIÓN 9**
-
-**(Página 1 de 2)**
-
-### **Práctica Final: Resumen Financiero del Evento**
-
-#### **Caso práctico**
-"Muy bien, equipo, es la hora de la verdad", anuncia Laia. "Vamos a crear un programa final para esta unidad que junte todo lo que hemos aprendido: variables, constantes, todos los tipos de operadores y conversiones de tipo. Crearemos un resumen financiero para un evento de `EventDEV`."
-
-#### **Objetivos de la Sesión**
-*   Integrar todos los conceptos de la Unidad 1 en un único programa coherente.
-*   Resolver un problema práctico que requiere el uso combinado de variables, constantes, operadores y conversiones.
-
-#### **Desarrollo Paso a Paso (Parte Guiada)**
-1.  **Crea un nuevo proyecto Java** llamado `ResumenFinanciero`.
-2.  **Declara las constantes y variables** de partida:
-    ```java
-    // --- CONSTANTES DE NEGOCIO ---
-    final double PRECIO_ENTRADA_GENERAL = 50.0;
-    final double PRECIO_ENTRADA_VIP = 150.0;
-    final double IVA = 0.21;
+#### 3. Andamiaje didáctico (PSeInt $\rightarrow$ Java)
+* **PSeInt (`pr/pseudocodigo/dia3_concatenacion.psc`):**
+```psc
+Algoritmo Dia3Concatenacion
+    Definir dni Como Cadena
+    Definir accesosManana, accesosTarde, totalAccesos Como Entero
     
-    // --- DATOS DEL EVENTO ---
-    int entradasGeneralesVendidas = 200;
-    int entradasVipVendidas = 50;
-    ```3.  **Realiza los cálculos:**
-    ```java
-    // --- CÁLCULOS FINANCIEROS ---
-    // 1. Total de entradas vendidas
-    int totalEntradas = entradasGeneralesVendidas + entradasVipVendidas;
+    Escribir "Introduce el DNI del usuario:"
+    Leer dni
+    Escribir "Introduce los accesos registrados por la manana:"
+    Leer accesosManana
+    Escribir "Introduce los accesos registrados por la tarde:"
+    Leer accesosTarde
     
-    // 2. Recaudación total sin impuestos (bruta)
-    double recaudacionBruta = (entradasGeneralesVendidas * PRECIO_ENTRADA_GENERAL) + (entradasVipVendidas * PRECIO_ENTRADA_VIP);
+    totalAccesos <- accesosManana + accesosTarde
     
-    // 3. Impuestos a pagar
-    double impuestos = recaudacionBruta * IVA;
-    
-    // 4. Recaudación neta (después de impuestos)
-    double recaudacionNeta = recaudacionBruta - impuestos;
-    
-    // 5. Precio medio por entrada (¡OJO CON LA DIVISIÓN ENTERA!)
-    double precioMedioEntrada = recaudacionBruta / totalEntradas;
-    ```
+    // Concatenacion con textos
+    Escribir "El usuario con DNI " + dni + " acumula un total de " + ConvertirATexto(totalAccesos) + " accesos hoy."
+FinAlgoritmo
+```
+
+* **Traducción inmediata a Java en IntelliJ (`pr/src/Dia3Concatenacion.java`):**
+```java
+import java.util.Scanner;
+
+public class Dia3Concatenacion {
+    public static void main(String[] args) {
+        Scanner teclado = new Scanner(System.in);
+        
+        System.out.print("Introduce el DNI del usuario: ");
+        String dni = teclado.nextLine();
+        
+        System.out.print("Introduce los accesos por la manana: ");
+        int accesosManana = teclado.nextInt();
+        
+        System.out.print("Introduce los accesos por la tarde: ");
+        int accesosTarde = teclado.nextInt();
+        
+        // Suma matemática
+        int totalAccesos = accesosManana + accesosTarde;
+        
+        // Concatenación de texto y variables
+        System.out.println("El usuario con DNI " + dni + " acumula un total de " + totalAccesos + " accesos hoy.");
+        
+        teclado.close();
+    }
+}
+```
+
+#### 4. Actividad del día para el proyecto propio
+El estudiante diseña un módulo de composición de mensajes en su proyecto que capture dos magnitudes numéricas, realice una suma o resta matemática y emita una frase descriptiva completa uniendo texto y resultados.
 
 ---
-**(Página 2 de 2)**
 
-4.  **Imprime el informe financiero** por consola:
-    ```java
-    // --- INFORME FINANCIERO DEL EVENTO ---
-    System.out.println("-------------------------------------");
-    System.out.println("Total Entradas Vendidas: " + totalEntradas);
-    System.out.println("Recaudación Bruta: " + recaudacionBruta + " EUR");
-    System.out.println("Impuestos (IVA " + (IVA * 100) + "%): " + impuestos + " EUR");
-    System.out.println("Recaudación Neta: " + recaudacionNeta + " EUR");
-    System.out.println("Precio Medio por Entrada: " + precioMedioEntrada + " EUR");
-    System.out.println("-------------------------------------");
-    ```
-5.  **Ejecuta el programa (`Shift + F10`)** y verifica que todos los cálculos son correctos.
+### DÍA 4 (Jueves - 2 horas): Laboratorio de aplicación al proyecto propio (Paso 1)
 
-#### **¡Ahora tú! (Retos)**
+#### 1. Caso práctico narrativo
+Es jueves y Laia convoca a toda la célula de desarrollo:
+> *«Hemos cerrado los tres primeros conceptos fundamentales: variables primitivas, tipos alfanuméricos y operadores de concatenación. Hoy dedicaremos las dos horas completas a estructurar el primer archivo oficial de vuestro proyecto propio de la bolsa de proyectos en el repositorio»*.
 
-**Reto 1: Comisión del Organizador (Consolidación)**
-Añade una nueva funcionalidad al informe. La empresa organizadora (un tercero) se lleva una comisión del 5% sobre la **recaudación neta**.
-1.  Declara una nueva constante `COMISION_ORGANIZADOR` con valor `0.05`.
-2.  Calcula el `beneficioOrganizador` (el importe de la comisión).
-3.  Calcula el `beneficioFinal` para Azahar Tech (recaudación neta menos la comisión del organizador).
-4.  Añade estas dos nuevas líneas al informe impreso.
+#### 2. Trabajo práctico guiado en el aula
+1. Abrir IntelliJ IDEA en el espacio corporativo: `azahartech/nombreEquipo/nombreEstudiante/pr/`.
+2. Crear el archivo de diseño en `pr/pseudocodigo/reto1_variables.psc`.
+3. Crear la clase Java ejecutable en `pr/src/Reto1Variables.java`.
+4. El programa debe:
+    * Declarar al menos 4 variables de tipos distintos (`int`, `double`, `String`, `boolean`).
+    * Capturar los datos mediante `Scanner`.
+    * Realizar una operación matemática básica.
+    * Mostrar un resumen de bienvenida por consola con concatenación limpia.
+5. Ejecutar y verificar en la consola de IntelliJ.
+6. Realizar commit y push en GitHub:
+   ```bash
+   git add pr/
+   git commit -m "feat(pr): implementar captura de variables y presentacion de datos"
+   git push
+   ```
 
-**Reto 2: Desglose de Entradas (Ampliación)**
-Añade al informe el porcentaje que representa cada tipo de entrada sobre el total de entradas vendidas.
-1.  Calcula el `porcentajeEntradasGenerales`.
-2.  Calcula el `porcentajeEntradasVip`.
-3.  Añade estas dos líneas al informe, mostrando el resultado con decimales.
-*Pista: De nuevo, ten cuidado con la división entera. `(entradasGeneralesVendidas / totalEntradas)` dará 0. Necesitarás un casting.*
+---
 
-**Reto 3: Depuración de Lógica**
-Imagina que el cálculo de los impuestos está mal en el código original. En lugar de `recaudacionBruta * IVA`, alguien ha escrito `recaudacionBruta / IVA`. Ejecuta el programa con ese error. ¿El resultado es muy diferente? ¿Es fácil ver que está mal? Este ejercicio demuestra por qué usar nombres de variables claros (`impuestos`) es crucial: te ayuda a verificar si la operación que estás haciendo tiene sentido lógico. Revierte el error y déjalo funcionando correctamente.
+## SEMANA 2: OPERADORES, EXPRESIONES Y CONVERSIONES DE TIPO (8 HORAS)
 
-> #### **Autoevaluación**
-> *   ¿He utilizado variables y constantes de forma apropiada? **[ SÍ / NO ]**
-> *   ¿He combinado operadores aritméticos para realizar cálculos complejos? **[ SÍ / NO ]**
-> *   ¿He manejado correctamente la división para el precio medio y los porcentajes, evitando la división entera? **[ SÍ / NO ]**
-> *   ¿Mi programa final se ejecuta y produce un informe coherente y correcto, incluyendo los retos? **[ SÍ / NO ]**
+---
+
+### DÍA 5 (Lunes - 2 horas): Asignación compuesta y operadores de incremento y decremento
+
+#### 1. Caso práctico narrativo
+**Pau Ferrer** está escribiendo una rutina para contar los alumnos que pasan por el torniquete. Ha escrito: `contadorAlumnos = contadorAlumnos + 1;` y `tiempoTotal = tiempoTotal + tiempoNuevo;`. Alba Torres le enseña un atajo profesional:
+> *«En programación profesional utilizamos **operadores de asignación compuesta y de incremento**. Hacen que el código sea más compacto, legible y eficiente a nivel de compilador. Hoy aprenderemos a utilizarlos y a evitar los efectos secundarios del pre y post-incremento»*.
+
+#### 2. Fundamento teórico
+* **Operadores de asignación compuesta:** Combinan una operación aritmética con la asignación del resultado a la misma variable:
+    * `x += 5;` equivale a `x = x + 5;`
+    * `x -= 2;` equivale a `x = x - 2;`
+    * `x *= 3;` equivale a `x = x * 3;`
+* **Operadores unarios de incremento (`++`) y decremento (`--`):**
+    * **Post-incremento (`x++`):** Se usa el valor actual de `x` en la expresión y **luego** se incrementa en 1.
+    * **Pre-incremento (`++x`):** Primero se incrementa `x` en 1 y **luego** se usa el nuevo valor.
+
+#### 3. Andamiaje didáctico (PSeInt $\rightarrow$ Java)
+* **PSeInt (`pr/pseudocodigo/dia5_incrementos.psc`):**
+```psc
+Algoritmo Dia5Incrementos
+    Definir contadorAccesos Como Entero
+    Definir minutosAcumulados Como Entero
+    
+    contadorAccesos <- 0
+    minutosAcumulados <- 0
+    
+    // Simulamos la llegada de un alumno
+    contadorAccesos <- contadorAccesos + 1
+    minutosAcumulados <- minutosAcumulados + 15
+    
+    // Simulamos la llegada de otro alumno
+    contadorAccesos <- contadorAccesos + 1
+    minutosAcumulados <- minutosAcumulados + 10
+    
+    Escribir "Total de alumnos contados: ", contadorAccesos
+    Escribir "Minutos totales acumulados: ", minutosAcumulados
+FinAlgoritmo
+```
+
+* **Traducción inmediata a Java en IntelliJ (`pr/src/Dia5Incrementos.java`):**
+```java
+public class Dia5Incrementos {
+    public static void main(String[] args) {
+        int contadorAccesos = 0;
+        int minutosAcumulados = 0;
+        
+        // Uso de operadores de incremento y asignación compuesta
+        contadorAccesos++;         // Equivale a contadorAccesos = contadorAccesos + 1
+        minutosAcumulados += 15;   // Equivale a minutosAcumulados = minutosAcumulados + 15
+        
+        contadorAccesos++;
+        minutosAcumulados += 10;
+        
+        System.out.println("Total de alumnos contados: " + contadorAccesos);
+        System.out.println("Minutos totales acumulados: " + minutosAcumulados);
+        
+        // Demostración de pre vs post incremento
+        int a = 5;
+        int b = a++; // b recibe 5, luego 'a' pasa a valer 6
+        System.out.println("Post-incremento -> b: " + b + ", a: " + a);
+        
+        int x = 5;
+        int y = ++x; // 'x' pasa a valer 6, y 'y' recibe 6
+        System.out.println("Pre-incremento  -> y: " + y + ", x: " + x);
+    }
+}
+```
+
+#### 4. Actividad del día para el proyecto propio
+El estudiante realiza una prueba de escritorio en papel trazando los valores de 3 variables de su proyecto que utilizan operadores `+=`, `-=` y `++`, programándolo después en Java para validar que el resultado coincide.
+
+---
+
+### DÍA 6 (Martes - 2 horas): División entera frente a división real y el operador módulo (`%`)
+
+#### 1. Caso práctico narrativo
+En el caso guía del IES El Caminàs, el reloj del sistema devuelve una lectura bruta de `7540` segundos transcurridos desde medianoche. El equipo necesita descomponer esa cifra en cuántas horas completas, minutos restantes y segundos finales representa, pero sin usar condicionales. Laia explica:
+> *«Este es el problema clásico que resuelve la combinación de la **división entera** y el **operador módulo o resto (`%`)**. Es una de las herramientas matemáticas más potentes que tenemos en algorítmica secuencial»*.
+
+#### 2. Fundamento teórico
+* **División entera (`int / int`):** Descarta por completo cualquier residuo o parte decimal. `7 / 2 = 3`.
+* **Operador módulo (`%`):** Devuelve exclusivamente el **resto** de una división entera. `7 % 2 = 1`.
+* **Descomposición matemática de magnitudes:**
+    * Segundos en una hora: $3600$.
+    * Segundos en un minuto: $60$.
+
+#### 3. Andamiaje didáctico (PSeInt $\rightarrow$ Java)
+* **PSeInt (`pr/pseudocodigo/dia6_modulo_tiempos.psc`):**
+```psc
+Algoritmo Dia6ModuloTiempos
+    Definir segundosTotales, horas, minutos, segundosFinales Como Entero
+    
+    Escribir "Introduce los segundos totales transcurridos:"
+    Leer segundosTotales
+    
+    // Descomposicion secuencial exacta
+    horas <- trunc(segundosTotales / 3600)
+    minutos <- trunc((segundosTotales MOD 3600) / 60)
+    segundosFinales <- segundosTotales MOD 60
+    
+    Escribir "Desglose horario:"
+    Escribir horas, " horas, ", minutos, " minutos y ", segundosFinales, " segundos."
+FinAlgoritmo
+```
+
+* **Traducción inmediata a Java en IntelliJ (`pr/src/Dia6ModuloTiempos.java`):**
+```java
+import java.util.Scanner;
+
+public class Dia6ModuloTiempos {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.print("Introduce los segundos totales transcurridos: ");
+        int segundosTotales = scanner.nextInt();
+        
+        // Uso coordinado de división entera y operador resto (%)
+        int horas = segundosTotales / 3600;
+        int minutos = (segundosTotales % 3600) / 60;
+        int segundosFinales = segundosTotales % 60;
+        
+        System.out.println("Desglose horario:");
+        System.out.println(horas + " horas, " + minutos + " minutos y " + segundosFinales + " segundos.");
+        
+        scanner.close();
+    }
+}
+```
+
+#### 4. Actividad del día para el proyecto propio
+El estudiante aplica el operador módulo (`%`) y la división entera a un problema de descomposición o empaquetado de su proyecto propio (ej. convertir céntimos en euros enteros y céntimos restantes, agrupar productos en cajas completas y unidades sobrantes, o dividir minutos en días y horas).
+
+---
+
+### DÍA 7 (Miércoles - 2 horas): Jerarquía de operadores y conversiones de tipo (*Type Casting*)
+
+#### 1. Caso práctico narrativo
+Alba Torres calcula la tasa de ocupación del vestíbulo del instituto. Hay `18` alumnos presentes sobre un aforo de `40`. Escribe: `double ratio = 18 / 40;` y el sistema imprime `0.0`. Alba advierte a Pau y al estudiante:
+> *«Java ha evaluado primero la división entre dos enteros (`18 / 40 = 0`) y luego ha convertido ese cero a decimal (`0.0`). Hemos perdido la información por no aplicar una **conversión explícita o casting**. Hoy aprenderemos a gobernar las conversiones de tipos en expresiones mixtas»*.
+
+#### 2. Fundamento teórico
+* **Jerarquía de operadores:** Los paréntesis `()` tienen máxima prioridad, seguidos de los unarios (`++`, `--`), multiplicación/división/módulo (`*`, `/`, `%`) y suma/resta (`+`, `-`).
+* **Conversión Implícita (Ensanchamiento):** De tipo menor a mayor (`int` $\rightarrow$ `double`). Se realiza de forma segura y automática.
+* **Conversión Explícita (*Casting*):** Se fuerza manualmente anteponiendo el tipo destino entre paréntesis: `(double) a / b` o `(int) variableDecimal`. Provoca pérdida de decimales si se pasa de real a entero.
+
+#### 3. Andamiaje didáctico (PSeInt $\rightarrow$ Java)
+* **PSeInt (`pr/pseudocodigo/dia7_casting_porcentajes.psc`):**
+```psc
+Algoritmo Dia7CastingPorcentajes
+    Definir presentes, aforoTotal Como Entero
+    Definir porcentajeReal Como Real
+    Definir porcentajeEnteroTruncado Como Entero
+    
+    Escribir "Introduce los alumnos presentes:"
+    Leer presentes
+    Escribir "Introduce el aforo total del vestibulo:"
+    Leer aforoTotal
+    
+    // Forzamos calculo real
+    porcentajeReal <- (presentes * 100.0) / aforoTotal
+    porcentajeEnteroTruncado <- trunc(porcentajeReal)
+    
+    Escribir "Porcentaje exacto: ", porcentajeReal, " %"
+    Escribir "Porcentaje redondeado a la baja: ", porcentajeEnteroTruncado, " %"
+FinAlgoritmo
+```
+
+* **Traducción inmediata a Java en IntelliJ (`pr/src/Dia7CastingPorcentajes.java`):**
+```java
+import java.util.Scanner;
+
+public class Dia7CastingPorcentajes {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        
+        System.out.print("Introduce los alumnos presentes: ");
+        int presentes = entrada.nextInt();
+        
+        System.out.print("Introduce el aforo total del vestibulo: ");
+        int aforoTotal = entrada.nextInt();
+        
+        // Casting explícito a (double) en el numerador para forzar división decimal
+        double porcentajeReal = ((double) presentes / aforoTotal) * 100.0;
+        
+        // Casting explícito a (int) para truncar decimales
+        int porcentajeEnteroTruncado = (int) porcentajeReal;
+        
+        System.out.println("Porcentaje exacto: " + porcentajeReal + " %");
+        System.out.println("Porcentaje redondeado a la baja: " + porcentajeEnteroTruncado + " %");
+        
+        entrada.close();
+    }
+}
+```
+
+#### 4. Actividad del día para el proyecto propio
+El estudiante diseña un cálculo de porcentaje, ratio o ponderación en su proyecto propio donde intervengan magnitudes enteras que deban devolver un resultado decimal exacto mediante casting explícito `(double)`.
+
+---
+
+### DÍA 8 (Jueves - 2 horas): Laboratorio: Motor de cálculo secuencial del proyecto propio (Paso 2)
+
+#### 1. Caso práctico narrativo
+Laia Claramunt revisa el Sprint Backlog del equipo:
+> *«Hoy cerramos la segunda semana. Cada uno debe integrar en el repositorio el **motor de cálculo matemático completo de su proyecto propio**, asegurando que utiliza operadores combinados, descomposición con módulo (`%`) y conversiones de tipo correctas sin pérdida de datos»*.
+
+#### 2. Trabajo práctico guiado en el aula
+1. Abrir IntelliJ IDEA en el espacio de trabajo.
+2. Crear el archivo `pr/pseudocodigo/reto1_calculo.psc`.
+3. Crear la clase Java `pr/src/Reto1Calculo.java`.
+4. El programa debe implementar:
+    * Entrada de datos con `Scanner`.
+    * Al menos dos expresiones matemáticas con jerarquía y paréntesis.
+    * Una operación con el operador módulo (`%`).
+    * Al menos una conversión explícita (*casting*) justificable.
+5. Ejecutar con diferentes valores numéricos y verificar en la consola.
+6. Realizar commit y push en GitHub:
+   ```bash
+   git add pr/
+   git commit -m "feat(pr): implementar formulas matematicas y conversiones de tipo en reto 1"
+   git push
+   ```
+
+---
+
+## SEMANA 3: CONSTANTES, LITERALES, SALIDA FORMATEADA Y CIERRE (8 HORAS)
+
+---
+
+### DÍA 9 (Lunes - 2 horas): Constantes inmutables (`final`) y eliminación de números mágicos
+
+#### 1. Caso práctico narrativo
+Alba Torres hace una auditoría del código del IES El Caminàs y encuentra números dispersos por los archivos: `0.21`, `60`, `3600`, `"CAMINAS"`. Alba explica a Pau y al estudiante:
+> *«Si el cliente decide que el prefijo del QR cambia el curso que viene o cambiamos una tasa, tendremos que buscar ese texto en diez archivos distintos y cometeremos errores. En AzaharTech está prohibido usar 'números mágicos'. Todo valor fijo debe declararse como una **constante inmutable** al principio de la clase»*.
+
+#### 2. Fundamento teórico
+* **Constante inmutable en Java:** Se declara con la palabra clave `final`. Su valor no puede ser reasignado una vez inicializado.
+* **Convención de estilo:** Identificadores en **MAYÚSCULAS** y palabras separadas por guion bajo: `UPPER_SNAKE_CASE` (*ej. `final int DIAS_SEMANA = 7;`*).
+* **Literales tipados:**
+    * Entero largo: Sufijo `L` (*`3000000000L`*).
+    * Flotante simple: Sufijo `F` (*`3.14F`*).
+    * Doble precisión: Por defecto o sufijo `D`.
+
+#### 3. Andamiaje didáctico (PSeInt $\rightarrow$ Java)
+* **PSeInt (`pr/pseudocodigo/dia9_constantes.psc`):**
+```psc
+Algoritmo Dia9Constantes
+    Definir PREFIJO_CENTRO Como Cadena
+    Definir SEGUNDOS_MAXIMOS_ACCESO Como Entero
+    
+    PREFIJO_CENTRO <- "CAMINAS"
+    SEGUNDOS_MAXIMOS_ACCESO <- 1800
+    
+    Definir idTicket Como Entero
+    idTicket <- 42
+    
+    Escribir "Prefijo oficial: ", PREFIJO_CENTRO
+    Escribir "Tiempo limite de sesion: ", SEGUNDOS_MAXIMOS_ACCESO, " segundos."
+    Escribir "Identificador de operacion: ", PREFIJO_CENTRO, "-", idTicket
+FinAlgoritmo
+```
+
+* **Traducción inmediata a Java en IntelliJ (`pr/src/Dia9Constantes.java`):**
+```java
+public class Dia9Constantes {
+    public static void main(String[] args) {
+        // Declaración formal de constantes inmutables
+        final String PREFIJO_CENTRO = "CAMINAS";
+        final int SEGUNDOS_MAXIMOS_ACCESO = 1800;
+        final double VERSION_PROTOCOLO = 1.0;
+        
+        int idTicket = 42;
+        
+        // Composición usando constantes seguras
+        String codigoGenerado = PREFIJO_CENTRO + "-" + idTicket + "-v" + VERSION_PROTOCOLO;
+        
+        System.out.println("Constantes de configuracion fijadas correctamente:");
+        System.out.println("Codigo de acceso generado: " + codigoGenerado);
+        System.out.println("Tiempo maximo de entrada: " + SEGUNDOS_MAXIMOS_ACCESO + " seg.");
+    }
+}
+```
+
+#### 4. Actividad del día para el proyecto propio
+El estudiante identifica al menos 3 valores fijos de su proyecto propio (nombres de empresa, tasas de impuestos, capacidades máximas, prefijos identificadores) y los declara como constantes `final` respetando la convención `UPPER_SNAKE_CASE`.
+
+---
+
+### DÍA 10 (Martes - 2 horas): Secuencias de escape y formato en consola
+
+#### 1. Caso práctico narrativo
+Pau Ferrer ejecuta su aplicación de acceso y la salida sale apelotonada en una sola línea horizontal. Laia Claramunt le muestra cómo dar formato visual a la consola:
+> *«Para que un usuario o conserje entienda la pantalla, los datos deben organizarse con saltos de línea claros, tabulaciones que alineen los textos y comillas cuando citemos nombres de entidades. Esto se consigue con las **secuencias de escape**»*.
+
+#### 2. Fundamento teórico
+* **Secuencia de escape:** Carácter especial precedido por la barra invertida (`\`) que Java interpreta como una orden de formato en lugar de texto literal:
+    * `\n`: Salto de línea (*Newline*).
+    * `\t`: Tabulador horizontal (*Tab*), desplaza el cursor a la siguiente columna tabular.
+    * `\"`: Permite escribir comillas dobles sin cerrar la cadena de texto.
+    * `\\`: Permite imprimir el carácter de barra invertida.
+
+#### 3. Andamiaje didáctico (PSeInt $\rightarrow$ Java)
+* **PSeInt (`pr/pseudocodigo/dia10_escapes.psc`):**
+```psc
+Algoritmo Dia10Escapes
+    Escribir "============================================="
+    Escribir "SISTEMA:\tControl de Asistencia QR"
+    Escribir "ENTIDAD:\tIES El Caminas"
+    Escribir "UBICACION:\tVestibulo principal"
+    Escribir "============================================="
+    Escribir ""
+    Escribir "Estado:\t\"OPERATIVO\""
+FinAlgoritmo
+```
+
+* **Traducción inmediata a Java en IntelliJ (`pr/src/Dia10Escapes.java`):**
+```java
+public class Dia10Escapes {
+    public static void main(String[] args) {
+        // Uso de tabulaciones (\t), saltos (\n) y comillas escapadas (\")
+        System.out.println("=============================================");
+        System.out.println("SISTEMA:\t\"Control de Asistencia QR\"");
+        System.out.println("ENTIDAD:\tIES El Caminas (Castellon)");
+        System.out.println("UBICACION:\tVestibulo principal (Edificio A)");
+        System.out.println("=============================================\n");
+        
+        System.out.println("Aviso:\tCompruebe que el lector emite la senal en verde.");
+    }
+}
+```
+
+#### 4. Actividad del día para el proyecto propio
+El estudiante diseña la cabecera visual de su proyecto en consola maquetando títulos, subtítulos y datos clave alineados mediante tabulaciones (`\t`) y saltos de línea (`\n`).
+
+---
+
+### DÍA 11 (Miércoles - 2 horas): Salida formateada profesional con `System.out.printf()`
+
+#### 1. Caso práctico narrativo
+Alba y Pau presentan el ticket de acceso al IES El Caminàs, pero el tiempo transcurrido aparece como `2.3333333333333335 min` y el precio del carnet como `5.0 euros`. Laia les enseña la herramienta definitiva de salida en Java:
+> *«En producción no podemos mostrar 15 decimales. Con **`printf`** controlamos con precisión de relojero cuántos decimales mostramos, el ancho exacto de cada columna y si alineamos a izquierda o derecha. Hoy aprenderemos a generar informes tabulares profesionales»*.
+
+#### 2. Fundamento teórico
+* **Método `System.out.printf(formato, argumentos...)`:** Imprime texto formateado según una plantilla.
+* **Especificadores de formato comunes:**
+    * `%s`: Cadenas de texto (`String`).
+    * `%d`: Números enteros (`int`, `long`).
+    * `%f`: Números decimales (`double`, `float`).
+    * `%c`: Carácter individual (`char`).
+    * `%n`: Salto de línea estándar e independiente del sistema operativo.
+* **Modificadores de precisión y anchura:**
+    * `%.2f`: Redondea a exactamente **2 decimales**.
+    * `%-25s`: Reserva 25 caracteres para el texto alineado a la **izquierda**.
+    * `%10.2f`: Reserva 10 caracteres totales para el número alineado a la **derecha**.
+
+#### 3. Andamiaje didáctico (PSeInt $\rightarrow$ Java)
+* **PSeInt (`pr/pseudocodigo/dia11_printf.psc`):**
+```psc
+Algoritmo Dia11Printf
+    Definir nombre Como Cadena
+    Definir tiempoExacto Como Real
+    Definir idRegistro Como Entero
+    
+    nombre <- "Alba Torres"
+    tiempoExacto <- 2.33333333
+    idRegistro <- 7
+    
+    Escribir "--- REPORTE FORMATEADO ---"
+    Escribir "Registro N. : ", idRegistro
+    Escribir "Estudiante  : ", nombre
+    Escribir "Tiempo est. : ", redon(tiempoExacto * 100) / 100, " min"
+FinAlgoritmo
+```
+
+* **Traducción inmediata a Java en IntelliJ (`pr/src/Dia11Printf.java`):**
+```java
+public class Dia11Printf {
+    public static void main(String[] args) {
+        String nombre = "Alba Torres";
+        double tiempoExacto = 2.33333333;
+        int idRegistro = 7;
+        double tasaFiabilidad = 99.856;
+        
+        System.out.println("======================================================================");
+        System.out.println("                  INFORME FORMATEADO CON PRINTF                       ");
+        System.out.println("======================================================================");
+        
+        // Control exacto de columnas, enteros con ceros a la izquierda y decimales acotados
+        System.out.printf("Registro ID:       #%05d%n", idRegistro);
+        System.out.printf("Desarrolladora:    %-25s%n", nombre);
+        System.out.printf("Tiempo de estancia: %.2f minutos%n", tiempoExacto);
+        System.out.printf("Tasa fiabilidad:    %6.2f %%%n", tasaFiabilidad);
+        
+        System.out.println("======================================================================");
+    }
+}
+```
+
+#### 4. Actividad del día para el proyecto propio
+El estudiante diseña la tabla o ticket final de salida de su proyecto utilizando `printf`, alineando al menos 3 columnas de datos y redondeando los valores monetarios o temporales a dos decimales (`%.2f`).
+
+---
+
+### DÍA 12 (Jueves - 2 horas): Laboratorio de integración: Programa secuencial completo y cierre del Sprint 1
+
+#### 1. Caso práctico narrativo
+Es jueves 1 de octubre. Mañana concluye el **Sprint 1**. Laia Claramunt reúne al equipo para el remate final:
+> *«Hoy ensamblamos todo lo aprendido durante estas tres semanas en el **programa secuencial definitivo de vuestro proyecto propio**. Debe incluir constantes inmutables, lectura por `Scanner`, cálculos matemáticos precisos con *casting*, salida formateada con `printf` y comentarios limpios de cabecera. Con esto, vuestro módulo de Programación queda sellado al 100 % para la primera entrega oficial»*.
+
+#### 2. Fundamento teórico
+* **Comentarios profesionales:**
+    * Comentario de cabecera con propósito del archivo, autor y versión.
+    * Comentarios de línea (`//`) explicando el *porqué* de una fórmula, no lo evidente.
+* **Checklist de calidad del código:** Indentación consistente en IntelliJ (`Ctrl + Alt + L`), sin variables en desuso ni advertencias del compilador.
+
+#### 3. Ensamblaje del Reto 1 Completo del Proyecto Propio
+Cada estudiante finaliza su código fuente en `pr/src/Reto1Completo.java` siguiendo la plantilla de calidad corporativa de AzaharTech:
+
+```java
+/**
+ * Proyecto: [Nombre del Proyecto Elegido de la Bolsa de Proyectos]
+ * Consultora: AzaharTech
+ * Módulo: Programación (PR) - Sprint 1 (RA1)
+ * 
+ * Descripción: Programa secuencial integral que captura datos de entrada,
+ * realiza cálculos matemáticos de precisión y emite un informe formateado.
+ * 
+ * @author [Tu Nombre y Apellidos]
+ * @version 1.0 (Octubre 2026)
+ */
+import java.util.Scanner;
+
+public class Reto1Completo {
+    public static void main(String[] args) {
+        // 1. CONSTANTES DEL SISTEMA (Inmutables)
+        final String NOMBRE_ENTIDAD = "AzaharTech Software";
+        final double TASA_RECARGO = 0.15;
+        final int UNIDADES_BASE = 100;
+        
+        // 2. DECLARACIÓN DE VARIABLES
+        Scanner teclado = new Scanner(System.in);
+        String identificadorCliente;
+        int cantidadSolicitada;
+        double costeUnitario;
+        
+        // 3. ENTRADA DE DATOS
+        System.out.println("=================================================");
+        System.out.println("   " + NOMBRE_ENTIDAD + " - SISTEMA DE GESTION   ");
+        System.out.println("=================================================");
+        System.out.print("Introduce el identificador del cliente: ");
+        identificadorCliente = teclado.nextLine();
+        
+        System.out.print("Introduce la cantidad de unidades: ");
+        cantidadSolicitada = teclado.nextInt();
+        
+        System.out.print("Introduce el coste base por unidad: ");
+        costeUnitario = teclado.nextDouble();
+        
+        // 4. PROCESAMIENTO Y CÁLCULOS SECUENCIALES
+        double subtotal = cantidadSolicitada * costeUnitario;
+        double recargoCalculado = subtotal * TASA_RECARGO;
+        double costeTotal = subtotal + recargoCalculado;
+        
+        // Uso de división entera y módulo para empaquetado
+        int paquetesCompletos = cantidadSolicitada / UNIDADES_BASE;
+        int unidadesSueltas = cantidadSolicitada % UNIDADES_BASE;
+        
+        // 5. SALIDA DE INFORMACIÓN FORMATEADA (printf)
+        System.out.println("\n-------------------------------------------------");
+        System.out.printf("CLIENTE ID:       %-20s%n", identificadorCliente);
+        System.out.printf("PAQUETES (x%d):    %03d completos%n", UNIDADES_BASE, paquetesCompletos);
+        System.out.printf("SOBRANTES:        %d unidades sueltas%n", unidadesSueltas);
+        System.out.printf("SUBTOTAL:         %10.2f EUR%n", subtotal);
+        System.out.printf("RECARGO (%.0f%%):    %10.2f EUR%n", (TASA_RECARGO * 100), recargoCalculado);
+        System.out.println("-------------------------------------------------");
+        System.out.printf("TOTAL OPERACIÓN:  %10.2f EUR%n", costeTotal);
+        System.out.println("=================================================");
+        
+        teclado.close();
+    }
+}
+```
+
+#### 4. Cierre formal del Sprint 1 en Git
+El estudiante comprueba que el pseudocódigo equivalente está en `pr/pseudocodigo/reto1_completo.psc`, ejecuta el programa en IntelliJ para verificar la salida limpia y sella la entrega en GitHub:
+
+```bash
+git add pr/
+git commit -m "feat(pr): ensamblar programa secuencial completo y cerrar reto 1 del sprint 1"
+git push
+```
+
+---
+
+### Resumen del Cumplimiento del RA1 en las 24 horas del Sprint 1
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                 BALANCE FINAL DEL RA1 EN EL SPRINT 1 (PR)                   │
+├──────────────┬────────────────────────────────────────┬─────────────────────┤
+│ Sesiones     │ Contenidos y Competencias RA1          │ Criterios Cubiertos │
+├──────────────┼────────────────────────────────────────┼─────────────────────┤
+│ Días 1 a 4   │ Estructura de programas, variables,    │ CE 1.a, 1.b, 1.c,   │
+│ (Semana 1)   │ tipos primitivos y entrada/salida.     │ CE 1.d, CE 1.e      │
+├──────────────┼────────────────────────────────────────┼─────────────────────┤
+│ Días 5 a 8   │ Operadores aritméticos, asignación     │ CE 1.g, CE 1.h,     │
+│ (Semana 2)   │ compuesta, módulo (%) y casting.       │ CE 1.d, CE 1.e      │
+├──────────────┼────────────────────────────────────────┼─────────────────────┤
+│ Días 9 a 12  │ Constantes (final), literales, escapes,│ CE 1.f, CE 1.i,     │
+│ (Semana 3)   │ salida con printf y entrega completa.  │ CE 1.a, CE 1.b      │
+└──────────────┴────────────────────────────────────────┴─────────────────────┘
+```
