@@ -1,1488 +1,607 @@
-MÓDULO PROFESIONAL: PROGRAMACIÓN (PR)
-
-SPRINT 1. Algorítmica y fundamentos de programación (3 semanas | 24 horas)
-
-SEMANA 1: FUNDAMENTOS, ESTRUCTURA DEL PROGRAMA Y VARIABLES (8 HORAS)
-
-DÍA 1 (Lunes, 14 de septiembre de 2026 — 2 horas lectivas)
-
-Bloque: Pensamiento computacional, estructura del programa en Java y variables numéricas primitivas (int, double)
-
-- Distribución horaria: 45 minutos de teoría conceptual + 45 minutos de
-  andamiaje guiado (PSeInt \rightarrow Java) + 30 minutos de laboratorio
-  individual.
-- Criterios de Evaluación vinculados: RA1.a, RA1.b, RA1.c, RA1.d, RA1.e.
-
-1. Caso práctico narrativo: El arranque en AzaharTech
-
-Son las once de la mañana en la sede de AzaharTech en Castellón de la Plana.
-Tras haber configurado el entorno de desarrollo en la sesión matinal de Entornos
-de Desarrollo, la célula de trabajo se traslada al aula técnica de Programación.
-
-Laia Claramunt, supervisora del proyecto, reúne a Alba Torres, a Pau Ferrer y al
-nuevo desarrollador junior (el estudiante). En la pizarra no hay código Java
-todavía; Laia ha dibujado un esquema elemental compuesto por tres bloques
-consecutivos: Entrada \rightarrow Proceso \rightarrow Salida.
-
-«En Entornos de Desarrollo habéis aprendido qué es un entorno integrado y cómo
-crear un repositorio en GitHub. Ahora empieza la ingeniería pura: aprender a dar
-órdenes precisas a una máquina para que resuelva problemas.
-
-Un ordenador es un procesador de una rapidez abrumadora, pero carece por
-completo de criterio o sentido común: solo ejecuta secuencias estrictas de
-instrucciones sobre datos almacenados en la memoria RAM.
-
-Para el sistema de control de asistencia del IES El Caminàs (nuestro caso guía),
-el primer paso no es dibujar una interfaz bonita, sino almacenar los primeros
-datos en memoria: el número de aula asignada y la temperatura del sensor térmico
-del vestíbulo. Hoy comprenderemos qué ocurre en la memoria del ordenador cuando
-declaramos una variable y escribiremos nuestro primer programa interactivo en
-Java».
-
-2. Fundamento teórico: Estructura del programa y variables en memoria
-
-A. El modelo Entrada-Procesamiento-Salida (IPO) y el Pensamiento Computacional
-
-Todo programa informático, desde un script de diez líneas hasta un sistema
-bancario internacional, responde al modelo universal de procesamiento de
-información:
-
-1.  Entrada (Input): Captura de datos brutos del exterior (teclado, sensores,
-    archivos, red).
-2.  Procesamiento (Processing): Manipulación de esos datos mediante operaciones
-    aritméticas y lógicas sobre variables residentes en la memoria RAM.
-3.  Salida (Output): Emisión de los resultados procesados hacia un soporte
-    perceptible por el usuario (pantalla, consola, impresora) o hacia otro
-    sistema.
-
-[ ENTRADA ]               [ PROCESAMIENTO ]                 [ SALIDA ]
-• Teclado     ──►  RAM: [ aula = 104 ]              ──►   Consola:
-• Sensor           RAM: [ temp = 21.5 ]                   "Aula: 104 | Temp: 21.5 C"
-CPU: (Cálculos / Asignaciones)
-
-B. La anatomía de un archivo fuente en Java
-
-Java es un lenguaje fuertemente tipado y estrictamente orientado a objetos. Esto
-impone una estructura jerárquica obligatoria:
-
-// 1. Declaración de la clase (debe llamarse exactamente igual que el archivo en disco)
-public class Dia1VariablesNumericas {
-
-    // 2. Método principal: punto de entrada donde comienza a ejecutarse el programa
-    public static void main(String[] args) {
-        
-        // 3. Bloque de instrucciones secuenciales delimitado por llaves { ... }
-        
-    } // Fin del método main
-
-} // Fin de la clase
-
-- public class NombreClase: Define una unidad de código. El nombre debe
-  comenzar en mayúscula y seguir la convención PascalCase (ej.
-  RegistroAcceso).
-- public static void main(String[] args): Es el método que busca la Máquina
-  Virtual de Java (JVM) al arrancar. Sin él, la clase no es ejecutable de
-  forma autónoma.
-- Sentencias: Cada orden individual en Java debe terminar obligatoriamente con
-  un punto y coma (;). Omitirlo provocará un error de compilación inmediato.
-
-C. ¿Qué es una variable y qué sucede en la memoria RAM?
-
-Una variable es un contenedor con nombre que reserva un bloque de bytes
-contiguos en la memoria RAM del ordenador para guardar un dato mutable durante
-la ejecución del programa.
-
-Declarar una variable implica indicarle al compilador dos parámetros
-indispensables:
-
-1.  Identificador (Nombre): Nombre unívoco para referenciar la posición de
-    memoria. Sigue la convención camelCase (ej. temperaturaVestibulo).
-2.  Tipo de dato: Determina qué clase de información puede albergar y cuántos
-    bytes ocupará exactamente en memoria.
-
-D. Tipos primitivos numéricos: int y double
-
-En este primer hito del RA1 nos centramos en los dos tipos de datos numéricos
-universales del lenguaje:
-
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                        TIPOS NUMÉRICOS BÁSICOS EN JAVA                                 │
-├──────────────┬──────────────┬────────────────────────┬─────────────────────────────────┤
-│ Tipo         │ Espacio RAM  │ Rango de valores       │ Caso de uso representativo      │
-├──────────────┼──────────────┼────────────────────────┼─────────────────────────────────┤
-│ int          │ 32 bits      │ -2.147.483.648         │ Números de aula, contadores de  │
-│ (Entero)     │ (4 bytes)    │ a +2.147.483.647       │ alumnos, identificadores ID.    │
-├──────────────┼──────────────┼────────────────────────┼─────────────────────────────────┤
-│ double       │ 64 bits      │ Aprox. ±1.7 x 10^308   │ Lecturas térmicas, precios,     │
-│ (Real/Coma)  │ (8 bytes)    │ (15 dígitos decimales) │ porcentajes, medias y ratios.   │
-└──────────────┴──────────────┴────────────────────────┴─────────────────────────────────┘
-
-E. La clase Scanner para lectura interactiva
-
-Para capturar datos del teclado en la consola de texto, Java proporciona la
-clase de utilidad java.util.Scanner, que debe importarse al inicio del archivo:
-
-- Scanner teclado = new Scanner(System.in);: Crea el canal de escucha
-  conectado a la entrada estándar (System.in).
-- int valorEntero = teclado.nextInt();: Lee el siguiente número entero
-  tecleado.
-- double valorReal = teclado.nextDouble();: Lee el siguiente número decimal.
-- Nota sobre configuración regional: En sistemas operativos configurados en
-  castellano/valenciano, Scanner.nextDouble() espera que los decimales se
-  introduzcan mediante una coma (,), no un punto.
-
-3. Andamiaje didáctico paso a paso: PSeInt \rightarrow Java
-
-Siguiendo el principio de andamiaje, modelamos el problema del aula y la
-temperatura primero en pseudocódigo y lo traducimos inmediatamente a Java.
-
-Paso 1. Diseño algorítmico en PSeInt (pr/pseudocodigo/dia1_variables_numericas.psc)
-
-Algoritmo Dia1VariablesNumericas
-// 1. Declaración explícita de tipos de datos en memoria
-Definir aula Como Entero
-Definir temperaturaVestibulo Como Real
-
-    // 2. Entrada de datos por teclado
-    Escribir "=== AZAHARTECH: TERMINAL IES EL CAMINAS ==="
-    Escribir "Introduce el numero de aula asignada:"
-    Leer aula
-    
-    Escribir "Introduce la temperatura actual del vestibulo (grados):"
-    Leer temperaturaVestibulo
-    
-    // 3. Salida de datos procesados
-    Escribir "--- REGISTRO DE CONFIGURACION ---"
-    Escribir "Aula configurada: ", aula
-    Escribir "Sensor termico: ", temperaturaVestibulo, " C"
-FinAlgoritmo
-
-Paso 2. Traducción inmediata a Java en IntelliJ IDEA (pr/src/Dia1VariablesNumericas.java)
-
-/**
-* Módulo: Programación (PR) - Sprint 1 (RA1)
-* Unidad: Introducción a la programación y variables
-*
-* Caso Guía: Registro de parámetros numéricos del IES El Caminàs.
-* @author AzaharTech Consulting
-  */
-  import java.util.Scanner; // Importación de la librería para lectura de teclado
-
-public class Dia1VariablesNumericas {
-public static void main(String[] args) {
-// Inicialización del lector de entrada estándar
-Scanner teclado = new Scanner(System.in);
-
-        // 1. Declaración de variables en memoria
-        int aula;
-        double temperaturaVestibulo;
-        
-        // 2. Entrada de datos interactiva
-        System.out.println("=== AZAHARTECH: TERMINAL IES EL CAMINAS ===");
-        System.out.print("Introduce el numero de aula asignada: ");
-        aula = teclado.nextInt(); // Lee un número entero
-        
-        System.out.print("Introduce la temperatura actual del vestibulo (grados): ");
-        temperaturaVestibulo = teclado.nextDouble(); // Lee un número real
-        
-        // 3. Salida de información por consola
-        System.out.println("--- REGISTRO DE CONFIGURACION ---");
-        System.out.println("Aula configurada: " + aula);
-        System.out.println("Sensor termico: " + temperaturaVestibulo + " C");
-        
-        // Cierre preventivo del recurso de entrada
-        teclado.close();
-    }
-}
-
-4. Laboratorio práctico: Aplicación a tu proyecto propio
-
-Objetivo de la sesión
-
-Identificar, diseñar y programar la captura de dos variables numéricas
-esenciales (una de tipo entero int y otra de tipo decimal double)
-correspondientes al proyecto que tu equipo seleccionó de la bolsa de proyectos
-(por ejemplo: capacidad de almacén y coste unitario; aforo de sala y tarifa por
-minuto; stock de entradas y peso en kilogramos).
-
-Instrucciones paso a paso
-
-1.  Abre tu proyecto en IntelliJ IDEA y sitúate en tu carpeta personal:
-    azahartech/nombreEquipo/nombreEstudiante/pr/.
-2.  En la subcarpeta pr/pseudocodigo/, crea el archivo dia1_proyecto_propio.psc.
-3.  Escribe el algoritmo en PSeInt declarando tus dos variables numéricas,
-    capturándolas con Leer y mostrándolas con Escribir. Ejecútalo y comprueba su
-    funcionamiento.
-4.  En la subcarpeta pr/src/, crea la clase Java Dia1ProyectoPropio.java.
-5.  Traduce fielmente tu algoritmo PSeInt a código Java utilizando Scanner y
-    System.out.println().
-6.  Compila y ejecuta el programa pulsando Ctrl + Shift + F10. Introduce datos
-    de prueba en la consola y verifica que la salida coincide con lo esperado.
-
-DÍA 2 (Martes, 15 de septiembre de 2026 — 2 horas lectivas)
-
-Bloque: Tipos de datos alfanuméricos (char, String), valores lógicos (boolean) y gestión de memoria
-
-- Distribución horaria: 45 minutos de teoría conceptual + 45 minutos de
-  andamiaje guiado (PSeInt \rightarrow Java) + 30 minutos de laboratorio
-  individual.
-- Criterios de Evaluación vinculados: RA1.a, RA1.d, RA1.e.
-
-1. Caso práctico narrativo: La identidad del usuario en AzaharTech
-
-Es martes por la mañana en la sala de desarrollo. Pau Ferrer ejecuta el programa
-creado el día anterior. Muestra con orgullo cómo el sistema almacena el aula 104
-y la temperatura 21.5.
-
-Alba Torres observa la pantalla y plantea una objeción inmediata:
-
-«Pau, los números nos dan contexto físico, pero no nos dicen quién está cruzando
-la puerta. El sistema de acceso del IES El Caminàs necesita registrar el nombre
-del alumno, la letra de su grupo y comprobar si su matrícula está activa o dada
-de baja.
-
-Un sistema informático real debe ser capaz de procesar letras individuales,
-textos complejos y estados de verdadero o falso. Hoy completaremos la paleta
-básica de tipos primitivos incorporando caracteres (char), cadenas (String) y
-valores lógicos (boolean)».
-
-2. Fundamento teórico: Caracteres, Cadenas y Boleanos
-
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                        TIPOS ALFANUMÉRICOS Y LÓGICOS EN JAVA                           │
-├──────────────┬──────────────┬────────────────────────┬─────────────────────────────────┤
-│ Tipo         │ Espacio RAM  │ Representación         │ Caso de uso representativo      │
-├──────────────┼──────────────┼────────────────────────┼─────────────────────────────────┤
-│ char         │ 16 bits      │ Comillas simples: 'A'  │ Letra de grupo ('A', 'B'), letra│
-│ (Carácter)   │ (2 bytes)    │ Código Unicode literal │ de DNI ('Z'), opción de menú.   │
-├──────────────┼──────────────┼────────────────────────┼─────────────────────────────────┤
-│ String       │ Referencia   │ Comillas dobles:       │ Nombre del estudiante, DNI,     │
-│ (Cadena)     │ (Variable)   │ "Juan García Pérez"    │ dirección, token de seguridad.  │
-├──────────────┼──────────────┼────────────────────────┼─────────────────────────────────┤
-│ boolean      │ 1 bit        │ Literales:             │ Matrícula activa (true/false),  │
-│ (Lógico)     │ (lógico)     │ true o false           │ torno bloqueado, acceso VIP.    │
-└──────────────┴──────────────┴────────────────────────┴─────────────────────────────────┘
-
-A. El tipo primitivo char (Carácter único)
-
-- Almacena exactamente un único símbolo (letra, dígito, signo de puntuación o
-  espacio).
-- En Java se codifica internamente bajo el estándar Unicode UTF-16 (ocupa 2
-  bytes), lo que le permite almacenar caracteres de cualquier alfabeto del
-  mundo (incluyendo eñes, acentos o caracteres griegos).
-- Regla sintáctica estricta: Se escribe siempre entre comillas simples (' ').
-  Escribir 'AB' provocará un error de compilación (demasiados caracteres) y
-  escribir "A" provocará un error de incompatibilidad de tipos (las comillas
-  dobles representan un objeto String).
-
-B. La clase String (Secuencias de texto)
-
-- Aunque a efectos prácticos se utiliza como un tipo de dato, String es una
-  clase que gestiona un array inmutable de caracteres en memoria.
-- Se inicializa mediante literales entre comillas dobles: String nombre =
-  "Laura Vidal";.
-- Permite almacenar textos de cualquier longitud, desde una cadena vacía ("")
-  hasta párrafos enteros.
-
-C. El tipo primitivo boolean (Valores lógicos)
-
-- Recibe su nombre en honor al matemático George Boole, padre del álgebra
-  booleana.
-- Una variable boolean solo admite dos valores literales reservados en
-  minúscula: true (verdadero) o false (falso).
-- Es la base sobre la que descansan todos los estados de un sistema
-  informático (ej. ¿está la puerta abierta? ¿el alumno tiene autorización?).
-
-D. La trampa del buffer de teclado en Java: Mezclar números y cadenas con Scanner
-
-Cuando capturas un número con teclado.nextInt() o teclado.nextDouble() y a
-continuación intentas leer un texto completo con teclado.nextLine(), ocurre un
-fenómeno clásico de frustración: el programa parece saltarse la lectura del
-texto sin dejarte escribir.
-
-- Por qué ocurre: Cuando tecleas 104 y pulsas la tecla Enter, en el buffer de
-  entrada del sistema quedan grabados los caracteres '1', '0', '4' y el salto
-  de línea generado por la tecla Enter (\n). El método nextInt() consume el
-  104, pero deja el \n flotando en el buffer. Cuando invocas a nextLine(),
-  este método lee inmediatamente ese \n residual y cree que el usuario ha
-  introducido una línea vacía.
-- La solución profesional de AzaharTech: Cada vez que leas un número
-  (nextInt() o nextDouble()) y la siguiente instrucción sea leer texto
-  (nextLine()), debes ejecutar una llamada de limpieza previa:
-  int aula = teclado.nextInt();
-  teclado.nextLine(); // Instrucción de limpieza: consume el salto de línea residual
-  String nombre = teclado.nextLine(); // Ahora sí espera a que el usuario escriba
-
-3. Andamiaje didáctico paso a paso: PSeInt \rightarrow Java
-
-Modelamos el registro de identidad del alumno en PSeInt y lo trasladamos a Java
-resolviendo la gestión de buffer y tipos mixtos.
-
-Paso 1. Diseño algorítmico en PSeInt (pr/pseudocodigo/dia2_alfanumericos.psc)
-
-Algoritmo Dia2Alfanumericos
-// 1. Declaración de variables alfanuméricas y lógicas
-Definir nombreEstudiante Como Cadena
-Definir dni Como Cadena
-Definir letraGrupo Como Caracter
-Definir matriculaActiva Como Logico
-
-    // 2. Entrada de datos
-    Escribir "=== REGISTRO DE IDENTIDAD: IES EL CAMINAS ==="
-    Escribir "Introduce el nombre completo del estudiante:"
-    Leer nombreEstudiante
-    
-    Escribir "Introduce el DNI del estudiante:"
-    Leer dni
-    
-    Escribir "Introduce la letra del grupo asignado (A, B, C):"
-    Leer letraGrupo
-    
-    // Asignación de estado lógico
-    matriculaActiva <- Verdadero
-    
-    // 3. Salida de datos formateada
-    Escribir "---------------------------------------------"
-    Escribir "FICHA CREADA CON EXITO:"
-    Escribir "Estudiante: ", nombreEstudiante
-    Escribir "DNI:        ", dni
-    Escribir "Grupo:      ", letraGrupo
-    Escribir "Activo:     ", matriculaActiva
-FinAlgoritmo
-
-Paso 2. Traducción inmediata a Java en IntelliJ IDEA (pr/src/Dia2Alfanumericos.java)
-
-/**
-* Módulo: Programación (PR) - Sprint 1 (RA1)
-* Caso Guía: Captura de tipos alfanuméricos y estados lógicos.
-* @author AzaharTech Consulting
-  */
-  import java.util.Scanner;
-
-public class Dia2Alfanumericos {
-public static void main(String[] args) {
-Scanner teclado = new Scanner(System.in);
-
-        // 1. Declaración de variables
-        String nombreEstudiante;
-        String dni;
-        char letraGrupo;
-        boolean matriculaActiva;
-        
-        // 2. Entrada de datos interactiva
-        System.out.println("=== REGISTRO DE IDENTIDAD: IES EL CAMINAS ===");
-        System.out.print("Introduce el nombre completo del estudiante: ");
-        nombreEstudiante = teclado.nextLine(); // Lee texto con espacios
-        
-        System.out.print("Introduce el DNI del estudiante: ");
-        dni = teclado.nextLine();
-        
-        System.out.print("Introduce la letra del grupo asignado (A, B, C): ");
-        // Capturamos el texto y extraemos el primer carácter con charAt(0)
-        letraGrupo = teclado.next().charAt(0);
-        
-        // Asignación directa de un literal booleano
-        matriculaActiva = true;
-        
-        // 3. Salida de datos por consola
-        System.out.println("---------------------------------------------");
-        System.out.println("FICHA CREADA CON EXITO:");
-        System.out.println("Estudiante: " + nombreEstudiante);
-        System.out.println("DNI:        " + dni);
-        System.out.println("Grupo:      " + letraGrupo);
-        System.out.println("Activo:     " + matriculaActiva);
-        
-        teclado.close();
-    }
-}
-
-4. Laboratorio práctico: Aplicación a tu proyecto propio
-
-Objetivo de la sesión
-
-Incorporar a tu proyecto propio de la bolsa de proyectos la gestión de
-identidades y estados, declarando al menos una variable String (nombre,
-descripción o identificador), una variable char (código de categoría, zona o
-letra) y una variable boolean (estado de disponibilidad, validación o
-activación).
-
-Instrucciones paso a paso
-
-1.  Crea el archivo pr/pseudocodigo/dia2_proyecto_propio.psc.
-2.  Define las variables alfanuméricas y lógicas adaptadas a tu sistema.
-3.  Solicita la entrada interactiva de los datos por consola y muestra un
-    resumen ordenado.
-4.  Crea la clase Java pr/src/Dia2ProyectoPropio.java en IntelliJ.
-5.  Traduce el algoritmo gestionando correctamente la captura de cadenas
-    (nextLine()) y caracteres individuales (next().charAt(0)).
-6.  Ejecuta el programa, introduce nombres compuestos con espacios y comprueba
-    que no se produce el error de salto de buffer.
-
-DÍA 3 (Miércoles, 16 de septiembre de 2026 — 2 horas lectivas)
-
-Bloque: Operadores aritméticos elementales (+, -, *), sobrecarga del operador de concatenación y precedencia básica
-
-- Distribución horaria: 45 minutos de teoría conceptual + 45 minutos de
-  andamiaje guiado (PSeInt \rightarrow Java) + 30 minutos de laboratorio
-  individual.
-- Criterios de Evaluación vinculados: RA1.a, RA1.d, RA1.e, RA1.g.
-
-1. Caso práctico narrativo: El fallo de la suma de tiempos en AzaharTech
-
-Es miércoles a mediodía. En la terminal del laboratorio de AzaharTech, Pau
-Ferrer muestra una línea de código que ha escrito para calcular el tiempo
-acumulado de dos estudiantes que han llegado juntos al vestíbulo:
-
-int tiempoPrimero = 5;
-int tiempoSegundo = 3;
-System.out.println("Tiempo total registrado: " + tiempoPrimero + tiempoSegundo + " minutos.");
-
-Pau ejecuta el programa y la consola imprime:
-
-Tiempo total registrado: 53 minutos.
-
-Alba Torres suelta una carcajada cómplice:
-
-«Pau, acabas de registrar que dos alumnos que han tardado cinco y tres minutos
-han sumado ¡cincuenta y tres minutos de retraso!
-
-En Java, el símbolo más (+) es un operador sobrecargado: si lo pones entre dos
-números, suma; pero si lo pones a la derecha de una cadena de texto, convierte
-todo lo que tiene a su derecha en texto y lo concatena de izquierda a derecha.
-
-Hoy aprenderemos a dominar los operadores aritméticos elementales, a gobernar la
-evaluación secuencial de expresiones y a utilizar los paréntesis () para forzar
-a Java a sumar antes de concatenar».
-
-2. Fundamento teórico: Aritmética básica y concatenación
-
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                        EL COMPORTAMIENTO DUAL DEL OPERADOR '+'                         │
-├───────────────────────────────────┬────────────────────────────────────────────────────┤
-│ Expresión evaluada                │ Resultado y justificación                          │
-├───────────────────────────────────┼────────────────────────────────────────────────────┤
-│ 5 + 3                             │ 8 (Operación aritmética entre enteros).            │
-├───────────────────────────────────┼────────────────────────────────────────────────────┤
-│ "Total: " + 5 + 3                 │ "Total: 53" (Concatenación de izquierda a derecha).│
-├───────────────────────────────────┼────────────────────────────────────────────────────┤
-│ "Total: " + (5 + 3)               │ "Total: 8" (Los paréntesis fuerzan la suma previa).│
-├───────────────────────────────────┼────────────────────────────────────────────────────┤
-│ 5 + 3 + " minutos"                │ "8 minutos" (Suma 5+3=8 y luego concatena texto).  │
-└───────────────────────────────────┴────────────────────────────────────────────────────┘
-
-A. Operadores aritméticos binarios elementales
-
-- Suma (+): Adición de dos operandos numéricos.
-- Resta (-): Sustracción del operando derecho al izquierdo. También opera como
-  operador unario de cambio de signo (ej. -valor).
-- Multiplicación (*): Producto de dos cantidades numéricas.
-
-B. Reglas de precedencia en expresiones combinadas
-
-Java evalúa las expresiones de izquierda a derecha, pero respetando la jerarquía
-matemática universal:
-
-1.  Las operaciones encerradas entre paréntesis () se evalúan siempre en primer
-    lugar.
-2.  La multiplicación (*) tiene prioridad absoluta sobre la suma (+) y la resta
-    (-).
-3.  Si aparecen operadores del mismo nivel, se evalúan en orden estricto de
-    izquierda a derecha.
-
-Ejemplo de análisis de precedencia:
-
-int resultado = 10 + 2 * 5;     // Multiplica 2*5=10 y luego suma 10 -> Resultado: 20
-int resultado2 = (10 + 2) * 5;   // Suma (10+2)=12 y luego multiplica por 5 -> Resultado: 60
-
-C. La semántica de la asignación (=)
-
-El operador = no significa «igualdad matemática» (para la igualdad se usará ==
-en el Sprint 3), sino asignación destructiva de valor:
-
-totalAccesos = totalAccesos + 1;
-
-1.  La CPU calcula primero el resultado de la expresión situada a la derecha del
-    =: toma el valor actual de totalAccesos y le suma 1.
-2.  Una vez calculado el nuevo valor, lo deposita en la posición de memoria
-    indicada a la izquierda del =, sobrescribiendo el valor previo.
-
-3. Andamiaje didáctico paso a paso: PSeInt \rightarrow Java
-
-Modelamos el cálculo de accesos parciales del IES El Caminàs, sumando los
-registros matutinos y vespertinos y emitiendo una notificación unificada.
-
-Paso 1. Diseño algorítmico en PSeInt (pr/pseudocodigo/dia3_concatenacion.psc)
-
-Algoritmo Dia3Concatenacion
-// 1. Declaración de variables
-Definir dni Como Cadena
-Definir accesosManana Como Entero
-Definir accesosTarde Como Entero
-Definir totalAccesosDiarios Como Entero
-Definir minutosEstanciaBase Como Entero
-Definir minutosTotalesConsumidos Como Entero
-
-    // 2. Entrada de datos
-    Escribir "=== CONTROL HORARIO: IES EL CAMINAS ==="
-    Escribir "Introduce el DNI del usuario:"
-    Leer dni
-    
-    Escribir "Introduce accesos registrados en turno de manana:"
-    Leer accesosManana
-    
-    Escribir "Introduce accesos registrados en turno de tarde:"
-    Leer accesosTarde
-    
-    minutosEstanciaBase <- 50 // Cada sesión lectiva computa 50 minutos
-    
-    // 3. Procesamiento aritmético secuencial
-    totalAccesosDiarios <- accesosManana + accesosTarde
-    minutosTotalesConsumidos <- totalAccesosDiarios * minutosEstanciaBase
-    
-    // 4. Salida con concatenación estructurada
-    Escribir "---------------------------------------"
-    Escribir "RESUMEN DE ASISTENCIA DIARIA:"
-    Escribir "DNI: " + dni
-    Escribir "Total de entradas registradas: " + ConvertirATexto(totalAccesosDiarios)
-    Escribir "Tiempo lectivo computado: " + ConvertirATexto(minutosTotalesConsumidos) + " minutos."
-FinAlgoritmo
-
-Paso 2. Traducción inmediata a Java en IntelliJ IDEA (pr/src/Dia3Concatenacion.java)
-
-/**
-* Módulo: Programación (PR) - Sprint 1 (RA1)
-* Caso Guía: Operadores aritméticos y concatenación segura de mensajes.
-* @author AzaharTech Consulting
-  */
-  import java.util.Scanner;
-
-public class Dia3Concatenacion {
-public static void main(String[] args) {
-Scanner teclado = new Scanner(System.in);
-
-        // 1. Declaración de variables
-        String dni;
-        int accesosManana;
-        int accesosTarde;
-        int totalAccesosDiarios;
-        int minutosEstanciaBase = 50; // Constante conceptual de sesión
-        int minutosTotalesConsumidos;
-        
-        // 2. Entrada de datos
-        System.out.println("=== CONTROL HORARIO: IES EL CAMINAS ===");
-        System.out.print("Introduce el DNI del usuario: ");
-        dni = teclado.nextLine();
-        
-        System.out.print("Introduce accesos en turno de manana: ");
-        accesosManana = teclado.nextInt();
-        
-        System.out.print("Introduce accesos en turno de tarde: ");
-        accesosTarde = teclado.nextInt();
-        
-        // 3. Procesamiento aritmético secuencial
-        totalAccesosDiarios = accesosManana + accesosTarde;
-        minutosTotalesConsumidos = totalAccesosDiarios * minutosEstanciaBase;
-        
-        // 4. Salida concatenada (utilizando paréntesis protectores)
-        System.out.println("---------------------------------------");
-        System.out.println("RESUMEN DE ASISTENCIA DIARIA:");
-        System.out.println("DNI: " + dni);
-        System.out.println("Total entradas: " + (accesosManana + accesosTarde)); // Forzamos suma previa
-        System.out.println("Total computado: " + minutosTotalesConsumidos + " minutos lectivos.");
-        
-        teclado.close();
-    }
-}
-
-4. Laboratorio práctico: Aplicación a tu proyecto propio
-
-Objetivo de la sesión
-
-Implementar en tu proyecto propio un módulo de cálculo que solicite al usuario
-dos datos numéricos, realice una suma o multiplicación secuencial protegida
-mediante paréntesis y emita un informe descriptivo uniendo texto explicativo y
-variables.
-
-Instrucciones paso a paso
-
-1.  Crea el archivo pr/pseudocodigo/dia3_proyecto_propio.psc.
-2.  Define los datos de entrada adaptados a tu contexto de negocio.
-3.  Implementa al menos una suma y una multiplicación sobre las variables
-    numéricas.
-4.  Crea la clase Java pr/src/Dia3ProyectoPropio.java.
-5.  Traduce el algoritmo a Java asegurando que ninguna concatenación altere los
-    resultados matemáticos.
-6.  Realiza una prueba introduciendo valores altos para comprobar que el cálculo
-    no desborda el tipo int.
-
-DÍA 4 (Jueves, 17 de septiembre de 2026 — 2 horas lectivas)
-
-Bloque: Laboratorio de integración: Reto 1 (Paso 1: Variables y Captura de Datos) del proyecto propio
-
-- Distribución horaria: 30 minutos de modelado de calidad + 90 minutos de
-  codificación autónoma tutelada.
-- Criterios de Evaluación vinculados: RA1.a, RA1.b, RA1.c, RA1.d, RA1.e,
-  RA1.i.
-
-1. Caso práctico narrativo: El primer hito de entrega de la célula
-
-Es jueves por la mañana. Con esta sesión concluye la primera semana de
-programación del curso. Laia Claramunt convoca a los desarrolladores frente al
-proyector:
-
-«Durante los últimos tres días hemos sentado las bases del lenguaje: sabemos qué
-es una clase, cómo declarar variables de distintos tipos en la memoria RAM, cómo
-evitar los fallos del buffer de entrada con Scanner y cómo realizar cálculos
-aritméticos básicos.
-
-Hoy cerramos la primera semana con una entrega técnica formal. Cada uno de
-vosotros debe programar y verificar el primer componente secuencial de su
-proyecto de la bolsa de proyectos: el módulo que define la estructura
-corporativa, solicita los datos de entrada al usuario, realiza una primera
-operación y emite la respuesta formateada.
-
-Al sonar el timbre de las dos horas, el código fuente debe estar compilado,
-probado en IntelliJ y publicado en GitHub bajo la carpeta oficial pr/».
-
-2. Estándares de calidad y rúbrica técnica exigida
-
-Para que el programa del Reto 1 (Paso 1) se considere aceptado por AzaharTech,
-debe cumplir estrictamente los siguientes cuatro requisitos de ingeniería:
-
-1.  Nomenclatura limpia: Nombre de clase en PascalCase (Reto1Variables),
-    variables en camelCase autoexplicativas (tarifaBase, cantidadUnidades), sin
-    abreviaturas incomprensibles como x, a1 o temp.
-2.  Higiene de código: Indentación uniforme de 4 espacios en cada bloque
-    (utilizar el atajo de IntelliJ Ctrl + Alt + L para autoformatear antes de
-    entregar).
-3.  Gestión de recursos: Declaración y cierre del objeto Scanner al finalizar la
-    lectura (teclado.close()).
-4.  Comentarios de cabecera: Presencia de un bloque de documentación inicial con
-    el nombre del desarrollador, proyecto, fecha y descripción funcional.
-
-3. Taller de integración guiada: Plantilla del Reto 1 (Paso 1)
-
-Cada estudiante traslada a su proyecto el siguiente esquema estructurado de
-desarrollo:
-
-Paso 1. Algoritmo secuencial en PSeInt (pr/pseudocodigo/reto1_variables.psc)
-
-Algoritmo Reto1Variables
-// 1. Declaración formal de tipos
-Definir identificadorProyecto Como Cadena
-Definir nombreCliente Como Cadena
-Definir unidadesRegistradas Como Entero
-Definir valorUnitario Como Real
-Definir sistemaOperativo Como Logico
-Definir subtotalCalculado Como Real
-
-    // 2. Captura interactiva
-    Escribir "================================================="
-    Escribir "   AZAHARTECH - SISTEMA DE GESTION DE RETOS      "
-    Escribir "================================================="
-    Escribir "Introduce el identificador del proyecto:"
-    Leer identificadorProyecto
-    
-    Escribir "Introduce el nombre del cliente:"
-    Leer nombreCliente
-    
-    Escribir "Introduce el numero de unidades registradas:"
-    Leer unidadesRegistradas
-    
-    Escribir "Introduce el valor o tarifa unitaria:"
-    Leer valorUnitario
-    
-    sistemaOperativo <- Verdadero
-    
-    // 3. Procesamiento aritmético secuencial
-    subtotalCalculado <- unidadesRegistradas * valorUnitario
-    
-    // 4. Emisión de informe
-    Escribir "-------------------------------------------------"
-    Escribir "INFORME DE CAPTURA INICIAL:"
-    Escribir "Proyecto: " + identificadorProyecto + " | Cliente: " + nombreCliente
-    Escribir "Unidades: " + ConvertirATexto(unidadesRegistradas)
-    Escribir "Subtotal base: " + ConvertirATexto(subtotalCalculado) + " euros."
-    Escribir "Estado operativo verificado: " + ConvertirATexto(sistemaOperativo)
-    Escribir "================================================="
-FinAlgoritmo
-
-Paso 2. Implementación en Java (pr/src/Reto1Variables.java)
-
-/**
-* Proyecto: [Nombre de tu Proyecto Elegido de la Bolsa de Proyectos]
-* Módulo: Programación (PR) - Sprint 1 (RA1)
-*
-* Descripción: Módulo secuencial de captura de parámetros de entrada,
-* almacenamiento en memoria y cálculo aritmético base.
-*
-* @author [Tus Apellidos, Tu Nombre]
-* @version 1.0 (Semana 1 - Septiembre 2026)
-  */
-  import java.util.Scanner;
-
-public class Reto1Variables {
-public static void main(String[] args) {
-// Inicialización de la entrada por teclado
-Scanner teclado = new Scanner(System.in);
-
-        // 1. Declaración explícita de variables de distintos tipos
-        String identificadorProyecto;
-        String nombreCliente;
-        int unidadesRegistradas;
-        double valorUnitario;
-        boolean sistemaOperativo = true;
-        double subtotalCalculado;
-        
-        // 2. Entrada de datos interactiva
-        System.out.println("=================================================");
-        System.out.println("   AZAHARTECH - SISTEMA DE GESTIÓN DE RETOS      ");
-        System.out.println("=================================================");
-        System.out.print("Introduce el identificador del proyecto: ");
-        identificadorProyecto = teclado.nextLine();
-        
-        System.out.print("Introduce el nombre del cliente: ");
-        nombreCliente = teclado.nextLine();
-        
-        System.out.print("Introduce el número de unidades registradas: ");
-        unidadesRegistradas = teclado.nextInt();
-        
-        System.out.print("Introduce el valor o tarifa unitaria: ");
-        valorUnitario = teclado.nextDouble();
-        
-        // 3. Procesamiento aritmético secuencial
-        subtotalCalculado = unidadesRegistradas * valorUnitario;
-        
-        // 4. Salida de resultados estructurada
-        System.out.println("-------------------------------------------------");
-        System.out.println("INFORME DE CAPTURA INICIAL:");
-        System.out.println("Proyecto: " + identificadorProyecto + " | Cliente: " + nombreCliente);
-        System.out.println("Unidades: " + unidadesRegistradas);
-        System.out.println("Subtotal base: " + subtotalCalculado + " euros.");
-        System.out.println("Estado operativo verificado: " + sistemaOperativo);
-        System.out.println("=================================================");
-        
-        // Cierre preventivo del recurso
-        teclado.close();
-    }
-}
-
-4. Cierre formal en Git y verificación de la Semana 1
-
-1.  En IntelliJ IDEA, abre la terminal integrada (Alt + F12) o la pestaña Commit
-    (Ctrl + K).
-2.  Comprueba mediante git status que los dos archivos creados
-    (pr/pseudocodigo/reto1_variables.psc y pr/src/Reto1Variables.java) están
-    detectados por Git.
-3.  Añade los archivos y confirma los cambios aplicando el estándar de
-    Conventional Commits:
-    git add pr/
-    git commit -m "feat(pr): implementar captura de variables y presentacion de datos del proyecto propio"
-    git push
-4.  Accede a tu repositorio remoto en GitHub desde el navegador y verifica que
-    ambos archivos se visualizan correctamente dentro de la carpeta pr/.
-
-Balance pedagógico de la Semana 1 de Programación
-
-Al completar estas primeras cuatro sesiones (8 horas lectivas):
-
-- Has interiorizado el modelo de procesamiento Entrada \rightarrow Proceso
-  \rightarrow Salida.
-- Conoces la estructura obligatoria de una clase Java y su método main.
-- Dominas la reserva y tipado de variables en la memoria RAM con los tipos
-  primitivos int, double, char, boolean y la clase String.
-- Controlas la entrada de datos con Scanner, previniendo errores de salto de
-  buffer.
-- Aplicas los operadores aritméticos básicos y la concatenación de cadenas sin
-  distorsiones en los cálculos.
-- Cuentas en tu repositorio con la primera entrega operativa del Reto 1 de tu
-  proyecto propio, 100 % fiel a los contenidos y Criterios de Evaluación del
-  RA1.
-
 # MÓDULO PROFESIONAL: PROGRAMACIÓN (PR)
 
 ## SPRINT 1. Algorítmica y fundamentos de programación (3 semanas | 24 horas)
 
 ---
 
-# SEMANA 2: OPERADORES, EXPRESIONES Y CONVERSIONES DE TIPO (8 HORAS)
+# SEMANA 1: EL NACIMIENTO DE LA APLICACIÓN — ESTRUCTURA, VARIABLES Y TIPOS DE DATOS (8 HORAS)
+### Hilo conductor metodológico: «Código Incremental Vivo»
+A lo largo de este sprint no crearemos ejercicios sueltos. Desarrollaremos y evolucionaremos **un único archivo de pseudocódigo (`ControlAccesoQR.psc`) y una única clase Java (`ControlAccesoQR.java`)** para el caso guía del **IES El Caminàs**, mientras cada estudiante hace evolucionar de forma paralela el archivo único de **su proyecto elegido de la bolsa de proyectos**.
 
 ---
 
-## DÍA 5 (Lunes, 21 de septiembre de 2026 — 2 horas lectivas)
-### Bloque: Operadores de asignación compuesta, operadores unarios de incremento/decremento (`++`, `--`) y trazas de memoria
-* **Distribución horaria:** 45 minutos de teoría conceptual + 45 minutos de andamiaje guiado (PSeInt $\rightarrow$ Java) + 30 minutos de laboratorio individual.
-* **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.e, RA1.g.
+## DÍA 1 (Lunes, 14 de septiembre de 2026 — 2 horas lectivas)
+### Versión de la aplicación: `ControlAccesoQR v0.1` (Esqueleto y Parámetros Numéricos)
+* **Objetivo técnico:** Crear el archivo fuente maestro, comprender la estructura de una clase Java y registrar los primeros datos numéricos del terminal (`int` y `double`).
+* **Criterios de Evaluación vinculados:** RA1.a, RA1.b, RA1.c, RA1.d, RA1.e.
 
 ---
 
-### 1. Caso práctico narrativo: El contador del vestíbulo en AzaharTech
+#### 1. Caso práctico narrativo en AzaharTech
+Son las once de la mañana en la sede de **AzaharTech** en Castellón de la Plana. **Laia Claramunt** conecta su portátil al proyector principal. En pantalla aparece el entorno de desarrollo IntelliJ IDEA completamente vacío:
 
-Es lunes por la mañana en las oficinas de **AzaharTech**. En la pantalla de pruebas de la sala de desarrollo, **Pau Ferrer** tiene abierto el código de registro de acceso del **IES El Caminàs**. Ha escrito una rutina para actualizar los contadores cada vez que un alumno entra por el torno:
-
-```java
-totalAlumnos = totalAlumnos + 1;
-minutosAcumulados = minutosAcumulados + tiempoEstancia;
-totalAlumnos = totalAlumnos + 1;
-```
-
-**Alba Torres** se acerca a su mesa, observa el código y comenta con tono pedagógico:
-> *«Pau, tu lógica es correcta y la CPU la ejecutará sin rechistar, pero estás escribiendo código como si estuviéramos en los años setenta. Repetir el nombre de la variable a ambos lados de la asignación ensucia el programa, dificulta la lectura y aumenta el riesgo de erratas tipográficas.*
+> *«Equipo, comenzamos el desarrollo del sistema de acceso para el **IES El Caminàs**. No vamos a hacer pruebas desechables en archivos temporales; desde hoy abrimos el archivo oficial de la aplicación: **`ControlAccesoQR`**.*
 >
-> *En la ingeniería de software profesional utilizamos **operadores de asignación compuesta** y los **operadores de incremento y decremento (`++`, `--`)**. Nos permiten expresar exactamente la misma operación de forma compacta, elegante y optimizada a nivel de compilador.*
+> *Una aplicación profesional crece capa a capa. El equipo directivo del instituto necesita que el terminal empiece registrando los parámetros físicos del vestíbulo: el número del aula donde se ubica la pantalla y la temperatura ambiente del sensor térmico.*
 >
-> *Pero cuidado: el operador `++` es un arma de doble filo si no entiendes la diferencia crítica entre el **pre-incremento** y el **post-incremento**. Hoy aprenderemos a dominar estas instrucciones y realizaremos trazas de memoria rigurosas sobre el papel antes de tocar el teclado»*.
+> *Hoy crearemos el esqueleto del programa, aprenderemos qué ocurre en la memoria RAM al reservar variables numéricas (`int` y `double`) y capturaremos los primeros datos desde el teclado»*.
 
 ---
 
-### 2. Fundamento teórico: Asignación compuesta, incremento y evaluación secuencial
+#### 2. Fundamento teórico: Estructura del programa y variables numéricas en RAM
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                        OPERADORES DE ASIGNACIÓN COMPUESTA EN JAVA                      │
-├─────────────────────┬───────────────────────────┬──────────────────────────────────────┤
-│ Operador Abreviado  │ Expresión Equivalente     │ Significado técnico                  │
-├─────────────────────┼───────────────────────────┼──────────────────────────────────────┤
-│ x += valor;         │ x = x + valor;            │ Suma 'valor' al contenido actual de x│
-├─────────────────────┼───────────────────────────┼──────────────────────────────────────┤
-│ x -= valor;         │ x = x - valor;            │ Resta 'valor' al contenido actual x  │
-├─────────────────────┼───────────────────────────┼──────────────────────────────────────┤
-│ x *= valor;         │ x = x * valor;            │ Multiplica x por 'valor'             │
-├─────────────────────┼───────────────────────────┼──────────────────────────────────────┤
-│ x /= valor;         │ x = x / valor;            │ Divide x entre 'valor'               │
-├─────────────────────┼───────────────────────────┼──────────────────────────────────────┤
-│ x %= valor;         │ x = x % valor;            │ Asigna a x el resto de la división   │
-└─────────────────────┴───────────────────────────┴──────────────────────────────────────┘
+│                          EL MODELO DE MEMORIA DEL TERMINAL                             │
+├───────────────────┬───────────────┬──────────────────────┬─────────────────────────────┤
+│ Variable          │ Tipo en Java  │ Espacio en RAM       │ Valor almacenado            │
+├───────────────────┼───────────────┼──────────────────────┼─────────────────────────────┤
+│ terminalId        │ int           │ 32 bits (4 bytes)    │ 101 (Número entero)         │
+│ tempVestibulo     │ double        │ 64 bits (8 bytes)    │ 21.5 (Coma flotante)        │
+└───────────────────┴───────────────┴──────────────────────┴─────────────────────────────┘
 ```
 
-#### A. Operadores de Asignación Compuesta
-Los operadores de asignación compuesta combinan una operación aritmética binaria con la reasignación destructiva del resultado en la misma variable de memoria.
-
-* **Ventaja de mantenibilidad:** Si la variable tiene un nombre largo y descriptivo (*ej. `totalSegundosAcumuladosTerminal`*), no es necesario duplicar el identificador:
-  ```java
-  totalSegundosAcumuladosTerminal += segundosLectura;
-  ```
-* **Casting implícito en la asignación compuesta:** En Java, los operadores compuestos aplican un *casting* implícito al tipo de la variable destino, evitando incompatibilidades menores de tipos.
-
-#### B. Operadores Unarios de Incremento (`++`) y Decremento (`--`)
-Son operadores unarios (afectan a un único operando) cuyo propósito exclusivo es sumar o restar exactamente **1** al valor almacenado en una variable numérica entera.
-
-Existen dos modalidades con comportamientos radicalmente distintos cuando forman parte de una expresión:
-
-1. **Post-incremento (`variable++`):**
-    * Primero se evalúa o utiliza el valor **actual** de la variable en la expresión.
-    * Inmediatamente después de usar el valor, la variable se incrementa en 1 en la memoria RAM.
-2. **Pre-incremento (`++variable`):**
-    * Primero se incrementa en 1 el valor de la variable en la memoria RAM.
-    * Inmediatamente después, se utiliza el **nuevo** valor resultante en la expresión evaluada.
-
-```java
-// Ejemplo ilustrativo de la diferencia en memoria:
-int a = 10;
-int b = a++; // Paso 1: 'b' recibe el valor actual de 'a' (10). Paso 2: 'a' pasa a valer 11.
-// Resultado final: a = 11, b = 10
-
-int x = 10;
-int y = ++x; // Paso 1: 'x' pasa a valer 11. Paso 2: 'y' recibe el nuevo valor (11).
-// Resultado final: x = 11, y = 11
-```
-
-> **Directriz de calidad de AzaharTech:** Para evitar errores sutiles de sincronización, utiliza `variable++;` como una instrucción aislada e independiente siempre que sea posible, en lugar de incrustar incrementos dentro de cálculos complejos.
-
-#### C. La Traza de Escritorio (*Desk Checking*)
-Una **traza de escritorio** es un ensayo manual y metódico que el programador realiza sobre una tabla para registrar el valor que adopta cada celda de memoria en cada paso secuencial del algoritmo. Es la herramienta fundamental para cazar errores de lógica antes de compilar.
+1. **La clase como contenedor maestro:** En Java, todo código pertenece a una clase (`public class ControlAccesoQR`). El archivo en disco debe llamarse exactamente igual: `ControlAccesoQR.java`.
+2. **El método de entrada (`main`):** La JVM busca la instrucción `public static void main(String[] args)` para iniciar la ejecución secuencial de arriba hacia abajo.
+3. **Variables numéricas primitivas:**
+    * **`int`:** Almacena números enteros sin decimales (de $-2.147$ a $+2.147$ millones).
+    * **`double`:** Almacena números reales con precisión decimal de 64 bits.
+4. **Captura con `Scanner`:** Creamos un canal de lectura interactivo (`Scanner teclado = new Scanner(System.in);`) que captura enteros con `nextInt()` y decimales con `nextDouble()`.
 
 ---
 
-### 3. Andamiaje didáctico paso a paso: PSeInt $\rightarrow$ Java
+#### 3. Andamiaje didáctico: Código maestro `ControlAccesoQR v0.1`
 
-Modelamos el incremento del aforo del vestíbulo del IES El Caminàs paso a paso.
-
-#### Paso 1. Diseño algorítmico en PSeInt (`pr/pseudocodigo/dia5_incrementos.psc`)
+##### Paso A. Algoritmo base en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.1)
 ```psc
-Algoritmo Dia5Incrementos
-    // 1. Declaración de variables
-    Definir alumnosEnVestibulo Como Entero
-    Definir minutosTotales Como Entero
+Algoritmo ControlAccesoQR
+    // =========================================================================
+    // SISTEMA DE CONTROL DE ASISTENCIA QR - IES EL CAMINAS (Castellon)
+    // Version: 0.1 (Esqueleto y Parametros Fisicos)
+    // =========================================================================
     
-    alumnosEnVestibulo <- 0
-    minutosTotales <- 0
+    // 1. Declaracion de variables en memoria
+    Definir terminalId Como Entero
+    Definir tempVestibulo Como Real
     
-    Escribir "=== SIMULACION DE ENTRADA SECUENCIAL ==="
-    Escribir "Estado inicial: ", alumnosEnVestibulo, " alumnos."
+    // 2. Captura de parametros iniciales
+    Escribir "================================================="
+    Escribir "   AZAHARTECH - TERMINAL DE ACCESO VESTIBULO     "
+    Escribir "   Cliente: IES El Caminas (Curso 2026/2027)     "
+    Escribir "================================================="
+    Escribir "Introduce el numero identificador del terminal (ID):"
+    Leer terminalId
+    Escribir "Introduce la temperatura del sensor del vestibulo (C):"
+    Leer tempVestibulo
     
-    // 2. Llegada del primer alumno (añade 1 alumno y 8 minutos)
-    alumnosEnVestibulo <- alumnosEnVestibulo + 1
-    minutosTotales <- minutosTotales + 8
-    
-    // 3. Llegada del segundo alumno (añade 1 alumno y 12 minutos)
-    alumnosEnVestibulo <- alumnosEnVestibulo + 1
-    minutosTotales <- minutosTotales + 12
-    
-    // 4. Salida de resultados
-    Escribir "----------------------------------------"
-    Escribir "Alumnos totales procesados: ", alumnosEnVestibulo
-    Escribir "Minutos acumulados en acceso: ", minutosTotales
+    // 3. Confirmacion de parametros en pantalla
+    Escribir "-------------------------------------------------"
+    Escribir "Terminal configurado: #", terminalId
+    Escribir "Lectura termica:      ", tempVestibulo, " C"
+    Escribir "Estado del hardware:  EN ESPERA"
 FinAlgoritmo
 ```
 
-#### Paso 2. Traducción inmediata a Java en IntelliJ IDEA (`pr/src/Dia5Incrementos.java`)
+##### Paso B. Traducción a Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.1)
 ```java
 /**
+ * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ * 
+ * Versión 0.1: Esqueleto de ejecución y parámetros numéricos del terminal.
  * Módulo: Programación (PR) - Sprint 1 (RA1)
- * Caso Guía: Asignación compuesta y operadores de incremento.
- * @author AzaharTech Consulting
  */
-public class Dia5Incrementos {
+import java.util.Scanner;
+
+public class ControlAccesoQR {
     public static void main(String[] args) {
-        // 1. Inicialización de contadores y acumuladores en memoria
-        int alumnosEnVestibulo = 0;
-        int minutosTotales = 0;
+        // Inicialización del lector de consola
+        Scanner teclado = new Scanner(System.in);
         
-        System.out.println("=== SIMULACIÓN DE ENTRADA SECUENCIAL ===");
-        System.out.println("Estado inicial: " + alumnosEnVestibulo + " alumnos.");
+        // 1. Declaración de variables numéricas primitivas en memoria
+        int terminalId;
+        double tempVestibulo;
         
-        // 2. Llegada del primer alumno: uso de incremento y asignación compuesta
-        alumnosEnVestibulo++;      // Incremento compacto: suma 1
-        minutosTotales += 8;       // Asignación compuesta: suma 8 al acumulador
+        // 2. Entrada de datos interactiva
+        System.out.println("=================================================");
+        System.out.println("   AZAHARTECH - TERMINAL DE ACCESO VESTÍBULO     ");
+        System.out.println("   Cliente: IES El Caminàs (Curso 2026/2027)     ");
+        System.out.println("=================================================");
+        System.out.print("Introduce el número identificador del terminal (ID): ");
+        terminalId = teclado.nextInt();
         
-        // 3. Llegada del segundo alumno
-        alumnosEnVestibulo++;
-        minutosTotales += 12;
+        System.out.print("Introduce la temperatura del sensor del vestíbulo (ºC): ");
+        tempVestibulo = teclado.nextDouble();
         
-        // 4. Salida de datos
-        System.out.println("----------------------------------------");
-        System.out.println("Alumnos totales procesados: " + alumnosEnVestibulo);
-        System.out.println("Minutos acumulados en acceso: " + minutosTotales);
+        // 3. Salida de confirmación del terminal
+        System.out.println("-------------------------------------------------");
+        System.out.println("Terminal configurado: #" + terminalId);
+        System.out.println("Lectura térmica:      " + tempVestibulo + " ºC");
+        System.out.println("Estado del hardware:  EN ESPERA");
         
-        // Demostración explícita de pre y post-incremento
-        int turnoActual = 100;
-        System.out.println("\n--- COMPORTAMIENTO PRE VS POST ---");
-        System.out.println("Turno mostrado con post-incremento: " + (turnoActual++)); // Imprime 100 y luego sube a 101
-        System.out.println("Turno en memoria tras la operación:  " + turnoActual);     // Imprime 101
-        
-        System.out.println("Turno mostrado con pre-incremento:  " + (++turnoActual)); // Sube a 102 y luego imprime 102
+        teclado.close();
     }
 }
 ```
 
 ---
 
-### 4. Laboratorio práctico: Aplicación a tu proyecto propio
-
-#### Objetivo de la sesión
-Construir una traza de memoria de tu proyecto propio y aplicar operadores de asignación compuesta (`+=`, `-=`) y de incremento (`++`) sobre contadores y acumuladores de tu sistema.
-
-#### Instrucciones paso a paso
-1. En tu libreta técnica o en un documento de texto, dibuja una tabla de traza con 3 variables de tu proyecto. Anota su valor inicial (`0`) y cómo cambian tras 4 operaciones secuenciales de incremento y suma compuesta.
-2. Abre IntelliJ IDEA en `pr/pseudocodigo/` y crea el archivo `dia5_proyecto_propio.psc`.
-3. Diseña el algoritmo secuencial en PSeInt declarando al menos un contador y un acumulador.
-4. En `pr/src/`, crea la clase Java `Dia5ProyectoPropio.java`.
-5. Traduce el código utilizando los operadores `++`, `--` y `+=`.
-6. Compila y ejecuta. Comprueba que los valores finales coinciden exactamente con la traza de escritorio que habías calculado a mano.
+#### 4. Trabajo del estudiante: Nacimiento de su proyecto propio
+Cada estudiante crea en su carpeta `pr/pseudocodigo/` el archivo maestro de su proyecto propio (ej. `SistemaGestion.psc`) y en `pr/src/` la clase `SistemaGestion.java` v0.1:
+* Define e inicializa dos variables numéricas (`int` y `double`) que representen datos físicos o de arranque de su negocio (ej. código de sucursal y aforo; número de almacén y tarifa base).
+* Compila y verifica la ejecución en la consola de IntelliJ.
 
 ---
 ---
 
-## DÍA 6 (Martes, 22 de septiembre de 2026 — 2 horas lectivas)
-### Bloque: La división entera frente a la división real y el operador módulo (`%`)
-* **Distribución horaria:** 45 minutos de teoría conceptual + 45 minutos de andamiaje guiado (PSeInt $\rightarrow$ Java) + 30 minutos de laboratorio individual.
-* **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.e, RA1.g.
+## DÍA 2 (Martes, 15 de septiembre de 2026 — 2 horas lectivas)
+### Versión de la aplicación: `ControlAccesoQR v0.2` (Identidad y Estados Lógicos)
+* **Objetivo técnico:** Modificar y expandir el archivo maestro de ayer incorporando tipos de texto (`String`), caracteres individuales (`char`), estados booleanos (`boolean`) y resolviendo el salto de buffer de `Scanner`.
+* **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.e.
 
 ---
 
-### 1. Caso práctico narrativo: El enigma de los segundos en AzaharTech
+### 1. Caso práctico narrativo en AzaharTech
+Es martes por la mañana. **Pau Ferrer** ejecuta `ControlAccesoQR` v0.1 y muestra la pantalla:
+> *«El terminal ya arranca y guarda el número de terminal `101` y la temperatura `21.5`. Pero cuando un estudiante acerca el móvil a la pantalla del vestíbulo, el sistema no sabe a quién pertenece ese escaneo»*.
 
-Es martes por la mañana. En la terminal del laboratorio, **Pau Ferrer** muestra una incidencia detectada en el terminal del **IES El Caminàs**:
-El reloj del sistema registra que un alumno ha tardado `185` segundos desde que cruzó la valla exterior hasta que validó su QR en el vestíbulo. Pau necesita mostrar ese tiempo en la pantalla desglosado de forma humana: *«3 minutos y 5 segundos»*.
-
-Pau ha escrito:
-```java
-int minutos = 185 / 60; // Da 3
-```
-Y añade confuso:
-> *«Sé que 185 dividido entre 60 da 3 minutos enteros, pero ¿cómo saco los 5 segundos que sobran sin usar restas manuales ni condicionales?»*.
-
-**Alba Torres** sonríe y escribe un símbolo en la pizarra: **`%`**:
-> *«Te falta el operador más elegante de la aritmética de enteros: el **módulo o resto de la división (`%`)**. Junto con la división entera, te permite descomponer cualquier unidad temporal, monetaria o métrica con precisión absoluta en una sola línea de código»*.
+**Alba Torres** toma el teclado y abre el archivo de ayer:
+> *«No vamos a crear un programa nuevo. Vamos a evolucionar `ControlAccesoQR.java`. Añadiremos los campos para el nombre del estudiante, su DNI, la letra de su grupo y una bandera lógica que indique si su matrícula está activa.*
+>
+> *Pero atención a la trampa de Java: al leer números antes que textos, el buffer del teclado guarda un salto de línea invisible (`\n`) que debemos limpiar para que el programa no se salte la lectura del nombre»*.
 
 ---
 
-### 2. Fundamento teórico: División entera, división decimal y el operador residuo
+### 2. Fundamento teórico: Caracteres, Cadenas y el Buffer del Scanner
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                        ANATOMÍA DE UNA DIVISIÓN EN ARITMÉTICA JAVA                     │
+│                        EL PROBLEMA DEL BUFFER RESIDUAL EN SCANNER                      │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
-│                       185  │  60    ◄── Divisor (int)                                  │
-│       Dividendo (int) ────  ──────                                                     │
-│                         5     3     ◄── Cociente: Obtenido con el operador '/'         │
-│                         ▲                                                              │
-│                         └────────────── Resto/Residuo: Obtenido con el operador '%'    │
+│ Usuario teclea: [ 1 ][ 0 ][ 1 ][ \n (Enter) ]                                          │
+│ nextInt() lee:  [ 1 ][ 0 ][ 1 ]           ──► Deja el [ \n ] flotando en el buffer.    │
+│ nextLine() lee: [ \n ]                    ──► Cree que el usuario pulsó Enter vacío.   │
+│                                                                                        │
+│ SOLUCIÓN:       teclado.nextLine();       ──► Limpia el buffer antes del texto real.   │
 └────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-#### A. La dualidad del operador de división (`/`) en Java
-En Java, el comportamiento del operador `/` depende estrictamente del **tipo de dato de sus operandos**, no del resultado que esperaría una calculadora:
-
-1. **División entera (`int / int`):**
-    * Si ambos operandos son enteros, Java ejecuta una **división euclídea entera**.
-    * Cualquier fracción o decimal se descarta por completo (**truncamiento hacia cero**, no redondeo).
-    * `185 / 60` resulta **`3`**.
-    * `7 / 2` resulta **`3`**.
-2. **División en coma flotante (`double / int` o `int / double` o `double / double`):**
-    * Si al menos uno de los operandos es decimal (`double` o `float`), Java promociona la operación a división real.
-    * `185.0 / 60` resulta **`3.0833333333333335`**.
-    * `7.0 / 2` resulta **`3.5`**.
-
-#### B. El operador Módulo o Resto (`%`)
-El operador `%` calcula el **residuo exacto que sobra al dividir dos números enteros**.
-* En la operación `185 % 60`, como $60 \times 3 = 180$, sobran exactamente **`5`**.
-* Propiedades matemáticas y aplicaciones en ingeniería:
-    1. **Descomposición de unidades:** Transformar segundos a horas/minutos, o céntimos a euros.
-    2. **Detección de paridad:** Un número `n` es par si `n % 2 == 0` (aunque la comprobación condicional se hará en el Sprint 3, la propiedad matemática se fundamenta aquí).
-    3. **Comportamiento cíclico:** El resultado de `x % N` siempre estará acotado estrictamente en el rango de $0$ a $N-1$, ideal para turnos o posiciones en ruletas y colas.
-
-#### C. Algoritmo secuencial de descomposición horaria (Horas, Minutos, Segundos)
-Para descomponer una cantidad arbitraria de segundos totales en sus tres componentes canónicos sin utilizar ninguna condición:
-* $1 \text{ hora} = 3600 \text{ segundos}$.
-* $1 \text{ minuto} = 60 \text{ segundos}$.
-
-$$\text{Horas} = \lfloor \text{segundosTotales} / 3600 \rfloor$$
-$$\text{Segundos sobrantes de las horas} = \text{segundosTotales} \% 3600$$
-$$\text{Minutos} = \lfloor \text{Segundos sobrantes} / 60 \rfloor$$
-$$\text{Segundos finales} = \text{segundosTotales} \% 60$$
+1. **`char` frente a `String`:**
+    * `char letraGrupo = 'B';`: Un único carácter delimitado obligatoriamente por comillas simples (`' '`).
+    * `String nombre = "Juan Pérez";`: Objeto que gestiona texto de cualquier longitud entre comillas dobles (`" "`).
+2. **`boolean` (Estado del sistema):** Almacena `true` o `false`. Ideal para variables de control como `matriculaActiva`.
+3. **Limpieza del buffer:** Siempre que se invoque `nextInt()` o `nextDouble()` y la siguiente instrucción sea `nextLine()`, se debe intercalar una llamada a `teclado.nextLine();` para vaciar el salto de línea residual.
 
 ---
 
-### 3. Andamiaje didáctico paso a paso: PSeInt $\rightarrow$ Java
+### 3. Andamiaje didáctico: Evolución a `ControlAccesoQR v0.2`
 
-Modelamos la descomposición de tiempos del IES El Caminàs paso a paso.
+Observa cómo el código de ayer se amplía añadiendo los bloques de identidad sin eliminar lo anterior.
 
-#### Paso 1. Diseño algorítmico en PSeInt (`pr/pseudocodigo/dia6_modulo_tiempos.psc`)
+##### Paso A. Expansión en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.2)
 ```psc
-Algoritmo Dia6ModuloTiempos
-    // 1. Declaración de variables
-    Definir segundosTotales Como Entero
-    Definir horas Como Entero
-    Definir minutos Como Entero
-    Definir segundosRestantes Como Entero
+Algoritmo ControlAccesoQR
+    // =========================================================================
+    // SISTEMA DE CONTROL DE ASISTENCIA QR - IES EL CAMINAS (Castellon)
+    // Version: 0.2 (Evolucion: Incorporacion de Identidad del Alumnado)
+    // =========================================================================
     
-    // 2. Entrada de datos
-    Escribir "=== CALCULADORA TEMPORAL: IES EL CAMINAS ==="
-    Escribir "Introduce el total de segundos transcurridos:"
-    Leer segundosTotales
+    // 1. Declaracion de variables del terminal (Día 1)
+    Definir terminalId Como Entero
+    Definir tempVestibulo Como Real
     
-    // 3. Descomposición matemática con división entera y módulo
-    horas <- trunc(segundosTotales / 3600)
-    minutos <- trunc((segundosTotales MOD 3600) / 60)
-    segundosRestantes <- segundosTotales MOD 60
+    // [NUEVO DÍA 2] Declaracion de variables de identidad del usuario
+    Definir nombreEstudiante Como Cadena
+    Definir dniEstudiante Como Cadena
+    Definir letraGrupo Como Caracter
+    Definir matriculaActiva Como Logico
     
-    // 4. Salida de resultados
-    Escribir "--------------------------------------------"
-    Escribir "Desglose temporal exacto:"
-    Escribir horas, " horas, ", minutos, " minutos y ", segundosRestantes, " segundos."
-FinAlgoritmo
-```
-
-#### Paso 2. Traducción inmediata a Java en IntelliJ IDEA (`pr/src/Dia6ModuloTiempos.java`)
-```java
-/**
- * Módulo: Programación (PR) - Sprint 1 (RA1)
- * Caso Guía: División entera y operador módulo (%).
- * @author AzaharTech Consulting
- */
-import java.util.Scanner;
-
-public class Dia6ModuloTiempos {
-    public static void main(String[] args) {
-        Scanner teclado = new Scanner(System.in);
-        
-        // 1. Declaración de variables
-        int segundosTotales;
-        int horas;
-        int minutos;
-        int segundosRestantes;
-        
-        // 2. Entrada de datos interactiva
-        System.out.println("=== CALCULADORA TEMPORAL: IES EL CAMINAS ===");
-        System.out.print("Introduce el total de segundos transcurridos: ");
-        segundosTotales = teclado.nextInt();
-        
-        // 3. Procesamiento aritmético secuencial
-        horas = segundosTotales / 3600;              // División entera
-        minutos = (segundosTotales % 3600) / 60;      // Resto de horas dividido entre 60
-        segundosRestantes = segundosTotales % 60;     // Resto final de segundos
-        
-        // 4. Emisión de resultados
-        System.out.println("--------------------------------------------");
-        System.out.println("Desglose temporal exacto:");
-        System.out.println(horas + " horas, " + minutos + " minutos y " + segundosRestantes + " segundos.");
-        
-        teclado.close();
-    }
-}
-```
-
----
-
-### 4. Laboratorio práctico: Aplicación a tu proyecto propio
-
-#### Objetivo de la sesión
-Aplicar la combinación de **división entera (`/`) y operador módulo (`%`)** a un problema de descomposición o agrupamiento específico de tu proyecto de la bolsa de proyectos.
-
-#### Ejemplos según la temática de tu proyecto:
-* *Proyecto de comercio/ventas:* Descomponer una cantidad de céntimos en euros enteros y céntimos restantes (`euros = totalCentimos / 100; restoCentimos = totalCentimos % 100;`).
-* *Proyecto logístico/almacén:* Descomponer unidades de producto en cajas completas de 12 o 24 unidades y unidades sueltas que quedan fuera.
-* *Proyecto de reservas/tiempo:* Descomponer minutos de servicio en días, horas y minutos.
-
-#### Instrucciones paso a paso
-1. Crea el archivo `pr/pseudocodigo/dia6_proyecto_propio.psc`.
-2. Escribe el algoritmo definiendo los datos de entrada, las operaciones de cociente y resto, y la salida por consola.
-3. Crea la clase Java `pr/src/Dia6ProyectoPropio.java`.
-4. Traduce el algoritmo a Java.
-5. Ejecuta pruebas con valores límite (por ejemplo: `0`, un valor menor que el divisor y un valor muy alto) y comprueba que la suma de las partes reconstruye exactamente el total original.
-
----
----
-
-## DÍA 7 (Miércoles, 23 de septiembre de 2026 — 2 horas lectivas)
-### Bloque: Jerarquía de operadores, expresiones matemáticas complejas y conversiones de tipo (*Casting*)
-* **Distribución horaria:** 45 minutos de teoría conceptual + 45 minutos de andamiaje guiado (PSeInt $\rightarrow$ Java) + 30 minutos de laboratorio individual.
-* **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.g, RA1.h.
-
----
-
-### 1. Caso práctico narrativo: El cálculo del porcentaje de asistencia
-
-Es miércoles por la mañana. En la pantalla de pruebas, **Pau Ferrer** muestra su nuevo algoritmo para calcular la tasa porcentual de alumnos que han entrado a primera hora al **IES El Caminàs**.
-
-Ha introducido:
-* Alumnos matriculados: `40`.
-* Alumnos que han escaneado el QR: `38`.
-
-Y ha programado la fórmula:
-```java
-double porcentajeAsistencia = (alumnosPresentes / alumnosMatriculados) * 100;
-System.out.println("Tasa de asistencia: " + porcentajeAsistencia + "%");
-```
-
-Al pulsar *Run*, la consola imprime:
-```text
-Tasa de asistencia: 0.0%
-```
-
-Pau exclama desconcertado:
-> *«¡Pero si han venido 38 de 40! ¡Debería dar un 95 %! ¿Por qué Java dice cero coma cero?»*.
-
-**Alba Torres** y **Laia Claramunt** se acercan a la pantalla. Laia explica:
-> *«Acabas de caer en la trampa más habitual de los tipos primitivos. `alumnosPresentes` es `int` y `alumnosMatriculados` es `int`. Java evalúa primero los paréntesis de izquierda a derecha: divide `38 / 40`, y como es división entera, el resultado es `0`. Luego multiplica `0 * 100`, que sigue siendo `0`. Y finalmente, al asignarlo a la variable `double`, lo convierte en `0.0`.*
->
-> *Para solucionar esto debemos dominar la **jerarquía de evaluación** y aplicar una **conversión explícita o casting** que obligue a Java a calcular con decimales desde el primer paso»*.
-
----
-
-### 2. Fundamento teórico: Precedencia de operadores y conversiones de tipo
-
-```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                        JERARQUÍA Y PRECEDENCIA DE EVALUACIÓN                           │
-├──────────────┬───────────────────────────────────────────┬─────────────────────────────┤
-│ Prioridad    │ Operadores                                │ Dirección de evaluación     │
-├──────────────┼───────────────────────────────────────────┼─────────────────────────────┤
-│ 1. ( )       │ Paréntesis agrupadores                    │ De dentro hacia afuera      │
-├──────────────┼───────────────────────────────────────────┼─────────────────────────────┤
-│ 2. Unarios   │ ++ , -- , + , - , (tipo) [casting]        │ De derecha a izquierda      │
-├──────────────┼───────────────────────────────────────────┼─────────────────────────────┤
-│ 3. Aritmética│ * , / , %                                 │ De izquierda a derecha      │
-├──────────────┼───────────────────────────────────────────┼─────────────────────────────┤
-│ 4. Aritmética│ + , -                                     │ De izquierda a derecha      │
-├──────────────┼───────────────────────────────────────────┼─────────────────────────────┤
-│ 5. Asignación│ = , += , -= , *= , /= , %=                │ De derecha a izquierda      │
-└──────────────┴───────────────────────────────────────────┴─────────────────────────────┘
-```
-
-#### A. Las dos caras de la conversión de tipos en memoria
-
-```
- [ byte (1B) ] ──► [ short (2B) ] ──► [ int (4B) ] ──► [ long (8B) ] ──► [ double (8B) ]
- ◄───────────────────────────────────────────────────────────────────────────────────────
-   ENSANCHAMIENTO (Widening) -> Automático / Seguro    ESTRECHAMIENTO (Narrowing) -> Casting manual
-```
-
-1. **Conversión Implícita (Ensanchamiento / *Widening*):**
-    * Ocurre automáticamente cuando se asigna o combina un tipo de menor tamaño en uno de mayor capacidad.
-    * No existe riesgo de pérdida de datos.
-    * *Ejemplo:*
-      ```java
-      int contador = 5;
-      double decimal = contador; // Java lo convierte de forma transparente a 5.0
-      ```
-
-2. **Conversión Explícita (Estrechamiento / *Narrowing / Casting*):**
-    * Es obligatoria cuando forzamos al compilador a meter un valor de mayor tamaño o precisión dentro de una variable de menor rango.
-    * **Existe riesgo evidente de pérdida de información:**
-        * Al pasar de `double` a `int`, los decimales se truncan (se eliminan, no se redondean).
-        * Al pasar a un tipo con menos bytes, si el número supera el rango admitido, se produce un desbordamiento (*overflow*).
-    * **Sintaxis del Casting:** Se escribe el tipo destino entre paréntesis inmediatamente antes del valor o variable:
-      ```java
-      double notaExacta = 9.87;
-      int notaEntera = (int) notaExacta; // notaEntera contendrá 9 (pierde los decimales)
-      ```
-
-#### B. La solución al error de Pau mediante Casting en divisiones
-Para solucionar el cálculo del porcentaje de asistencia del IES El Caminàs, forzamos que al menos uno de los operandos enteros sea tratado como `double` antes de dividir:
-
-```java
-// Opción A: Casting explícito sobre una variable
-double porcentaje = ((double) alumnosPresentes / alumnosMatriculados) * 100.0;
-
-// Opción B: Multiplicar primero por un literal decimal
-double porcentaje2 = (alumnosPresentes * 100.0) / alumnosMatriculados;
-```
-En ambos casos, Java promociona toda la operación a coma flotante de 64 bits y el resultado es el **`95.0 %`** correcto.
-
----
-
-### 3. Andamiaje didáctico paso a paso: PSeInt $\rightarrow$ Java
-
-Modelamos el cálculo de ratios y porcentajes con conversiones controladas.
-
-#### Paso 1. Diseño algorítmico en PSeInt (`pr/pseudocodigo/dia7_casting_porcentajes.psc`)
-```psc
-Algoritmo Dia7CastingPorcentajes
-    Definir presentes, capacidadTotal Como Entero
-    Definir ratioOcupacion Como Real
-    Definir ratioTruncadoEntero Como Entero
+    // 2. Captura de parametros del terminal (Día 1)
+    Escribir "=== AZAHARTECH: TERMINAL DE ACCESO VESTIBULO ==="
+    Escribir "Introduce el numero identificador del terminal (ID):"
+    Leer terminalId
+    Escribir "Introduce la temperatura del sensor (C):"
+    Leer tempVestibulo
     
-    Escribir "=== CONTROL DE AFORO: IES EL CAMINAS ==="
-    Escribir "Introduce los alumnos que han entrado:"
-    Leer presentes
-    
-    Escribir "Introduce el aforo maximo permitido del vestibulo:"
-    Leer capacidadTotal
-    
-    // Forzamos calculo real multiplicando por 100.0
-    ratioOcupacion <- (presentes * 100.0) / capacidadTotal
-    ratioTruncadoEntero <- trunc(ratioOcupacion)
-    
-    Escribir "----------------------------------------"
-    Escribir "Tasa exacta de ocupacion: ", ratioOcupacion, " %"
-    Escribir "Tasa entera (para panel LED): ", ratioTruncadoEntero, " %"
-FinAlgoritmo
-```
-
-#### Paso 2. Traducción inmediata a Java en IntelliJ IDEA (`pr/src/Dia7CastingPorcentajes.java`)
-```java
-/**
- * Módulo: Programación (PR) - Sprint 1 (RA1)
- * Caso Guía: Precedencia de operadores y casting explícito.
- * @author AzaharTech Consulting
- */
-import java.util.Scanner;
-
-public class Dia7CastingPorcentajes {
-    public static void main(String[] args) {
-        Scanner teclado = new Scanner(System.in);
-        
-        // 1. Declaración de variables
-        int presentes;
-        int capacidadTotal;
-        double ratioOcupacion;
-        int ratioTruncadoEntero;
-        
-        // 2. Entrada de datos interactiva
-        System.out.println("=== CONTROL DE AFORO: IES EL CAMINAS ===");
-        System.out.print("Introduce los alumnos que han entrado: ");
-        presentes = teclado.nextInt();
-        
-        System.out.print("Introduce el aforo maximo permitido: ");
-        capacidadTotal = teclado.nextInt();
-        
-        // 3. Procesamiento con casting explícito (double) para evitar división a 0
-        ratioOcupacion = ((double) presentes / capacidadTotal) * 100.0;
-        
-        // Casting explícito a (int) para eliminar decimales deliberadamente
-        ratioTruncadoEntero = (int) ratioOcupacion;
-        
-        // 4. Salida por consola
-        System.out.println("----------------------------------------");
-        System.out.println("Tasa exacta de ocupacion: " + ratioOcupacion + " %");
-        System.out.println("Tasa entera (para panel LED): " + ratioTruncadoEntero + " %");
-        
-        teclado.close();
-    }
-}
-```
-
----
-
-### 4. Laboratorio práctico: Aplicación a tu proyecto propio
-
-#### Objetivo de la sesión
-Identificar en tu proyecto propio de la bolsa de proyectos una fórmula que combine magnitudes enteras y deba arrojar un resultado de precisión decimal (porcentajes, tasas, precios unitarios calculados o ratios de ocupación), aplicando casting explícito `(double)` para garantizar la exactitud matemática.
-
-#### Instrucciones paso a paso
-1. Crea el archivo `pr/pseudocodigo/dia7_proyecto_propio.psc`.
-2. Diseña el cálculo asegurando que intervienen al menos dos variables de entrada enteras.
-3. Crea la clase Java `pr/src/Dia7ProyectoPropio.java`.
-4. Implementa el cálculo aplicando `(double)` en la división.
-5. Imprime el resultado exacto con decimales y, a continuación, aplica un segundo casting `(int)` para mostrar el valor truncado.
-6. Verifica con la calculadora que el resultado impreso por pantalla coincide exactamente con la operación matemática real.
-
----
----
-
-## DÍA 8 (Jueves, 24 de septiembre de 2026 — 2 horas lectivas)
-### Bloque: Laboratorio de integración: Reto 1 (Paso 2: Motor de cálculo secuencial y conversiones de tipo)
-* **Distribución horaria:** 30 minutos de modelado de calidad + 90 minutos de codificación autónoma tutelada.
-* **Criterios de Evaluación vinculados:** RA1.a, RA1.b, RA1.c, RA1.d, RA1.e, RA1.g, RA1.h, RA1.i.
-
----
-
-### 1. Caso práctico narrativo: La consolidación del motor de cálculo
-
-Es jueves al mediodía en **AzaharTech**. Las dos primeras semanas del Sprint 1 han sentado las bases firmes del módulo de Programación. **Laia Claramunt** convoca a los desarrolladores frente al tablero:
-
-> *«Hoy cerramos formalmente la Semana 2. En la Semana 1 creamos el esqueleto del programa con las variables de entrada. Durante estos últimos tres días habéis aprendido a operar con precisión quirúrgica: domináis los operadores compuestos (`+=`), los incrementos (`++`), la descomposición con módulo (`%`), la precedencia con paréntesis y el casting.*
->
-> *La tarea de hoy consiste en ensamblar el **motor de cálculo matemático y transformación secuencial completo de vuestro proyecto propio**.*
->
-> *No debe quedar ni una sola operación ambigua. Al finalizar las dos horas, el código fuente debe estar subido a GitHub con su commit convencional correspondiente»*.
-
----
-
-### 2. Estándares de calidad y rúbrica técnica exigida para el Paso 2
-
-Para que el código del Reto 1 (Paso 2) sea aceptado por el equipo docente y AzaharTech, debe acreditar los siguientes requisitos técnicos:
-1. **Ausencia absoluta de bifurcaciones o bucles:** El código debe ser estrictamente secuencial, demostrando que se domina la algorítmica matemática antes de entrar en condicionales.
-2. **Casting explícito justificado:** Al menos una división entre variables enteras debe estar promocionada a decimal mediante casting `(double)`.
-3. **Uso del operador módulo (`%`):** El algoritmo debe incorporar al menos una descomposición o cálculo de residuo.
-4. **Protección de precedencia:** Todas las fórmulas complejas deben utilizar paréntesis `()` explícitos.
-5. **Comentarios de bloque:** Cada cálculo relevante debe incluir un comentario explicativo de una línea (`//`).
-
----
-
-### 3. Taller de integración guiada: Plantilla del Reto 1 (Paso 2)
-
-#### Paso 1. Algoritmo secuencial avanzado en PSeInt (`pr/pseudocodigo/reto1_calculo.psc`)
-```psc
-Algoritmo Reto1Calculo
-    // 1. Declaración de variables
-    Definir codigoTransaccion Como Cadena
-    Definir unidadesSolicitadas Como Entero
-    Definir precioUnitario Como Real
-    Definir capacidadPorLote Como Entero
-    
-    Definir lotesCompletos, unidadesSobrantes Como Entero
-    Definir costeSubtotal, costeImpuesto, costeTotalFinal Como Real
-    Definir ratioAprovechamiento Como Real
-    
-    // 2. Entrada de datos
-    Escribir "================================================="
-    Escribir "     AZAHARTECH - MOTOR DE CALCULO SECUENCIAL    "
-    Escribir "================================================="
-    Escribir "Introduce el codigo de operacion:"
-    Leer codigoTransaccion
-    
-    Escribir "Introduce el volumen de unidades a procesar:"
-    Leer unidadesSolicitadas
-    
-    Escribir "Introduce el precio unitario base:"
-    Leer precioUnitario
-    
-    capacidadPorLote <- 12 // Capacidad fija de empaquetado por lote
-    
-    // 3. Cálculos aritméticos y descomposición
-    lotesCompletos <- trunc(unidadesSolicitadas / capacidadPorLote)
-    unidadesSobrantes <- unidadesSolicitadas MOD capacidadPorLote
-    
-    costeSubtotal <- unidadesSolicitadas * precioUnitario
-    costeImpuesto <- costeSubtotal * 0.21 // IVA 21%
-    costeTotalFinal <- costeSubtotal + costeImpuesto
-    
-    // Ratio con precisión decimal
-    ratioAprovechamiento <- ((unidadesSolicitadas - unidadesSobrantes) * 100.0) / unidadesSolicitadas
-    
-    // 4. Emisión de informe estructurado
+    // [NUEVO DÍA 2] Captura de datos del alumno que escanea
     Escribir "-------------------------------------------------"
-    Escribir "DESGLOSE DE OPERACION: " + codigoTransaccion
-    Escribir "Lotes completos empaquetados: ", lotesCompletos
-    Escribir "Unidades sueltas restantes:   ", unidadesSobrantes
-    Escribir "Coste base subtotal:          ", costeSubtotal, " euros."
-    Escribir "Impuesto aplicado (21%):      ", costeImpuesto, " euros."
-    Escribir "Coste final liquidado:        ", costeTotalFinal, " euros."
-    Escribir "Porcentaje aprovechamiento:   ", ratioAprovechamiento, " %"
+    Escribir "ESCANEANDO IDENTIFICADOR DE ESTUDIANTE..."
+    Escribir "Introduce el DNI del alumno:"
+    Leer dniEstudiante
+    Escribir "Introduce el nombre completo del alumno:"
+    Leer nombreEstudiante
+    Escribir "Introduce la letra de su grupo (A, B o C):"
+    Leer letraGrupo
+    
+    matriculaActiva <- Verdadero // Estado por defecto
+    
+    // 3. Salida de datos consolidada
+    Escribir "================================================="
+    Escribir "REGISTRO DE FICHAJE EMITIDO:"
+    Escribir "Terminal:   #", terminalId, " (Sensor: ", tempVestibulo, " C)"
+    Escribir "Estudiante: ", nombreEstudiante, " (DNI: ", dniEstudiante, ")"
+    Escribir "Grupo:      ", letraGrupo, " DAM"
+    Escribir "Matricula:  Activa (", matriculaActiva, ")"
     Escribir "================================================="
 FinAlgoritmo
 ```
 
-#### Paso 2. Implementación completa en Java (`pr/src/Reto1Calculo.java`)
+##### Paso B. Expansión en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.2)
+Abrimos el archivo `ControlAccesoQR.java` en IntelliJ y lo modificamos directamente:
+
 ```java
 /**
- * Proyecto: [Nombre de tu Proyecto Elegido de la Bolsa de Proyectos]
- * Módulo: Programación (PR) - Sprint 1 (RA1)
+ * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
  * 
- * Descripción: Motor secuencial de cálculo matemático avanzado,
- * descomposición con operador módulo y casting explícito de tipos.
+ * Versión 0.2: Incorporación de identidad del alumnado y tipos alfanuméricos.
+ * Módulo: Programación (PR) - Sprint 1 (RA1)
+ */
+import java.util.Scanner;
+
+public class ControlAccesoQR {
+    public static void main(String[] args) {
+        Scanner teclado = new Scanner(System.in);
+        
+        // 1. Variables de hardware y terminal (Día 1)
+        int terminalId;
+        double tempVestibulo;
+        
+        // [NUEVO DÍA 2] Variables de identidad y estado lógico
+        String dniEstudiante;
+        String nombreEstudiante;
+        char letraGrupo;
+        boolean matriculaActiva;
+        
+        // 2. Captura de parámetros del terminal (Día 1)
+        System.out.println("=================================================");
+        System.out.println("   AZAHARTECH - TERMINAL DE ACCESO VESTÍBULO     ");
+        System.out.println("   Cliente: IES El Caminàs (Curso 2026/2027)     ");
+        System.out.println("=================================================");
+        System.out.print("Introduce el número identificador del terminal (ID): ");
+        terminalId = teclado.nextInt();
+        
+        System.out.print("Introduce la temperatura del sensor (ºC): ");
+        tempVestibulo = teclado.nextDouble();
+        
+        // [LIMPIEZA DE BUFFER OBLIGATORIA]
+        teclado.nextLine(); // Consume el salto de línea residual antes de leer texto
+        
+        // [NUEVO DÍA 2] Captura de datos del alumno
+        System.out.println("-------------------------------------------------");
+        System.out.println("REGISTRO DE ACCESO EN CURSO...");
+        System.out.print("Introduce el DNI del alumno: ");
+        dniEstudiante = teclado.nextLine();
+        
+        System.out.print("Introduce el nombre completo del alumno: ");
+        nombreEstudiante = teclado.nextLine(); // Permite capturar nombres y apellidos con espacios
+        
+        System.out.print("Introduce la letra de su grupo (A, B o C): ");
+        letraGrupo = teclado.next().charAt(0); // Extrae el primer carácter introducido
+        
+        matriculaActiva = true; // Asignación de literal booleano
+        
+        // 3. Salida de datos consolidada
+        System.out.println("=================================================");
+        System.out.println("REGISTRO DE FICHAJE EMITIDO:");
+        System.out.println("Terminal:   #" + terminalId + " (Sensor: " + tempVestibulo + " ºC)");
+        System.out.println("Estudiante: " + nombreEstudiante + " (DNI: " + dniEstudiante + ")");
+        System.out.println("Grupo:      " + letraGrupo + " DAM");
+        System.out.println("Matrícula:  Activa (" + matriculaActiva + ")");
+        System.out.println("=================================================");
+        
+        teclado.close();
+    }
+}
+```
+
+---
+
+#### 4. Trabajo del estudiante: Evolución de su proyecto propio
+Cada estudiante abre su archivo `SistemaGestion.psc` y `SistemaGestion.java`:
+* Añade los campos alfanuméricos de su proyecto (`String` para descripciones o clientes, `char` para códigos de zona o categoría, `boolean` para disponibilidad o estado activo).
+* Aplica la limpieza del buffer con `teclado.nextLine()`.
+* Ejecuta pruebas verificando que se pueden introducir nombres con espacios sin saltos inesperados.
+
+---
+---
+
+## DÍA 3 (Miércoles, 16 de septiembre de 2026 — 2 horas lectivas)
+### Versión de la aplicación: `ControlAccesoQR v0.3` (Cálculos Aritméticos y Concatenación)
+* **Objetivo técnico:** Incorporar a la aplicación viva el cálculo de tiempos lectivos, sumas aritméticas y la construcción del mensaje de confirmación mediante concatenación protegida.
+* **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.e, RA1.g.
+
+---
+
+### 1. Caso práctico narrativo en AzaharTech
+Es miércoles por la mañana. **Laia Claramunt** revisa la versión v0.2:
+> *«El sistema ya sabe qué terminal lee y qué alumno pasa. Ahora el IES El Caminàs nos pide procesar el tiempo lectivo: cada acceso matutino suma una sesión base de 50 minutos lectivos. Si el alumno entra también por la tarde a un taller voluntario de refuerzo, debemos sumar ambos accesos y calcular cuántos minutos lectivos totales acumula en el centro hoy.*
+>
+> *Hoy aprenderemos a operar matemáticamente sobre las variables de nuestro programa y a componer un mensaje unificado donde convivan números y texto sin que el operador `+` distorsione los cálculos»*.
+
+---
+
+### 2. Fundamento teórico: Aritmética y Concatenación Segura
+
+1. **La sobrecarga del operador `+`:**
+    * Si ambos operandos son numéricos: realiza una **suma matemática** (`50 + 50 = 100`).
+    * Si al menos un operando es una cadena de texto: realiza una **concatenación** (unión de textos).
+2. **Evaluación de izquierda a derecha:**
+   ```java
+   System.out.println("Minutos: " + 50 + 50);   // Imprime "Minutos: 5050" (¡ERROR!)
+   System.out.println("Minutos: " + (50 + 50)); // Imprime "Minutos: 100"  (CORRECTO)
+   ```
+3. **Multiplicación y prioridad:** La multiplicación (`*`) se evalúa antes que la suma (`+`), a menos que usemos paréntesis `()`.
+
+---
+
+### 3. Andamiaje didáctico: Evolución a `ControlAccesoQR v0.3`
+
+Ampliamos el código de la versión v0.2 añadiendo el bloque de cálculo de sesiones lectivas y la composición del mensaje de confirmación.
+
+##### Paso A. Expansión en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.3)
+```psc
+Algoritmo ControlAccesoQR
+    // =========================================================================
+    // SISTEMA DE CONTROL DE ASISTENCIA QR - IES EL CAMINAS (Castellon)
+    // Version: 0.3 (Evolucion: Calculo de Tiempos y Concatenacion)
+    // =========================================================================
+    
+    // 1. Variables previas (Días 1 y 2)
+    Definir terminalId Como Entero
+    Definir tempVestibulo Como Real
+    Definir nombreEstudiante, dniEstudiante Como Cadena
+    Definir letraGrupo Como Caracter
+    Definir matriculaActiva Como Logico
+    
+    // [NUEVO DÍA 3] Variables de computo de sesiones lectivas
+    Definir sesionesManana, sesionesTarde Como Entero
+    Definir totalSesiones Como Entero
+    Definir minutosPorSesion Como Entero
+    Definir minutosTotalesLectivos Como Entero
+    Definir tokenResumen Como Cadena
+    
+    // 2. Captura de datos previos
+    Escribir "=== AZAHARTECH: TERMINAL DE ACCESO VESTIBULO ==="
+    Escribir "Introduce el ID del terminal y temperatura:"
+    Leer terminalId
+    Leer tempVestibulo
+    
+    Escribir "Introduce DNI, nombre y grupo:"
+    Leer dniEstudiante
+    Leer nombreEstudiante
+    Leer letraGrupo
+    matriculaActiva <- Verdadero
+    
+    // [NUEVO DÍA 3] Captura de sesiones lectivas
+    Escribir "-------------------------------------------------"
+    Escribir "COMPUTO DE HORAS LECTIVAS:"
+    Escribir "Introduce sesiones programadas manana:"
+    Leer sesionesManana
+    Escribir "Introduce sesiones programadas tarde:"
+    Leer sesionesTarde
+    
+    minutosPorSesion <- 50 // Cada clase dura 50 minutos
+    
+    // [NUEVO DÍA 3] Procesamiento aritmético secuencial
+    totalSesiones <- sesionesManana + sesionesTarde
+    minutosTotalesLectivos <- totalSesiones * minutosPorSesion
+    
+    // Composicion de la cadena de confirmacion
+    tokenResumen <- dniEstudiante + "-SESIONES-" + ConvertirATexto(totalSesiones)
+    
+    // 3. Salida de datos unificada
+    Escribir "================================================="
+    Escribir "RESUMEN DE ASISTENCIA DIARIA:"
+    Escribir "Alumno:     " + nombreEstudiante + " (" + letraGrupo + " DAM)"
+    Escribir "Token:      " + tokenResumen
+    Escribir "Sesiones:   " + ConvertirATexto(totalSesiones) + " clases (" + ConvertirATexto(sesionesManana) + "M + " + ConvertirATexto(sesionesTarde) + "T)"
+    Escribir "Permanencia computada: " + ConvertirATexto(minutosTotalesLectivos) + " minutos lectivos."
+    Escribir "================================================="
+FinAlgoritmo
+```
+
+##### Paso B. Expansión en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.3)
+Abrimos nuestro archivo `ControlAccesoQR.java` y lo evolucionamos:
+
+```java
+/**
+ * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ * 
+ * Versión 0.3: Cálculo aritmético de tiempos de permanencia y concatenación.
+ * Módulo: Programación (PR) - Sprint 1 (RA1)
+ */
+import java.util.Scanner;
+
+public class ControlAccesoQR {
+    public static void main(String[] args) {
+        Scanner teclado = new Scanner(System.in);
+        
+        // 1. Variables de hardware y terminal (Día 1)
+        int terminalId;
+        double tempVestibulo;
+        
+        // Variables de identidad (Día 2)
+        String dniEstudiante;
+        String nombreEstudiante;
+        char letraGrupo;
+        boolean matriculaActiva;
+        
+        // [NUEVO DÍA 3] Variables de cómputo horario y concatenación
+        int sesionesManana;
+        int sesionesTarde;
+        int totalSesiones;
+        int minutosPorSesion = 50; // Cada periodo lectivo son 50 minutos
+        int minutosTotalesLectivos;
+        String tokenResumen;
+        
+        // 2. Captura de datos
+        System.out.println("=================================================");
+        System.out.println("   AZAHARTECH - TERMINAL DE ACCESO VESTÍBULO     ");
+        System.out.println("   Cliente: IES El Caminàs (Curso 2026/2027)     ");
+        System.out.println("=================================================");
+        System.out.print("ID Terminal: ");
+        terminalId = teclado.nextInt();
+        
+        System.out.print("Temperatura sensor (ºC): ");
+        tempVestibulo = teclado.nextDouble();
+        
+        teclado.nextLine(); // Limpieza de buffer
+        
+        System.out.print("DNI Estudiante: ");
+        dniEstudiante = teclado.nextLine();
+        
+        System.out.print("Nombre completo: ");
+        nombreEstudiante = teclado.nextLine();
+        
+        System.out.print("Grupo (letra): ");
+        letraGrupo = teclado.next().charAt(0);
+        
+        matriculaActiva = true;
+        
+        // [NUEVO DÍA 3] Entrada de sesiones lectivas
+        System.out.println("-------------------------------------------------");
+        System.out.print("Sesiones programadas turno mañana: ");
+        sesionesManana = teclado.nextInt();
+        
+        System.out.print("Sesiones programadas turno tarde: ");
+        sesionesTarde = teclado.nextInt();
+        
+        // [NUEVO DÍA 3] Procesamiento aritmético secuencial
+        totalSesiones = sesionesManana + sesionesTarde;
+        minutosTotalesLectivos = totalSesiones * minutosPorSesion;
+        
+        // Composición de cadena concatenada
+        tokenResumen = dniEstudiante + "-SESIONES-" + totalSesiones;
+        
+        // 3. Salida de datos unificada
+        System.out.println("=================================================");
+        System.out.println("RESUMEN DE ASISTENCIA DIARIA:");
+        System.out.println("Alumno:     " + nombreEstudiante + " (" + letraGrupo + " DAM)");
+        System.out.println("Token:      " + tokenResumen);
+        // Uso de paréntesis protectores para garantizar suma aritmética antes de concatenar:
+        System.out.println("Sesiones:   " + (sesionesManana + sesionesTarde) + " clases (" + sesionesManana + "M + " + sesionesTarde + "T)");
+        System.out.println("Permanencia computada: " + minutosTotalesLectivos + " minutos lectivos.");
+        System.out.println("=================================================");
+        
+        teclado.close();
+    }
+}
+```
+
+---
+
+#### 4. Trabajo del estudiante: Evolución de su proyecto propio
+El estudiante abre su archivo único `SistemaGestion.java`:
+* Incorpora el cálculo aritmético secuencial adaptado a su contexto (suma de dos cantidades numéricas, multiplicación por una tarifa base).
+* Utiliza paréntesis `()` para proteger la operación dentro de los mensajes de salida.
+* Compila y verifica que la concatenación no genera errores numéricos.
+
+---
+---
+
+## DÍA 4 (Jueves, 17 de septiembre de 2026 — 2 horas lectivas)
+### Versión de la aplicación: Consolidación de la v0.3 y Laboratorio de Integración del Proyecto Propio
+* **Objetivo técnico:** Revisar la arquitectura acumulativa, aplicar estándares de estilo y publicar la versión v0.3 del proyecto propio en GitHub.
+* **Criterios de Evaluación vinculados:** RA1.a, RA1.b, RA1.c, RA1.d, RA1.e, RA1.i.
+
+---
+
+### 1. Caso práctico narrativo en AzaharTech
+Es jueves por la mañana. Concluyen las primeras 8 horas de Programación. **Laia Claramunt** revisa la versión v0.3 en el repositorio:
+> *«Fijaos en lo que habéis logrado en solo cuatro días: no tenemos diez ejercicios sueltos en la papelera; tenemos **una aplicación viva que ya sabe capturar datos del hardware, identificar al usuario y calcular tiempos lectivos**.*
+>
+> *Hoy cada uno de vosotros va a dedicar estas dos horas a auditar, limpiar y documentar la versión v0.3 de su **proyecto propio de la bolsa de proyectos**. Aplicaremos la indentación oficial, cerraremos recursos y realizaremos el commit formal en GitHub»*.
+
+---
+
+### 2. Estándares de calidad de código en AzaharTech
+1. **Autoformateo en IntelliJ:** Todo código debe pasar por el formateador automático del IDE pulsando **`Ctrl + Alt + L`** (en Windows/Linux) o **`Cmd + Option + L`** (en macOS). La indentación debe ser homogénea de 4 espacios.
+2. **Nombres descriptivos:** Las variables deben reflejar su propósito (`minutosTotalesLectivos`, no `mtl`).
+3. **Cierre de recursos:** Toda clase que utilice `Scanner` debe cerrarlo explícitamente con `.close()` al final del `main`.
+
+---
+
+### 3. Taller guiado: La versión v0.3 del Proyecto Propio del Estudiante
+
+Cada estudiante verifica que su archivo único `pr/src/MiProyecto.java` cumple con el nivel de consolidación alcanzado en el caso guía:
+
+```java
+/**
+ * PROYECTO: [Nombre de tu Proyecto Elegido de la Bolsa de Proyectos]
+ * Consultora: AzaharTech Software Consulting
+ * 
+ * Versión 0.3: Módulo acumulativo de captura de datos, tipado y cálculo aritmético.
+ * Módulo: Programación (PR) - Sprint 1 (RA1)
  * 
  * @author [Tus Apellidos, Tu Nombre]
- * @version 1.0 (Semana 2 - Septiembre 2026)
+ * @version 0.3 (Cierre Semana 1 - Septiembre 2026)
  */
 import java.util.Scanner;
 
-public class Reto1Calculo {
+public class MiProyecto {
     public static void main(String[] args) {
         Scanner teclado = new Scanner(System.in);
         
-        // 1. Declaración de variables
-        String codigoTransaccion;
-        int unidadesSolicitadas;
-        double precioUnitario;
-        int capacidadPorLote = 12; // Capacidad estándar por lote
+        // 1. Variables numéricas de infraestructura (Día 1)
+        int idSucursal;
+        double balanceInicial;
         
-        int lotesCompletos;
-        int unidadesSobrantes;
-        double costeSubtotal;
-        double costeImpuesto;
-        double costeTotalFinal;
-        double ratioAprovechamiento;
+        // 2. Variables alfanuméricas de cliente y estado (Día 2)
+        String nombreCliente;
+        String identificadorFiscal;
+        char categoriaCliente;
+        boolean cuentaVerificada = true;
         
-        // 2. Entrada de datos
+        // 3. Variables de cálculo aritmético (Día 3)
+        int operacionesManana;
+        int operacionesTarde;
+        int totalOperaciones;
+        double tarifaPorOperacion = 12.50;
+        double volumenTotalCalculado;
+        
+        // Captura de datos interactiva
         System.out.println("=================================================");
-        System.out.println("     AZAHARTECH - MOTOR DE CÁLCULO SECUENCIAL    ");
+        System.out.println("   SISTEMA DE GESTIÓN OPERATIVA - AZAHARTECH     ");
         System.out.println("=================================================");
-        System.out.print("Introduce el código de operación: ");
-        codigoTransaccion = teclado.nextLine();
+        System.out.print("ID Sucursal / Almacén: ");
+        idSucursal = teclado.nextInt();
         
-        System.out.print("Introduce el volumen de unidades a procesar: ");
-        unidadesSolicitadas = teclado.nextInt();
+        System.out.print("Balance base (€): ");
+        balanceInicial = teclado.nextDouble();
         
-        System.out.print("Introduce el precio unitario base: ");
-        precioUnitario = teclado.nextDouble();
+        teclado.nextLine(); // Limpieza obligatoria del buffer
         
-        // 3. Procesamiento y fórmulas matemáticas
-        // División entera y operador resto (%)
-        lotesCompletos = unidadesSolicitadas / capacidadPorLote;
-        unidadesSobrantes = unidadesSolicitadas % capacidadPorLote;
+        System.out.print("Identificador fiscal (DNI/CIF): ");
+        identificadorFiscal = teclado.nextLine();
         
-        // Operaciones aritméticas combinadas
-        costeSubtotal = unidadesSolicitadas * precioUnitario;
-        costeImpuesto = costeSubtotal * 0.21; // 21% de IVA
-        costeTotalFinal = costeSubtotal + costeImpuesto;
+        System.out.print("Nombre completo del cliente: ");
+        nombreCliente = teclado.nextLine();
         
-        // Casting explícito a (double) para garantizar división decimal precisa
-        ratioAprovechamiento = (((double)(unidadesSolicitadas - unidadesSobrantes)) / unidadesSolicitadas) * 100.0;
+        System.out.print("Categoría (A, B o C): ");
+        categoriaCliente = teclado.next().charAt(0);
         
-        // 4. Salida de resultados por consola
+        System.out.print("Operaciones registradas mañana: ");
+        operacionesManana = teclado.nextInt();
+        
+        System.out.print("Operaciones registradas tarde: ");
+        operacionesTarde = teclado.nextInt();
+        
+        // Procesamiento aritmético secuencial acumulativo
+        totalOperaciones = operacionesManana + operacionesTarde;
+        volumenTotalCalculado = totalOperaciones * tarifaPorOperacion;
+        
+        // Salida estructurada de la versión v0.3
         System.out.println("-------------------------------------------------");
-        System.out.println("DESGLOSE DE OPERACIÓN: " + codigoTransaccion);
-        System.out.println("Lotes completos empaquetados: " + lotesCompletos);
-        System.out.println("Unidades sueltas restantes:   " + unidadesSobrantes);
-        System.out.println("Coste base subtotal:          " + costeSubtotal + " euros.");
-        System.out.println("Impuesto aplicado (21%):      " + costeImpuesto + " euros.");
-        System.out.println("Coste final liquidado:        " + costeTotalFinal + " euros.");
-        System.out.println("Porcentaje aprovechamiento:   " + ratioAprovechamiento + " %");
+        System.out.println("RESUMEN DE OPERATIVA REGISTRADA:");
+        System.out.println("Cliente:     " + nombreCliente + " (" + identificadorFiscal + ")");
+        System.out.println("Categoría:   " + categoriaCliente + " | Estado activo: " + cuentaVerificada);
+        System.out.println("Operaciones: " + (operacionesManana + operacionesTarde) + " totales");
+        System.out.println("Volumen:     " + volumenTotalCalculado + " € computados.");
         System.out.println("=================================================");
         
         teclado.close();
@@ -1494,29 +613,20 @@ public class Reto1Calculo {
 
 ### 4. Cierre formal en Git y sincronización con GitHub
 
-1. En IntelliJ IDEA, abre la terminal integrada (`Alt + F12`) o la pestaña **Commit** (`Ctrl + K`).
-2. Verifica el estado del repositorio mediante:
-   ```bash
-   git status
-   ```
-3. Comprueba que aparecen los archivos `pr/pseudocodigo/reto1_calculo.psc` y `pr/src/Reto1Calculo.java`.
-4. Añade los cambios y realiza el commit convencional:
-   ```bash
-   git add pr/
-   git commit -m "feat(pr): implementar formulas matematicas y conversiones de tipo en reto 1"
-   git push
-   ```
-5. Accede a tu repositorio remoto en GitHub y comprueba que ambos archivos están correctamente registrados con su historial limpio.
+El estudiante confirma los avances de la primera semana en su repositorio:
+
+```bash
+git add pr/
+git commit -m "feat(pr): consolidar aplicacion v0.3 con captura completa de datos y calculos base"
+git push
+```
 
 ---
 
-### Balance pedagógico de la Semana 2 de Programación
-Al concluir estas 8 horas lectivas (Días 5 al 8):
-* Dominas los **operadores de asignación compuesta** y los **operadores de incremento y decremento (`++`, `--`)**, conociendo los efectos del pre y post-incremento.
-* Comprendes la diferencia sustancial entre **división entera** y **división real**, y aplicas con maestría el **operador módulo (`%`)** para descomponer magnitudes.
-* Respetas la **jerarquía de operadores** utilizando paréntesis defensivos `()`.
-* Gobiernas las **conversiones de tipo implícitas y explícitas (*casting*)**, impidiendo la pérdida de precisión decimal en cálculos críticos.
-* El motor matemático del **Reto 1 de tu proyecto propio** está programado, probado y versionado en GitHub, **100 % alineado con los contenidos y criterios del RA1**.
+### Balance pedagógico de la Semana 1 (Enfoque Código Vivo)
+1. **Un solo código fuente en constante evolución:** El estudiante ha comprobado cómo `ControlAccesoQR.java` ha crecido desde un esqueleto de 15 líneas hasta un programa estructurado de 50 líneas sin desechar nada de lo aprendido.
+2. **Cero saturación:** Solo se han abordado datos numéricos, alfanuméricos, booleanos, operadores elementales y concatenación, **100 % fieles al RA1**, sin condicionales ni bucles.
+3. **El estudiante tiene su propio software en marcha:** Su archivo `MiProyecto.java` v0.3 está publicado en GitHub, listo para recibir en la **Semana 2** las operaciones de descomposición con módulo (`%`) y las conversiones de tipo (*casting*).
 
 # MÓDULO PROFESIONAL: PROGRAMACIÓN (PR)
 
@@ -1524,172 +634,238 @@ Al concluir estas 8 horas lectivas (Días 5 al 8):
 
 ---
 
-# SEMANA 3: CONSTANTES, LITERALES, SALIDA FORMATEADA (PRINTF) Y CIERRE DEL PROGRAMA SECUENCIAL (8 HORAS)
+# SEMANA 2: EL MOTOR MATEMÁTICO — OPERADORES, EXPRESIONES Y CONVERSIONES DE TIPO (8 HORAS)
+### Hilo conductor metodológico: «Código Incremental Vivo»
+Continuamos trabajando sobre el **mismo archivo maestro** que dejamos al final de la Semana 1. Tomamos la versión `ControlAccesoQR v0.3` y la evolucionamos progresivamente hasta la versión `v0.6` integrando operadores compuestos, descomposición con módulo (`%`) y conversiones de tipo (*casting*), mientras cada estudiante replica esta misma evolución en la clase única de **su proyecto elegido de la bolsa de proyectos**.
 
 ---
 
-## DÍA 9 (Lunes, 28 de septiembre de 2026 — 2 horas lectivas)
-### Bloque: Constantes inmutables (`final`), convención `UPPER_SNAKE_CASE`, literales tipados y eliminación de números mágicos
-* **Distribución horaria:** 45 minutos de teoría conceptual + 45 minutos de andamiaje guiado (PSeInt $\rightarrow$ Java) + 30 minutos de laboratorio individual.
-* **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.e, RA1.f.
+## DÍA 5 (Lunes, 21 de septiembre de 2026 — 2 horas lectivas)
+### Versión de la aplicación: `ControlAccesoQR v0.4` (Asignación Compuesta e Incrementos en Memoria)
+* **Objetivo técnico:** Refactorizar el código maestro de la Semana 1 aplicando operadores de asignación compuesta (`+=`, `-=`, `*=`) y operadores unarios de incremento (`++`) y decremento (`--`) sobre los contadores y acumuladores de la aplicación.
+* **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.e, RA1.g.
 
 ---
 
-### 1. Caso práctico narrativo: La caza de los «números mágicos» en AzaharTech
-
-Es lunes 28 de septiembre a primera hora. La célula de desarrollo de **AzaharTech** encara la última semana del Sprint 1. En el proyector de la sala técnica, **Alba Torres** ha abierto el código fuente del terminal del **IES El Caminàs** y subraya varias líneas con un recuadro rojo:
+### 1. Caso práctico narrativo en AzaharTech
+Es lunes por la mañana. En la sala técnica de **AzaharTech**, **Pau Ferrer** abre el archivo `ControlAccesoQR.java` tal y como quedó el jueves anterior (versión v0.3). Quiere añadir un contador para saber cuántos fichajes procesa el terminal a lo largo de la mañana y ha escrito:
 
 ```java
-double costeFinal = totalHoras * 1.21;
-int tiempoSegundos = minutosEntrada * 60;
-String codigo = "CAMINAS-" + idAlumno;
+totalFichajesTerminal = totalFichajesTerminal + 1;
+minutosTotalesLectivos = minutosTotalesLectivos + minutosExtra;
 ```
 
-Alba se gira hacia **Pau Ferrer** y hacia el estudiante:
-> *«Fijaos en esos valores: `1.21`, `60`, `"CAMINAS"`. En la jerga de la ingeniería del software los llamamos **números mágicos (*magic numbers*) o literales huérfanos**: valores fijos incrustados directamente en mitad de las operaciones matemáticas.*
+**Alba Torres** se acerca a su monitor, señala la pantalla y le explica:
+> *«Pau, en un código profesional no duplicamos el nombre de la variable a ambos lados del signo igual. Para acumular valores o contar eventos utilizamos **operadores de asignación compuesta (`+=`)** y el **operador de incremento (`++`)**.*
 >
-> *¿Qué ocurre si la dirección del IES El Caminàs nos pide mañana cambiar el prefijo del centro a `"CAMINAS-26"`? ¿O qué pasa si el IVA de un servicio se actualiza por normativa legal? Tendríamos que rastrear cientos de líneas de código buscando ese valor a mano, arriesgándonos a cambiar un `60` que era de minutos por un `60` que correspondía a otra cosa.*
+> *Hacen que el código sea más compacto, reducen el riesgo de erratas al escribir nombres largos y permiten al compilador generar un código intermedio más optimizado.*
 >
-> *En AzaharTech aplicamos un estándar innegociable: **ningún valor fijo vive en mitad de una fórmula**. Todo dato inmutable debe ser extraído, nombrado y protegido como una **constante formal con la palabra clave `final`** al inicio de la clase»*.
+> *Hoy abriremos nuestro archivo `ControlAccesoQR` y lo refactorizaremos a la versión **v0.4**: sustituiremos las asignaciones largas por operadores compuestos y aprenderemos a distinguir el pre-incremento del post-incremento para evitar efectos secundarios en la memoria»*.
 
 ---
 
-### 2. Fundamento teórico: Inmutabilidad, constantes y literales tipados
+### 2. Fundamento teórico: Asignación compuesta, incremento y mutabilidad de memoria
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                        VARIABLE FRENTE A CONSTANTE EN LA MEMORIA RAM                   │
+│                        OPERADORES DE ASIGNACIÓN COMPUESTA EN JAVA                      │
 ├─────────────────────┬───────────────────────────┬──────────────────────────────────────┤
-│ Concepto            │ Declaración en Java       │ Comportamiento en tiempo de ejecución│
+│ Expresión compacta  │ Expresión equivalente     │ Acción sobre la celda de memoria RAM │
 ├─────────────────────┼───────────────────────────┼──────────────────────────────────────┤
-│ Variable mutable    │ int intentos = 3;         │ Su valor puede cambiar con `=`.      │
+│ total += valor;     │ total = total + valor;    │ Suma 'valor' al dato actual de total │
 ├─────────────────────┼───────────────────────────┼──────────────────────────────────────┤
-│ Constante inmutable │ final int MAX_INTENTOS = 3│ El compilador bloquea cualquier      │
-│                     │                           │ intento de reasignación posterior.   │
+│ tiempo -= pausa;    │ tiempo = tiempo - pausa;  │ Resta 'pausa' al dato actual         │
+├─────────────────────┼───────────────────────────┼──────────────────────────────────────┤
+│ aforo *= factor;    │ aforo = aforo * factor;   │ Multiplica el contenido por 'factor' │
+├─────────────────────┼───────────────────────────┼──────────────────────────────────────┤
+│ cupo /= divisor;    │ cupo = cupo / divisor;    │ Divide el contenido entre 'divisor'  │
 └─────────────────────┴───────────────────────────┴──────────────────────────────────────┘
 ```
 
-#### A. La palabra reservada `final` en Java
-En Java, una **constante** se define anteponiendo el modificador **`final`** a la declaración del tipo de dato:
+#### A. Operadores unarios de incremento (`++`) y decremento (`--`)
+Aumentan o disminuyen el valor de una variable entera exactamente en una unidad:
+* **Post-incremento (`variable++`):** El valor actual de la variable se utiliza en la expresión donde se encuentra y, **justo después de ser leído**, la variable se incrementa en 1 en la memoria RAM.
+* **Pre-incremento (`++variable`):** La variable se incrementa en 1 en la memoria RAM **antes** de que su valor sea leído o utilizado en la expresión circundante.
 
 ```java
-final String NOMBRE_INSTITUTO = "IES El Caminàs";
-final int SEGUNDOS_POR_MINUTO = 60;
-final double FACTOR_IVA = 0.21;
+// Ejemplo de análisis de memoria en AzaharTech:
+int accesos = 10;
+System.out.println(accesos++); // Imprime 10 en consola. En memoria RAM pasa a valer 11.
+System.out.println(accesos);   // Imprime 11.
+System.out.println(++accesos); // En memoria RAM sube a 12 y luego imprime 12.
 ```
-
-* **Garantía del compilador:** Si por descuido escribes `SEGUNDOS_POR_MINUTO = 100;` en cualquier otra línea del programa, el compilador detendrá el proceso de construcción con el error: *«Cannot assign a value to final variable»*.
-* **Optimización de rendimiento:** La Máquina Virtual de Java (JVM) optimiza las constantes inmutables en memoria, sustituyendo su referencia directamente por el valor en tiempo de compilación.
-
-#### B. Convención de nomenclatura: `UPPER_SNAKE_CASE`
-Para distinguir visualmente y al instante qué identificadores son variables y cuáles son constantes:
-* Se escriben **íntegramente en letras MAYÚSCULAS**.
-* Las palabras compuestas se separan mediante **guiones bajos (`_`)**.
-* *Ejemplos correctos:* `CAPACIDAD_MAXIMA`, `PRECIO_UNITARIO_BASE`, `PREFIJO_TERMINAL`.
-
-#### C. Literales numéricos tipados y sufijos
-Un literal es la escritura explícita de un dato en el código fuente. Java asigna tipos por defecto a los literales, lo que exige conocer sus sufijos:
-1. **Literales enteros largos (`long`):** Por defecto, Java interpreta cualquier número entero (*ej. `2000`*) como un `int` de 32 bits. Si el número supera el rango de $2.147$ millones, se debe añadir el sufijo **`L`** al final (*ej. `5000000000L`*).
-2. **Literales decimales simples (`float`):** Por defecto, cualquier número con coma (*ej. `3.14`*) se interpreta como `double` (64 bits). Para forzarlo a `float` (32 bits), se añade el sufijo **`F`** (*ej. `3.14F`*).
-3. **Notación científica:** Java permite escribir números con potencias de diez usando la letra `E` (*ej. `1.5E3` equivale a $1.5 \times 10^3 = 1500.0$*).
 
 ---
 
-### 3. Andamiaje didáctico paso a paso: PSeInt $\rightarrow$ Java
+### 3. Andamiaje didáctico: Refactorización a `ControlAccesoQR v0.4`
 
-Modelamos la parametrización de constantes corporativas del IES El Caminàs paso a paso.
+Tomamos el archivo único de la Semana 1 y lo refactorizamos incorporando el contador global del terminal y asignaciones compuestas.
 
-#### Paso 1. Diseño algorítmico en PSeInt (`pr/pseudocodigo/dia9_constantes.psc`)
+##### Paso A. Actualización en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.4)
 ```psc
-Algoritmo Dia9Constantes
-    // 1. Declaración conceptual de constantes de configuración
-    Definir PREFIJO_CENTRO Como Cadena
-    Definir SEGUNDOS_POR_MINUTO Como Entero
-    Definir COSTE_EXPEDICION_CARNET Como Real
+Algoritmo ControlAccesoQR
+    // =========================================================================
+    // SISTEMA DE CONTROL DE ASISTENCIA QR - IES EL CAMINAS (Castellon)
+    // Version: 0.4 (Evolucion: Asignacion Compuesta y Contadores de Sesion)
+    // =========================================================================
     
-    // Asignación inicial que no debe variar
-    PREFIJO_CENTRO <- "CAMINAS"
-    SEGUNDOS_POR_MINUTO <- 60
-    COSTE_EXPEDICION_CARNET <- 4.50
+    // Variables de hardware y terminal
+    Definir terminalId Como Entero
+    Definir tempVestibulo Como Real
     
-    // 2. Variables de entrada
-    Definir dniEstudiante Como Cadena
-    Definir minutosLectura Como Entero
-    Definir segundosCalculados Como Entero
-    Definir tokenGenerado Como Cadena
+    // Variables de identidad del estudiante
+    Definir nombreEstudiante, dniEstudiante Como Cadena
+    Definir letraGrupo Como Caracter
+    Definir matriculaActiva Como Logico
     
-    Escribir "=== AZAHARTECH: PARAMETRIZACION DE CONSTANTES ==="
-    Escribir "Introduce el DNI del alumno:"
+    // Variables de sesiones lectivas
+    Definir sesionesManana, sesionesTarde, totalSesiones Como Entero
+    Definir minutosPorSesion, minutosTotalesLectivos Como Entero
+    Definir tokenResumen Como Cadena
+    
+    // [NUEVO DÍA 5] Contadores y acumuladores globales del terminal
+    Definir contadorFichajesTerminal Como Entero
+    Definir minutosExtraGuardia Como Entero
+    
+    contadorFichajesTerminal <- 0
+    
+    // Entrada de datos del terminal y alumno
+    Escribir "=== AZAHARTECH: TERMINAL IES EL CAMINAS (v0.4) ==="
+    Escribir "Introduce ID del terminal y temperatura:"
+    Leer terminalId
+    Leer tempVestibulo
+    
+    Escribir "Introduce DNI, nombre y grupo:"
     Leer dniEstudiante
-    Escribir "Introduce los minutos transcurridos:"
-    Leer minutosLectura
+    Leer nombreEstudiante
+    Leer letraGrupo
+    matriculaActiva <- Verdadero
     
-    // 3. Procesamiento usando constantes inmutables
-    segundosCalculados <- minutosLectura * SEGUNDOS_POR_MINUTO
-    tokenGenerado <- PREFIJO_CENTRO + "-" + dniEstudiante
+    Escribir "Introduce sesiones programadas manana y tarde:"
+    Leer sesionesManana
+    Leer sesionesTarde
     
-    // 4. Emisión de datos
-    Escribir "------------------------------------------------"
-    Escribir "Entidad emisora:      ", PREFIJO_CENTRO
-    Escribir "Token generado:       ", tokenGenerado
-    Escribir "Segundos calculados:  ", segundosCalculados
-    Escribir "Tasa carnet asociada: ", COSTE_EXPEDICION_CARNET, " EUR"
+    Escribir "Introduce minutos adicionales de guardia/tutoría:"
+    Leer minutosExtraGuardia
+    
+    minutosPorSesion <- 50
+    
+    // [REFACTORIZACIÓN DÍA 5] Procesamiento aritmético secuencial acumulativo
+    // Simulamos el incremento del contador de fichajes del terminal
+    contadorFichajesTerminal <- contadorFichajesTerminal + 1
+    
+    totalSesiones <- sesionesManana + sesionesTarde
+    minutosTotalesLectivos <- totalSesiones * minutosPorSesion
+    
+    // Acumulación compuesta de minutos extraordinarios
+    minutosTotalesLectivos <- minutosTotalesLectivos + minutosExtraGuardia
+    
+    tokenResumen <- dniEstudiante + "-T" + ConvertirATexto(terminalId) + "-F" + ConvertirATexto(contadorFichajesTerminal)
+    
+    // Salida de datos actualizada
+    Escribir "================================================="
+    Escribir "FICHAJE CONFIRMADO (Registro #" + ConvertirATexto(contadorFichajesTerminal) + "):"
+    Escribir "Alumno:      " + nombreEstudiante + " (" + letraGrupo + " DAM)"
+    Escribir "Token QR:    " + tokenResumen
+    Escribir "Total clases:" + ConvertirATexto(totalSesiones) + " sesiones."
+    Escribir "Permanencia acumulada: " + ConvertirATexto(minutosTotalesLectivos) + " minutos."
+    Escribir "================================================="
 FinAlgoritmo
 ```
 
-#### Paso 2. Traducción inmediata a Java en IntelliJ IDEA (`pr/src/Dia9Constantes.java`)
+##### Paso B. Refactorización en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.4)
+Abrimos nuestro archivo maestro `ControlAccesoQR.java` y aplicamos directamente la refactorización:
+
 ```java
 /**
+ * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ * 
+ * Versión 0.4: Operadores de asignación compuesta e incrementos unarios.
  * Módulo: Programación (PR) - Sprint 1 (RA1)
- * Caso Guía: Declaración de constantes con 'final' y eliminación de números mágicos.
- * @author AzaharTech Consulting
  */
 import java.util.Scanner;
 
-public class Dia9Constantes {
+public class ControlAccesoQR {
     public static void main(String[] args) {
-        // -------------------------------------------------------------
-        // 1. CONSTANTES INMUTABLES DEL SISTEMA (UPPER_SNAKE_CASE)
-        // -------------------------------------------------------------
-        final String PREFIJO_CENTRO = "CAMINAS";
-        final int SEGUNDOS_POR_MINUTO = 60;
-        final double COSTE_EXPEDICION_CARNET = 4.50;
-        final long ID_SESION_GLOBAL = 9500000000L; // Literal long con sufijo L
-        
-        // -------------------------------------------------------------
-        // 2. VARIABLES DE MEMORIA
-        // -------------------------------------------------------------
         Scanner teclado = new Scanner(System.in);
-        String dniEstudiante;
-        int minutosLectura;
-        int segundosCalculados;
-        String tokenGenerado;
         
-        // -------------------------------------------------------------
-        // 3. ENTRADA DE DATOS
-        // -------------------------------------------------------------
-        System.out.println("=== AZAHARTECH: PARAMETRIZACIÓN DE CONSTANTES ===");
-        System.out.print("Introduce el DNI del alumno: ");
+        // 1. Variables de hardware y terminal
+        int terminalId;
+        double tempVestibulo;
+        
+        // Variables de identidad
+        String dniEstudiante;
+        String nombreEstudiante;
+        char letraGrupo;
+        boolean matriculaActiva;
+        
+        // Variables de cómputo de sesiones
+        int sesionesManana;
+        int sesionesTarde;
+        int totalSesiones;
+        int minutosPorSesion = 50;
+        int minutosTotalesLectivos;
+        String tokenResumen;
+        
+        // [NUEVO DÍA 5] Contadores globales y acumuladores de tiempo
+        int contadorFichajesTerminal = 0; // Inicialización en memoria
+        int minutosExtraGuardia;
+        
+        // 2. Captura de datos
+        System.out.println("=================================================");
+        System.out.println("   AZAHARTECH - TERMINAL IES EL CAMINÀS (v0.4)   ");
+        System.out.println("=================================================");
+        System.out.print("ID Terminal: ");
+        terminalId = teclado.nextInt();
+        
+        System.out.print("Temperatura sensor (ºC): ");
+        tempVestibulo = teclado.nextDouble();
+        
+        teclado.nextLine(); // Limpieza obligatoria del buffer
+        
+        System.out.print("DNI Estudiante: ");
         dniEstudiante = teclado.nextLine();
         
-        System.out.print("Introduce los minutos transcurridos: ");
-        minutosLectura = teclado.nextInt();
+        System.out.print("Nombre completo: ");
+        nombreEstudiante = teclado.nextLine();
         
-        // -------------------------------------------------------------
-        // 4. PROCESAMIENTO SECUENCIAL USANDO CONSTANTES
-        // -------------------------------------------------------------
-        segundosCalculados = minutosLectura * SEGUNDOS_POR_MINUTO;
-        tokenGenerado = PREFIJO_CENTRO + "-" + dniEstudiante;
+        System.out.print("Grupo (letra): ");
+        letraGrupo = teclado.next().charAt(0);
         
-        // -------------------------------------------------------------
-        // 5. SALIDA DE DATOS
-        // -------------------------------------------------------------
-        System.out.println("------------------------------------------------");
-        System.out.println("Entidad emisora:      " + PREFIJO_CENTRO);
-        System.out.println("Sesión auditoría ID:  " + ID_SESION_GLOBAL);
-        System.out.println("Token generado:       " + tokenGenerado);
-        System.out.println("Segundos calculados:  " + segundosCalculados);
-        System.out.println("Tasa carnet asociada: " + COSTE_EXPEDICION_CARNET + " EUR");
+        matriculaActiva = true;
+        
+        System.out.print("Sesiones programadas turno mañana: ");
+        sesionesManana = teclado.nextInt();
+        
+        System.out.print("Sesiones programadas turno tarde: ");
+        sesionesTarde = teclado.nextInt();
+        
+        System.out.print("Minutos adicionales de guardia/tutoría: ");
+        minutosExtraGuardia = teclado.nextInt();
+        
+        // [REFACTORIZACIÓN DÍA 5] Uso de operador de incremento unario
+        contadorFichajesTerminal++; // Registra el paso del alumno por el torno
+        
+        // Cálculo base
+        totalSesiones = sesionesManana + sesionesTarde;
+        minutosTotalesLectivos = totalSesiones * minutosPorSesion;
+        
+        // [REFACTORIZACIÓN DÍA 5] Uso de asignación compuesta (+=)
+        minutosTotalesLectivos += minutosExtraGuardia; // Acumula minutos sin repetir variable
+        
+        // Composición del token identificador
+        tokenResumen = dniEstudiante + "-T" + terminalId + "-F" + contadorFichajesTerminal;
+        
+        // 3. Salida de datos consolidada
+        System.out.println("=================================================");
+        System.out.println("FICHAJE CONFIRMADO (Registro #" + contadorFichajesTerminal + "):");
+        System.out.println("Alumno:      " + nombreEstudiante + " (" + letraGrupo + " DAM)");
+        System.out.println("Token QR:    " + tokenResumen);
+        System.out.println("Total clases:" + totalSesiones + " sesiones.");
+        System.out.println("Permanencia acumulada: " + minutosTotalesLectivos + " minutos.");
+        System.out.println("=================================================");
         
         teclado.close();
     }
@@ -1698,554 +874,1658 @@ public class Dia9Constantes {
 
 ---
 
-### 4. Laboratorio práctico: Aplicación a tu proyecto propio
+#### 4. Trabajo del estudiante: Refactorización de su proyecto propio
+El estudiante abre su archivo maestro `MiProyecto.java` (que dejó en v0.3 el jueves anterior):
+* Declara un contador de operaciones o accesos (`contadorOperaciones`) y lo incrementa con `++`.
+* Sustituye las sumas de acumulación por operadores compuestos `+=` o `-=`.
+* Ejecuta el código en IntelliJ comprobando que los acumuladores actualizan la memoria RAM correctamente.
 
-#### Objetivo de la sesión
-Identificar en tu proyecto propio de la bolsa de proyectos todos los valores fijos del dominio del problema y refactorizar el código para declararlos como **constantes `final`** al inicio de la clase.
+---
+---
 
-#### Ejemplos según la temática de tu proyecto:
-* *Proyecto logístico/almacén:* `final int CAPACIDAD_MAXIMA_PALET = 120;`, `final double IVA_TRANSPORTE = 0.21;`.
-* *Proyecto de reservas/hostelería:* `final String NOMBRE_CADENA = "Gran Hotel Castellón";`, `final int HORA_CHECKOUT = 12;`.
-* *Proyecto financiero/facturación:* `final double RECARGO_EXPRESS = 15.0;`, `final String MONEDA_BASE = "EUR";`.
+## DÍA 6 (Martes, 22 de septiembre de 2026 — 2 horas lectivas)
+### Versión de la aplicación: `ControlAccesoQR v0.5` (Descomposición Temporal con División y Módulo `%`)
+* **Objetivo técnico:** Incorporar al programa maestro la división entera y el operador módulo (`%`) para descomponer los segundos brutos de funcionamiento en horas, minutos y segundos exactos sin usar condicionales.
+* **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.e, RA1.g.
 
-#### Instrucciones paso a paso
-1. Abre tu proyecto en IntelliJ IDEA y localiza tu archivo `pr/pseudocodigo/dia9_proyecto_propio.psc`.
-2. Define al menos 3 constantes representativas utilizando identificadores en mayúsculas.
-3. En `pr/src/`, crea la clase `Dia9ProyectoPropio.java`.
-4. Traduce el algoritmo a Java empleando la palabra clave `final`.
-5. Intenta provocar un error deliberado de compilación asignando un nuevo valor a una de las constantes en mitad del código (`NOMBRE_CONSTANTE = otroValor;`). Observa cómo IntelliJ resalta la línea en rojo impidiendo la compilación.
-6. Corrige la línea, compila y ejecuta comprobando que los valores fijos se integran perfectamente en las operaciones matemáticas.
+---
+
+### 1. Caso práctico narrativo en AzaharTech
+Es martes por la mañana. En la pantalla de control, **Pau Ferrer** muestra que el reloj interno del vestíbulo del IES El Caminàs devuelve el tiempo de actividad del terminal en **segundos brutos acumulados**: `7540` segundos.
+
+Pau comenta:
+> *«En la pantalla no podemos mostrarle al conserje que el terminal lleva '7540 segundos encendido'. El cliente necesita ver cuántas horas completas, minutos sobrantes y segundos exactos representa ese número.*
+>
+> *He intentado dividir `7540 / 60`, pero me da 125 minutos y no sé cómo extraer las horas y los segundos sin escribir un algoritmo larguísimo con restas»*.
+
+**Alba Torres** toma el mando en la pizarra:
+> *«No necesitas restas ni condicionales. La combinación de la **división entera (`/`)** y el **operador módulo o resto (`%`)** resuelve este problema en tres líneas de código puramente secuenciales.*
+>
+> *Hoy abriremos `ControlAccesoQR.java` y lo evolucionaremos a la versión **v0.5**: convertiremos nuestro programa en un motor capaz de descomponer cualquier magnitud temporal de forma exacta»*.
+
+---
+
+### 2. Fundamento teórico: La división entera frente al operador residuo (`%`)
+
+```
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                        DESCOMPOSICIÓN MATEMÁTICA DE MAGNITUDES                         │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│ Total: 7540 segundos                                                                   │
+│ 1. Horas completas:        7540 / 3600 = 2 horas (División entera descarta decimales)  │
+│ 2. Segundos restantes:     7540 % 3600 = 340 segundos sobrantes que no llegan a 1 hora │
+│ 3. Minutos de ese resto:   340 / 60    = 5 minutos                                     │
+│ 4. Segundos finales:       7540 % 60   = 40 segundos restantes                         │
+│                                                                                        │
+│ RESULTADO EXACTO:          2 horas, 5 minutos y 40 segundos.                           │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+1. **La división entre enteros en Java (`int / int`):**
+    * Realiza un truncamiento automático hacia cero, descartando cualquier parte fraccionaria.
+    * `7540 / 3600` da exactamente **`2`**.
+2. **El operador módulo (`%`):**
+    * Devuelve el residuo que no ha podido ser absorbido por la división entera.
+    * `7540 % 60` da exactamente **`40`** (porque $60 \times 125 = 7500$; sobran $40$).
+3. **Poder algorítmico secuencial:** Permite desglosar monedas, tiempos, paquetes o ciclos de turnos sin requerir ninguna estructura condicional `if`.
+
+---
+
+### 3. Andamiaje didáctico: Evolución a `ControlAccesoQR v0.5`
+
+Ampliamos el archivo maestro `ControlAccesoQR` incorporando la lectura de segundos de actividad del terminal y su descomposición horaria.
+
+##### Paso A. Expansión en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.5)
+```psc
+Algoritmo ControlAccesoQR
+    // =========================================================================
+    // SISTEMA DE CONTROL DE ASISTENCIA QR - IES EL CAMINAS (Castellon)
+    // Version: 0.5 (Evolucion: Descomposicion Temporal con Division y Modulo)
+    // =========================================================================
+    
+    // Variables previas
+    Definir terminalId, contadorFichajesTerminal Como Entero
+    Definir tempVestibulo Como Real
+    Definir nombreEstudiante, dniEstudiante, tokenResumen Como Cadena
+    Definir letraGrupo Como Caracter
+    Definir matriculaActiva Como Logico
+    Definir sesionesManana, sesionesTarde, totalSesiones, minutosTotalesLectivos Como Entero
+    Definir minutosPorSesion, minutosExtraGuardia Como Entero
+    
+    // [NUEVO DÍA 6] Variables para descomposición horaria exacta
+    Definir segundosActividadTerminal Como Entero
+    Definir horasUptime, minutosUptime, segundosUptime Como Entero
+    
+    contadorFichajesTerminal <- 0
+    minutosPorSesion <- 50
+    
+    // Captura de datos
+    Escribir "=== AZAHARTECH: TERMINAL IES EL CAMINAS (v0.5) ==="
+    Escribir "ID Terminal y temperatura:"
+    Leer terminalId
+    Leer tempVestibulo
+    
+    // [NUEVO DÍA 6] Entrada de segundos de funcionamiento del terminal
+    Escribir "Introduce segundos de actividad del terminal (uptime):"
+    Leer segundosActividadTerminal
+    
+    Escribir "Introduce DNI, nombre y grupo:"
+    Leer dniEstudiante
+    Leer nombreEstudiante
+    Leer letraGrupo
+    matriculaActiva <- Verdadero
+    
+    Escribir "Introduce sesiones de manana, tarde y guardia:"
+    Leer sesionesManana
+    Leer sesionesTarde
+    Leer minutosExtraGuardia
+    
+    // Procesamiento
+    contadorFichajesTerminal <- contadorFichajesTerminal + 1
+    totalSesiones <- sesionesManana + sesionesTarde
+    minutosTotalesLectivos <- (totalSesiones * minutosPorSesion) + minutosExtraGuardia
+    
+    // [NUEVO DÍA 6] Descomposición secuencial con división y módulo (%)
+    horasUptime <- trunc(segundosActividadTerminal / 3600)
+    minutosUptime <- trunc((segundosActividadTerminal MOD 3600) / 60)
+    segundosUptime <- segundosActividadTerminal MOD 60
+    
+    tokenResumen <- dniEstudiante + "-T" + ConvertirATexto(terminalId) + "-F" + ConvertirATexto(contadorFichajesTerminal)
+    
+    // Salida consolidada
+    Escribir "================================================="
+    Escribir "FICHAJE REGISTRADO #" + ConvertirATexto(contadorFichajesTerminal)
+    Escribir "Estudiante: ", nombreEstudiante, " | Grupo: ", letraGrupo, " DAM"
+    Escribir "Token QR:   ", tokenResumen
+    Escribir "Tiempo lectivo computado: ", minutosTotalesLectivos, " min."
+    Escribir "-------------------------------------------------"
+    Escribir "DIAGNOSTICO DEL TERMINAL (UPTIME):"
+    Escribir horasUptime, " horas, ", minutosUptime, " minutos y ", segundosUptime, " segundos en servicio."
+    Escribir "================================================="
+FinAlgoritmo
+```
+
+##### Paso B. Expansión en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.5)
+Abrimos nuestro archivo `ControlAccesoQR.java` y lo evolucionamos a v0.5:
+
+```java
+/**
+ * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ * 
+ * Versión 0.5: Descomposición de magnitudes con división entera y operador módulo (%).
+ * Módulo: Programación (PR) - Sprint 1 (RA1)
+ */
+import java.util.Scanner;
+
+public class ControlAccesoQR {
+    public static void main(String[] args) {
+        Scanner teclado = new Scanner(System.in);
+        
+        // Variables de terminal
+        int terminalId;
+        double tempVestibulo;
+        int contadorFichajesTerminal = 0;
+        
+        // [NUEVO DÍA 6] Variables de descomposición temporal
+        int segundosActividadTerminal;
+        int horasUptime;
+        int minutosUptime;
+        int segundosUptime;
+        
+        // Variables de identidad
+        String dniEstudiante;
+        String nombreEstudiante;
+        char letraGrupo;
+        boolean matriculaActiva = true;
+        
+        // Variables de cómputo de sesiones
+        int sesionesManana;
+        int sesionesTarde;
+        int totalSesiones;
+        int minutosPorSesion = 50;
+        int minutosExtraGuardia;
+        int minutosTotalesLectivos;
+        String tokenResumen;
+        
+        // Captura de datos
+        System.out.println("=================================================");
+        System.out.println("   AZAHARTECH - TERMINAL IES EL CAMINÀS (v0.5)   ");
+        System.out.println("=================================================");
+        System.out.print("ID Terminal: ");
+        terminalId = teclado.nextInt();
+        
+        System.out.print("Temperatura sensor (ºC): ");
+        tempVestibulo = teclado.nextDouble();
+        
+        // [NUEVO DÍA 6] Entrada de segundos de actividad
+        System.out.print("Segundos acumulados de actividad del terminal: ");
+        segundosActividadTerminal = teclado.nextInt();
+        
+        teclado.nextLine(); // Limpieza de buffer
+        
+        System.out.print("DNI Estudiante: ");
+        dniEstudiante = teclado.nextLine();
+        
+        System.out.print("Nombre completo: ");
+        nombreEstudiante = teclado.nextLine();
+        
+        System.out.print("Grupo (letra): ");
+        letraGrupo = teclado.next().charAt(0);
+        
+        System.out.print("Sesiones turno mañana: ");
+        sesionesManana = teclado.nextInt();
+        
+        System.out.print("Sesiones turno tarde: ");
+        sesionesTarde = teclado.nextInt();
+        
+        System.out.print("Minutos de guardia/tutoría: ");
+        minutosExtraGuardia = teclado.nextInt();
+        
+        // Procesamiento
+        contadorFichajesTerminal++;
+        totalSesiones = sesionesManana + sesionesTarde;
+        minutosTotalesLectivos = (totalSesiones * minutosPorSesion) + minutosExtraGuardia;
+        
+        // [NUEVO DÍA 6] Descomposición secuencial con división y módulo (%)
+        horasUptime = segundosActividadTerminal / 3600;              // División entera
+        minutosUptime = (segundosActividadTerminal % 3600) / 60;      // Resto de horas dividido entre 60
+        segundosUptime = segundosActividadTerminal % 60;             // Resto final de segundos
+        
+        tokenResumen = dniEstudiante + "-T" + terminalId + "-F" + contadorFichajesTerminal;
+        
+        // Salida de datos consolidada
+        System.out.println("=================================================");
+        System.out.println("FICHAJE REGISTRADO #" + contadorFichajesTerminal);
+        System.out.println("Estudiante: " + nombreEstudiante + " | Grupo: " + letraGrupo + " DAM");
+        System.out.println("Token QR:   " + tokenResumen);
+        System.out.println("Tiempo lectivo computado: " + minutosTotalesLectivos + " min.");
+        System.out.println("-------------------------------------------------");
+        System.out.println("DIAGNÓSTICO DEL TERMINAL (UPTIME):");
+        System.out.println(horasUptime + " horas, " + minutosUptime + " minutos y " + segundosUptime + " segundos en servicio.");
+        System.out.println("=================================================");
+        
+        teclado.close();
+    }
+}
+```
+
+---
+
+#### 4. Trabajo del estudiante: Evolución de su proyecto propio
+El estudiante abre su archivo maestro `MiProyecto.java` (que estaba en v0.4):
+* Identifica una magnitud de su sistema que requiera ser descompuesta (ej. céntimos totales a euros y céntimos restantes; unidades de stock a cajas estándar y unidades sueltas; minutos de servicio a días y horas).
+* Aplica la división entera `/` y el operador módulo `%`.
+* Muestra el desglose por consola y comprueba con la calculadora que la reconstrucción matemática es perfecta.
+
+---
+---
+
+## DÍA 7 (Miércoles, 23 de septiembre de 2026 — 2 horas lectivas)
+### Versión de la aplicación: `ControlAccesoQR v0.6` (Jerarquía de Operadores y Casting Explícito)
+* **Objetivo técnico:** Evitar la pérdida involuntaria de decimales en el cálculo de ratios y porcentajes mediante conversiones explícitas de tipo (*casting* `(double)`) y proteger la evaluación de expresiones con paréntesis `()`.
+* **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.g, RA1.h.
+
+---
+
+### 1. Caso práctico narrativo en AzaharTech
+Es miércoles por la mañana. En el laboratorio de pruebas, **Pau Ferrer** muestra la nueva funcionalidad que ha intentado añadir a `ControlAccesoQR`: calcular el porcentaje de alumnos que han entrado a primera hora respecto al aforo total del vestíbulo.
+
+Ha introducido:
+* Alumnos que han entrado: `36`
+* Capacidad de aforo: `40`
+
+Y ha escrito en el código:
+```java
+double porcentajeAforo = (alumnosEntrados / aforoMaximo) * 100;
+```
+
+Al ejecutarlo, la consola imprime:
+```text
+Porcentaje de ocupación: 0.0 %
+```
+
+Pau se lleva las manos a la cabeza:
+> *«¡Pero si han entrado 36 de 40! ¡Eso es un 90 % exacto! ¿Por qué Java dice cero coma cero?»*.
+
+**Alba Torres** y **Laia Claramunt** se acercan a la pantalla. Laia explica:
+> *«Has caído en la trampa del tipado estático. `alumnosEntrados` y `aforoMaximo` son dos variables `int`. Java evalúa los paréntesis de izquierda a derecha: divide `36 / 40`, y como ambos son enteros, trunca los decimales y da `0`. Después multiplica `0 * 100`, que da `0`. Y solo al final, al guardarlo en la variable `double`, lo convierte en `0.0`.*
+>
+> *Para solucionar esto debemos aplicar un **casting explícito `(double)`**, forzando a la CPU a trabajar en coma flotante desde el primer paso de la división.*
+>
+> *Hoy evolucionaremos `ControlAccesoQR` a la versión **v0.6**: aprenderemos a blindar la precedencia matemática con paréntesis y dominaremos las conversiones implícitas y explícitas»*.
+
+---
+
+### 2. Fundamento teórico: Precedencia de operadores y *Casting* en Java
+
+```
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                        TABLA DE PRECEDENCIA DE EVALUACIÓN EN JAVA                      │
+├──────────────┬───────────────────────────────────────────┬─────────────────────────────┤
+│ Prioridad    │ Operadores                                │ Dirección de evaluación     │
+├──────────────┼───────────────────────────────────────────┼─────────────────────────────┤
+│ 1. Paréntesis│ ( )                                       │ De dentro hacia afuera      │
+├──────────────┼───────────────────────────────────────────┼─────────────────────────────┤
+│ 2. Unarios   │ ++ , -- , + , - , (tipo) [Casting]        │ De derecha a izquierda      │
+├──────────────┼───────────────────────────────────────────┼─────────────────────────────┤
+│ 3. Aritmética│ * , / , %                                 │ De izquierda a derecha      │
+├──────────────┼───────────────────────────────────────────┼─────────────────────────────┤
+│ 4. Aritmética│ + , -                                     │ De izquierda a derecha      │
+├──────────────┼───────────────────────────────────────────┼─────────────────────────────┤
+│ 5. Asignación│ = , += , -= , *= , /= , %=                │ De derecha a izquierda      │
+└──────────────┴───────────────────────────────────────────┴─────────────────────────────┘
+```
+
+#### A. Las conversiones de tipo en la memoria RAM
+1. **Conversión Implícita (Ensanchamiento / *Widening*):**
+    * Ocurre de forma automática y segura cuando un tipo de menor tamaño se almacena en uno mayor (`int` $\rightarrow$ `double`). No hay riesgo de pérdida de información.
+2. **Conversión Explícita (Estrechamiento / *Narrowing / Casting*):**
+    * Es obligatoria cuando el programador fuerza la conversión de un tipo de mayor precisión en uno menor (`double` $\rightarrow$ `int`).
+    * **Se produce truncamiento:** Los decimales se eliminan por completo (no se redondean).
+    * Se antepone el tipo destino entre paréntesis:
+      ```java
+      double porcentaje = 92.85;
+      int porcentajeEntero = (int) porcentaje; // Almacena 92 (pierde .85)
+      ```
+
+#### B. La solución técnica mediante Casting en divisiones
+Para calcular el porcentaje sin perder decimales en la división entera, forzamos que al menos una variable sea tratada como decimal:
+```java
+double porcentajeAforo = ((double) alumnosEntrados / aforoMaximo) * 100.0;
+```
+Al aplicar `(double)` sobre `alumnosEntrados`, la división pasa a ser de tipo `double / int`, lo que promociona toda la operación a coma flotante y devuelve el **`90.0 %`** exacto.
+
+---
+
+### 3. Andamiaje didáctico: Evolución a `ControlAccesoQR v0.6`
+
+Ampliamos el archivo maestro incorporando el aforo máximo, el cálculo de porcentaje exacto con casting y el truncamiento a valor entero.
+
+##### Paso A. Expansión en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.6)
+```psc
+Algoritmo ControlAccesoQR
+    // =========================================================================
+    // SISTEMA DE CONTROL DE ASISTENCIA QR - IES EL CAMINAS (Castellon)
+    // Version: 0.6 (Evolucion: Casting de Tipos y Calculo de Porcentajes)
+    // =========================================================================
+    
+    // Variables previas
+    Definir terminalId, contadorFichajesTerminal Como Entero
+    Definir tempVestibulo Como Real
+    Definir nombreEstudiante, dniEstudiante, tokenResumen Como Cadena
+    Definir letraGrupo Como Caracter
+    Definir matriculaActiva Como Logico
+    Definir sesionesManana, sesionesTarde, totalSesiones, minutosTotalesLectivos Como Entero
+    Definir minutosPorSesion, minutosExtraGuardia Como Entero
+    Definir segundosActividadTerminal, horasUptime, minutosUptime, segundosUptime Como Entero
+    
+    // [NUEVO DÍA 7] Variables de aforo y cálculo porcentual
+    Definir aforoMaximoVestibulo Como Entero
+    Definir porcentajeOcupacionReal Como Real
+    Definir porcentajeOcupacionTruncado Como Entero
+    
+    contadorFichajesTerminal <- 0
+    minutosPorSesion <- 50
+    
+    // Captura de datos
+    Escribir "=== AZAHARTECH: TERMINAL IES EL CAMINAS (v0.6) ==="
+    Escribir "ID Terminal, temperatura y segundos de actividad:"
+    Leer terminalId
+    Leer tempVestibulo
+    Leer segundosActividadTerminal
+    
+    // [NUEVO DÍA 7] Entrada de aforo máximo
+    Escribir "Introduce el aforo maximo permitido del vestibulo:"
+    Leer aforoMaximoVestibulo
+    
+    Escribir "Introduce DNI, nombre y grupo:"
+    Leer dniEstudiante
+    Leer nombreEstudiante
+    Leer letraGrupo
+    matriculaActiva <- Verdadero
+    
+    Escribir "Introduce sesiones de manana, tarde y guardia:"
+    Leer sesionesManana
+    Leer sesionesTarde
+    Leer minutosExtraGuardia
+    
+    // Procesamiento
+    contadorFichajesTerminal <- contadorFichajesTerminal + 1
+    totalSesiones <- sesionesManana + sesionesTarde
+    minutosTotalesLectivos <- (totalSesiones * minutosPorSesion) + minutosExtraGuardia
+    
+    horasUptime <- trunc(segundosActividadTerminal / 3600)
+    minutosUptime <- trunc((segundosActividadTerminal MOD 3600) / 60)
+    segundosUptime <- segundosActividadTerminal MOD 60
+    
+    // [NUEVO DÍA 7] Cálculo de porcentaje forzando cálculo real
+    porcentajeOcupacionReal <- (contadorFichajesTerminal * 100.0) / aforoMaximoVestibulo
+    porcentajeOcupacionTruncado <- trunc(porcentajeOcupacionReal)
+    
+    tokenResumen <- dniEstudiante + "-T" + ConvertirATexto(terminalId) + "-F" + ConvertirATexto(contadorFichajesTerminal)
+    
+    // Salida consolidada
+    Escribir "================================================="
+    Escribir "FICHAJE REGISTRADO #" + ConvertirATexto(contadorFichajesTerminal)
+    Escribir "Estudiante: ", nombreEstudiante, " | Grupo: ", letraGrupo, " DAM"
+    Escribir "Token QR:   ", tokenResumen
+    Escribir "Tiempo lectivo computado: ", minutosTotalesLectivos, " min."
+    Escribir "-------------------------------------------------"
+    Escribir "MONITORIZACION DE AFORO Y HARDWARE:"
+    Escribir "Ocupacion exacta:  ", porcentajeOcupacionReal, " %"
+    Escribir "Ocupacion en panel:", porcentajeOcupacionTruncado, " %"
+    Escribir "Tiempo en servicio:", horasUptime, "h ", minutosUptime, "m ", segundosUptime, "s"
+    Escribir "================================================="
+FinAlgoritmo
+```
+
+##### Paso B. Expansión en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.6)
+Abrimos nuestro archivo maestro `ControlAccesoQR.java` y lo evolucionamos a v0.6:
+
+```java
+/**
+ * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ * 
+ * Versión 0.6: Jerarquía de operadores, casting explícito y porcentajes.
+ * Módulo: Programación (PR) - Sprint 1 (RA1)
+ */
+import java.util.Scanner;
+
+public class ControlAccesoQR {
+    public static void main(String[] args) {
+        Scanner teclado = new Scanner(System.in);
+        
+        // Variables de terminal
+        int terminalId;
+        double tempVestibulo;
+        int contadorFichajesTerminal = 0;
+        int segundosActividadTerminal;
+        int horasUptime;
+        int minutosUptime;
+        int segundosUptime;
+        
+        // [NUEVO DÍA 7] Variables de aforo y cálculo de porcentaje
+        int aforoMaximoVestibulo;
+        double porcentajeOcupacionReal;
+        int porcentajeOcupacionTruncado;
+        
+        // Variables de identidad
+        String dniEstudiante;
+        String nombreEstudiante;
+        char letraGrupo;
+        boolean matriculaActiva = true;
+        
+        // Variables de cómputo de sesiones
+        int sesionesManana;
+        int sesionesTarde;
+        int totalSesiones;
+        int minutosPorSesion = 50;
+        int minutosExtraGuardia;
+        int minutosTotalesLectivos;
+        String tokenResumen;
+        
+        // Captura de datos
+        System.out.println("=================================================");
+        System.out.println("   AZAHARTECH - TERMINAL IES EL CAMINÀS (v0.6)   ");
+        System.out.println("=================================================");
+        System.out.print("ID Terminal: ");
+        terminalId = teclado.nextInt();
+        
+        System.out.print("Temperatura sensor (ºC): ");
+        tempVestibulo = teclado.nextDouble();
+        
+        System.out.print("Segundos acumulados de actividad: ");
+        segundosActividadTerminal = teclado.nextInt();
+        
+        // [NUEVO DÍA 7] Entrada de aforo
+        System.out.print("Aforo máximo permitido en vestíbulo: ");
+        aforoMaximoVestibulo = teclado.nextInt();
+        
+        teclado.nextLine(); // Limpieza de buffer
+        
+        System.out.print("DNI Estudiante: ");
+        dniEstudiante = teclado.nextLine();
+        
+        System.out.print("Nombre completo: ");
+        nombreEstudiante = teclado.nextLine();
+        
+        System.out.print("Grupo (letra): ");
+        letraGrupo = teclado.next().charAt(0);
+        
+        System.out.print("Sesiones turno mañana: ");
+        sesionesManana = teclado.nextInt();
+        
+        System.out.print("Sesiones turno tarde: ");
+        sesionesTarde = teclado.nextInt();
+        
+        System.out.print("Minutos de guardia/tutoría: ");
+        minutosExtraGuardia = teclado.nextInt();
+        
+        // Procesamiento
+        contadorFichajesTerminal++;
+        totalSesiones = sesionesManana + sesionesTarde;
+        minutosTotalesLectivos = (totalSesiones * minutosPorSesion) + minutosExtraGuardia;
+        
+        horasUptime = segundosActividadTerminal / 3600;
+        minutosUptime = (segundosActividadTerminal % 3600) / 60;
+        segundosUptime = segundosActividadTerminal % 60;
+        
+        // [NUEVO DÍA 7] Casting explícito a (double) para evitar división entera truncada a 0
+        porcentajeOcupacionReal = ((double) contadorFichajesTerminal / aforoMaximoVestibulo) * 100.0;
+        
+        // Casting explícito a (int) para obtener la parte entera deliberadamente
+        porcentajeOcupacionTruncado = (int) porcentajeOcupacionReal;
+        
+        tokenResumen = dniEstudiante + "-T" + terminalId + "-F" + contadorFichajesTerminal;
+        
+        // Salida consolidada
+        System.out.println("=================================================");
+        System.out.println("FICHAJE REGISTRADO #" + contadorFichajesTerminal);
+        System.out.println("Estudiante: " + nombreEstudiante + " | Grupo: " + letraGrupo + " DAM");
+        System.out.println("Token QR:   " + tokenResumen);
+        System.out.println("Tiempo lectivo computado: " + minutosTotalesLectivos + " min.");
+        System.out.println("-------------------------------------------------");
+        System.out.println("MONITORIZACIÓN DE AFORO Y HARDWARE:");
+        System.out.println("Ocupación exacta:   " + porcentajeOcupacionReal + " %");
+        System.out.println("Ocupación en panel: " + porcentajeOcupacionTruncado + " %");
+        System.out.println("Tiempo en servicio: " + horasUptime + "h " + minutosUptime + "m " + segundosUptime + "s");
+        System.out.println("=================================================");
+        
+        teclado.close();
+    }
+}
+```
+
+---
+
+#### 4. Trabajo del estudiante: Evolución de su proyecto propio
+El estudiante abre su archivo `MiProyecto.java` (en versión v0.5):
+* Incorpora el cálculo de un ratio o porcentaje que divida dos variables enteras de su negocio.
+* Aplica `(double)` sobre el dividendo para obtener el resultado decimal exacto.
+* Aplica `(int)` para almacenar en una variable secundaria el valor truncado.
+* Ejecuta pruebas verificando que no se produce el error de división entera a cero.
+
+---
+---
+
+## DÍA 8 (Jueves, 24 de septiembre de 2026 — 2 horas lectivas)
+### Versión de la aplicación: Consolidación de la v0.6 y Laboratorio de Integración de Cálculos
+* **Objetivo técnico:** Auditar y verificar que el motor matemático del proyecto propio (operadores compuestos, módulo `%` y *casting*) compila limpiamente y realizar la entrega de mitad de sprint en GitHub.
+* **Criterios de Evaluación vinculados:** RA1.a, RA1.b, RA1.c, RA1.d, RA1.e, RA1.g, RA1.h, RA1.i.
+
+---
+
+### 1. Caso práctico narrativo en AzaharTech
+Es jueves al mediodía. Concluyen las primeras dos semanas del sprint. **Laia Claramunt** revisa en la pantalla de la sala el avance global:
+> *«Hoy cerramos formalmente la Semana 2. En la Semana 1 creamos el esqueleto y la identidad de nuestro software. Durante estos últimos cuatro días habéis convertido el programa en un auténtico motor matemático: domináis los operadores compuestos (`+=`), la descomposición con módulo (`%`) y las conversiones de tipo con casting.*
+>
+> *Hoy dedicaremos estas dos horas a auditar y afianzar la versión **v0.6 de vuestro proyecto propio de la bolsa de proyectos**. No debe quedar ni un solo cálculo ambiguo ni una división entera accidental.*
+>
+> *Al sonar el timbre, la versión v0.6 de vuestra aplicación debe estar confirmada y subida a GitHub»*.
+
+---
+
+### 2. Checklist técnico de calidad del código para la versión v0.6
+Antes de realizar el commit, cada estudiante debe verificar los siguientes 5 puntos en IntelliJ:
+1. **Ausencia absoluta de condicionales o bucles:** El código se ejecuta de forma estrictamente secuencial de principio a fin (**100 % fiel a RA1**).
+2. **Casting explícito justificado:** Al menos una división entre enteros cuenta con `(double)` para preservar la precisión decimal.
+3. **Uso del operador módulo (`%`):** Al menos una magnitud se descompone o calcula mediante el residuo de una división.
+4. **Protección con paréntesis `()`:** Las fórmulas complejas están agrupadas con paréntesis para garantizar la precedencia matemática sin ambigüedades.
+5. **Indentación automática:** Se ha pulsado `Ctrl + Alt + L` para ordenar el código según el estándar de estilo oficial.
+
+---
+
+### 3. Taller guiado: La versión v0.6 del Proyecto Propio del Estudiante
+
+Cada estudiante comprueba que su clase única `pr/src/MiProyecto.java` ha evolucionado de forma acumulativa e incremental:
+
+```java
+/**
+ * PROYECTO: [Nombre de tu Proyecto Elegido de la Bolsa de Proyectos]
+ * Consultora: AzaharTech Software Consulting
+ * 
+ * Versión 0.6: Motor secuencial de cálculo avanzado, descomposición con módulo
+ * y conversiones de tipo explícitas (casting).
+ * Módulo: Programación (PR) - Sprint 1 (RA1)
+ * 
+ * @author [Tus Apellidos, Tu Nombre]
+ * @version 0.6 (Cierre Semana 2 - Septiembre 2026)
+ */
+import java.util.Scanner;
+
+public class MiProyecto {
+    public static void main(String[] args) {
+        Scanner teclado = new Scanner(System.in);
+        
+        // 1. Variables de infraestructura (Día 1)
+        int idSucursal;
+        double balanceInicial;
+        int contadorOperaciones = 0; // Día 5: Contador
+        
+        // [NUEVO DÍA 6] Variables de descomposición con módulo (%)
+        int unidadesTotalesProcesadas;
+        int lotesCompletos;
+        int unidadesSobrantes;
+        int capacidadPorLote = 24; // Empaquetado estándar
+        
+        // 2. Variables de cliente y estado (Día 2)
+        String nombreCliente;
+        String identificadorFiscal;
+        char categoriaCliente;
+        boolean cuentaVerificada = true;
+        
+        // 3. Variables de cálculo y casting (Días 3 y 7)
+        int operacionesManana;
+        int operacionesTarde;
+        int totalOperaciones;
+        double tarifaPorOperacion = 12.50;
+        double volumenTotalCalculado;
+        double ratioAprovechamientoReal;
+        int ratioAprovechamientoEntero;
+        
+        // Captura de datos interactiva
+        System.out.println("=================================================");
+        System.out.println("   SISTEMA DE GESTIÓN OPERATIVA - AZAHARTECH     ");
+        System.out.println("=================================================");
+        System.out.print("ID Sucursal / Almacén: ");
+        idSucursal = teclado.nextInt();
+        
+        System.out.print("Balance base (€): ");
+        balanceInicial = teclado.nextDouble();
+        
+        System.out.print("Volumen bruto de unidades a empaquetar: ");
+        unidadesTotalesProcesadas = teclado.nextInt();
+        
+        teclado.nextLine(); // Limpieza obligatoria de buffer
+        
+        System.out.print("Identificador fiscal (DNI/CIF): ");
+        identificadorFiscal = teclado.nextLine();
+        
+        System.out.print("Nombre completo del cliente: ");
+        nombreCliente = teclado.nextLine();
+        
+        System.out.print("Categoría (A, B o C): ");
+        categoriaCliente = teclado.next().charAt(0);
+        
+        System.out.print("Operaciones turno mañana: ");
+        operacionesManana = teclado.nextInt();
+        
+        System.out.print("Operaciones turno tarde: ");
+        operacionesTarde = teclado.nextInt();
+        
+        // [DÍA 5] Uso de incremento unario y asignación compuesta
+        contadorOperaciones++;
+        totalOperaciones = operacionesManana + operacionesTarde;
+        volumenTotalCalculado = totalOperaciones * tarifaPorOperacion;
+        
+        // [DÍA 6] Descomposición secuencial con división entera y módulo (%)
+        lotesCompletos = unidadesTotalesProcesadas / capacidadPorLote;
+        unidadesSobrantes = unidadesTotalesProcesadas % capacidadPorLote;
+        
+        // [DÍA 7] Casting explícito a (double) para cálculo de ratio porcentual exacto
+        ratioAprovechamientoReal = (((double)(unidadesTotalesProcesadas - unidadesSobrantes)) / unidadesTotalesProcesadas) * 100.0;
+        ratioAprovechamientoEntero = (int) ratioAprovechamientoReal; // Casting a entero
+        
+        // Salida estructurada de la versión v0.6
+        System.out.println("-------------------------------------------------");
+        System.out.println("REGISTRO DE OPERACIÓN #" + contadorOperaciones);
+        System.out.println("Cliente:      " + nombreCliente + " (" + identificadorFiscal + ")");
+        System.out.println("Categoría:    " + categoriaCliente + " | Estado: " + cuentaVerificada);
+        System.out.println("Volumen op.:  " + volumenTotalCalculado + " € computados.");
+        System.out.println("-------------------------------------------------");
+        System.out.println("LOGÍSTICA Y EMPAQUETADO (MÓDULO %):");
+        System.out.println("Lotes de " + capacidadPorLote + " uds: " + lotesCompletos + " completos.");
+        System.out.println("Sobrantes:       " + unidadesSobrantes + " unidades sueltas.");
+        System.out.println("Rendimiento:     " + ratioAprovechamientoReal + " % (Entero: " + ratioAprovechamientoEntero + " %)");
+        System.out.println("=================================================");
+        
+        teclado.close();
+    }
+}
+```
+
+---
+
+### 4. Cierre formal en Git y sincronización con GitHub
+
+El estudiante actualiza su repositorio con los avances de la segunda semana:
+
+```bash
+git add pr/
+git commit -m "feat(pr): evolucionar aplicacion propia a v0.6 con motor matematico, modulo y casting"
+git push
+```
+
+---
+
+### Balance pedagógico de la Semana 2 (Enfoque Código Vivo)
+1. **Crecimiento orgánico del software:** La clase `ControlAccesoQR.java` ha evolucionado de la v0.3 a la v0.6 sin desechar una sola línea de la semana anterior.
+2. **Dominio matemático sin condicionales:** El alumno ha resuelto descomposiciones de tiempo y cálculos de aforo usando exclusivamente división entera, módulo (`%`) y casting `(double)`.
+3. **El proyecto propio sigue el mismo ritmo:** El estudiante dispone de la versión v0.6 de `MiProyecto.java` en GitHub, lista para recibir en la **Semana 3** las constantes inmutables `final`, secuencias de escape y el formateo profesional con `printf` para alcanzar la versión final `v1.0`.
+
+# MÓDULO PROFESIONAL: PROGRAMACIÓN (PR)
+
+## SPRINT 1. Algorítmica y fundamentos de programación (3 semanas | 24 horas)
+
+---
+
+# SEMANA 3: LA ARQUITECTURA DEL CÓDIGO — CONSTANTES, ESCAPES, PRINTF Y CONSOLIDACIÓN v1.0 (8 HORAS)
+### Hilo conductor metodológico: «Código Incremental Vivo»
+Llegamos a la semana final del Sprint 1. Partiendo de la versión `ControlAccesoQR v0.6` (que ya cuenta con captura completa, descomposición con módulo y casting), evolucionamos nuestro archivo maestro eliminando números mágicos (`v0.7`), maquetando con secuencias de escape (`v0.8`), formateando con `printf` (`v0.9`) y sellando la versión definitiva `v1.0` secuencial con comentarios formales, mientras el estudiante concluye paralelamente su archivo único `MiProyecto.java`.
+
+---
+
+## DÍA 9 (Lunes, 28 de septiembre de 2026 — 2 horas lectivas)
+### Versión de la aplicación: `ControlAccesoQR v0.7` (Inmutabilidad con `final` y Extracción de Números Mágicos)
+* **Objetivo técnico:** Refactorizar el código maestro extrayendo todos los literales fijos a constantes inmutables declaradas con la palabra clave `final` bajo la convención `UPPER_SNAKE_CASE`.
+* **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.e, RA1.f.
+
+---
+
+### 1. Caso práctico narrativo en AzaharTech
+Es lunes 28 de septiembre por la mañana. En la sala técnica de **AzaharTech**, **Alba Torres** proyecta en el monitor principal la clase `ControlAccesoQR.java` tal y como quedó el jueves anterior (versión v0.6). Con el cursor, resalta varios números y textos dispersos por las líneas de cálculo:
+
+```java
+int minutosTotalesLectivos = (totalSesiones * 50) + minutosExtraGuardia;
+horasUptime = segundosActividadTerminal / 3600;
+minutosUptime = (segundosActividadTerminal % 3600) / 60;
+porcentajeOcupacionReal = ((double) contadorFichajesTerminal / aforoMaximoVestibulo) * 100.0;
+```
+
+Alba se dirige a **Pau Ferrer** y al estudiante:
+> *«Fijaos en esos números: `50`, `3600`, `60`, `100.0`. En la ingeniería de software profesional los llamamos **números mágicos (*magic numbers*)**: valores fijos incrustados directamente en mitad de las operaciones matemáticas.*
+>
+> *¿Qué ocurre si la dirección del IES El Caminàs decide cambiar la duración de las sesiones lectivas a 55 minutos el curso que viene? Tendríamos que buscar ese `50` en mitad de las fórmulas, arriesgándonos a cambiar un dato por error.*
+>
+> *Hoy abriremos nuestro archivo `ControlAccesoQR` y lo refactorizaremos a la versión **v0.7**: extraeremos todos los valores fijos y los convertiremos en **constantes inmutables protegidas por el compilador con la palabra clave `final`** al inicio del método»*.
+
+---
+
+### 2. Fundamento teórico: Constantes inmutables y literales tipados
+
+```
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                        ELIMINACIÓN DE NÚMEROS MÁGICOS EN MEMORIA                       │
+├──────────────────────────┬───────────────────────────┬─────────────────────────────────┤
+│ Código Frágil (Hardcoded)│ Código Profesional (final)│ Ventaja de Ingeniería           │
+├──────────────────────────┼───────────────────────────┼─────────────────────────────────┤
+│ total * 50;              │ total * MINUTOS_SESION;   │ Si cambia el valor, solo se     │
+│ segundos / 3600;         │ segundos / SEGUNDOS_HORA; │ modifica en una única línea de  │
+│ total * 100.0;           │ total * FACTOR_PORCENTAJE;│ configuración al inicio.        │
+└──────────────────────────┴───────────────────────────┴─────────────────────────────────┘
+```
+
+1. **La palabra reservada `final`:** Le indica al compilador que la posición de memoria es de solo lectura. Cualquier intento de reasignar su valor provocará un error de compilación.
+2. **Convención `UPPER_SNAKE_CASE`:** Todas las letras en mayúsculas separadas por guiones bajos (`_`). Permite que cualquier miembro del equipo identifique al instante que se trata de un valor inmutable.
+3. **Literales numéricos tipados:** El sufijo `L` para enteros largos (`long`) y `F` para decimales simples (`float`).
+
+---
+
+### 3. Andamiaje didáctico: Refactorización a `ControlAccesoQR v0.7`
+
+Abrimos el archivo maestro y extraemos todos los números fijos a la cabecera de la clase.
+
+##### Paso A. Actualización en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.7)
+```psc
+Algoritmo ControlAccesoQR
+    // =========================================================================
+    // SISTEMA DE CONTROL DE ASISTENCIA QR - IES EL CAMINAS (Castellon)
+    // Version: 0.7 (Evolucion: Extraccion de Constantes Inmutables)
+    // =========================================================================
+    
+    // [NUEVO DÍA 9] Declaracion centralizada de constantes de configuracion
+    Definir NOMBRE_INSTITUTO, PREFIJO_CENTRO Como Cadena
+    Definir MINUTOS_POR_SESION, SEGUNDOS_POR_HORA, SEGUNDOS_POR_MINUTO Como Entero
+    Definir FACTOR_PORCENTAJE Como Real
+    
+    NOMBRE_INSTITUTO <- "IES El Caminas (Castellon)"
+    PREFIJO_CENTRO <- "CAMINAS"
+    MINUTOS_POR_SESION <- 50
+    SEGUNDOS_POR_HORA <- 3600
+    SEGUNDOS_POR_MINUTO <- 60
+    FACTOR_PORCENTAJE <- 100.0
+    
+    // Variables de memoria
+    Definir terminalId, contadorFichajesTerminal, aforoMaximoVestibulo Como Entero
+    Definir tempVestibulo, porcentajeOcupacionReal Como Real
+    Definir porcentajeOcupacionTruncado Como Entero
+    Definir nombreEstudiante, dniEstudiante, tokenResumen Como Cadena
+    Definir letraGrupo Como Caracter
+    Definir matriculaActiva Como Logico
+    Definir sesionesManana, sesionesTarde, totalSesiones, minutosTotalesLectivos Como Entero
+    Definir minutosExtraGuardia, segundosActividadTerminal Como Entero
+    Definir horasUptime, minutosUptime, segundosUptime Como Entero
+    
+    contadorFichajesTerminal <- 0
+    
+    // Captura de datos
+    Escribir "=== AZAHARTECH: TERMINAL " + NOMBRE_INSTITUTO + " (v0.7) ==="
+    Escribir "ID Terminal, temperatura y segundos de actividad:"
+    Leer terminalId
+    Leer tempVestibulo
+    Leer segundosActividadTerminal
+    
+    Escribir "Aforo maximo del vestibulo:"
+    Leer aforoMaximoVestibulo
+    
+    Escribir "DNI, nombre y grupo del alumno:"
+    Leer dniEstudiante
+    Leer nombreEstudiante
+    Leer letraGrupo
+    matriculaActiva <- Verdadero
+    
+    Escribir "Sesiones de manana, tarde y minutos de guardia:"
+    Leer sesionesManana
+    Leer sesionesTarde
+    Leer minutosExtraGuardia
+    
+    // Procesamiento usando exclusivamente constantes
+    contadorFichajesTerminal <- contadorFichajesTerminal + 1
+    totalSesiones <- sesionesManana + sesionesTarde
+    minutosTotalesLectivos <- (totalSesiones * MINUTOS_POR_SESION) + minutosExtraGuardia
+    
+    horasUptime <- trunc(segundosActividadTerminal / SEGUNDOS_POR_HORA)
+    minutosUptime <- trunc((segundosActividadTerminal MOD SEGUNDOS_POR_HORA) / SEGUNDOS_POR_MINUTO)
+    segundosUptime <- segundosActividadTerminal MOD SEGUNDOS_POR_MINUTO
+    
+    porcentajeOcupacionReal <- (contadorFichajesTerminal * FACTOR_PORCENTAJE) / aforoMaximoVestibulo
+    porcentajeOcupacionTruncado <- trunc(porcentajeOcupacionReal)
+    
+    tokenResumen <- PREFIJO_CENTRO + "-" + dniEstudiante + "-T" + ConvertirATexto(terminalId)
+    
+    // Salida consolidada
+    Escribir "================================================="
+    Escribir "CENTRO:     ", NOMBRE_INSTITUTO
+    Escribir "FICHAJE:    #", contadorFichajesTerminal, " | TOKEN: ", tokenResumen
+    Escribir "ESTUDIANTE: ", nombreEstudiante, " (", letraGrupo, " DAM)"
+    Escribir "PERMANENCIA:", minutosTotalesLectivos, " min lectivos."
+    Escribir "AFORO:      ", porcentajeOcupacionReal, " % (Panel: ", porcentajeOcupacionTruncado, " %)"
+    Escribir "UPTIME:     ", horasUptime, "h ", minutosUptime, "m ", segundosUptime, "s"
+    Escribir "================================================="
+FinAlgoritmo
+```
+
+##### Paso B. Refactorización en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.7)
+```java
+/**
+ * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ * 
+ * Versión 0.7: Parametrización con constantes inmutables ('final') y eliminación de números mágicos.
+ * Módulo: Programación (PR) - Sprint 1 (RA1)
+ */
+import java.util.Scanner;
+
+public class ControlAccesoQR {
+    public static void main(String[] args) {
+        // -------------------------------------------------------------
+        // 1. CONSTANTES INMUTABLES DEL SISTEMA (UPPER_SNAKE_CASE)
+        // -------------------------------------------------------------
+        final String NOMBRE_INSTITUTO = "IES El Caminàs (Castellón)";
+        final String PREFIJO_CENTRO = "CAMINAS";
+        final int MINUTOS_POR_SESION = 50;
+        final int SEGUNDOS_POR_HORA = 3600;
+        final int SEGUNDOS_POR_MINUTO = 60;
+        final double FACTOR_PORCENTAJE = 100.0;
+        
+        // -------------------------------------------------------------
+        // 2. VARIABLES DE MEMORIA
+        // -------------------------------------------------------------
+        Scanner teclado = new Scanner(System.in);
+        
+        int terminalId;
+        double tempVestibulo;
+        int contadorFichajesTerminal = 0;
+        int segundosActividadTerminal;
+        int aforoMaximoVestibulo;
+        
+        String dniEstudiante;
+        String nombreEstudiante;
+        char letraGrupo;
+        boolean matriculaActiva = true;
+        
+        int sesionesManana;
+        int sesionesTarde;
+        int totalSesiones;
+        int minutosExtraGuardia;
+        int minutosTotalesLectivos;
+        
+        int horasUptime;
+        int minutosUptime;
+        int segundosUptime;
+        double porcentajeOcupacionReal;
+        int porcentajeOcupacionTruncado;
+        String tokenResumen;
+        
+        // -------------------------------------------------------------
+        // 3. ENTRADA DE DATOS
+        // -------------------------------------------------------------
+        System.out.println("=================================================");
+        System.out.println("   AZAHARTECH - TERMINAL " + NOMBRE_INSTITUTO);
+        System.out.println("   Versión 0.7 (Parámetros Inmutables Activos)   ");
+        System.out.println("=================================================");
+        System.out.print("ID Terminal: ");
+        terminalId = teclado.nextInt();
+        
+        System.out.print("Temperatura sensor (ºC): ");
+        tempVestibulo = teclado.nextDouble();
+        
+        System.out.print("Segundos acumulados de actividad: ");
+        segundosActividadTerminal = teclado.nextInt();
+        
+        System.out.print("Aforo máximo permitido en vestíbulo: ");
+        aforoMaximoVestibulo = teclado.nextInt();
+        
+        teclado.nextLine(); // Limpieza obligatoria del buffer
+        
+        System.out.print("DNI Estudiante: ");
+        dniEstudiante = teclado.nextLine();
+        
+        System.out.print("Nombre completo: ");
+        nombreEstudiante = teclado.nextLine();
+        
+        System.out.print("Grupo (letra): ");
+        letraGrupo = teclado.next().charAt(0);
+        
+        System.out.print("Sesiones turno mañana: ");
+        sesionesManana = teclado.nextInt();
+        
+        System.out.print("Sesiones turno tarde: ");
+        sesionesTarde = teclado.nextInt();
+        
+        System.out.print("Minutos de guardia/tutoría: ");
+        minutosExtraGuardia = teclado.nextInt();
+        
+        // -------------------------------------------------------------
+        // 4. PROCESAMIENTO SECUENCIAL USANDO CONSTANTES
+        // -------------------------------------------------------------
+        contadorFichajesTerminal++;
+        totalSesiones = sesionesManana + sesionesTarde;
+        minutosTotalesLectivos = (totalSesiones * MINUTOS_POR_SESION) + minutosExtraGuardia;
+        
+        // Descomposición horaria con constantes inmutables
+        horasUptime = segundosActividadTerminal / SEGUNDOS_POR_HORA;
+        minutosUptime = (segundosActividadTerminal % SEGUNDOS_POR_HORA) / SEGUNDOS_POR_MINUTO;
+        segundosUptime = segundosActividadTerminal % SEGUNDOS_POR_MINUTO;
+        
+        // Cálculo de porcentaje con casting y factor porcentual constante
+        porcentajeOcupacionReal = ((double) contadorFichajesTerminal / aforoMaximoVestibulo) * FACTOR_PORCENTAJE;
+        porcentajeOcupacionTruncado = (int) porcentajeOcupacionReal;
+        
+        tokenResumen = PREFIJO_CENTRO + "-" + dniEstudiante + "-T" + terminalId;
+        
+        // -------------------------------------------------------------
+        // 5. SALIDA CONSOLIDADA
+        // -------------------------------------------------------------
+        System.out.println("=================================================");
+        System.out.println("CENTRO:     " + NOMBRE_INSTITUTO);
+        System.out.println("FICHAJE:    #" + contadorFichajesTerminal + " | TOKEN: " + tokenResumen);
+        System.out.println("ESTUDIANTE: " + nombreEstudiante + " (" + letraGrupo + " DAM)");
+        System.out.println("PERMANENCIA:" + minutosTotalesLectivos + " min lectivos.");
+        System.out.println("AFORO:      " + porcentajeOcupacionReal + " % (Panel: " + porcentajeOcupacionTruncado + " %)");
+        System.out.println("UPTIME:     " + horasUptime + "h " + minutosUptime + "m " + segundosUptime + "s");
+        System.out.println("=================================================");
+        
+        teclado.close();
+    }
+}
+```
+
+---
+
+#### 4. Trabajo del estudiante: Refactorización de su proyecto propio
+El estudiante abre su archivo maestro `MiProyecto.java` (versión v0.6):
+* Extrae todos los números y cadenas fijas a constantes `final` al inicio del método `main`.
+* Sustituye en todas las operaciones del programa los literales sueltos por los identificadores de constantes en mayúsculas (`UPPER_SNAKE_CASE`).
+* Compila y comprueba que el programa se ejecuta de forma idéntica, pero con una mantenibilidad infinitamente superior.
 
 ---
 ---
 
 ## DÍA 10 (Martes, 29 de septiembre de 2026 — 2 horas lectivas)
-### Bloque: Caracteres no imprimibles, secuencias de escape (`\n`, `\t`, `\"`, `\\`) y maquetación de consola
-* **Distribución horaria:** 45 minutos de teoría conceptual + 45 minutos de andamiaje guiado (PSeInt $\rightarrow$ Java) + 30 minutos de laboratorio individual.
+### Versión de la aplicación: `ControlAccesoQR v0.8` (Secuencias de Escape y Maquetación de Consola)
+* **Objetivo técnico:** Maquetar la salida del terminal utilizando secuencias de escape universales (`\n`, `\t`, `\"`, `\\`), alineando etiquetas informativas y controlando saltos de línea sin concatenaciones superfluas.
 * **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.f.
 
 ---
 
-### 1. Caso práctico narrativo: El recibo apelotonado de la pantalla de acceso
+### 1. Caso práctico narrativo en AzaharTech
+Es martes por la mañana. **Pau Ferrer** muestra la consola de IntelliJ con la versión v0.7 en ejecución:
+> *«El cálculo con constantes funciona de maravilla, pero la salida sigue teniendo un aspecto descuidado: para separar bloques tengo que poner `System.out.println("");` repetidas veces y las palabras 'TOKEN', 'CENTRO' y 'PERMANENCIA' no están alineadas porque cada palabra tiene una longitud distinta»*.
 
-Es martes por la mañana. **Pau Ferrer** muestra entusiasmado el resumen de fichaje que ha programado. Al ejecutarlo en la consola de IntelliJ, la salida aparece en un único bloque de texto apelotonado:
-
-```text
-======================= IES EL CAMINAS ======================= Acceso registrado: Alumno: Laura Vidal Grupo: 1DAM Sala: Aula 104 Nota: Recuerde escanear a la salida
-```
-
-Pau comenta:
-> *«Para separar esto he tenido que escribir diez `System.out.println()` seguidos con comillas vacías. Además, si quiero que la palabra 'Aula 104' aparezca entre comillas dobles, Java me da error porque piensa que estoy cerrando el texto antes de tiempo»*.
-
-**Laia Claramunt** y **Alba Torres** le muestran la barra invertida (**`\`**) en el teclado:
-> *«En programación, los caracteres que no se ven (como el salto de línea o el salto de tabulación) y los caracteres reservados del lenguaje (como las comillas dobles) se representan mediante **secuencias de escape**. Te permiten maquetar salidas limpias, recibos alineados en columnas y cuadros de diálogo en consola con una fracción del código»*.
+**Laia Claramunt** y **Alba Torres** le indican la barra invertida (**`\`**):
+> *«Hoy evolucionaremos `ControlAccesoQR.java` a la versión **v0.8**. Utilizaremos **secuencias de escape**: introduciremos tabuladores horizontales (`\t`) para crear columnas alineadas, saltos de línea (`\n`) para separar bloques en una sola instrucción y escaparemos comillas dobles (`\"`) para citar el protocolo oficial del centro educativo»*.
 
 ---
 
-### 2. Fundamento teórico: Secuencias de escape y caracteres de control
+### 2. Fundamento teórico: Secuencias de escape en cadenas Java
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                        SECUENCIAS DE ESCAPE UNIVERSALES EN JAVA                        │
+│                        SECUENCIAS DE ESCAPE EN CADENAS DE TEXTO                        │
 ├──────────────┬────────────────────────┬────────────────────────────────────────────────┤
-│ Secuencia    │ Nombre técnico         │ Acción que produce en la salida de consola     │
+│ Secuencia    │ Nombre técnico         │ Efecto en la consola de salida                 │
 ├──────────────┼────────────────────────┼────────────────────────────────────────────────┤
-│ \n           │ Salto de línea         │ Desplaza el cursor al inicio de la línea       │
-│              │ (Newline / Line Feed)  │ siguiente (equivale a pulsar Enter).           │
+│ \n           │ Salto de línea         │ Pasa a la siguiente línea inmediatamente.      │
 ├──────────────┼────────────────────────┼────────────────────────────────────────────────┤
-│ \t           │ Tabulador horizontal   │ Desplaza el cursor a la siguiente parada de    │
-│              │ (Horizontal Tab)       │ tabulación (alinea datos en columnas).         │
+│ \t           │ Tabulación horizontal  │ Avanza hasta la siguiente parada de columna.   │
 ├──────────────┼────────────────────────┼────────────────────────────────────────────────┤
-│ \"           │ Comilla doble escapada │ Imprime el carácter literal " sin cerrar la    │
-│              │                        │ cadena de texto del código fuente.             │
+│ \"           │ Comilla doble          │ Permite imprimir comillas dentro de un String. │
 ├──────────────┼────────────────────────┼────────────────────────────────────────────────┤
-│ \'           │ Comilla simple escapada│ Permite representar el carácter ' dentro de un │
-│              │                        │ literal de tipo char: '\''                     │
-├──────────────┼────────────────────────┼────────────────────────────────────────────────┤
-│ \\           │ Barra invertida        │ Imprime el símbolo literal de la barra \ sin   │
-│              │                        │ activar una secuencia de escape.               │
+│ \\           │ Barra invertida        │ Imprime el carácter literal de barra \         │
 └──────────────┴────────────────────────┴────────────────────────────────────────────────┘
 ```
 
-#### A. El carácter de escape: La barra invertida (`\`)
-Cuando el compilador de Java encuentra una barra invertida dentro de una cadena de texto, no la interpreta como una letra común; activa un mecanismo de traducción inmediata que convierte el carácter siguiente en un comando de control de bajo nivel.
-
-#### B. Maquetación tabular con tabuladores (`\t`)
-El tabulador horizontal divide la línea de la consola en columnas virtuales equidistantes (habitualmente de 4 u 8 espacios). Colocar un `\t` entre los datos permite alinear etiquetas y valores automáticamente sin tener que contar espacios en blanco manualmente con la barra espaciadora:
-
-```java
-System.out.println("DNI:\t" + dni + "\tGRUPO:\t" + grupo);
-```
-
-#### C. Inclusión de rutas de archivos y citas en textos
-* Si intentas escribir una ruta de Windows en Java: `String ruta = "C:\nuevos\trabajos";`, el compilador dará error porque `\n` lo entenderá como salto de línea y `\t` como tabulador.
-* La forma correcta en Java exige **escapar la barra invertida duplicándola**:
-  ```java
-  String rutaCorrecta = "C:\\nuevos\\trabajos\\datos.txt";
-  ```
-
 ---
 
-### 3. Andamiaje didáctico paso a paso: PSeInt $\rightarrow$ Java
+### 3. Andamiaje didáctico: Evolución a `ControlAccesoQR v0.8`
 
-Modelamos la maquetación del ticket de acceso del IES El Caminàs utilizando secuencias de escape.
+Modificamos el bloque de salida del archivo maestro `ControlAccesoQR` incorporando las secuencias de escape.
 
-#### Paso 1. Diseño algorítmico en PSeInt (`pr/pseudocodigo/dia10_escapes.psc`)
+##### Paso A. Expansión en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.8)
 ```psc
-Algoritmo Dia10Escapes
-    Definir nombreEstudiante, dniEstudiante, nombreCentro Como Cadena
-    Definir tiempoAccesoSegundos Como Entero
+Algoritmo ControlAccesoQR
+    // =========================================================================
+    // SISTEMA DE CONTROL DE ASISTENCIA QR - IES EL CAMINAS (Castellon)
+    // Version: 0.8 (Evolucion: Secuencias de Escape y Formato de Consola)
+    // =========================================================================
     
-    nombreCentro <- "IES El Caminas (Castellon)"
-    nombreEstudiante <- "Vidal Soriano, Laura"
-    dniEstudiante <- "45123789K"
-    tiempoAccesoSegundos <- 185
+    // Constantes
+    Definir NOMBRE_INSTITUTO, PREFIJO_CENTRO Como Cadena
+    Definir MINUTOS_POR_SESION, SEGUNDOS_POR_HORA, SEGUNDOS_POR_MINUTO Como Entero
+    Definir FACTOR_PORCENTAJE Como Real
     
-    // Salida estructurada simulando saltos y tabulaciones
-    Escribir "=========================================================="
-    Escribir "ENTIDAD:\t", nombreCentro
-    Escribir "PROTOCOLO:\t\"Escaneo Directo QR en Pantalla\""
-    Escribir "=========================================================="
+    NOMBRE_INSTITUTO <- "IES El Caminas (Castellon)"
+    PREFIJO_CENTRO <- "CAMINAS"
+    MINUTOS_POR_SESION <- 50
+    SEGUNDOS_POR_HORA <- 3600
+    SEGUNDOS_POR_MINUTO <- 60
+    FACTOR_PORCENTAJE <- 100.0
+    
+    // Variables
+    Definir terminalId, contadorFichajesTerminal, aforoMaximoVestibulo Como Entero
+    Definir tempVestibulo, porcentajeOcupacionReal Como Real
+    Definir porcentajeOcupacionTruncado Como Entero
+    Definir nombreEstudiante, dniEstudiante, tokenResumen Como Cadena
+    Definir letraGrupo Como Caracter
+    Definir matriculaActiva Como Logico
+    Definir sesionesManana, sesionesTarde, totalSesiones, minutosTotalesLectivos Como Entero
+    Definir minutosExtraGuardia, segundosActividadTerminal Como Entero
+    Definir horasUptime, minutosUptime, segundosUptime Como Entero
+    
+    contadorFichajesTerminal <- 0
+    
+    // Entrada de datos
+    Escribir "=== AZAHARTECH: TERMINAL IES EL CAMINAS (v0.8) ==="
+    Escribir "ID Terminal, temperatura y segundos de actividad:"
+    Leer terminalId
+    Leer tempVestibulo
+    Leer segundosActividadTerminal
+    Escribir "Aforo maximo del vestibulo:"
+    Leer aforoMaximoVestibulo
+    
+    Escribir "DNI, nombre y grupo del alumno:"
+    Leer dniEstudiante
+    Leer nombreEstudiante
+    Leer letraGrupo
+    matriculaActiva <- Verdadero
+    
+    Escribir "Sesiones de manana, tarde y minutos de guardia:"
+    Leer sesionesManana
+    Leer sesionesTarde
+    Leer minutosExtraGuardia
+    
+    // Cálculos
+    contadorFichajesTerminal <- contadorFichajesTerminal + 1
+    totalSesiones <- sesionesManana + sesionesTarde
+    minutosTotalesLectivos <- (totalSesiones * MINUTOS_POR_SESION) + minutosExtraGuardia
+    
+    horasUptime <- trunc(segundosActividadTerminal / SEGUNDOS_POR_HORA)
+    minutosUptime <- trunc((segundosActividadTerminal MOD SEGUNDOS_POR_HORA) / SEGUNDOS_POR_MINUTO)
+    segundosUptime <- segundosActividadTerminal MOD SEGUNDOS_POR_MINUTO
+    
+    porcentajeOcupacionReal <- (contadorFichajesTerminal * FACTOR_PORCENTAJE) / aforoMaximoVestibulo
+    porcentajeOcupacionTruncado <- trunc(porcentajeOcupacionReal)
+    
+    tokenResumen <- PREFIJO_CENTRO + "-" + dniEstudiante + "-T" + ConvertirATexto(terminalId)
+    
+    // [NUEVO DÍA 10] Salida estructurada con tabuladores y saltos limpios
     Escribir ""
-    Escribir "DATOS DEL ACCESO:"
-    Escribir "DNI:\t\t", dniEstudiante
-    Escribir "ALUMNO:\t\t", nombreEstudiante
-    Escribir "ESTANCIA:\t", tiempoAccesoSegundos, " seg."
-    Escribir ""
-    Escribir "NOTIFICACION:\tAcceso verificado.\nRuta servidor:\tC:\\caminas\\logs"
+    Escribir "=========================================================="
+    Escribir "ENTIDAD:\t", NOMBRE_INSTITUTO
+    Escribir "SISTEMA:\t\"Control de Acceso Dinamico QR\""
+    Escribir "UBICACION:\tVestibulo Principal \\ Edificio A"
+    Escribir "=========================================================="
+    Escribir "FICHAJE N.:\t#", contadorFichajesTerminal, "\t\tESTADO:\tVALIDO"
+    Escribir "ESTUDIANTE:\t", nombreEstudiante
+    Escribir "IDENTIFICADOR:\t", dniEstudiante, "\tGRUPO:\t", letraGrupo, " DAM"
+    Escribir "TOKEN QR:\t", tokenResumen
+    Escribir "----------------------------------------------------------"
+    Escribir "PERMANENCIA:\t", minutosTotalesLectivos, " minutos lectivos."
+    Escribir "OCUPACION:\t", porcentajeOcupacionReal, " % (Panel: ", porcentajeOcupacionTruncado, " %)"
+    Escribir "SERVICIO:\t", horasUptime, "h ", minutosUptime, "m ", segundosUptime, "s"
+    Escribir "=========================================================="
 FinAlgoritmo
 ```
 
-#### Paso 2. Traducción inmediata a Java en IntelliJ IDEA (`pr/src/Dia10Escapes.java`)
+##### Paso B. Expansión en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.8)
+Actualizamos directamente el bloque de salida de nuestro archivo maestro `ControlAccesoQR.java`:
+
 ```java
 /**
+ * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ * 
+ * Versión 0.8: Maquetación visual mediante secuencias de escape (\n, \t, \", \\).
  * Módulo: Programación (PR) - Sprint 1 (RA1)
- * Caso Guía: Uso de secuencias de escape (\n, \t, \", \\) para maquetación en consola.
- * @author AzaharTech Consulting
  */
-public class Dia10Escapes {
+import java.util.Scanner;
+
+public class ControlAccesoQR {
     public static void main(String[] args) {
-        // Constantes corporativas
-        final String NOMBRE_CENTRO = "IES El Caminàs (Castellón)";
-        final String RUTA_SISTEMA = "C:\\caminas\\terminal\\logs";
+        // Constantes inmutables
+        final String NOMBRE_INSTITUTO = "IES El Caminàs (Castellón)";
+        final String PREFIJO_CENTRO = "CAMINAS";
+        final String RUTA_LOGS = "C:\\caminas\\terminal\\logs";
+        final int MINUTOS_POR_SESION = 50;
+        final int SEGUNDOS_POR_HORA = 3600;
+        final int SEGUNDOS_POR_MINUTO = 60;
+        final double FACTOR_PORCENTAJE = 100.0;
         
-        // Variables de datos
-        String nombreEstudiante = "Vidal Soriano, Laura";
-        String dniEstudiante = "45123789K";
-        int tiempoAccesoSegundos = 185;
+        Scanner teclado = new Scanner(System.in);
         
-        // Impresión maquetada con un único bloque estructurado usando escapes
-        System.out.println("==========================================================");
-        System.out.println("ENTIDAD:\t" + NOMBRE_CENTRO);
-        System.out.println("PROTOCOLO:\t\"Escaneo Directo QR en Pantalla\"");
+        int terminalId;
+        double tempVestibulo;
+        int contadorFichajesTerminal = 0;
+        int segundosActividadTerminal;
+        int aforoMaximoVestibulo;
+        
+        String dniEstudiante;
+        String nombreEstudiante;
+        char letraGrupo;
+        boolean matriculaActiva = true;
+        
+        int sesionesManana;
+        int sesionesTarde;
+        int totalSesiones;
+        int minutosExtraGuardia;
+        int minutosTotalesLectivos;
+        
+        int horasUptime;
+        int minutosUptime;
+        int segundosUptime;
+        double porcentajeOcupacionReal;
+        int porcentajeOcupacionTruncado;
+        String tokenResumen;
+        
+        // Entrada de datos
+        System.out.println("=================================================");
+        System.out.println("   AZAHARTECH - TERMINAL " + NOMBRE_INSTITUTO);
+        System.out.println("=================================================");
+        System.out.print("ID Terminal: ");
+        terminalId = teclado.nextInt();
+        
+        System.out.print("Temperatura sensor (ºC): ");
+        tempVestibulo = teclado.nextDouble();
+        
+        System.out.print("Segundos acumulados de actividad: ");
+        segundosActividadTerminal = teclado.nextInt();
+        
+        System.out.print("Aforo máximo permitido en vestíbulo: ");
+        aforoMaximoVestibulo = teclado.nextInt();
+        
+        teclado.nextLine(); // Limpieza de buffer
+        
+        System.out.print("DNI Estudiante: ");
+        dniEstudiante = teclado.nextLine();
+        
+        System.out.print("Nombre completo: ");
+        nombreEstudiante = teclado.nextLine();
+        
+        System.out.print("Grupo (letra): ");
+        letraGrupo = teclado.next().charAt(0);
+        
+        System.out.print("Sesiones turno mañana: ");
+        sesionesManana = teclado.nextInt();
+        
+        System.out.print("Sesiones turno tarde: ");
+        sesionesTarde = teclado.nextInt();
+        
+        System.out.print("Minutos de guardia/tutoría: ");
+        minutosExtraGuardia = teclado.nextInt();
+        
+        // Procesamiento
+        contadorFichajesTerminal++;
+        totalSesiones = sesionesManana + sesionesTarde;
+        minutosTotalesLectivos = (totalSesiones * MINUTOS_POR_SESION) + minutosExtraGuardia;
+        
+        horasUptime = segundosActividadTerminal / SEGUNDOS_POR_HORA;
+        minutosUptime = (segundosActividadTerminal % SEGUNDOS_POR_HORA) / SEGUNDOS_POR_MINUTO;
+        segundosUptime = segundosActividadTerminal % SEGUNDOS_POR_MINUTO;
+        
+        porcentajeOcupacionReal = ((double) contadorFichajesTerminal / aforoMaximoVestibulo) * FACTOR_PORCENTAJE;
+        porcentajeOcupacionTruncado = (int) porcentajeOcupacionReal;
+        
+        tokenResumen = PREFIJO_CENTRO + "-" + dniEstudiante + "-T" + terminalId;
+        
+        // [NUEVO DÍA 10] Salida estructurada con secuencias de escape
+        System.out.println("\n==========================================================");
+        System.out.println("ENTIDAD:\t" + NOMBRE_INSTITUTO);
+        System.out.println("SISTEMA:\t\"Control de Acceso Dinámico QR\"");
         System.out.println("UBICACIÓN:\tVestíbulo Principal \\ Edificio A");
-        System.out.println("==========================================================\n");
+        System.out.println("==========================================================");
+        System.out.println("FICHAJE N.º:\t#" + contadorFichajesTerminal + "\t\tESTADO:\tVALIDADO");
+        System.out.println("ESTUDIANTE:\t" + nombreEstudiante);
+        System.out.println("IDENTIFICADOR:\t" + dniEstudiante + "\tGRUPO:\t" + letraGrupo + " DAM");
+        System.out.println("TOKEN QR:\t" + tokenResumen);
+        System.out.println("----------------------------------------------------------");
+        System.out.println("PERMANENCIA:\t" + minutosTotalesLectivos + " minutos lectivos.");
+        System.out.println("OCUPACIÓN:\t" + porcentajeOcupacionReal + " % (Panel: " + porcentajeOcupacionTruncado + " %)");
+        System.out.println("SERVICIO:\t" + horasUptime + "h " + minutosUptime + "m " + segundosUptime + "s");
+        System.out.println("REGISTRO LOG:\t" + RUTA_LOGS);
+        System.out.println("=========================================================");
         
-        System.out.println("DATOS DEL ACCESO:");
-        System.out.println("DNI:\t\t" + dniEstudiante);
-        System.out.println("ALUMNO:\t\t" + nombreEstudiante);
-        System.out.println("ESTANCIA:\t" + tiempoAccesoSegundos + " seg.\n");
-        
-        System.out.println("ESTADO:\t\t[AUTORIZADO]");
-        System.out.println("AUDITORÍA:\tRegistro volcado en: " + RUTA_SISTEMA);
+        teclado.close();
     }
 }
 ```
 
 ---
 
-### 4. Laboratorio práctico: Aplicación a tu proyecto propio
-
-#### Objetivo de la sesión
-Diseñar la maquetación visual del informe o recibo de tu proyecto propio en la consola utilizando saltos de línea (`\n`), tabuladores de alineación (`\t`), citas entre comillas (`\"`) y barras invertidas (`\\`).
-
-#### Instrucciones paso a paso
-1. Abre tu proyecto en IntelliJ IDEA y crea el archivo `pr/pseudocodigo/dia10_proyecto_propio.psc`.
-2. Escribe el algoritmo organizando la salida en bloques visuales separados por líneas divisorias (`=====`).
-3. Crea la clase Java `pr/src/Dia10ProyectoPropio.java`.
-4. Implementa el código en Java utilizando secuencias de escape para alinear etiquetas como *Identificador*, *Fecha*, *Subtotal* y *Estado*.
-5. Ejecuta la clase y comprueba que la consola muestra columnas limpias sin desalineaciones tipográficas.
+#### 4. Trabajo del estudiante: Evolución de su proyecto propio
+El estudiante abre su archivo maestro `MiProyecto.java` (en v0.7):
+* Sustituye las concatenaciones desalineadas por tabuladores `\t` para alinear las etiquetas de los datos.
+* Añade comillas escapadas `\"` para citar el nombre comercial de su cliente y barras `\\` para rutas de auditoría.
+* Comprueba que la salida luce limpia y profesional.
 
 ---
 ---
 
 ## DÍA 11 (Miércoles, 30 de septiembre de 2026 — 2 horas lectivas)
-### Bloque: Salida formateada profesional con `System.out.printf()` y especificadores de formato
-* **Distribución horaria:** 45 minutos de teoría conceptual + 45 minutos de andamiaje guiado (PSeInt $\rightarrow$ Java) + 30 minutos de laboratorio individual.
+### Versión de la aplicación: `ControlAccesoQR v0.9` (Salida Formateada Profesional con `printf`)
+* **Objetivo técnico:** Sustituir las concatenaciones de salida por plantillas de formato profesionales mediante `System.out.printf()`, controlando el ancho de columnas, la alineación y acotando los decimales con precisión matemática.
 * **Criterios de Evaluación vinculados:** RA1.a, RA1.b, RA1.e.
 
 ---
 
-### 1. Caso práctico narrativo: La presentación del informe ante jefatura
-
-Es miércoles por la mañana. En la sala de reuniones de **AzaharTech**, **Laia Claramunt** proyecta el informe financiero y de aforo que el sistema ha generado para el **IES El Caminàs**.
-
-Pau Ferrer lo ha programado con `System.out.println()` y el resultado en pantalla es el siguiente:
-```text
-Alumno: Garcia, Juan Tiempo: 2.3333333333333335 min Tasa fiabilidad: 98.756241 % Subtotal: 4.5 euros
-Alumno: Lopez, Ana Tiempo: 12.5 min Tasa fiabilidad: 100.0 % Subtotal: 12.0 euros
-```
-
-Laia niega con la cabeza y le pide a Alba que tome el teclado:
-> *«Pau, si presentamos este informe al equipo directivo del instituto, no causaremos una buena impresión. Los decimales están descontrolados: un alumno tiene quince decimales y otro solo uno. Además, como el nombre 'Garcia, Juan' tiene distinta longitud que 'Lopez, Ana', los números de la columna de la derecha se van desplazando hacia adelante y hacia atrás.*
+### 1. Caso práctico narrativo en AzaharTech
+Es miércoles por la mañana. **Laia Claramunt** revisa la versión v0.8:
+> *«La tabulación con `\t` es un avance, pero tiene un punto débil: si el nombre de un alumno es muy largo (como 'Constantinopla'), el tabulador salta a la siguiente parada y rompe la columna. Además, los decimales del porcentaje siguen mostrando hasta quince dígitos.*
 >
-> *En Java profesional, para emitir tablas, recibos e informes utilizamos **`System.out.printf()`**. Nos permite definir una plantilla exacta fijando el ancho de cada columna, la alineación a izquierda o derecha y el número riguroso de decimales con redondeo automático. Hoy aprenderemos a gobernar el formateo de datos como auténticos ingenieros»*.
+> *Hoy alcanzaremos la versión **v0.9**: eliminaremos los `println` del ticket y utilizaremos **`System.out.printf()`**. Definiremos anchos de campo fijos, alinearemos textos a la izquierda y números a la derecha, y redondearemos los decimales automáticamente a exactamente dos posiciones»*.
 
 ---
 
-### 2. Fundamento teórico: La instrucción `System.out.printf()` y los especificadores
+### 2. Fundamento teórico: Especificadores de formato en `System.out.printf()`
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                        ANATOMÍA DE UNA INSTRUCCIÓN PRINTF                              │
-├────────────────────────────────────────────────────────────────────────────────────────┤
-│ System.out.printf( "Estudiante: %-20s | Nota: %5.2f | Id: %04d %n", nombre, nota, id ); │
-│                     └─────────────────────────────────────────┘     └────────────────┘ │
-│                                  Cadena de Formato                      Argumentos     │
-└────────────────────────────────────────────────────────────────────────────────────────┘
-```
-
-El método **`printf`** (de *print formatted*, impresión formateada) requiere como primer parámetro una **cadena de formato** que contiene texto fijo mezclado con **especificadores de formato** (comienzan con `%`). A continuación, se pasa una lista de variables separadas por comas que se insertan en orden dentro de cada especificador.
-
-#### A. Especificadores de tipo fundamentales
-* **`%s`:** Para cadenas de texto (`String`).
-* **`%d`:** Para números enteros (`byte`, `short`, `int`, `long`). *Proviene de "decimal integer"*.
-* **`%f`:** Para números decimales de coma flotante (`float`, `double`).
-* **`%c`:** Para caracteres individuales (`char`).
-* **`%b`:** Para valores lógicos (`boolean`).
-* **`%n`:** Genera un salto de línea limpio e independiente del sistema operativo (en Windows genera `\r\n` y en Linux/macOS genera `\n`).
-
-#### B. Modificadores de anchura, precisión y alineación
-La verdadera potencia de `printf` reside en los modificadores intermedios que se colocan entre el `%` y la letra del tipo:
-
-```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                        MODIFICADORES DE CONTROL EN PRINTF                              │
+│                        PLANTILLA DE FORMATO PROFESIONAL PRINTF                         │
 ├───────────────────┬──────────────────────────────────┬─────────────────────────────────┤
-│ Patrón            │ Efecto técnico                   │ Ejemplo de salida               │
+│ Patrón            │ Función técnica                  │ Ejemplo                         │
 ├───────────────────┼──────────────────────────────────┼─────────────────────────────────┤
-│ %.2f              │ Acota a exactamente 2 decimales  │ 2.333333 se imprime como "2.33" │
+│ %-25s             │ Texto alineado a la IZQUIERDA en │ %-25s -> "Juan Pérez          " │
+│                   │ un campo de 25 caracteres.       │                                 │
 ├───────────────────┼──────────────────────────────────┼─────────────────────────────────┤
-│ %10d              │ Reserva 10 caracteres, alineado  │ "        45"                    │
-│                   │ a la DERECHA                     │                                 │
+│ %04d              │ Entero rellenado con ceros a la  │ %04d  -> "0007"                 │
+│                   │ izquierda hasta 4 dígitos.       │                                 │
 ├───────────────────┼──────────────────────────────────┼─────────────────────────────────┤
-│ %-15s             │ Reserva 15 caracteres, alineado  │ "Laura Vidal    "               │
-│                   │ a la IZQUIERDA                   │                                 │
+│ %6.2f             │ Decimal con 2 decimales fijos en │ %6.2f -> " 98.75"               │
+│                   │ un ancho total de 6 caracteres.  │                                 │
 ├───────────────────┼──────────────────────────────────┼─────────────────────────────────┤
-│ %05d              │ Reserva 5 dígitos rellenando     │ 42 se imprime como "00042"      │
-│                   │ con ceros a la izquierda         │                                 │
-├───────────────────┼──────────────────────────────────┼─────────────────────────────────┤
-│ %%                │ Imprime el símbolo literal de %  │ "95.00 %"                       │
+│ %n                │ Salto de línea independiente     │ %n                              │
 └───────────────────┴──────────────────────────────────┴─────────────────────────────────┘
 ```
 
-* **Diferencia entre `%f` y `%.2f`:** `%f` por defecto imprime 6 decimales. `%.2f` redondea matemáticamente el número a dos decimales sin alterar el valor de la variable original en la memoria RAM.
-
 ---
 
-### 3. Andamiaje didáctico paso a paso: PSeInt $\rightarrow$ Java
+### 3. Andamiaje didáctico: Evolución a `ControlAccesoQR v0.9`
 
-Modelamos la generación de la tabla de accesos del IES El Caminàs comparando el diseño básico con el formateo profesional en Java.
+Actualizamos el bloque final de impresión de `ControlAccesoQR` sustituyendo los textos concatenados por una plantilla con `printf`.
 
-#### Paso 1. Diseño algorítmico en PSeInt (`pr/pseudocodigo/dia11_printf.psc`)
+##### Paso A. Expansión en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.9)
 ```psc
-Algoritmo Dia11Printf
-    Definir idRegistro1, idRegistro2 Como Entero
-    Definir alumno1, alumno2 Como Cadena
-    Definir minutosEstancia1, minutosEstancia2 Como Real
-    Definir tasa1, tasa2 Como Real
+Algoritmo ControlAccesoQR
+    // =========================================================================
+    // SISTEMA DE CONTROL DE ASISTENCIA QR - IES EL CAMINAS (Castellon)
+    // Version: 0.9 (Evolucion: Formato Tabular de Precision)
+    // =========================================================================
     
-    idRegistro1 <- 1
-    alumno1 <- "Garcia Perez, Juan"
-    minutosEstancia1 <- 2.3333333
-    tasa1 <- 98.756
+    // Constantes
+    Definir NOMBRE_INSTITUTO, PREFIJO_CENTRO Como Cadena
+    Definir MINUTOS_POR_SESION, SEGUNDOS_POR_HORA, SEGUNDOS_POR_MINUTO Como Entero
+    Definir FACTOR_PORCENTAJE Como Real
     
-    idRegistro2 <- 25
-    alumno2 <- "Lopez Sanz, Ana"
-    minutosEstancia2 <- 12.500000
-    tasa2 <- 100.000
+    NOMBRE_INSTITUTO <- "IES El Caminas (Castellon)"
+    PREFIJO_CENTRO <- "CAMINAS"
+    MINUTOS_POR_SESION <- 50
+    SEGUNDOS_POR_HORA <- 3600
+    SEGUNDOS_POR_MINUTO <- 60
+    FACTOR_PORCENTAJE <- 100.0
     
-    // En PSeInt la alineación es manual y aproximada
-    Escribir "=================================================================="
-    Escribir "ID    ALUMNO                       TIEMPO (min)   PUNTUALIDAD (%)"
-    Escribir "=================================================================="
-    Escribir idRegistro1, "     ", alumno1, "           ", redon(minutosEstancia1*100)/100, "          ", redon(tasa1*100)/100, " %"
-    Escribir idRegistro2, "    ", alumno2, "             ", redon(minutosEstancia2*100)/100, "         ", redon(tasa2*100)/100, " %"
-    Escribir "=================================================================="
+    // Variables
+    Definir terminalId, contadorFichajesTerminal, aforoMaximoVestibulo Como Entero
+    Definir tempVestibulo, porcentajeOcupacionReal Como Real
+    Definir porcentajeOcupacionTruncado Como Entero
+    Definir nombreEstudiante, dniEstudiante, tokenResumen Como Cadena
+    Definir letraGrupo Como Caracter
+    Definir matriculaActiva Como Logico
+    Definir sesionesManana, sesionesTarde, totalSesiones, minutosTotalesLectivos Como Entero
+    Definir minutosExtraGuardia, segundosActividadTerminal Como Entero
+    Definir horasUptime, minutosUptime, segundosUptime Como Entero
+    
+    contadorFichajesTerminal <- 0
+    
+    // Entrada de datos
+    Escribir "=== AZAHARTECH: TERMINAL IES EL CAMINAS (v0.9) ==="
+    Escribir "ID Terminal, temperatura y segundos de actividad:"
+    Leer terminalId
+    Leer tempVestibulo
+    Leer segundosActividadTerminal
+    Escribir "Aforo maximo del vestibulo:"
+    Leer aforoMaximoVestibulo
+    
+    Escribir "DNI, nombre y grupo del alumno:"
+    Leer dniEstudiante
+    Leer nombreEstudiante
+    Leer letraGrupo
+    matriculaActiva <- Verdadero
+    
+    Escribir "Sesiones de manana, tarde y minutos de guardia:"
+    Leer sesionesManana
+    Leer sesionesTarde
+    Leer minutosExtraGuardia
+    
+    // Cálculos
+    contadorFichajesTerminal <- contadorFichajesTerminal + 1
+    totalSesiones <- sesionesManana + sesionesTarde
+    minutosTotalesLectivos <- (totalSesiones * MINUTOS_POR_SESION) + minutosExtraGuardia
+    
+    horasUptime <- trunc(segundosActividadTerminal / SEGUNDOS_POR_HORA)
+    minutosUptime <- trunc((segundosActividadTerminal MOD SEGUNDOS_POR_HORA) / SEGUNDOS_POR_MINUTO)
+    segundosUptime <- segundosActividadTerminal MOD SEGUNDOS_POR_MINUTO
+    
+    porcentajeOcupacionReal <- (contadorFichajesTerminal * FACTOR_PORCENTAJE) / aforoMaximoVestibulo
+    porcentajeOcupacionTruncado <- trunc(porcentajeOcupacionReal)
+    
+    tokenResumen <- PREFIJO_CENTRO + "-" + dniEstudiante + "-T" + ConvertirATexto(terminalId)
+    
+    // Salida simulando redondeo a 2 decimales
+    Escribir ""
+    Escribir "======================================================================"
+    Escribir "             INFORME OFICIAL DE ACCESO EN VESTIBULO                   "
+    Escribir "======================================================================"
+    Escribir "REGISTRO:    #", contadorFichajesTerminal, " | TOKEN: ", tokenResumen
+    Escribir "ESTUDIANTE:  ", nombreEstudiante, " | GRUPO: ", letraGrupo, " DAM"
+    Escribir "DNI:         ", dniEstudiante
+    Escribir "PERMANENCIA: ", minutosTotalesLectivos, " min lectivos."
+    Escribir "OCUPACION:   ", redon(porcentajeOcupacionReal * 100) / 100, " %"
+    Escribir "UPTIME:      ", horasUptime, "h ", minutosUptime, "m ", segundosUptime, "s"
+    Escribir "======================================================================"
 FinAlgoritmo
 ```
 
-#### Paso 2. Traducción inmediata a Java en IntelliJ IDEA (`pr/src/Dia11Printf.java`)
+##### Paso B. Expansión en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.9)
 ```java
 /**
+ * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ * 
+ * Versión 0.9: Salida formateada profesional con System.out.printf().
  * Módulo: Programación (PR) - Sprint 1 (RA1)
- * Caso Guía: Salida formateada avanzada y tablas con System.out.printf().
- * @author AzaharTech Consulting
  */
-public class Dia11Printf {
+import java.util.Scanner;
+
+public class ControlAccesoQR {
     public static void main(String[] args) {
-        // Datos del primer registro
-        int idRegistro1 = 1;
-        String alumno1 = "Garcia Perez, Juan";
-        double minutosEstancia1 = 2.3333333;
-        double tasa1 = 98.756;
+        // Constantes inmutables
+        final String NOMBRE_INSTITUTO = "IES El Caminàs (Castellón)";
+        final String PREFIJO_CENTRO = "CAMINAS";
+        final int MINUTOS_POR_SESION = 50;
+        final int SEGUNDOS_POR_HORA = 3600;
+        final int SEGUNDOS_POR_MINUTO = 60;
+        final double FACTOR_PORCENTAJE = 100.0;
         
-        // Datos del segundo registro
-        int idRegistro2 = 25;
-        String alumno2 = "Lopez Sanz, Ana";
-        double minutosEstancia2 = 12.500000;
-        double tasa2 = 100.000;
+        Scanner teclado = new Scanner(System.in);
         
-        // Cabecera formal
+        int terminalId;
+        double tempVestibulo;
+        int contadorFichajesTerminal = 0;
+        int segundosActividadTerminal;
+        int aforoMaximoVestibulo;
+        
+        String dniEstudiante;
+        String nombreEstudiante;
+        char letraGrupo;
+        boolean matriculaActiva = true;
+        
+        int sesionesManana;
+        int sesionesTarde;
+        int totalSesiones;
+        int minutosExtraGuardia;
+        int minutosTotalesLectivos;
+        
+        int horasUptime;
+        int minutosUptime;
+        int segundosUptime;
+        double porcentajeOcupacionReal;
+        int porcentajeOcupacionTruncado;
+        String tokenResumen;
+        
+        // Entrada de datos
+        System.out.println("=================================================");
+        System.out.println("   AZAHARTECH - TERMINAL " + NOMBRE_INSTITUTO);
+        System.out.println("=================================================");
+        System.out.print("ID Terminal: ");
+        terminalId = teclado.nextInt();
+        
+        System.out.print("Temperatura sensor (ºC): ");
+        tempVestibulo = teclado.nextDouble();
+        
+        System.out.print("Segundos acumulados de actividad: ");
+        segundosActividadTerminal = teclado.nextInt();
+        
+        System.out.print("Aforo máximo permitido en vestíbulo: ");
+        aforoMaximoVestibulo = teclado.nextInt();
+        
+        teclado.nextLine(); // Limpieza obligatoria del buffer
+        
+        System.out.print("DNI Estudiante: ");
+        dniEstudiante = teclado.nextLine();
+        
+        System.out.print("Nombre completo: ");
+        nombreEstudiante = teclado.nextLine();
+        
+        System.out.print("Grupo (letra): ");
+        letraGrupo = teclado.next().charAt(0);
+        
+        System.out.print("Sesiones turno mañana: ");
+        sesionesManana = teclado.nextInt();
+        
+        System.out.print("Sesiones turno tarde: ");
+        sesionesTarde = teclado.nextInt();
+        
+        System.out.print("Minutos de guardia/tutoría: ");
+        minutosExtraGuardia = teclado.nextInt();
+        
+        // Procesamiento
+        contadorFichajesTerminal++;
+        totalSesiones = sesionesManana + sesionesTarde;
+        minutosTotalesLectivos = (totalSesiones * MINUTOS_POR_SESION) + minutosExtraGuardia;
+        
+        horasUptime = segundosActividadTerminal / SEGUNDOS_POR_HORA;
+        minutosUptime = (segundosActividadTerminal % SEGUNDOS_POR_HORA) / SEGUNDOS_POR_MINUTO;
+        segundosUptime = segundosActividadTerminal % SEGUNDOS_POR_MINUTO;
+        
+        porcentajeOcupacionReal = ((double) contadorFichajesTerminal / aforoMaximoVestibulo) * FACTOR_PORCENTAJE;
+        porcentajeOcupacionTruncado = (int) porcentajeOcupacionReal;
+        
+        tokenResumen = PREFIJO_CENTRO + "-" + dniEstudiante + "-T" + terminalId;
+        
+        // [NUEVO DÍA 11] Salida formateada profesional con printf
+        System.out.println("\n======================================================================");
+        System.out.println("             INFORME OFICIAL DE ACCESO EN VESTÍBULO                   ");
         System.out.println("======================================================================");
-        System.out.println("            INFORME OFICIAL DE ACCESOS: IES EL CAMINÀS                ");
-        System.out.println("======================================================================");
-        
-        // Fila de encabezados de columnas perfectamente alineada
-        System.out.printf("%-8s %-25s %15s %15s %n", "ID REG", "ESTUDIANTE", "TIEMPO (min)", "FIABILIDAD");
+        System.out.printf("CENTRO:          %-30s%n", NOMBRE_INSTITUTO);
+        System.out.printf("REGISTRO N.º:    #%05d | TOKEN: %s%n", contadorFichajesTerminal, tokenResumen);
+        System.out.printf("ESTUDIANTE:      %-30s | GRUPO: %c DAM%n", nombreEstudiante, letraGrupo);
+        System.out.printf("IDENTIFICADOR:   %-12s | MATRÍCULA ACTIVA: %b%n", dniEstudiante, matriculaActiva);
         System.out.println("----------------------------------------------------------------------");
-        
-        // Fila 1: ID con ceros a la izquierda (%04d), nombre a la izquierda (%-25s), decimales a 2 posiciones (%.2f)
-        System.out.printf("#%04d    %-25s %15.2f %14.2f %%%n", idRegistro1, alumno1, minutosEstancia1, tasa1);
-        
-        // Fila 2: Misma estructura de columnas asegurando alineación vertical perfecta
-        System.out.printf("#%04d    %-25s %15.2f %14.2f %%%n", idRegistro2, alumno2, minutosEstancia2, tasa2);
-        
+        System.out.printf("PERMANENCIA:     %03d minutos lectivos (%d sesiones)%n", minutosTotalesLectivos, totalSesiones);
+        System.out.printf("AFORO OCUPADO:   %6.2f %% (Indicador panel: %03d %%)%n", porcentajeOcupacionReal, porcentajeOcupacionTruncado);
+        System.out.printf("SERVICIO ACTIVO: %02dh %02dm %02ds (Sensor: %.1f ºC)%n", horasUptime, minutosUptime, segundosUptime, tempVestibulo);
         System.out.println("======================================================================");
+        
+        teclado.close();
     }
 }
 ```
 
 ---
 
-### 4. Laboratorio práctico: Aplicación a tu proyecto propio
-
-#### Objetivo de la sesión
-Construir una tabla o informe formal de salida para tu proyecto de la bolsa de proyectos utilizando `System.out.printf()`, definiendo al menos 3 columnas con anchos fijos y formateando los datos numéricos a 2 decimales con el símbolo `%` o la moneda correspondiente.
-
-#### Instrucciones paso a paso
-1. Crea el archivo `pr/pseudocodigo/dia11_proyecto_propio.psc`.
-2. Diseña la estructura de datos que mostrará tu informe de salida.
-3. Crea la clase Java `pr/src/Dia11ProyectoPropio.java`.
-4. Implementa el método `printf()` definiendo:
-    * Una columna de identificador o código alineada a la derecha o con ceros a la izquierda (`%05d`).
-    * Una columna de texto descriptivo alineada a la izquierda (`%-20s`).
-    * Una columna de importe, peso o tiempo alineada a la derecha y acotada a dos decimales (`%10.2f`).
-5. Ejecuta el programa introduciendo textos de distintas longitudes y comprueba que las columnas no se desplazan ni se rompen.
+#### 4. Trabajo del estudiante: Evolución de su proyecto propio
+El estudiante abre su archivo `MiProyecto.java` (versión v0.8):
+* Sustituye todas las instrucciones de salida por llamadas a `System.out.printf()`.
+* Aplica especificadores con ancho fijo (`%-25s`), enteros con ceros a la izquierda (`%04d`) y redondeo a dos decimales (`%.2f`).
+* Ejecuta pruebas con distintos nombres para certificar que las columnas permanecen perfectamente alineadas.
 
 ---
 ---
 
 ## DÍA 12 (Jueves, 1 de octubre de 2026 — 2 horas lectivas)
-### Bloque: Laboratorio de integración final: Programa secuencial completo del Reto 1 y cierre del Sprint 1 en Programación
-* **Distribución horaria:** 30 minutos de estándares de documentación + 90 minutos de ensamblaje final tutelado.
+### Versión de la aplicación: `ControlAccesoQR v1.0` (Documentación Javadoc y Cierre del Programa Secuencial)
+* **Objetivo técnico:** Incorporar comentarios formales de cabecera y línea, aplicar estándares de autoformateo de código en IntelliJ y sellar la versión definitiva v1.0 secuencial en GitHub.
 * **Criterios de Evaluación vinculados:** RA1.a, RA1.b, RA1.c, RA1.d, RA1.e, RA1.f, RA1.g, RA1.h, RA1.i.
 
 ---
 
-### 1. Caso práctico narrativo: El sellado del código en AzaharTech
+### 1. Caso práctico narrativo en AzaharTech
+Es jueves 1 de octubre. Mañana viernes concluye formalmente el **Sprint 1**. En la sala de juntas de **AzaharTech**, **Laia Claramunt** convoca a toda la célula de desarrollo frente al proyector:
 
-Es jueves 1 de octubre por la mañana. Mañana viernes concluye formalmente el primer sprint del curso académico. En la oficina de **AzaharTech**, **Laia Claramunt** convoca a toda la célula de desarrollo frente al proyector:
-
-> *«Equipo, hemos completado las 24 horas del Sprint 1 de Programación. Durante estas tres semanas habéis construido vuestra base técnica desde cero: sabéis qué es un algoritmo, cómo declarar variables en memoria, cómo evitar números mágicos mediante constantes `final`, cómo operar sin perder precisión y cómo emitir informes tabulados profesionales con `printf`.*
+> *«Equipo, contemplad lo que hemos construido en doce días de trabajo: no tenemos doce programas huérfanos. Tenemos **un único software vivo, robusto y profesional que ha crecido día a día**.*
 >
-> *Hoy nos queda la tarea más importante: **ensamblar el programa secuencial definitivo del Reto 1 de vuestro proyecto propio**.*
->
-> *El código que dejemos listo hoy será la base sobre la que trabajaremos en el Sprint 2 cuando aprendamos a usar objetos predefinidos. Debe compilar con total limpieza, incluir comentarios formales de ingeniería y quedar guardado en `pr/src/Reto1Completo.java` antes de realizar el commit y push final»*.
+> *Hoy alcanzamos la versión **v1.0**: añadiremos la cabecera formal de documentación Javadoc, limpiaremos cualquier advertencia del compilador y dejaremos sellado el código del Reto 1 de vuestro proyecto propio en GitHub para la evaluación de mañana»*.
 
 ---
 
-### 2. Estándares de calidad y comentarios profesionales en Java
+### 2. Fundamento teórico: Documentación técnica y autoformateo
 
-Antes de congelar la entrega, el código fuente debe incorporar comentarios estructurados bajo dos modalidades oficiales:
-
-```java
-// 1. Comentarios de línea única: explican el motivo de una fórmula concreta
-int restoSegundos = totalSegundos % 60; // Extrae los segundos que no completan un minuto
-
-/* 2. Comentarios multilínea de bloque:
-   Explican el propósito general de un bloque de cálculos
-   o la lógica de negocio aplicada. */
-
-/**
- * 3. Comentario formal de cabecera (Javadoc):
- * Documenta la autoría, versión y propósito global de la clase.
- */
-```
-
-#### Rúbrica de aceptación del Reto 1 Completo:
-1. **100 % Secuencial:** No contiene instrucciones condicionales (`if`, `switch`) ni bucles (`while`, `for`), respetando estrictamente el alcance del **RA1**.
-2. **Constantes inmutables:** Toda configuración o valor fijo del sistema está declarado como `final` en mayúsculas (`UPPER_SNAKE_CASE`).
-3. **Entrada interactiva:** Captura datos reales mediante la clase `Scanner`.
-4. **Fórmulas de precisión:** Utiliza operadores aritméticos, el operador módulo (`%`) y casting explícito `(double)` cuando procede.
-5. **Salida formateada:** Emite el informe final mediante `System.out.printf()`.
-6. **Higiene:** Indentación uniforme de 4 espacios y cierre del recurso `Scanner.close()`.
+1. **Comentarios Javadoc (`/** ... */`):** Permiten a las herramientas de ingeniería extraer manuales técnicos automáticos en formato HTML:
+    * `@author`: Desarrollador o célula de trabajo responsable.
+    * `@version`: Número de versión semántica del software.
+2. **Autoformateo en IntelliJ (`Ctrl + Alt + L`):** Reorganiza el código para que respete las directrices internacionales de indentación (4 espacios) y separación de operadores.
 
 ---
 
-### 3. Taller de integración guiada: El Programa Secuencial Completo
+### 3. El Código Maestro Definitivo del Sprint 1: `ControlAccesoQR v1.0`
 
-Cada estudiante ensambla en su espacio de trabajo el programa definitivo adaptado a los datos y reglas de su **proyecto elegido de la bolsa de proyectos**:
+Presentamos la versión íntegra y definitiva que el docente modela como cierre del caso guía:
 
-#### Paso 1. Algoritmo secuencial completo en PSeInt (`pr/pseudocodigo/reto1_completo.psc`)
-```psc
-Algoritmo Reto1Completo
-    // -------------------------------------------------------------
-    // 1. CONSTANTES DEL SISTEMA
-    // -------------------------------------------------------------
-    Definir NOMBRE_EMPRESA Como Cadena
-    Definir PREFIJO_EXPEDIENTE Como Cadena
-    Definir CAPACIDAD_LOTE Como Entero
-    Definir TASA_GESTION Como Real
-    
-    NOMBRE_EMPRESA <- "AzaharTech Solutions"
-    PREFIJO_EXPEDIENTE <- "EXP-2026"
-    CAPACIDAD_LOTE <- 24
-    TASA_GESTION <- 0.15 // 15% de gastos de gestión
-    
-    // -------------------------------------------------------------
-    // 2. DECLARACIÓN DE VARIABLES
-    // -------------------------------------------------------------
-    Definir codigoCliente Como Cadena
-    Definir unidadesDemandadas Como Entero
-    Definir precioBaseUnitario Como Real
-    
-    Definir lotesCompletos, unidadesRestantes Como Entero
-    Definir costeSubtotal, costeRecargo, costeTotal Como Real
-    Definir ratioAprovechamiento Como Real
-    
-    // -------------------------------------------------------------
-    // 3. ENTRADA DE DATOS
-    // -------------------------------------------------------------
-    Escribir "========================================================="
-    Escribir "   ", NOMBRE_EMPRESA, " - GESTION DE RETO 1              "
-    Escribir "========================================================="
-    Escribir "Introduce el codigo identificativo del cliente:"
-    Leer codigoCliente
-    
-    Escribir "Introduce el volumen de unidades demandadas:"
-    Leer unidadesDemandadas
-    
-    Escribir "Introduce el precio unitario base (EUR):"
-    Leer precioBaseUnitario
-    
-    // -------------------------------------------------------------
-    // 4. PROCESAMIENTO MATEMÁTICO SECUENCIAL
-    // -------------------------------------------------------------
-    // Descomposición con división entera y módulo
-    lotesCompletos <- trunc(unidadesDemandadas / CAPACIDAD_LOTE)
-    unidadesRestantes <- unidadesDemandadas MOD CAPACIDAD_LOTE
-    
-    // Cálculos económicos
-    costeSubtotal <- unidadesDemandadas * precioBaseUnitario
-    costeRecargo <- costeSubtotal * TASA_GESTION
-    costeTotal <- costeSubtotal + costeRecargo
-    
-    // Cálculo porcentual
-    ratioAprovechamiento <- ((unidadesDemandadas - unidadesRestantes) * 100.0) / unidadesDemandadas
-    
-    // -------------------------------------------------------------
-    // 5. SALIDA DE DATOS FORMATEADA
-    // -------------------------------------------------------------
-    Escribir "---------------------------------------------------------"
-    Escribir "EXPEDIENTE:       ", PREFIJO_EXPEDIENTE, "-", codigoCliente
-    Escribir "LOTES COMPLETOS:  ", lotesCompletos, " (de ", CAPACIDAD_LOTE, " uds)"
-    Escribir "UNIDADES SUELTAS: ", unidadesRestantes
-    Escribir "SUBTOTAL BASE:    ", costeSubtotal, " EUR"
-    Escribir "GASTOS GESTION:   ", costeRecargo, " EUR"
-    Escribir "TOTAL OPERACION:  ", costeTotal, " EUR"
-    Escribir "APROVECHAMIENTO:  ", redon(ratioAprovechamiento * 100) / 100, " %"
-    Escribir "========================================================="
-FinAlgoritmo
-```
-
-#### Paso 2. Implementación final en Java (`pr/src/Reto1Completo.java`)
 ```java
 /**
- * Proyecto: [Nombre del Proyecto Elegido de la Bolsa de Proyectos]
+ * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
+ * Cliente: IES El Caminàs (Castellón de la Plana)
  * Consultora: AzaharTech Software Consulting
- * Módulo: Programación (PR) - Sprint 1 (RA1)
  * 
- * Descripción: Programa secuencial integral que captura parámetros de entrada,
- * realiza cálculos aritméticos con división entera y módulo, aplica conversiones
- * de tipo (casting) y emite un informe estructurado mediante printf.
+ * Versión 1.0 (Definitiva Sprint 1):
+ * Programa secuencial integral que captura parámetros de terminal y usuario,
+ * realiza descomposiciones temporales y cálculos porcentuales de aforo sin pérdida
+ * de precisión decimal, y emite un informe oficial formateado mediante printf.
  * 
- * @author [Tus Apellidos, Tu Nombre]
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer)
  * @version 1.0 (Octubre 2026)
+ * @since JDK 21 LTS
  */
 import java.util.Scanner;
 
-public class Reto1Completo {
+public class ControlAccesoQR {
     public static void main(String[] args) {
-        // -------------------------------------------------------------
-        // 1. CONSTANTES INMUTABLES DEL SISTEMA (Configuración)
-        // -------------------------------------------------------------
-        final String NOMBRE_EMPRESA = "AzaharTech Solutions";
-        final String PREFIJO_EXPEDIENTE = "EXP-2026";
-        final int CAPACIDAD_LOTE = 24;
-        final double TASA_GESTION = 0.15; // 15% de gastos operativos
+        // ---------------------------------------------------------------------
+        // 1. CONSTANTES INMUTABLES DEL SISTEMA (Configuración corporativa)
+        // ---------------------------------------------------------------------
+        final String NOMBRE_INSTITUTO = "IES El Caminàs (Castellón)";
+        final String PREFIJO_CENTRO = "CAMINAS";
+        final int MINUTOS_POR_SESION = 50;
+        final int SEGUNDOS_POR_HORA = 3600;
+        final int SEGUNDOS_POR_MINUTO = 60;
+        final double FACTOR_PORCENTAJE = 100.0;
         
-        // -------------------------------------------------------------
+        // ---------------------------------------------------------------------
         // 2. DECLARACIÓN DE VARIABLES DE MEMORIA
-        // -------------------------------------------------------------
+        // ---------------------------------------------------------------------
         Scanner teclado = new Scanner(System.in);
-        String codigoCliente;
-        int unidadesDemandadas;
-        double precioBaseUnitario;
         
-        int lotesCompletos;
-        int unidadesRestantes;
-        double costeSubtotal;
-        double costeRecargo;
-        double costeTotal;
-        double ratioAprovechamiento;
+        // Variables de hardware y terminal
+        int terminalId;
+        double tempVestibulo;
+        int contadorFichajesTerminal = 0; // Contador acumulativo
+        int segundosActividadTerminal;
+        int aforoMaximoVestibulo;
         
-        // -------------------------------------------------------------
+        // Variables de identidad y estado del estudiante
+        String dniEstudiante;
+        String nombreEstudiante;
+        char letraGrupo;
+        boolean matriculaActiva = true;
+        
+        // Variables de cómputo de sesiones
+        int sesionesManana;
+        int sesionesTarde;
+        int totalSesiones;
+        int minutosExtraGuardia;
+        int minutosTotalesLectivos;
+        
+        // Variables de magnitudes descompuestas y ratios
+        int horasUptime;
+        int minutosUptime;
+        int segundosUptime;
+        double porcentajeOcupacionReal;
+        int porcentajeOcupacionTruncado;
+        String tokenResumen;
+        
+        // ---------------------------------------------------------------------
         // 3. CAPTURA INTERACTIVA DE DATOS
-        // -------------------------------------------------------------
-        System.out.println("=========================================================");
-        System.out.println("   " + NOMBRE_EMPRESA + " - GESTIÓN DE RETO 1            ");
-        System.out.println("=========================================================");
-        System.out.print("Introduce el código identificativo del cliente: ");
-        codigoCliente = teclado.nextLine();
+        // ---------------------------------------------------------------------
+        System.out.println("=================================================");
+        System.out.println("   AZAHARTECH - TERMINAL " + NOMBRE_INSTITUTO);
+        System.out.println("   Versión 1.0 Oficial (Programa Secuencial Base)");
+        System.out.println("=================================================");
+        System.out.print("ID Terminal: ");
+        terminalId = teclado.nextInt();
         
-        System.out.print("Introduce el volumen de unidades demandadas: ");
-        unidadesDemandadas = teclado.nextInt();
+        System.out.print("Temperatura sensor (ºC): ");
+        tempVestibulo = teclado.nextDouble();
         
-        System.out.print("Introduce el precio unitario base (EUR): ");
-        precioBaseUnitario = teclado.nextDouble();
+        System.out.print("Segundos acumulados de actividad: ");
+        segundosActividadTerminal = teclado.nextInt();
         
-        // -------------------------------------------------------------
+        System.out.print("Aforo máximo permitido en vestíbulo: ");
+        aforoMaximoVestibulo = teclado.nextInt();
+        
+        teclado.nextLine(); // Limpieza obligatoria del buffer de teclado
+        
+        System.out.print("DNI Estudiante: ");
+        dniEstudiante = teclado.nextLine();
+        
+        System.out.print("Nombre completo: ");
+        nombreEstudiante = teclado.nextLine();
+        
+        System.out.print("Grupo (letra): ");
+        letraGrupo = teclado.next().charAt(0);
+        
+        System.out.print("Sesiones turno mañana: ");
+        sesionesManana = teclado.nextInt();
+        
+        System.out.print("Sesiones turno tarde: ");
+        sesionesTarde = teclado.nextInt();
+        
+        System.out.print("Minutos de guardia/tutoría: ");
+        minutosExtraGuardia = teclado.nextInt();
+        
+        // ---------------------------------------------------------------------
         // 4. PROCESAMIENTO SECUENCIAL Y OPERACIONES MATEMÁTICAS
-        // -------------------------------------------------------------
-        // Descomposición de unidades con división entera y operador módulo
-        lotesCompletos = unidadesDemandadas / CAPACIDAD_LOTE;
-        unidadesRestantes = unidadesDemandadas % CAPACIDAD_LOTE;
+        // ---------------------------------------------------------------------
+        // Incremento unario del contador de accesos
+        contadorFichajesTerminal++;
         
-        // Operaciones aritméticas y porcentajes
-        costeSubtotal = unidadesDemandadas * precioBaseUnitario;
-        costeRecargo = costeSubtotal * TASA_GESTION;
-        costeTotal = costeSubtotal + costeRecargo;
+        // Suma y cálculo de permanencia lectiva
+        totalSesiones = sesionesManana + sesionesTarde;
+        minutosTotalesLectivos = (totalSesiones * MINUTOS_POR_SESION) + minutosExtraGuardia;
         
-        // Casting explícito a (double) para evitar pérdida de decimales
-        ratioAprovechamiento = (((double)(unidadesDemandadas - unidadesRestantes)) / unidadesDemandadas) * 100.0;
+        // Descomposición temporal exacta mediante división entera y módulo (%)
+        horasUptime = segundosActividadTerminal / SEGUNDOS_POR_HORA;
+        minutosUptime = (segundosActividadTerminal % SEGUNDOS_POR_HORA) / SEGUNDOS_POR_MINUTO;
+        segundosUptime = segundosActividadTerminal % SEGUNDOS_POR_MINUTO;
         
-        // -------------------------------------------------------------
-        // 5. SALIDA DE INFORMACIÓN FORMATEADA PROFESIONAL (printf)
-        // -------------------------------------------------------------
-        System.out.println("\n=========================================================");
-        System.out.println("               INFORME ECONÓMICO Y LOGÍSTICO             ");
-        System.out.println("=========================================================");
-        System.out.printf("EXPEDIENTE:        %s-%s%n", PREFIJO_EXPEDIENTE, codigoCliente);
-        System.out.printf("LOTES COMPLETOS:   %04d lotes (capacidad: %d uds)%n", lotesCompletos, CAPACIDAD_LOTE);
-        System.out.printf("UNIDADES SUELTAS:  %d unidades%n", unidadesRestantes);
-        System.out.println("---------------------------------------------------------");
-        System.out.printf("SUBTOTAL BASE:     %12.2f EUR%n", costeSubtotal);
-        System.out.printf("GASTOS GESTIÓN:    %12.2f EUR (%.0f%%)%n", costeRecargo, (TASA_GESTION * 100));
-        System.out.printf("TOTAL OPERACIÓN:   %12.2f EUR%n", costeTotal);
-        System.out.println("---------------------------------------------------------");
-        System.out.printf("APROVECHAMIENTO:   %11.2f %%%n", ratioAprovechamiento);
-        System.out.println("=========================================================");
+        // Casting explícito a (double) para evitar la división entera a cero
+        porcentajeOcupacionReal = ((double) contadorFichajesTerminal / aforoMaximoVestibulo) * FACTOR_PORCENTAJE;
+        porcentajeOcupacionTruncado = (int) porcentajeOcupacionReal; // Casting a entero
+        
+        // Construcción del token identificador QR
+        tokenResumen = PREFIJO_CENTRO + "-" + dniEstudiante + "-T" + terminalId;
+        
+        // ---------------------------------------------------------------------
+        // 5. SALIDA FORMATEADA PROFESIONAL (System.out.printf)
+        // ---------------------------------------------------------------------
+        System.out.println("\n======================================================================");
+        System.out.println("             INFORME OFICIAL DE ACCESO EN VESTÍBULO                   ");
+        System.out.println("======================================================================");
+        System.out.printf("CENTRO:          %-30s%n", NOMBRE_INSTITUTO);
+        System.out.printf("REGISTRO N.º:    #%05d | TOKEN: %s%n", contadorFichajesTerminal, tokenResumen);
+        System.out.printf("ESTUDIANTE:      %-30s | GRUPO: %c DAM%n", nombreEstudiante, letraGrupo);
+        System.out.printf("IDENTIFICADOR:   %-12s | MATRÍCULA ACTIVA: %b%n", dniEstudiante, matriculaActiva);
+        System.out.println("----------------------------------------------------------------------");
+        System.out.printf("PERMANENCIA:     %03d minutos lectivos (%d sesiones)%n", minutosTotalesLectivos, totalSesiones);
+        System.out.printf("AFORO OCUPADO:   %6.2f %% (Indicador panel: %03d %%)%n", porcentajeOcupacionReal, porcentajeOcupacionTruncado);
+        System.out.printf("SERVICIO ACTIVO: %02dh %02dm %02ds (Sensor: %.1f ºC)%n", horasUptime, minutosUptime, segundosUptime, tempVestibulo);
+        System.out.println("======================================================================");
         
         // Cierre preventivo del recurso de entrada
         teclado.close();
@@ -2255,42 +2535,21 @@ public class Reto1Completo {
 
 ---
 
-### 4. Cierre formal en Git y preparación para la evaluación del Sprint 1
-
-1. Abre la terminal integrada de IntelliJ IDEA (`Alt + F12`) o el panel **Commit** (`Ctrl + K`).
-2. Comprueba mediante `git status` que los dos archivos finales (`pr/pseudocodigo/reto1_completo.psc` y `pr/src/Reto1Completo.java`) están preparados.
-3. Añade los archivos y confirma los cambios aplicando el estándar de **Conventional Commits**:
+#### 4. Trabajo del estudiante: La versión v1.0 de su proyecto propio
+Cada estudiante finaliza su archivo `pr/src/MiProyecto.java` (o `Reto1Completo.java`):
+1. Incorpora la cabecera Javadoc con sus datos.
+2. Aplica el formateador de código en IntelliJ (`Ctrl + Alt + L`).
+3. Comprueba que el programa compila limpiamente y que la salida por consola con `printf` es una tabla perfectamente alineada.
+4. Realiza el commit final del módulo de Programación para el Sprint 1:
    ```bash
    git add pr/
-   git commit -m "feat(pr): ensamblar programa secuencial completo y cerrar reto 1 del sprint 1"
+   git commit -m "feat(pr): consolidar version 1.0 del programa secuencial completo para sprint 1"
    git push
    ```
-4. Accede a tu repositorio remoto en GitHub desde el navegador y verifica que ambos archivos están correctamente registrados dentro de la carpeta `pr/`.
-5. Mañana viernes, durante la sesión de Entornos de Desarrollo, sellarás todo el repositorio con la etiqueta de versión oficial **`v0.1.0-sprint1`**.
 
 ---
 
-### Balance curricular final del Sprint 1 de Programación (24 horas lectivas)
-
-```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                   CUMPLIMIENTO DE CRITERIOS DE EVALUACIÓN DEL RA1                      │
-├─────────────────┬──────────────────────────────────────────┬───────────────────────────┤
-│ Bloque / Semana │ Criterios Oficiales Cubiertos            │ Contenido Trabajado       │
-├─────────────────┼──────────────────────────────────────────┼───────────────────────────┤
-│ SEMANA 1        │ • CE 1.a: Estructura de programas        │ Clases, método main,      │
-│ (Días 1 al 4)   │ • CE 1.b: Creación de proyectos          │ variables primitivas      │
-│                 │ • CE 1.c: Uso del IDE                    │ (int, double, char,       │
-│                 │ • CE 1.d, CE 1.e: Variables y tipos      │ boolean, String) y Scanner│
-├─────────────────┼──────────────────────────────────────────┼───────────────────────────┤
-│ SEMANA 2        │ • CE 1.g: Operadores y expresiones       │ Asignación compuesta,     │
-│ (Días 5 al 8)   │ • CE 1.h: Conversiones implícitas        │ división entera, operador │
-│                 │   y explícitas (casting)                 │ módulo (%) y jerarquía    │
-├─────────────────┼──────────────────────────────────────────┼───────────────────────────┤
-│ SEMANA 3        │ • CE 1.f: Constantes (final) y literales │ Inmutabilidad, escapes,   │
-│ (Días 9 al 12)  │ • CE 1.i: Comentarios de código          │ salida con printf         │
-│                 │ • CE 1.a, 1.e: Salida formateada         │ y Reto 1 Completo         │
-└─────────────────┴──────────────────────────────────────────┴───────────────────────────┘
-```
-
-Con estas 12 sesiones de 2 horas (24 horas lectivas en total), el estudiante cuenta con un manual didáctico completo, riguroso y **100 % fiel a los contenidos y criterios del RA1**, dominando los fundamentos del lenguaje Java de forma secuencial antes de abordar las estructuras condicionales y los bucles en los siguientes sprints del curso.
+### Balance final de la Semana 3 y cierre del Sprint 1 (PR - 24 horas)
+* **Metodología de Código Vivo cumplida:** Durante las tres semanas hemos visto crecer **una única aplicación** desde su estructura vacía hasta un software secuencial completo de 120 líneas de código, limpio, formateado y libre de errores.
+* **100 % ceñido a RA1:** Se han dominado todos los Criterios de Evaluación oficiales (**CE 1.a al CE 1.i**) sin anticipar condicionales ni bucles.
+* **Entrega lista:** El estudiante tiene su proyecto propio en GitHub en versión `v1.0`, listo para ser sellado mañana viernes bajo la etiqueta **`v0.1.0-sprint1`**.
