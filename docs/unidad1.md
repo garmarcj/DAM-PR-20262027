@@ -3,7 +3,6 @@
 ---
 
 ## Semana 1. El nacimiento de la aplicación: estructura, variables y tipos de datos
-
 A lo largo de este sprint desarrollaremos y evolucionaremos **un único archivo de pseudocódigo (`ControlAccesoQR.psc`) y
 una única clase Java (`ControlAccesoQR.java`)** para el caso guía del **IES El Caminàs**, mientras cada estudiante hace
 evolucionar de forma paralela el archivo único de **su proyecto elegido de la bolsa de proyectos**.
@@ -14,9 +13,8 @@ evolucionar de forma paralela el archivo único de **su proyecto elegido de la b
 
 ---
 
-#### 1. Caso práctico de guía en AzaharTech
-
-Son las once de la mañana en la sede de **AzaharTech** en Castellón de la Plana. **Laia Claramunt** conecta su portátil
+#### 1. Caso guía en AzaharTech
+Son las tres de la tarde en la sede de **AzaharTech** en Castellón de la Plana. **Laia Claramunt** conecta su portátil
 al proyector principal. En pantalla aparece el entorno de desarrollo IntelliJ IDEA completamente vacío:
 
 > *«Equipo, comenzamos el desarrollo del sistema de acceso para el **IES El Caminàs**; hoy abrimos el archivo oficial de
@@ -152,8 +150,7 @@ Cada estudiante crea en su carpeta `pr/pseudocodigo/` el archivo maestro de su p
 
 ---
 
-#### 1. Caso práctico guía en AzaharTech
-
+#### 1. Caso guía en AzaharTech
 Es martes por la tarde. **Pau Ferrer** ejecuta `ControlAccesoQR` v0.1 y muestra la pantalla:
 > *«El terminal ya arranca y guarda el número de terminal `101` y la temperatura `21.5`. Pero cuando un estudiante
 acerca el móvil a la pantalla del vestíbulo, el sistema no sabe a quién pertenece ese escaneo»*.
@@ -334,8 +331,7 @@ Cada estudiante abre sus archivos `.psc` y `.java`:
 
 ---
 
-#### 1. Caso práctico de guía en AzaharTech
-
+#### 1. Caso guía en AzaharTech
 Es miércoles por la tarde. **Laia Claramunt** revisa la versión v0.2:
 > *«El sistema ya sabe qué terminal lee y qué alumno pasa. Ahora el IES El Caminàs nos pide procesar el tiempo lectivo:
 cada acceso matutino suma una sesión base de 50 minutos lectivos. Si el alumno entra también por la tarde a un taller
@@ -348,7 +344,6 @@ donde convivan números y texto sin que el operador `+` distorsione los cálculo
 ---
 
 #### 2. Fundamento teórico: aritmética y concatenación segura
-
 1. **La sobrecarga del operador `+`:**
     * Si ambos operandos son numéricos: realiza una **suma matemática** (`50 + 50 = 100`).
     * Si al menos un operando es una cadena de texto: realiza una **concatenación** (unión de textos).
@@ -363,12 +358,10 @@ donde convivan números y texto sin que el operador `+` distorsione los cálculo
 ---
 
 #### 3. Evolución a `ControlAccesoQR v0.3`
-
 Ampliamos el código de la versión v0.2 añadiendo el bloque de cálculo de sesiones lectivas y la composición del mensaje
 de confirmación.
 
 ##### Paso A. Evolución en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.3)
-
 ```psc
 Algoritmo ControlAccesoQR
     // =========================================================================
@@ -431,7 +424,6 @@ FinAlgoritmo
 ```
 
 ##### Paso B. Evolución en Java (`pr/src/ControlAccesoQR.java` — v0.3)
-
 Abrimos nuestro archivo `ControlAccesoQR.java` y lo evolucionamos:
 
 ```java
@@ -525,7 +517,6 @@ public class ControlAccesoQR {
 ---
 
 #### 4. Trabajo del estudiante: evolución de su proyecto propio
-
 El estudiante abre su archivo `.java`:
 
 * Incorpora el cálculo aritmético secuencial adaptado a su contexto.
@@ -539,8 +530,7 @@ El estudiante abre su archivo `.java`:
 
 ---
 
-#### 1. Caso práctico de guía en AzaharTech
-
+#### 1. Caso guía en AzaharTech
 Es jueves por la tarde. Concluyen las primeras 8 horas de Programación. **Laia Claramunt** revisa la versión v0.3 en el
 repositorio:
 > *«Fijaos en lo que habéis logrado en solo cuatro días: tenemos **una aplicación viva que ya sabe capturar datos del
@@ -553,7 +543,6 @@ commit formal en GitHub»*.
 ---
 
 #### 2. Estándares de calidad de código en AzaharTech
-
 1. **Autoformateo en IntelliJ.** Todo código debe pasar por el formateador automático del IDE pulsando **
    `Ctrl + Alt + L`** (en Windows/Linux) o **`Cmd + Option + L`** (en macOS). La indentación debe ser homogénea de 4
    espacios.
@@ -564,7 +553,6 @@ commit formal en GitHub»*.
 ---
 
 #### 3. La versión v0.3 del proyecto propio del estudiante
-
 Cada estudiante verifica que su archivo único `pr/src/NombreDeSuProyecto.java` cumple con el nivel de consolidación alcanzado en
 el caso guía:
 
@@ -651,7 +639,6 @@ public class MiProyecto {
 ---
 
 #### 4. Cierre formal en git y sincronización con GitHub
-
 El estudiante confirma los avances de la primera semana en su repositorio:
 
 ```bash
@@ -662,37 +649,25 @@ git push
 
 ---
 
-# SEMANA 2: EL MOTOR MATEMÁTICO — OPERADORES, EXPRESIONES Y CONVERSIONES DE TIPO (8 HORAS)
-
-### Hilo conductor metodológico: «Código Incremental Vivo»
-
+## Semana 2. El motor matemático: operadores, expresiones y conversiones de tipo
 Continuamos trabajando sobre el **mismo archivo maestro** que dejamos al final de la Semana 1. Tomamos la versión
 `ControlAccesoQR v0.3` y la evolucionamos progresivamente hasta la versión `v0.6` integrando operadores compuestos,
 descomposición con módulo (`%`) y conversiones de tipo (*casting*), mientras cada estudiante replica esta misma
 evolución en la clase única de **su proyecto elegido de la bolsa de proyectos**.
 
 ---
-
-## DÍA 5 (Lunes, 21 de septiembre de 2026 — 2 horas lectivas)
-
-### Versión de la aplicación: `ControlAccesoQR v0.4` (Asignación Compuesta e Incrementos en Memoria)
-
-* **Objetivo técnico:** Refactorizar el código maestro de la Semana 1 aplicando operadores de asignación compuesta
-  (`+=`, `-=`, `*=`) y operadores unarios de incremento (`++`) y decremento (`--`) sobre los contadores y acumuladores
-  de la aplicación.
-* **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.e, RA1.g.
+### Día 5 - 2 sesiones
 
 ---
 
-### 1. Caso práctico narrativo en AzaharTech
-
-Es lunes por la mañana. En la sala técnica de **AzaharTech**, **Pau Ferrer** abre el archivo `ControlAccesoQR.java` tal
+#### 1. Caso guía en AzaharTech
+Es lunes por la tarde. En la sala técnica de **AzaharTech**, **Pau Ferrer** abre el archivo `ControlAccesoQR.java` tal
 y como quedó el jueves anterior (versión v0.3). Quiere añadir un contador para saber cuántos fichajes procesa el
 terminal a lo largo de la mañana y ha escrito:
 
 ```java
-totalFichajesTerminal =totalFichajesTerminal +1;
-minutosTotalesLectivos =minutosTotalesLectivos +minutosExtra;
+totalFichajesTerminal = totalFichajesTerminal +1;
+minutosTotalesLectivos = minutosTotalesLectivos + minutosExtra;
 ```
 
 **Alba Torres** se acerca a su monitor, señala la pantalla y le explica:
@@ -709,7 +684,7 @@ evitar efectos secundarios en la memoria»*.
 
 ---
 
-### 2. Fundamento teórico: Asignación compuesta, incremento y mutabilidad de memoria
+#### 2. Fundamento teórico: asignación compuesta, incremento y mutabilidad de memoria
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
@@ -727,8 +702,7 @@ evitar efectos secundarios en la memoria»*.
 └─────────────────────┴───────────────────────────┴──────────────────────────────────────┘
 ```
 
-#### A. Operadores unarios de incremento (`++`) y decremento (`--`)
-
+##### A. Operadores unarios de incremento (`++`) y decremento (`--`)
 Aumentan o disminuyen el valor de una variable entera exactamente en una unidad:
 
 * **Post-incremento (`variable++`):** El valor actual de la variable se utiliza en la expresión donde se encuentra y,
@@ -752,8 +726,7 @@ println(++accesos); // En memoria RAM sube a 12 y luego imprime 12.
 
 ---
 
-### 3. Andamiaje didáctico: Refactorización a `ControlAccesoQR v0.4`
-
+#### 3. Refactorización a `ControlAccesoQR v0.4`
 Tomamos el archivo único de la Semana 1 y lo refactorizamos incorporando el contador global del terminal y asignaciones
 compuestas.
 
@@ -830,8 +803,7 @@ Algoritmo ControlAccesoQR
 FinAlgoritmo
 ```
 
-##### Paso B. Refactorización en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.4)
-
+##### Paso B. Refactorización en Java (`pr/src/ControlAccesoQR.java` — v0.4)
 Abrimos nuestro archivo maestro `ControlAccesoQR.java` y aplicamos directamente la refactorización:
 
 ```java
@@ -934,29 +906,20 @@ public class ControlAccesoQR {
 ---
 
 #### 4. Trabajo del estudiante: Refactorización de su proyecto propio
+El estudiante abre su archivo maestro `.java` (que dejó en v0.3 el jueves anterior):
 
-El estudiante abre su archivo maestro `MiProyecto.java` (que dejó en v0.3 el jueves anterior):
-
-* Declara un contador de operaciones o accesos (`contadorOperaciones`) y lo incrementa con `++`.
+* Declara un contador de operaciones y lo incrementa con `++`.
 * Sustituye las sumas de acumulación por operadores compuestos `+=` o `-=`.
 * Ejecuta el código en IntelliJ comprobando que los acumuladores actualizan la memoria RAM correctamente.
 
 ---
 ---
-
-## DÍA 6 (Martes, 22 de septiembre de 2026 — 2 horas lectivas)
-
-### Versión de la aplicación: `ControlAccesoQR v0.5` (Descomposición Temporal con División y Módulo `%`)
-
-* **Objetivo técnico:** Incorporar al programa maestro la división entera y el operador módulo (`%`) para descomponer
-  los segundos brutos de funcionamiento en horas, minutos y segundos exactos sin usar condicionales.
-* **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.e, RA1.g.
+### Día 6 - 2 sesiones
 
 ---
 
-### 1. Caso práctico narrativo en AzaharTech
-
-Es martes por la mañana. En la pantalla de control, **Pau Ferrer** muestra que el reloj interno del vestíbulo del IES El
+#### 1. Caso guía en AzaharTech
+Es martes por la tarde. En la pantalla de control, **Pau Ferrer** muestra que el reloj interno del vestíbulo del IES El
 Caminàs devuelve el tiempo de actividad del terminal en **segundos brutos acumulados**: `7540` segundos.
 
 Pau comenta:
@@ -975,7 +938,7 @@ motor capaz de descomponer cualquier magnitud temporal de forma exacta»*.
 
 ---
 
-### 2. Fundamento teórico: La división entera frente al operador residuo (`%`)
+#### 2. Fundamento teórico: La división entera frente al operador residuo (`%`)
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
@@ -1002,13 +965,11 @@ motor capaz de descomponer cualquier magnitud temporal de forma exacta»*.
 
 ---
 
-### 3. Andamiaje didáctico: Evolución a `ControlAccesoQR v0.5`
-
+#### 3. Evolución a `ControlAccesoQR v0.5`
 Ampliamos el archivo maestro `ControlAccesoQR` incorporando la lectura de segundos de actividad del terminal y su
 descomposición horaria.
 
-##### Paso A. Expansión en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.5)
-
+##### Paso A. Evolución en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.5)
 ```psc
 Algoritmo ControlAccesoQR
     // =========================================================================
@@ -1078,8 +1039,7 @@ Algoritmo ControlAccesoQR
 FinAlgoritmo
 ```
 
-##### Paso B. Expansión en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.5)
-
+##### Paso B. Evolución en Java (`pr/src/ControlAccesoQR.java` — v0.5)
 Abrimos nuestro archivo `ControlAccesoQR.java` y lo evolucionamos a v0.5:
 
 ```java
@@ -1188,11 +1148,10 @@ public class ControlAccesoQR {
 
 ---
 
-#### 4. Trabajo del estudiante: Evolución de su proyecto propio
+#### 4. Trabajo del estudiante: evolución de su proyecto propio
+El estudiante abre su archivo `.java` (que estaba en v0.4):
 
-El estudiante abre su archivo maestro `MiProyecto.java` (que estaba en v0.4):
-
-* Identifica una magnitud de su sistema que requiera ser descompuesta (ej. céntimos totales a euros y céntimos
+* Identifica una magnitud de su sistema que requiera ser descompuesta (por ejemplo, céntimos totales a euros y céntimos
   restantes; unidades de stock a cajas estándar y unidades sueltas; minutos de servicio a días y horas).
 * Aplica la división entera `/` y el operador módulo `%`.
 * Muestra el desglose por consola y comprueba con la calculadora que la reconstrucción matemática es perfecta.
@@ -1200,19 +1159,12 @@ El estudiante abre su archivo maestro `MiProyecto.java` (que estaba en v0.4):
 ---
 ---
 
-## DÍA 7 (Miércoles, 23 de septiembre de 2026 — 2 horas lectivas)
-
-### Versión de la aplicación: `ControlAccesoQR v0.6` (Jerarquía de Operadores y Casting Explícito)
-
-* **Objetivo técnico:** Evitar la pérdida involuntaria de decimales en el cálculo de ratios y porcentajes mediante
-  conversiones explícitas de tipo (*casting* `(double)`) y proteger la evaluación de expresiones con paréntesis `()`.
-* **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.g, RA1.h.
+### Día 7 - 2 sesiones
 
 ---
 
-### 1. Caso práctico narrativo en AzaharTech
-
-Es miércoles por la mañana. En el laboratorio de pruebas, **Pau Ferrer** muestra la nueva funcionalidad que ha intentado
+#### 1. Caso guía en AzaharTech
+Es miércoles por la tarde. En el laboratorio de pruebas, **Pau Ferrer** muestra la nueva funcionalidad que ha intentado
 añadir a `ControlAccesoQR`: calcular el porcentaje de alumnos que han entrado a primera hora respecto al aforo total del
 vestíbulo.
 
@@ -1249,7 +1201,7 @@ paréntesis y dominaremos las conversiones implícitas y explícitas»*.
 
 ---
 
-### 2. Fundamento teórico: Precedencia de operadores y *Casting* en Java
+### 2. Fundamento teórico: precedencia de operadores y *casting* en Java
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
@@ -1269,12 +1221,11 @@ paréntesis y dominaremos las conversiones implícitas y explícitas»*.
 └──────────────┴───────────────────────────────────────────┴─────────────────────────────┘
 ```
 
-#### A. Las conversiones de tipo en la memoria RAM
-
-1. **Conversión Implícita (Ensanchamiento / *Widening*):**
+##### A. Las conversiones de tipo en la memoria RAM
+1. **Conversión implícita (ensanchamiento / *widening*):**
     * Ocurre de forma automática y segura cuando un tipo de menor tamaño se almacena en uno mayor (`int` $\rightarrow$
       `double`). No hay riesgo de pérdida de información.
-2. **Conversión Explícita (Estrechamiento / *Narrowing / Casting*):**
+2. **Conversión explícita (estrechamiento / *narrowing / casting*):**
     * Es obligatoria cuando el programador fuerza la conversión de un tipo de mayor precisión en uno menor
       (`double` $\rightarrow$ `int`).
     * **Se produce truncamiento:** Los decimales se eliminan por completo (no se redondean).
@@ -1284,8 +1235,7 @@ paréntesis y dominaremos las conversiones implícitas y explícitas»*.
       int porcentajeEntero = (int) porcentaje; // Almacena 92 (pierde .85)
       ```
 
-#### B. La solución técnica mediante Casting en divisiones
-
+##### B. La solución técnica mediante casting en divisiones
 Para calcular el porcentaje sin perder decimales en la división entera, forzamos que al menos una variable sea tratada
 como decimal:
 
@@ -1298,13 +1248,11 @@ operación a coma flotante y devuelve el **`90.0 %`** exacto.
 
 ---
 
-### 3. Andamiaje didáctico: Evolución a `ControlAccesoQR v0.6`
-
-Ampliamos el archivo maestro incorporando el aforo máximo, el cálculo de porcentaje exacto con casting y el truncamiento
+#### 3. Evolución a `ControlAccesoQR v0.6`
+Ampliamos el archivo incorporando el aforo máximo, el cálculo de porcentaje exacto con casting y el truncamiento
 a valor entero.
 
-##### Paso A. Expansión en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.6)
-
+##### Paso A. Evolución en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.6)
 ```psc
 Algoritmo ControlAccesoQR
     // =========================================================================
@@ -1382,8 +1330,7 @@ Algoritmo ControlAccesoQR
 FinAlgoritmo
 ```
 
-##### Paso B. Expansión en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.6)
-
+##### Paso B. Evolución en Java (`pr/src/ControlAccesoQR.java` — v0.6)
 Abrimos nuestro archivo maestro `ControlAccesoQR.java` y lo evolucionamos a v0.6:
 
 ```java
@@ -1505,9 +1452,8 @@ public class ControlAccesoQR {
 
 ---
 
-#### 4. Trabajo del estudiante: Evolución de su proyecto propio
-
-El estudiante abre su archivo `MiProyecto.java` (en versión v0.5):
+#### 4. Trabajo del estudiante: evolución de su proyecto propio
+El estudiante abre su archivo `.java` (en versión v0.5):
 
 * Incorpora el cálculo de un ratio o porcentaje que divida dos variables enteras de su negocio.
 * Aplica `(double)` sobre el dividendo para obtener el resultado decimal exacto.
@@ -1517,19 +1463,12 @@ El estudiante abre su archivo `MiProyecto.java` (en versión v0.5):
 ---
 ---
 
-## DÍA 8 (Jueves, 24 de septiembre de 2026 — 2 horas lectivas)
-
-### Versión de la aplicación: Consolidación de la v0.6 y Laboratorio de Integración de Cálculos
-
-* **Objetivo técnico:** Auditar y verificar que el motor matemático del proyecto propio (operadores compuestos, módulo
-  `%` y *casting*) compila limpiamente y realizar la entrega de mitad de sprint en GitHub.
-* **Criterios de Evaluación vinculados:** RA1.a, RA1.b, RA1.c, RA1.d, RA1.e, RA1.g, RA1.h, RA1.i.
+### Día 8 - 2 sesiones
 
 ---
 
-### 1. Caso práctico narrativo en AzaharTech
-
-Es jueves al mediodía. Concluyen las primeras dos semanas del sprint. **Laia Claramunt** revisa en la pantalla de la
+#### 1. Caso guía en AzaharTech
+Es jueves por la tarde. Concluyen las primeras dos semanas del sprint. **Laia Claramunt** revisa en la pantalla de la
 sala el avance global:
 > *«Hoy cerramos formalmente la Semana 2. En la Semana 1 creamos el esqueleto y la identidad de nuestro software.
 Durante estos últimos cuatro días habéis convertido el programa en un auténtico motor matemático: domináis los
@@ -1542,25 +1481,23 @@ proyectos**. No debe quedar ni un solo cálculo ambiguo ni una división entera 
 
 ---
 
-### 2. Checklist técnico de calidad del código para la versión v0.6
-
+#### 2. Checklist técnico de calidad del código para la versión v0.6
 Antes de realizar el commit, cada estudiante debe verificar los siguientes 5 puntos en IntelliJ:
 
-1. **Ausencia absoluta de condicionales o bucles:** El código se ejecuta de forma estrictamente secuencial de principio
-   a fin (**100 % fiel a RA1**).
-2. **Casting explícito justificado:** Al menos una división entre enteros cuenta con `(double)` para preservar la
+1. **Ejecución secuencial.** El código se ejecuta de forma estrictamente secuencial de principio
+   a fin.
+2. **Casting explícito justificado.** Al menos una división entre enteros cuenta con `(double)` para preservar la
    precisión decimal.
-3. **Uso del operador módulo (`%`):** Al menos una magnitud se descompone o calcula mediante el residuo de una división.
-4. **Protección con paréntesis `()`:** Las fórmulas complejas están agrupadas con paréntesis para garantizar la
+3. **Uso del operador módulo (`%`).** Al menos una magnitud se descompone o calcula mediante el residuo de una división.
+4. **Protección con paréntesis `()`.** Las fórmulas complejas están agrupadas con paréntesis para garantizar la
    precedencia matemática sin ambigüedades.
-5. **Indentación automática:** Se ha pulsado `Ctrl + Alt + L` para ordenar el código según el estándar de estilo
+5. **Indentación automática.** Se ha pulsado `Ctrl + Alt + L` para ordenar el código según el estándar de estilo
    oficial.
 
 ---
 
-### 3. Taller guiado: La versión v0.6 del Proyecto Propio del Estudiante
-
-Cada estudiante comprueba que su clase única `pr/src/MiProyecto.java` ha evolucionado de forma acumulativa e
+### 3. La versión v0.6 del proyecto propio del estudiante
+Cada estudiante comprueba que su clase única `pr/src/NombreDeSuProyecto.java` ha evolucionado de forma acumulativa e
 incremental:
 
 ```java
@@ -1671,8 +1608,7 @@ public class MiProyecto {
 
 ---
 
-### 4. Cierre formal en Git y sincronización con GitHub
-
+#### 4. Cierre formal en git y sincronización con GitHub
 El estudiante actualiza su repositorio con los avances de la segunda semana:
 
 ```bash
@@ -1680,22 +1616,6 @@ git add pr/
 git commit -m "feat(pr): evolucionar aplicacion propia a v0.6 con motor matematico, modulo y casting"
 git push
 ```
-
----
-
-### Balance pedagógico de la Semana 2 (Enfoque Código Vivo)
-
-1. **Crecimiento orgánico del software:** La clase `ControlAccesoQR.java` ha evolucionado de la v0.3 a la v0.6 sin
-   desechar una sola línea de la semana anterior.
-2. **Dominio matemático sin condicionales:** El alumno ha resuelto descomposiciones de tiempo y cálculos de aforo usando
-   exclusivamente división entera, módulo (`%`) y casting `(double)`.
-3. **El proyecto propio sigue el mismo ritmo:** El estudiante dispone de la versión v0.6 de `MiProyecto.java` en GitHub,
-   lista para recibir en la **Semana 3** las constantes inmutables `final`, secuencias de escape y el formateo
-   profesional con `printf` para alcanzar la versión final `v1.0`.
-
-# MÓDULO PROFESIONAL: PROGRAMACIÓN (PR)
-
-## SPRINT 1. Algorítmica y fundamentos de programación (3 semanas | 24 horas)
 
 ---
 
