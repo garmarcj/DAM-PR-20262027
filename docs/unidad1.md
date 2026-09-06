@@ -1,34 +1,37 @@
-# MÓDULO PROFESIONAL: PROGRAMACIÓN (PR)
-
-## SPRINT 1. Algorítmica y fundamentos de programación (3 semanas | 24 horas)
+# Sprint 1. Algorítmica y fundamentos de programación
 
 ---
 
-# SEMANA 1: EL NACIMIENTO DE LA APLICACIÓN — ESTRUCTURA, VARIABLES Y TIPOS DE DATOS (8 HORAS)
-### Hilo conductor metodológico: «Código Incremental Vivo»
-A lo largo de este sprint no crearemos ejercicios sueltos. Desarrollaremos y evolucionaremos **un único archivo de pseudocódigo (`ControlAccesoQR.psc`) y una única clase Java (`ControlAccesoQR.java`)** para el caso guía del **IES El Caminàs**, mientras cada estudiante hace evolucionar de forma paralela el archivo único de **su proyecto elegido de la bolsa de proyectos**.
+## Semana 1. El nacimiento de la aplicación: estructura, variables y tipos de datos
+
+A lo largo de este sprint desarrollaremos y evolucionaremos **un único archivo de pseudocódigo (`ControlAccesoQR.psc`) y
+una única clase Java (`ControlAccesoQR.java`)** para el caso guía del **IES El Caminàs**, mientras cada estudiante hace
+evolucionar de forma paralela el archivo único de **su proyecto elegido de la bolsa de proyectos**.
 
 ---
 
-## DÍA 1 (Lunes, 14 de septiembre de 2026 — 2 horas lectivas)
-### Versión de la aplicación: `ControlAccesoQR v0.1` (Esqueleto y Parámetros Numéricos)
-* **Objetivo técnico:** Crear el archivo fuente maestro, comprender la estructura de una clase Java y registrar los primeros datos numéricos del terminal (`int` y `double`).
-* **Criterios de Evaluación vinculados:** RA1.a, RA1.b, RA1.c, RA1.d, RA1.e.
+### Día 1 - 2 sesiones
 
 ---
 
-#### 1. Caso práctico narrativo en AzaharTech
-Son las once de la mañana en la sede de **AzaharTech** en Castellón de la Plana. **Laia Claramunt** conecta su portátil al proyector principal. En pantalla aparece el entorno de desarrollo IntelliJ IDEA completamente vacío:
+#### 1. Caso práctico de guía en AzaharTech
 
-> *«Equipo, comenzamos el desarrollo del sistema de acceso para el **IES El Caminàs**. No vamos a hacer pruebas desechables en archivos temporales; desde hoy abrimos el archivo oficial de la aplicación: **`ControlAccesoQR`**.*
+Son las once de la mañana en la sede de **AzaharTech** en Castellón de la Plana. **Laia Claramunt** conecta su portátil
+al proyector principal. En pantalla aparece el entorno de desarrollo IntelliJ IDEA completamente vacío:
+
+> *«Equipo, comenzamos el desarrollo del sistema de acceso para el **IES El Caminàs**; hoy abrimos el archivo oficial de
+la aplicación: **`ControlAccesoQR`**.*
 >
-> *Una aplicación profesional crece capa a capa. El equipo directivo del instituto necesita que el terminal empiece registrando los parámetros físicos del vestíbulo: el número del aula donde se ubica la pantalla y la temperatura ambiente del sensor térmico.*
+> *Una aplicación profesional crece capa a capa. El equipo directivo del instituto necesita que el terminal empiece
+registrando los parámetros físicos del vestíbulo: el número del aula donde se ubica la pantalla y la temperatura
+ambiente del sensor térmico.*
 >
-> *Hoy crearemos el esqueleto del programa, aprenderemos qué ocurre en la memoria RAM al reservar variables numéricas (`int` y `double`) y capturaremos los primeros datos desde el teclado»*.
+> *Hoy crearemos el esqueleto del programa, aprenderemos qué ocurre en la memoria RAM al reservar variables numéricas (
+`int` y `double`) y capturaremos los primeros datos desde el teclado»*.
 
 ---
 
-#### 2. Fundamento teórico: Estructura del programa y variables numéricas en RAM
+#### 2. Fundamento teórico: estructura del programa y variables numéricas en RAM
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
@@ -41,18 +44,22 @@ Son las once de la mañana en la sede de **AzaharTech** en Castellón de la Plan
 └───────────────────┴───────────────┴──────────────────────┴─────────────────────────────┘
 ```
 
-1. **La clase como contenedor maestro:** En Java, todo código pertenece a una clase (`public class ControlAccesoQR`). El archivo en disco debe llamarse exactamente igual: `ControlAccesoQR.java`.
-2. **El método de entrada (`main`):** La JVM busca la instrucción `public static void main(String[] args)` para iniciar la ejecución secuencial de arriba hacia abajo.
-3. **Variables numéricas primitivas:**
+1. **La clase como contenedor maestro.** En Java, todo código pertenece a una clase (`public class ControlAccesoQR`). El
+   archivo en disco debe llamarse exactamente igual: `ControlAccesoQR.java`.
+2. **El método de entrada (`main`).** La JVM busca la instrucción `public static void main(String[] args)` para iniciar
+   la ejecución secuencial de arriba hacia abajo.
+3. **Variables numéricas primitivas.**
     * **`int`:** Almacena números enteros sin decimales (de $-2.147$ a $+2.147$ millones).
     * **`double`:** Almacena números reales con precisión decimal de 64 bits.
-4. **Captura con `Scanner`:** Creamos un canal de lectura interactivo (`Scanner teclado = new Scanner(System.in);`) que captura enteros con `nextInt()` y decimales con `nextDouble()`.
+4. **Captura con `Scanner`.** Creamos un canal de lectura interactivo (`Scanner teclado = new Scanner(System.in);`) que
+   captura enteros con `nextInt()` y decimales con `nextDouble()`.
 
 ---
 
-#### 3. Andamiaje didáctico: Código maestro `ControlAccesoQR v0.1`
+#### 3. Algorítmica y traducción a Java de la app `ControlAccesoQR v0.1`
 
-##### Paso A. Algoritmo base en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.1)
+##### Paso A. Algoritmo en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.1)
+
 ```psc
 Algoritmo ControlAccesoQR
     // =========================================================================
@@ -82,27 +89,29 @@ Algoritmo ControlAccesoQR
 FinAlgoritmo
 ```
 
-##### Paso B. Traducción a Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.1)
+##### Paso B. Traducción a Java (`pr/src/ControlAccesoQR.java` — v0.1)
+
 ```java
 /**
  * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
  * Cliente: IES El Caminàs (Castellón de la Plana)
  * Consultora: AzaharTech Software Consulting
- * 
+ *
  * Versión 0.1: Esqueleto de ejecución y parámetros numéricos del terminal.
  * Módulo: Programación (PR) - Sprint 1 (RA1)
  */
+
 import java.util.Scanner;
 
 public class ControlAccesoQR {
     public static void main(String[] args) {
         // Inicialización del lector de consola
         Scanner teclado = new Scanner(System.in);
-        
+
         // 1. Declaración de variables numéricas primitivas en memoria
         int terminalId;
         double tempVestibulo;
-        
+
         // 2. Entrada de datos interactiva
         System.out.println("=================================================");
         System.out.println("   AZAHARTECH - TERMINAL DE ACCESO VESTÍBULO     ");
@@ -110,16 +119,16 @@ public class ControlAccesoQR {
         System.out.println("=================================================");
         System.out.print("Introduce el número identificador del terminal (ID): ");
         terminalId = teclado.nextInt();
-        
+
         System.out.print("Introduce la temperatura del sensor del vestíbulo (ºC): ");
         tempVestibulo = teclado.nextDouble();
-        
+
         // 3. Salida de confirmación del terminal
         System.out.println("-------------------------------------------------");
         System.out.println("Terminal configurado: #" + terminalId);
         System.out.println("Lectura térmica:      " + tempVestibulo + " ºC");
         System.out.println("Estado del hardware:  EN ESPERA");
-        
+
         teclado.close();
     }
 }
@@ -127,33 +136,38 @@ public class ControlAccesoQR {
 
 ---
 
-#### 4. Trabajo del estudiante: Nacimiento de su proyecto propio
-Cada estudiante crea en su carpeta `pr/pseudocodigo/` el archivo maestro de su proyecto propio (ej. `SistemaGestion.psc`) y en `pr/src/` la clase `SistemaGestion.java` v0.1:
-* Define e inicializa dos variables numéricas (`int` y `double`) que representen datos físicos o de arranque de su negocio (ej. código de sucursal y aforo; número de almacén y tarifa base).
+#### 4. Trabajo del estudiante: nacimiento de su proyecto propio
+
+Cada estudiante crea en su carpeta `pr/pseudocodigo/` el archivo maestro de su proyecto propio y en `pr/src/` la clase
+`.java` v0.1:
+
+* Define e inicializa dos variables numéricas (`int` y `double`) que representen datos físicos o de arranque de su
+  negocio (ej. código de sucursal y aforo; número de almacén y tarifa base).
 * Compila y verifica la ejecución en la consola de IntelliJ.
 
 ---
 ---
 
-## DÍA 2 (Martes, 15 de septiembre de 2026 — 2 horas lectivas)
-### Versión de la aplicación: `ControlAccesoQR v0.2` (Identidad y Estados Lógicos)
-* **Objetivo técnico:** Modificar y expandir el archivo maestro de ayer incorporando tipos de texto (`String`), caracteres individuales (`char`), estados booleanos (`boolean`) y resolviendo el salto de buffer de `Scanner`.
-* **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.e.
+### Día 2 - 2 sesiones
 
 ---
 
-### 1. Caso práctico narrativo en AzaharTech
-Es martes por la mañana. **Pau Ferrer** ejecuta `ControlAccesoQR` v0.1 y muestra la pantalla:
-> *«El terminal ya arranca y guarda el número de terminal `101` y la temperatura `21.5`. Pero cuando un estudiante acerca el móvil a la pantalla del vestíbulo, el sistema no sabe a quién pertenece ese escaneo»*.
+#### 1. Caso práctico guía en AzaharTech
+
+Es martes por la tarde. **Pau Ferrer** ejecuta `ControlAccesoQR` v0.1 y muestra la pantalla:
+> *«El terminal ya arranca y guarda el número de terminal `101` y la temperatura `21.5`. Pero cuando un estudiante
+acerca el móvil a la pantalla del vestíbulo, el sistema no sabe a quién pertenece ese escaneo»*.
 
 **Alba Torres** toma el teclado y abre el archivo de ayer:
-> *«No vamos a crear un programa nuevo. Vamos a evolucionar `ControlAccesoQR.java`. Añadiremos los campos para el nombre del estudiante, su DNI, la letra de su grupo y una bandera lógica que indique si su matrícula está activa.*
+> *«No vamos a crear un programa nuevo. Vamos a evolucionar `ControlAccesoQR.java`. Añadiremos los campos para el nombre
+del estudiante, su DNI, la letra de su grupo y una bandera lógica que indique si su matrícula está activa.*
 >
-> *Pero atención a la trampa de Java: al leer números antes que textos, el buffer del teclado guarda un salto de línea invisible (`\n`) que debemos limpiar para que el programa no se salte la lectura del nombre»*.
+> *Pero atención a la trampa de Java: al leer números antes que textos, el buffer del teclado guarda un salto de línea
+invisible (`\n`) que debemos limpiar para que el programa no se salte la lectura del nombre»*.
 
 ---
 
-### 2. Fundamento teórico: Caracteres, Cadenas y el Buffer del Scanner
+#### 2. Fundamento teórico: caracteres, cadenas y el buffer del Scanner
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
@@ -170,21 +184,24 @@ Es martes por la mañana. **Pau Ferrer** ejecuta `ControlAccesoQR` v0.1 y muestr
 1. **`char` frente a `String`:**
     * `char letraGrupo = 'B';`: Un único carácter delimitado obligatoriamente por comillas simples (`' '`).
     * `String nombre = "Juan Pérez";`: Objeto que gestiona texto de cualquier longitud entre comillas dobles (`" "`).
-2. **`boolean` (Estado del sistema):** Almacena `true` o `false`. Ideal para variables de control como `matriculaActiva`.
-3. **Limpieza del buffer:** Siempre que se invoque `nextInt()` o `nextDouble()` y la siguiente instrucción sea `nextLine()`, se debe intercalar una llamada a `teclado.nextLine();` para vaciar el salto de línea residual.
+2. **`boolean` (Estado del sistema):** Almacena `true` o `false`. Ideal para variables de control como
+   `matriculaActiva`.
+3. **Limpieza del buffer:** Siempre que se invoque `nextInt()` o `nextDouble()` y la siguiente instrucción sea
+   `nextLine()`, se debe intercalar una llamada a `teclado.nextLine();` para vaciar el salto de línea residual.
 
 ---
 
-### 3. Andamiaje didáctico: Evolución a `ControlAccesoQR v0.2`
+#### 3. Evolución a `ControlAccesoQR v0.2`
 
 Observa cómo el código de ayer se amplía añadiendo los bloques de identidad sin eliminar lo anterior.
 
-##### Paso A. Expansión en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.2)
+##### Paso A. Evolución en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.2)
+
 ```psc
 Algoritmo ControlAccesoQR
     // =========================================================================
     // SISTEMA DE CONTROL DE ASISTENCIA QR - IES EL CAMINAS (Castellon)
-    // Version: 0.2 (Evolucion: Incorporacion de Identidad del Alumnado)
+    // Version: 0.2 (Evolucion: incorporacion de identidad del alumnado)
     // =========================================================================
     
     // 1. Declaracion de variables del terminal (Día 1)
@@ -227,7 +244,8 @@ Algoritmo ControlAccesoQR
 FinAlgoritmo
 ```
 
-##### Paso B. Expansión en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.2)
+##### Paso B. Evolución en Java (`pr/src/ControlAccesoQR.java` — v0.2)
+
 Abrimos el archivo `ControlAccesoQR.java` en IntelliJ y lo modificamos directamente:
 
 ```java
@@ -235,26 +253,27 @@ Abrimos el archivo `ControlAccesoQR.java` en IntelliJ y lo modificamos directame
  * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
  * Cliente: IES El Caminàs (Castellón de la Plana)
  * Consultora: AzaharTech Software Consulting
- * 
+ *
  * Versión 0.2: Incorporación de identidad del alumnado y tipos alfanuméricos.
  * Módulo: Programación (PR) - Sprint 1 (RA1)
  */
+
 import java.util.Scanner;
 
 public class ControlAccesoQR {
     public static void main(String[] args) {
         Scanner teclado = new Scanner(System.in);
-        
+
         // 1. Variables de hardware y terminal (Día 1)
         int terminalId;
         double tempVestibulo;
-        
+
         // [NUEVO DÍA 2] Variables de identidad y estado lógico
         String dniEstudiante;
         String nombreEstudiante;
         char letraGrupo;
         boolean matriculaActiva;
-        
+
         // 2. Captura de parámetros del terminal (Día 1)
         System.out.println("=================================================");
         System.out.println("   AZAHARTECH - TERMINAL DE ACCESO VESTÍBULO     ");
@@ -262,27 +281,27 @@ public class ControlAccesoQR {
         System.out.println("=================================================");
         System.out.print("Introduce el número identificador del terminal (ID): ");
         terminalId = teclado.nextInt();
-        
+
         System.out.print("Introduce la temperatura del sensor (ºC): ");
         tempVestibulo = teclado.nextDouble();
-        
+
         // [LIMPIEZA DE BUFFER OBLIGATORIA]
         teclado.nextLine(); // Consume el salto de línea residual antes de leer texto
-        
+
         // [NUEVO DÍA 2] Captura de datos del alumno
         System.out.println("-------------------------------------------------");
         System.out.println("REGISTRO DE ACCESO EN CURSO...");
         System.out.print("Introduce el DNI del alumno: ");
         dniEstudiante = teclado.nextLine();
-        
+
         System.out.print("Introduce el nombre completo del alumno: ");
         nombreEstudiante = teclado.nextLine(); // Permite capturar nombres y apellidos con espacios
-        
+
         System.out.print("Introduce la letra de su grupo (A, B o C): ");
         letraGrupo = teclado.next().charAt(0); // Extrae el primer carácter introducido
-        
+
         matriculaActiva = true; // Asignación de literal booleano
-        
+
         // 3. Salida de datos consolidada
         System.out.println("=================================================");
         System.out.println("REGISTRO DE FICHAJE EMITIDO:");
@@ -291,7 +310,7 @@ public class ControlAccesoQR {
         System.out.println("Grupo:      " + letraGrupo + " DAM");
         System.out.println("Matrícula:  Activa (" + matriculaActiva + ")");
         System.out.println("=================================================");
-        
+
         teclado.close();
     }
 }
@@ -299,31 +318,36 @@ public class ControlAccesoQR {
 
 ---
 
-#### 4. Trabajo del estudiante: Evolución de su proyecto propio
-Cada estudiante abre su archivo `SistemaGestion.psc` y `SistemaGestion.java`:
-* Añade los campos alfanuméricos de su proyecto (`String` para descripciones o clientes, `char` para códigos de zona o categoría, `boolean` para disponibilidad o estado activo).
+#### 4. Trabajo del estudiante: evolución de su proyecto propio
+
+Cada estudiante abre sus archivos `.psc` y `.java`:
+
+* Añade los campos alfanuméricos de su proyecto (`String` para descripciones o clientes, `char` para códigos de zona o
+  categoría, `boolean` para disponibilidad o estado activo).
 * Aplica la limpieza del buffer con `teclado.nextLine()`.
 * Ejecuta pruebas verificando que se pueden introducir nombres con espacios sin saltos inesperados.
 
 ---
 ---
 
-## DÍA 3 (Miércoles, 16 de septiembre de 2026 — 2 horas lectivas)
-### Versión de la aplicación: `ControlAccesoQR v0.3` (Cálculos Aritméticos y Concatenación)
-* **Objetivo técnico:** Incorporar a la aplicación viva el cálculo de tiempos lectivos, sumas aritméticas y la construcción del mensaje de confirmación mediante concatenación protegida.
-* **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.e, RA1.g.
+### Día 3 - 2 sesiones
 
 ---
 
-### 1. Caso práctico narrativo en AzaharTech
-Es miércoles por la mañana. **Laia Claramunt** revisa la versión v0.2:
-> *«El sistema ya sabe qué terminal lee y qué alumno pasa. Ahora el IES El Caminàs nos pide procesar el tiempo lectivo: cada acceso matutino suma una sesión base de 50 minutos lectivos. Si el alumno entra también por la tarde a un taller voluntario de refuerzo, debemos sumar ambos accesos y calcular cuántos minutos lectivos totales acumula en el centro hoy.*
+#### 1. Caso práctico de guía en AzaharTech
+
+Es miércoles por la tarde. **Laia Claramunt** revisa la versión v0.2:
+> *«El sistema ya sabe qué terminal lee y qué alumno pasa. Ahora el IES El Caminàs nos pide procesar el tiempo lectivo:
+cada acceso matutino suma una sesión base de 50 minutos lectivos. Si el alumno entra también por la tarde a un taller
+voluntario de refuerzo, debemos sumar ambos accesos y calcular cuántos minutos lectivos totales acumula en el centro
+hoy.*
 >
-> *Hoy aprenderemos a operar matemáticamente sobre las variables de nuestro programa y a componer un mensaje unificado donde convivan números y texto sin que el operador `+` distorsione los cálculos»*.
+> *Hoy aprenderemos a operar matemáticamente sobre las variables de nuestro programa y a componer un mensaje unificado
+donde convivan números y texto sin que el operador `+` distorsione los cálculos»*.
 
 ---
 
-### 2. Fundamento teórico: Aritmética y Concatenación Segura
+#### 2. Fundamento teórico: aritmética y concatenación segura
 
 1. **La sobrecarga del operador `+`:**
     * Si ambos operandos son numéricos: realiza una **suma matemática** (`50 + 50 = 100`).
@@ -333,15 +357,18 @@ Es miércoles por la mañana. **Laia Claramunt** revisa la versión v0.2:
    System.out.println("Minutos: " + 50 + 50);   // Imprime "Minutos: 5050" (¡ERROR!)
    System.out.println("Minutos: " + (50 + 50)); // Imprime "Minutos: 100"  (CORRECTO)
    ```
-3. **Multiplicación y prioridad:** La multiplicación (`*`) se evalúa antes que la suma (`+`), a menos que usemos paréntesis `()`.
+3. **Multiplicación y prioridad:** La multiplicación (`*`) se evalúa antes que la suma (`+`), a menos que usemos
+   paréntesis `()`.
 
 ---
 
-### 3. Andamiaje didáctico: Evolución a `ControlAccesoQR v0.3`
+#### 3. Evolución a `ControlAccesoQR v0.3`
 
-Ampliamos el código de la versión v0.2 añadiendo el bloque de cálculo de sesiones lectivas y la composición del mensaje de confirmación.
+Ampliamos el código de la versión v0.2 añadiendo el bloque de cálculo de sesiones lectivas y la composición del mensaje
+de confirmación.
 
-##### Paso A. Expansión en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.3)
+##### Paso A. Evolución en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.3)
+
 ```psc
 Algoritmo ControlAccesoQR
     // =========================================================================
@@ -403,7 +430,8 @@ Algoritmo ControlAccesoQR
 FinAlgoritmo
 ```
 
-##### Paso B. Expansión en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.3)
+##### Paso B. Evolución en Java (`pr/src/ControlAccesoQR.java` — v0.3)
+
 Abrimos nuestro archivo `ControlAccesoQR.java` y lo evolucionamos:
 
 ```java
@@ -411,26 +439,27 @@ Abrimos nuestro archivo `ControlAccesoQR.java` y lo evolucionamos:
  * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
  * Cliente: IES El Caminàs (Castellón de la Plana)
  * Consultora: AzaharTech Software Consulting
- * 
+ *
  * Versión 0.3: Cálculo aritmético de tiempos de permanencia y concatenación.
  * Módulo: Programación (PR) - Sprint 1 (RA1)
  */
+
 import java.util.Scanner;
 
 public class ControlAccesoQR {
     public static void main(String[] args) {
         Scanner teclado = new Scanner(System.in);
-        
+
         // 1. Variables de hardware y terminal (Día 1)
         int terminalId;
         double tempVestibulo;
-        
+
         // Variables de identidad (Día 2)
         String dniEstudiante;
         String nombreEstudiante;
         char letraGrupo;
         boolean matriculaActiva;
-        
+
         // [NUEVO DÍA 3] Variables de cómputo horario y concatenación
         int sesionesManana;
         int sesionesTarde;
@@ -438,7 +467,7 @@ public class ControlAccesoQR {
         int minutosPorSesion = 50; // Cada periodo lectivo son 50 minutos
         int minutosTotalesLectivos;
         String tokenResumen;
-        
+
         // 2. Captura de datos
         System.out.println("=================================================");
         System.out.println("   AZAHARTECH - TERMINAL DE ACCESO VESTÍBULO     ");
@@ -446,38 +475,38 @@ public class ControlAccesoQR {
         System.out.println("=================================================");
         System.out.print("ID Terminal: ");
         terminalId = teclado.nextInt();
-        
+
         System.out.print("Temperatura sensor (ºC): ");
         tempVestibulo = teclado.nextDouble();
-        
+
         teclado.nextLine(); // Limpieza de buffer
-        
+
         System.out.print("DNI Estudiante: ");
         dniEstudiante = teclado.nextLine();
-        
+
         System.out.print("Nombre completo: ");
         nombreEstudiante = teclado.nextLine();
-        
+
         System.out.print("Grupo (letra): ");
         letraGrupo = teclado.next().charAt(0);
-        
+
         matriculaActiva = true;
-        
+
         // [NUEVO DÍA 3] Entrada de sesiones lectivas
         System.out.println("-------------------------------------------------");
         System.out.print("Sesiones programadas turno mañana: ");
         sesionesManana = teclado.nextInt();
-        
+
         System.out.print("Sesiones programadas turno tarde: ");
         sesionesTarde = teclado.nextInt();
-        
+
         // [NUEVO DÍA 3] Procesamiento aritmético secuencial
         totalSesiones = sesionesManana + sesionesTarde;
         minutosTotalesLectivos = totalSesiones * minutosPorSesion;
-        
+
         // Composición de cadena concatenada
         tokenResumen = dniEstudiante + "-SESIONES-" + totalSesiones;
-        
+
         // 3. Salida de datos unificada
         System.out.println("=================================================");
         System.out.println("RESUMEN DE ASISTENCIA DIARIA:");
@@ -487,7 +516,7 @@ public class ControlAccesoQR {
         System.out.println("Sesiones:   " + (sesionesManana + sesionesTarde) + " clases (" + sesionesManana + "M + " + sesionesTarde + "T)");
         System.out.println("Permanencia computada: " + minutosTotalesLectivos + " minutos lectivos.");
         System.out.println("=================================================");
-        
+
         teclado.close();
     }
 }
@@ -495,106 +524,116 @@ public class ControlAccesoQR {
 
 ---
 
-#### 4. Trabajo del estudiante: Evolución de su proyecto propio
-El estudiante abre su archivo único `SistemaGestion.java`:
-* Incorpora el cálculo aritmético secuencial adaptado a su contexto (suma de dos cantidades numéricas, multiplicación por una tarifa base).
-* Utiliza paréntesis `()` para proteger la operación dentro de los mensajes de salida.
+#### 4. Trabajo del estudiante: evolución de su proyecto propio
+
+El estudiante abre su archivo `.java`:
+
+* Incorpora el cálculo aritmético secuencial adaptado a su contexto.
+* Utiliza paréntesis `()` para proteger una operación dentro de los mensajes de salida.
 * Compila y verifica que la concatenación no genera errores numéricos.
 
 ---
 ---
 
-## DÍA 4 (Jueves, 17 de septiembre de 2026 — 2 horas lectivas)
-### Versión de la aplicación: Consolidación de la v0.3 y Laboratorio de Integración del Proyecto Propio
-* **Objetivo técnico:** Revisar la arquitectura acumulativa, aplicar estándares de estilo y publicar la versión v0.3 del proyecto propio en GitHub.
-* **Criterios de Evaluación vinculados:** RA1.a, RA1.b, RA1.c, RA1.d, RA1.e, RA1.i.
+### Día 4 - 2 sesiones
 
 ---
 
-### 1. Caso práctico narrativo en AzaharTech
-Es jueves por la mañana. Concluyen las primeras 8 horas de Programación. **Laia Claramunt** revisa la versión v0.3 en el repositorio:
-> *«Fijaos en lo que habéis logrado en solo cuatro días: no tenemos diez ejercicios sueltos en la papelera; tenemos **una aplicación viva que ya sabe capturar datos del hardware, identificar al usuario y calcular tiempos lectivos**.*
+#### 1. Caso práctico de guía en AzaharTech
+
+Es jueves por la tarde. Concluyen las primeras 8 horas de Programación. **Laia Claramunt** revisa la versión v0.3 en el
+repositorio:
+> *«Fijaos en lo que habéis logrado en solo cuatro días: tenemos **una aplicación viva que ya sabe capturar datos del
+hardware, identificar al usuario y calcular tiempos lectivos**.*
 >
-> *Hoy cada uno de vosotros va a dedicar estas dos horas a auditar, limpiar y documentar la versión v0.3 de su **proyecto propio de la bolsa de proyectos**. Aplicaremos la indentación oficial, cerraremos recursos y realizaremos el commit formal en GitHub»*.
+> *Hoy cada uno de vosotros va a dedicar estas dos horas a auditar, limpiar y documentar la versión v0.3 de su
+**proyecto propio de la bolsa de proyectos**. Aplicaremos la indentación oficial, cerraremos recursos y realizaremos el
+commit formal en GitHub»*.
 
 ---
 
-### 2. Estándares de calidad de código en AzaharTech
-1. **Autoformateo en IntelliJ:** Todo código debe pasar por el formateador automático del IDE pulsando **`Ctrl + Alt + L`** (en Windows/Linux) o **`Cmd + Option + L`** (en macOS). La indentación debe ser homogénea de 4 espacios.
-2. **Nombres descriptivos:** Las variables deben reflejar su propósito (`minutosTotalesLectivos`, no `mtl`).
-3. **Cierre de recursos:** Toda clase que utilice `Scanner` debe cerrarlo explícitamente con `.close()` al final del `main`.
+#### 2. Estándares de calidad de código en AzaharTech
+
+1. **Autoformateo en IntelliJ.** Todo código debe pasar por el formateador automático del IDE pulsando **
+   `Ctrl + Alt + L`** (en Windows/Linux) o **`Cmd + Option + L`** (en macOS). La indentación debe ser homogénea de 4
+   espacios.
+2. **Nombres descriptivos.** Las variables deben reflejar su propósito (`minutosTotalesLectivos`, no `mtl`).
+3. **Cierre de recursos.** Toda clase que utilice `Scanner` debe cerrarlo explícitamente con `.close()` al final del
+   `main`.
 
 ---
 
-### 3. Taller guiado: La versión v0.3 del Proyecto Propio del Estudiante
+#### 3. La versión v0.3 del proyecto propio del estudiante
 
-Cada estudiante verifica que su archivo único `pr/src/MiProyecto.java` cumple con el nivel de consolidación alcanzado en el caso guía:
+Cada estudiante verifica que su archivo único `pr/src/NombreDeSuProyecto.java` cumple con el nivel de consolidación alcanzado en
+el caso guía:
 
 ```java
 /**
  * PROYECTO: [Nombre de tu Proyecto Elegido de la Bolsa de Proyectos]
  * Consultora: AzaharTech Software Consulting
- * 
+ *
  * Versión 0.3: Módulo acumulativo de captura de datos, tipado y cálculo aritmético.
  * Módulo: Programación (PR) - Sprint 1 (RA1)
- * 
+ *
  * @author [Tus Apellidos, Tu Nombre]
  * @version 0.3 (Cierre Semana 1 - Septiembre 2026)
  */
+
 import java.util.Scanner;
 
 public class MiProyecto {
     public static void main(String[] args) {
         Scanner teclado = new Scanner(System.in);
-        
+
         // 1. Variables numéricas de infraestructura (Día 1)
         int idSucursal;
         double balanceInicial;
-        
+
         // 2. Variables alfanuméricas de cliente y estado (Día 2)
         String nombreCliente;
         String identificadorFiscal;
         char categoriaCliente;
         boolean cuentaVerificada = true;
-        
+
         // 3. Variables de cálculo aritmético (Día 3)
         int operacionesManana;
         int operacionesTarde;
         int totalOperaciones;
         double tarifaPorOperacion = 12.50;
         double volumenTotalCalculado;
-        
+
         // Captura de datos interactiva
         System.out.println("=================================================");
         System.out.println("   SISTEMA DE GESTIÓN OPERATIVA - AZAHARTECH     ");
         System.out.println("=================================================");
         System.out.print("ID Sucursal / Almacén: ");
         idSucursal = teclado.nextInt();
-        
+
         System.out.print("Balance base (€): ");
         balanceInicial = teclado.nextDouble();
-        
+
         teclado.nextLine(); // Limpieza obligatoria del buffer
-        
+
         System.out.print("Identificador fiscal (DNI/CIF): ");
         identificadorFiscal = teclado.nextLine();
-        
+
         System.out.print("Nombre completo del cliente: ");
         nombreCliente = teclado.nextLine();
-        
+
         System.out.print("Categoría (A, B o C): ");
         categoriaCliente = teclado.next().charAt(0);
-        
+
         System.out.print("Operaciones registradas mañana: ");
         operacionesManana = teclado.nextInt();
-        
+
         System.out.print("Operaciones registradas tarde: ");
         operacionesTarde = teclado.nextInt();
-        
+
         // Procesamiento aritmético secuencial acumulativo
         totalOperaciones = operacionesManana + operacionesTarde;
         volumenTotalCalculado = totalOperaciones * tarifaPorOperacion;
-        
+
         // Salida estructurada de la versión v0.3
         System.out.println("-------------------------------------------------");
         System.out.println("RESUMEN DE OPERATIVA REGISTRADA:");
@@ -603,7 +642,7 @@ public class MiProyecto {
         System.out.println("Operaciones: " + (operacionesManana + operacionesTarde) + " totales");
         System.out.println("Volumen:     " + volumenTotalCalculado + " € computados.");
         System.out.println("=================================================");
-        
+
         teclado.close();
     }
 }
@@ -611,7 +650,7 @@ public class MiProyecto {
 
 ---
 
-### 4. Cierre formal en Git y sincronización con GitHub
+#### 4. Cierre formal en git y sincronización con GitHub
 
 El estudiante confirma los avances de la primera semana en su repositorio:
 
@@ -623,44 +662,50 @@ git push
 
 ---
 
-### Balance pedagógico de la Semana 1 (Enfoque Código Vivo)
-1. **Un solo código fuente en constante evolución:** El estudiante ha comprobado cómo `ControlAccesoQR.java` ha crecido desde un esqueleto de 15 líneas hasta un programa estructurado de 50 líneas sin desechar nada de lo aprendido.
-2. **Cero saturación:** Solo se han abordado datos numéricos, alfanuméricos, booleanos, operadores elementales y concatenación, **100 % fieles al RA1**, sin condicionales ni bucles.
-3. **El estudiante tiene su propio software en marcha:** Su archivo `MiProyecto.java` v0.3 está publicado en GitHub, listo para recibir en la **Semana 2** las operaciones de descomposición con módulo (`%`) y las conversiones de tipo (*casting*).
-
-# MÓDULO PROFESIONAL: PROGRAMACIÓN (PR)
-
-## SPRINT 1. Algorítmica y fundamentos de programación (3 semanas | 24 horas)
-
----
-
 # SEMANA 2: EL MOTOR MATEMÁTICO — OPERADORES, EXPRESIONES Y CONVERSIONES DE TIPO (8 HORAS)
+
 ### Hilo conductor metodológico: «Código Incremental Vivo»
-Continuamos trabajando sobre el **mismo archivo maestro** que dejamos al final de la Semana 1. Tomamos la versión `ControlAccesoQR v0.3` y la evolucionamos progresivamente hasta la versión `v0.6` integrando operadores compuestos, descomposición con módulo (`%`) y conversiones de tipo (*casting*), mientras cada estudiante replica esta misma evolución en la clase única de **su proyecto elegido de la bolsa de proyectos**.
+
+Continuamos trabajando sobre el **mismo archivo maestro** que dejamos al final de la Semana 1. Tomamos la versión
+`ControlAccesoQR v0.3` y la evolucionamos progresivamente hasta la versión `v0.6` integrando operadores compuestos,
+descomposición con módulo (`%`) y conversiones de tipo (*casting*), mientras cada estudiante replica esta misma
+evolución en la clase única de **su proyecto elegido de la bolsa de proyectos**.
 
 ---
 
 ## DÍA 5 (Lunes, 21 de septiembre de 2026 — 2 horas lectivas)
+
 ### Versión de la aplicación: `ControlAccesoQR v0.4` (Asignación Compuesta e Incrementos en Memoria)
-* **Objetivo técnico:** Refactorizar el código maestro de la Semana 1 aplicando operadores de asignación compuesta (`+=`, `-=`, `*=`) y operadores unarios de incremento (`++`) y decremento (`--`) sobre los contadores y acumuladores de la aplicación.
+
+* **Objetivo técnico:** Refactorizar el código maestro de la Semana 1 aplicando operadores de asignación compuesta
+  (`+=`, `-=`, `*=`) y operadores unarios de incremento (`++`) y decremento (`--`) sobre los contadores y acumuladores
+  de la aplicación.
 * **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.e, RA1.g.
 
 ---
 
 ### 1. Caso práctico narrativo en AzaharTech
-Es lunes por la mañana. En la sala técnica de **AzaharTech**, **Pau Ferrer** abre el archivo `ControlAccesoQR.java` tal y como quedó el jueves anterior (versión v0.3). Quiere añadir un contador para saber cuántos fichajes procesa el terminal a lo largo de la mañana y ha escrito:
+
+Es lunes por la mañana. En la sala técnica de **AzaharTech**, **Pau Ferrer** abre el archivo `ControlAccesoQR.java` tal
+y como quedó el jueves anterior (versión v0.3). Quiere añadir un contador para saber cuántos fichajes procesa el
+terminal a lo largo de la mañana y ha escrito:
 
 ```java
-totalFichajesTerminal = totalFichajesTerminal + 1;
-minutosTotalesLectivos = minutosTotalesLectivos + minutosExtra;
+totalFichajesTerminal =totalFichajesTerminal +1;
+minutosTotalesLectivos =minutosTotalesLectivos +minutosExtra;
 ```
 
 **Alba Torres** se acerca a su monitor, señala la pantalla y le explica:
-> *«Pau, en un código profesional no duplicamos el nombre de la variable a ambos lados del signo igual. Para acumular valores o contar eventos utilizamos **operadores de asignación compuesta (`+=`)** y el **operador de incremento (`++`)**.*
+> *«Pau, en un código profesional no duplicamos el nombre de la variable a ambos lados del signo igual. Para acumular
+valores o contar eventos utilizamos **operadores de asignación compuesta (`+=`)** y el **operador de incremento (
+`++`)**.*
 >
-> *Hacen que el código sea más compacto, reducen el riesgo de erratas al escribir nombres largos y permiten al compilador generar un código intermedio más optimizado.*
+> *Hacen que el código sea más compacto, reducen el riesgo de erratas al escribir nombres largos y permiten al
+compilador generar un código intermedio más optimizado.*
 >
-> *Hoy abriremos nuestro archivo `ControlAccesoQR` y lo refactorizaremos a la versión **v0.4**: sustituiremos las asignaciones largas por operadores compuestos y aprenderemos a distinguir el pre-incremento del post-incremento para evitar efectos secundarios en la memoria»*.
+> *Hoy abriremos nuestro archivo `ControlAccesoQR` y lo refactorizaremos a la versión **v0.4**: sustituiremos las
+asignaciones largas por operadores compuestos y aprenderemos a distinguir el pre-incremento del post-incremento para
+evitar efectos secundarios en la memoria»*.
 
 ---
 
@@ -683,25 +728,37 @@ minutosTotalesLectivos = minutosTotalesLectivos + minutosExtra;
 ```
 
 #### A. Operadores unarios de incremento (`++`) y decremento (`--`)
+
 Aumentan o disminuyen el valor de una variable entera exactamente en una unidad:
-* **Post-incremento (`variable++`):** El valor actual de la variable se utiliza en la expresión donde se encuentra y, **justo después de ser leído**, la variable se incrementa en 1 en la memoria RAM.
-* **Pre-incremento (`++variable`):** La variable se incrementa en 1 en la memoria RAM **antes** de que su valor sea leído o utilizado en la expresión circundante.
+
+* **Post-incremento (`variable++`):** El valor actual de la variable se utiliza en la expresión donde se encuentra y,
+  **justo después de ser leído**, la variable se incrementa en 1 en la memoria RAM.
+* **Pre-incremento (`++variable`):** La variable se incrementa en 1 en la memoria RAM **antes** de que su valor sea
+  leído o utilizado en la expresión circundante.
 
 ```java
 // Ejemplo de análisis de memoria en AzaharTech:
 int accesos = 10;
-System.out.println(accesos++); // Imprime 10 en consola. En memoria RAM pasa a valer 11.
-System.out.println(accesos);   // Imprime 11.
-System.out.println(++accesos); // En memoria RAM sube a 12 y luego imprime 12.
+System.out.
+
+println(accesos++); // Imprime 10 en consola. En memoria RAM pasa a valer 11.
+System.out.
+
+println(accesos);   // Imprime 11.
+System.out.
+
+println(++accesos); // En memoria RAM sube a 12 y luego imprime 12.
 ```
 
 ---
 
 ### 3. Andamiaje didáctico: Refactorización a `ControlAccesoQR v0.4`
 
-Tomamos el archivo único de la Semana 1 y lo refactorizamos incorporando el contador global del terminal y asignaciones compuestas.
+Tomamos el archivo único de la Semana 1 y lo refactorizamos incorporando el contador global del terminal y asignaciones
+compuestas.
 
 ##### Paso A. Actualización en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.4)
+
 ```psc
 Algoritmo ControlAccesoQR
     // =========================================================================
@@ -774,6 +831,7 @@ FinAlgoritmo
 ```
 
 ##### Paso B. Refactorización en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.4)
+
 Abrimos nuestro archivo maestro `ControlAccesoQR.java` y aplicamos directamente la refactorización:
 
 ```java
@@ -781,26 +839,27 @@ Abrimos nuestro archivo maestro `ControlAccesoQR.java` y aplicamos directamente 
  * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
  * Cliente: IES El Caminàs (Castellón de la Plana)
  * Consultora: AzaharTech Software Consulting
- * 
+ *
  * Versión 0.4: Operadores de asignación compuesta e incrementos unarios.
  * Módulo: Programación (PR) - Sprint 1 (RA1)
  */
+
 import java.util.Scanner;
 
 public class ControlAccesoQR {
     public static void main(String[] args) {
         Scanner teclado = new Scanner(System.in);
-        
+
         // 1. Variables de hardware y terminal
         int terminalId;
         double tempVestibulo;
-        
+
         // Variables de identidad
         String dniEstudiante;
         String nombreEstudiante;
         char letraGrupo;
         boolean matriculaActiva;
-        
+
         // Variables de cómputo de sesiones
         int sesionesManana;
         int sesionesTarde;
@@ -808,56 +867,56 @@ public class ControlAccesoQR {
         int minutosPorSesion = 50;
         int minutosTotalesLectivos;
         String tokenResumen;
-        
+
         // [NUEVO DÍA 5] Contadores globales y acumuladores de tiempo
         int contadorFichajesTerminal = 0; // Inicialización en memoria
         int minutosExtraGuardia;
-        
+
         // 2. Captura de datos
         System.out.println("=================================================");
         System.out.println("   AZAHARTECH - TERMINAL IES EL CAMINÀS (v0.4)   ");
         System.out.println("=================================================");
         System.out.print("ID Terminal: ");
         terminalId = teclado.nextInt();
-        
+
         System.out.print("Temperatura sensor (ºC): ");
         tempVestibulo = teclado.nextDouble();
-        
+
         teclado.nextLine(); // Limpieza obligatoria del buffer
-        
+
         System.out.print("DNI Estudiante: ");
         dniEstudiante = teclado.nextLine();
-        
+
         System.out.print("Nombre completo: ");
         nombreEstudiante = teclado.nextLine();
-        
+
         System.out.print("Grupo (letra): ");
         letraGrupo = teclado.next().charAt(0);
-        
+
         matriculaActiva = true;
-        
+
         System.out.print("Sesiones programadas turno mañana: ");
         sesionesManana = teclado.nextInt();
-        
+
         System.out.print("Sesiones programadas turno tarde: ");
         sesionesTarde = teclado.nextInt();
-        
+
         System.out.print("Minutos adicionales de guardia/tutoría: ");
         minutosExtraGuardia = teclado.nextInt();
-        
+
         // [REFACTORIZACIÓN DÍA 5] Uso de operador de incremento unario
         contadorFichajesTerminal++; // Registra el paso del alumno por el torno
-        
+
         // Cálculo base
         totalSesiones = sesionesManana + sesionesTarde;
         minutosTotalesLectivos = totalSesiones * minutosPorSesion;
-        
+
         // [REFACTORIZACIÓN DÍA 5] Uso de asignación compuesta (+=)
         minutosTotalesLectivos += minutosExtraGuardia; // Acumula minutos sin repetir variable
-        
+
         // Composición del token identificador
         tokenResumen = dniEstudiante + "-T" + terminalId + "-F" + contadorFichajesTerminal;
-        
+
         // 3. Salida de datos consolidada
         System.out.println("=================================================");
         System.out.println("FICHAJE CONFIRMADO (Registro #" + contadorFichajesTerminal + "):");
@@ -866,7 +925,7 @@ public class ControlAccesoQR {
         System.out.println("Total clases:" + totalSesiones + " sesiones.");
         System.out.println("Permanencia acumulada: " + minutosTotalesLectivos + " minutos.");
         System.out.println("=================================================");
-        
+
         teclado.close();
     }
 }
@@ -875,7 +934,9 @@ public class ControlAccesoQR {
 ---
 
 #### 4. Trabajo del estudiante: Refactorización de su proyecto propio
+
 El estudiante abre su archivo maestro `MiProyecto.java` (que dejó en v0.3 el jueves anterior):
+
 * Declara un contador de operaciones o accesos (`contadorOperaciones`) y lo incrementa con `++`.
 * Sustituye las sumas de acumulación por operadores compuestos `+=` o `-=`.
 * Ejecuta el código en IntelliJ comprobando que los acumuladores actualizan la memoria RAM correctamente.
@@ -884,24 +945,33 @@ El estudiante abre su archivo maestro `MiProyecto.java` (que dejó en v0.3 el ju
 ---
 
 ## DÍA 6 (Martes, 22 de septiembre de 2026 — 2 horas lectivas)
+
 ### Versión de la aplicación: `ControlAccesoQR v0.5` (Descomposición Temporal con División y Módulo `%`)
-* **Objetivo técnico:** Incorporar al programa maestro la división entera y el operador módulo (`%`) para descomponer los segundos brutos de funcionamiento en horas, minutos y segundos exactos sin usar condicionales.
+
+* **Objetivo técnico:** Incorporar al programa maestro la división entera y el operador módulo (`%`) para descomponer
+  los segundos brutos de funcionamiento en horas, minutos y segundos exactos sin usar condicionales.
 * **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.e, RA1.g.
 
 ---
 
 ### 1. Caso práctico narrativo en AzaharTech
-Es martes por la mañana. En la pantalla de control, **Pau Ferrer** muestra que el reloj interno del vestíbulo del IES El Caminàs devuelve el tiempo de actividad del terminal en **segundos brutos acumulados**: `7540` segundos.
+
+Es martes por la mañana. En la pantalla de control, **Pau Ferrer** muestra que el reloj interno del vestíbulo del IES El
+Caminàs devuelve el tiempo de actividad del terminal en **segundos brutos acumulados**: `7540` segundos.
 
 Pau comenta:
-> *«En la pantalla no podemos mostrarle al conserje que el terminal lleva '7540 segundos encendido'. El cliente necesita ver cuántas horas completas, minutos sobrantes y segundos exactos representa ese número.*
+> *«En la pantalla no podemos mostrarle al conserje que el terminal lleva '7540 segundos encendido'. El cliente necesita
+ver cuántas horas completas, minutos sobrantes y segundos exactos representa ese número.*
 >
-> *He intentado dividir `7540 / 60`, pero me da 125 minutos y no sé cómo extraer las horas y los segundos sin escribir un algoritmo larguísimo con restas»*.
+> *He intentado dividir `7540 / 60`, pero me da 125 minutos y no sé cómo extraer las horas y los segundos sin escribir
+un algoritmo larguísimo con restas»*.
 
 **Alba Torres** toma el mando en la pizarra:
-> *«No necesitas restas ni condicionales. La combinación de la **división entera (`/`)** y el **operador módulo o resto (`%`)** resuelve este problema en tres líneas de código puramente secuenciales.*
+> *«No necesitas restas ni condicionales. La combinación de la **división entera (`/`)** y el **operador módulo o
+resto (`%`)** resuelve este problema en tres líneas de código puramente secuenciales.*
 >
-> *Hoy abriremos `ControlAccesoQR.java` y lo evolucionaremos a la versión **v0.5**: convertiremos nuestro programa en un motor capaz de descomponer cualquier magnitud temporal de forma exacta»*.
+> *Hoy abriremos `ControlAccesoQR.java` y lo evolucionaremos a la versión **v0.5**: convertiremos nuestro programa en un
+motor capaz de descomponer cualquier magnitud temporal de forma exacta»*.
 
 ---
 
@@ -927,15 +997,18 @@ Pau comenta:
 2. **El operador módulo (`%`):**
     * Devuelve el residuo que no ha podido ser absorbido por la división entera.
     * `7540 % 60` da exactamente **`40`** (porque $60 \times 125 = 7500$; sobran $40$).
-3. **Poder algorítmico secuencial:** Permite desglosar monedas, tiempos, paquetes o ciclos de turnos sin requerir ninguna estructura condicional `if`.
+3. **Poder algorítmico secuencial:** Permite desglosar monedas, tiempos, paquetes o ciclos de turnos sin requerir
+   ninguna estructura condicional `if`.
 
 ---
 
 ### 3. Andamiaje didáctico: Evolución a `ControlAccesoQR v0.5`
 
-Ampliamos el archivo maestro `ControlAccesoQR` incorporando la lectura de segundos de actividad del terminal y su descomposición horaria.
+Ampliamos el archivo maestro `ControlAccesoQR` incorporando la lectura de segundos de actividad del terminal y su
+descomposición horaria.
 
 ##### Paso A. Expansión en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.5)
+
 ```psc
 Algoritmo ControlAccesoQR
     // =========================================================================
@@ -1006,6 +1079,7 @@ FinAlgoritmo
 ```
 
 ##### Paso B. Expansión en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.5)
+
 Abrimos nuestro archivo `ControlAccesoQR.java` y lo evolucionamos a v0.5:
 
 ```java
@@ -1013,33 +1087,34 @@ Abrimos nuestro archivo `ControlAccesoQR.java` y lo evolucionamos a v0.5:
  * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
  * Cliente: IES El Caminàs (Castellón de la Plana)
  * Consultora: AzaharTech Software Consulting
- * 
+ *
  * Versión 0.5: Descomposición de magnitudes con división entera y operador módulo (%).
  * Módulo: Programación (PR) - Sprint 1 (RA1)
  */
+
 import java.util.Scanner;
 
 public class ControlAccesoQR {
     public static void main(String[] args) {
         Scanner teclado = new Scanner(System.in);
-        
+
         // Variables de terminal
         int terminalId;
         double tempVestibulo;
         int contadorFichajesTerminal = 0;
-        
+
         // [NUEVO DÍA 6] Variables de descomposición temporal
         int segundosActividadTerminal;
         int horasUptime;
         int minutosUptime;
         int segundosUptime;
-        
+
         // Variables de identidad
         String dniEstudiante;
         String nombreEstudiante;
         char letraGrupo;
         boolean matriculaActiva = true;
-        
+
         // Variables de cómputo de sesiones
         int sesionesManana;
         int sesionesTarde;
@@ -1048,53 +1123,53 @@ public class ControlAccesoQR {
         int minutosExtraGuardia;
         int minutosTotalesLectivos;
         String tokenResumen;
-        
+
         // Captura de datos
         System.out.println("=================================================");
         System.out.println("   AZAHARTECH - TERMINAL IES EL CAMINÀS (v0.5)   ");
         System.out.println("=================================================");
         System.out.print("ID Terminal: ");
         terminalId = teclado.nextInt();
-        
+
         System.out.print("Temperatura sensor (ºC): ");
         tempVestibulo = teclado.nextDouble();
-        
+
         // [NUEVO DÍA 6] Entrada de segundos de actividad
         System.out.print("Segundos acumulados de actividad del terminal: ");
         segundosActividadTerminal = teclado.nextInt();
-        
+
         teclado.nextLine(); // Limpieza de buffer
-        
+
         System.out.print("DNI Estudiante: ");
         dniEstudiante = teclado.nextLine();
-        
+
         System.out.print("Nombre completo: ");
         nombreEstudiante = teclado.nextLine();
-        
+
         System.out.print("Grupo (letra): ");
         letraGrupo = teclado.next().charAt(0);
-        
+
         System.out.print("Sesiones turno mañana: ");
         sesionesManana = teclado.nextInt();
-        
+
         System.out.print("Sesiones turno tarde: ");
         sesionesTarde = teclado.nextInt();
-        
+
         System.out.print("Minutos de guardia/tutoría: ");
         minutosExtraGuardia = teclado.nextInt();
-        
+
         // Procesamiento
         contadorFichajesTerminal++;
         totalSesiones = sesionesManana + sesionesTarde;
         minutosTotalesLectivos = (totalSesiones * minutosPorSesion) + minutosExtraGuardia;
-        
+
         // [NUEVO DÍA 6] Descomposición secuencial con división y módulo (%)
         horasUptime = segundosActividadTerminal / 3600;              // División entera
         minutosUptime = (segundosActividadTerminal % 3600) / 60;      // Resto de horas dividido entre 60
         segundosUptime = segundosActividadTerminal % 60;             // Resto final de segundos
-        
+
         tokenResumen = dniEstudiante + "-T" + terminalId + "-F" + contadorFichajesTerminal;
-        
+
         // Salida de datos consolidada
         System.out.println("=================================================");
         System.out.println("FICHAJE REGISTRADO #" + contadorFichajesTerminal);
@@ -1105,7 +1180,7 @@ public class ControlAccesoQR {
         System.out.println("DIAGNÓSTICO DEL TERMINAL (UPTIME):");
         System.out.println(horasUptime + " horas, " + minutosUptime + " minutos y " + segundosUptime + " segundos en servicio.");
         System.out.println("=================================================");
-        
+
         teclado.close();
     }
 }
@@ -1114,8 +1189,11 @@ public class ControlAccesoQR {
 ---
 
 #### 4. Trabajo del estudiante: Evolución de su proyecto propio
+
 El estudiante abre su archivo maestro `MiProyecto.java` (que estaba en v0.4):
-* Identifica una magnitud de su sistema que requiera ser descompuesta (ej. céntimos totales a euros y céntimos restantes; unidades de stock a cajas estándar y unidades sueltas; minutos de servicio a días y horas).
+
+* Identifica una magnitud de su sistema que requiera ser descompuesta (ej. céntimos totales a euros y céntimos
+  restantes; unidades de stock a cajas estándar y unidades sueltas; minutos de servicio a días y horas).
 * Aplica la división entera `/` y el operador módulo `%`.
 * Muestra el desglose por consola y comprueba con la calculadora que la reconstrucción matemática es perfecta.
 
@@ -1123,25 +1201,34 @@ El estudiante abre su archivo maestro `MiProyecto.java` (que estaba en v0.4):
 ---
 
 ## DÍA 7 (Miércoles, 23 de septiembre de 2026 — 2 horas lectivas)
+
 ### Versión de la aplicación: `ControlAccesoQR v0.6` (Jerarquía de Operadores y Casting Explícito)
-* **Objetivo técnico:** Evitar la pérdida involuntaria de decimales en el cálculo de ratios y porcentajes mediante conversiones explícitas de tipo (*casting* `(double)`) y proteger la evaluación de expresiones con paréntesis `()`.
+
+* **Objetivo técnico:** Evitar la pérdida involuntaria de decimales en el cálculo de ratios y porcentajes mediante
+  conversiones explícitas de tipo (*casting* `(double)`) y proteger la evaluación de expresiones con paréntesis `()`.
 * **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.g, RA1.h.
 
 ---
 
 ### 1. Caso práctico narrativo en AzaharTech
-Es miércoles por la mañana. En el laboratorio de pruebas, **Pau Ferrer** muestra la nueva funcionalidad que ha intentado añadir a `ControlAccesoQR`: calcular el porcentaje de alumnos que han entrado a primera hora respecto al aforo total del vestíbulo.
+
+Es miércoles por la mañana. En el laboratorio de pruebas, **Pau Ferrer** muestra la nueva funcionalidad que ha intentado
+añadir a `ControlAccesoQR`: calcular el porcentaje de alumnos que han entrado a primera hora respecto al aforo total del
+vestíbulo.
 
 Ha introducido:
+
 * Alumnos que han entrado: `36`
 * Capacidad de aforo: `40`
 
 Y ha escrito en el código:
+
 ```java
 double porcentajeAforo = (alumnosEntrados / aforoMaximo) * 100;
 ```
 
 Al ejecutarlo, la consola imprime:
+
 ```text
 Porcentaje de ocupación: 0.0 %
 ```
@@ -1150,11 +1237,15 @@ Pau se lleva las manos a la cabeza:
 > *«¡Pero si han entrado 36 de 40! ¡Eso es un 90 % exacto! ¿Por qué Java dice cero coma cero?»*.
 
 **Alba Torres** y **Laia Claramunt** se acercan a la pantalla. Laia explica:
-> *«Has caído en la trampa del tipado estático. `alumnosEntrados` y `aforoMaximo` son dos variables `int`. Java evalúa los paréntesis de izquierda a derecha: divide `36 / 40`, y como ambos son enteros, trunca los decimales y da `0`. Después multiplica `0 * 100`, que da `0`. Y solo al final, al guardarlo en la variable `double`, lo convierte en `0.0`.*
+> *«Has caído en la trampa del tipado estático. `alumnosEntrados` y `aforoMaximo` son dos variables `int`. Java evalúa
+los paréntesis de izquierda a derecha: divide `36 / 40`, y como ambos son enteros, trunca los decimales y da `0`.
+Después multiplica `0 * 100`, que da `0`. Y solo al final, al guardarlo en la variable `double`, lo convierte en `0.0`.*
 >
-> *Para solucionar esto debemos aplicar un **casting explícito `(double)`**, forzando a la CPU a trabajar en coma flotante desde el primer paso de la división.*
+> *Para solucionar esto debemos aplicar un **casting explícito `(double)`**, forzando a la CPU a trabajar en coma
+flotante desde el primer paso de la división.*
 >
-> *Hoy evolucionaremos `ControlAccesoQR` a la versión **v0.6**: aprenderemos a blindar la precedencia matemática con paréntesis y dominaremos las conversiones implícitas y explícitas»*.
+> *Hoy evolucionaremos `ControlAccesoQR` a la versión **v0.6**: aprenderemos a blindar la precedencia matemática con
+paréntesis y dominaremos las conversiones implícitas y explícitas»*.
 
 ---
 
@@ -1179,10 +1270,13 @@ Pau se lleva las manos a la cabeza:
 ```
 
 #### A. Las conversiones de tipo en la memoria RAM
+
 1. **Conversión Implícita (Ensanchamiento / *Widening*):**
-    * Ocurre de forma automática y segura cuando un tipo de menor tamaño se almacena en uno mayor (`int` $\rightarrow$ `double`). No hay riesgo de pérdida de información.
+    * Ocurre de forma automática y segura cuando un tipo de menor tamaño se almacena en uno mayor (`int` $\rightarrow$
+      `double`). No hay riesgo de pérdida de información.
 2. **Conversión Explícita (Estrechamiento / *Narrowing / Casting*):**
-    * Es obligatoria cuando el programador fuerza la conversión de un tipo de mayor precisión en uno menor (`double` $\rightarrow$ `int`).
+    * Es obligatoria cuando el programador fuerza la conversión de un tipo de mayor precisión en uno menor
+      (`double` $\rightarrow$ `int`).
     * **Se produce truncamiento:** Los decimales se eliminan por completo (no se redondean).
     * Se antepone el tipo destino entre paréntesis:
       ```java
@@ -1191,19 +1285,26 @@ Pau se lleva las manos a la cabeza:
       ```
 
 #### B. La solución técnica mediante Casting en divisiones
-Para calcular el porcentaje sin perder decimales en la división entera, forzamos que al menos una variable sea tratada como decimal:
+
+Para calcular el porcentaje sin perder decimales en la división entera, forzamos que al menos una variable sea tratada
+como decimal:
+
 ```java
 double porcentajeAforo = ((double) alumnosEntrados / aforoMaximo) * 100.0;
 ```
-Al aplicar `(double)` sobre `alumnosEntrados`, la división pasa a ser de tipo `double / int`, lo que promociona toda la operación a coma flotante y devuelve el **`90.0 %`** exacto.
+
+Al aplicar `(double)` sobre `alumnosEntrados`, la división pasa a ser de tipo `double / int`, lo que promociona toda la
+operación a coma flotante y devuelve el **`90.0 %`** exacto.
 
 ---
 
 ### 3. Andamiaje didáctico: Evolución a `ControlAccesoQR v0.6`
 
-Ampliamos el archivo maestro incorporando el aforo máximo, el cálculo de porcentaje exacto con casting y el truncamiento a valor entero.
+Ampliamos el archivo maestro incorporando el aforo máximo, el cálculo de porcentaje exacto con casting y el truncamiento
+a valor entero.
 
 ##### Paso A. Expansión en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.6)
+
 ```psc
 Algoritmo ControlAccesoQR
     // =========================================================================
@@ -1282,6 +1383,7 @@ FinAlgoritmo
 ```
 
 ##### Paso B. Expansión en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.6)
+
 Abrimos nuestro archivo maestro `ControlAccesoQR.java` y lo evolucionamos a v0.6:
 
 ```java
@@ -1289,16 +1391,17 @@ Abrimos nuestro archivo maestro `ControlAccesoQR.java` y lo evolucionamos a v0.6
  * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
  * Cliente: IES El Caminàs (Castellón de la Plana)
  * Consultora: AzaharTech Software Consulting
- * 
+ *
  * Versión 0.6: Jerarquía de operadores, casting explícito y porcentajes.
  * Módulo: Programación (PR) - Sprint 1 (RA1)
  */
+
 import java.util.Scanner;
 
 public class ControlAccesoQR {
     public static void main(String[] args) {
         Scanner teclado = new Scanner(System.in);
-        
+
         // Variables de terminal
         int terminalId;
         double tempVestibulo;
@@ -1307,18 +1410,18 @@ public class ControlAccesoQR {
         int horasUptime;
         int minutosUptime;
         int segundosUptime;
-        
+
         // [NUEVO DÍA 7] Variables de aforo y cálculo de porcentaje
         int aforoMaximoVestibulo;
         double porcentajeOcupacionReal;
         int porcentajeOcupacionTruncado;
-        
+
         // Variables de identidad
         String dniEstudiante;
         String nombreEstudiante;
         char letraGrupo;
         boolean matriculaActiva = true;
-        
+
         // Variables de cómputo de sesiones
         int sesionesManana;
         int sesionesTarde;
@@ -1327,61 +1430,61 @@ public class ControlAccesoQR {
         int minutosExtraGuardia;
         int minutosTotalesLectivos;
         String tokenResumen;
-        
+
         // Captura de datos
         System.out.println("=================================================");
         System.out.println("   AZAHARTECH - TERMINAL IES EL CAMINÀS (v0.6)   ");
         System.out.println("=================================================");
         System.out.print("ID Terminal: ");
         terminalId = teclado.nextInt();
-        
+
         System.out.print("Temperatura sensor (ºC): ");
         tempVestibulo = teclado.nextDouble();
-        
+
         System.out.print("Segundos acumulados de actividad: ");
         segundosActividadTerminal = teclado.nextInt();
-        
+
         // [NUEVO DÍA 7] Entrada de aforo
         System.out.print("Aforo máximo permitido en vestíbulo: ");
         aforoMaximoVestibulo = teclado.nextInt();
-        
+
         teclado.nextLine(); // Limpieza de buffer
-        
+
         System.out.print("DNI Estudiante: ");
         dniEstudiante = teclado.nextLine();
-        
+
         System.out.print("Nombre completo: ");
         nombreEstudiante = teclado.nextLine();
-        
+
         System.out.print("Grupo (letra): ");
         letraGrupo = teclado.next().charAt(0);
-        
+
         System.out.print("Sesiones turno mañana: ");
         sesionesManana = teclado.nextInt();
-        
+
         System.out.print("Sesiones turno tarde: ");
         sesionesTarde = teclado.nextInt();
-        
+
         System.out.print("Minutos de guardia/tutoría: ");
         minutosExtraGuardia = teclado.nextInt();
-        
+
         // Procesamiento
         contadorFichajesTerminal++;
         totalSesiones = sesionesManana + sesionesTarde;
         minutosTotalesLectivos = (totalSesiones * minutosPorSesion) + minutosExtraGuardia;
-        
+
         horasUptime = segundosActividadTerminal / 3600;
         minutosUptime = (segundosActividadTerminal % 3600) / 60;
         segundosUptime = segundosActividadTerminal % 60;
-        
+
         // [NUEVO DÍA 7] Casting explícito a (double) para evitar división entera truncada a 0
         porcentajeOcupacionReal = ((double) contadorFichajesTerminal / aforoMaximoVestibulo) * 100.0;
-        
+
         // Casting explícito a (int) para obtener la parte entera deliberadamente
         porcentajeOcupacionTruncado = (int) porcentajeOcupacionReal;
-        
+
         tokenResumen = dniEstudiante + "-T" + terminalId + "-F" + contadorFichajesTerminal;
-        
+
         // Salida consolidada
         System.out.println("=================================================");
         System.out.println("FICHAJE REGISTRADO #" + contadorFichajesTerminal);
@@ -1394,7 +1497,7 @@ public class ControlAccesoQR {
         System.out.println("Ocupación en panel: " + porcentajeOcupacionTruncado + " %");
         System.out.println("Tiempo en servicio: " + horasUptime + "h " + minutosUptime + "m " + segundosUptime + "s");
         System.out.println("=================================================");
-        
+
         teclado.close();
     }
 }
@@ -1403,7 +1506,9 @@ public class ControlAccesoQR {
 ---
 
 #### 4. Trabajo del estudiante: Evolución de su proyecto propio
+
 El estudiante abre su archivo `MiProyecto.java` (en versión v0.5):
+
 * Incorpora el cálculo de un ratio o porcentaje que divida dos variables enteras de su negocio.
 * Aplica `(double)` sobre el dividendo para obtener el resultado decimal exacto.
 * Aplica `(int)` para almacenar en una variable secundaria el valor truncado.
@@ -1413,71 +1518,87 @@ El estudiante abre su archivo `MiProyecto.java` (en versión v0.5):
 ---
 
 ## DÍA 8 (Jueves, 24 de septiembre de 2026 — 2 horas lectivas)
+
 ### Versión de la aplicación: Consolidación de la v0.6 y Laboratorio de Integración de Cálculos
-* **Objetivo técnico:** Auditar y verificar que el motor matemático del proyecto propio (operadores compuestos, módulo `%` y *casting*) compila limpiamente y realizar la entrega de mitad de sprint en GitHub.
+
+* **Objetivo técnico:** Auditar y verificar que el motor matemático del proyecto propio (operadores compuestos, módulo
+  `%` y *casting*) compila limpiamente y realizar la entrega de mitad de sprint en GitHub.
 * **Criterios de Evaluación vinculados:** RA1.a, RA1.b, RA1.c, RA1.d, RA1.e, RA1.g, RA1.h, RA1.i.
 
 ---
 
 ### 1. Caso práctico narrativo en AzaharTech
-Es jueves al mediodía. Concluyen las primeras dos semanas del sprint. **Laia Claramunt** revisa en la pantalla de la sala el avance global:
-> *«Hoy cerramos formalmente la Semana 2. En la Semana 1 creamos el esqueleto y la identidad de nuestro software. Durante estos últimos cuatro días habéis convertido el programa en un auténtico motor matemático: domináis los operadores compuestos (`+=`), la descomposición con módulo (`%`) y las conversiones de tipo con casting.*
+
+Es jueves al mediodía. Concluyen las primeras dos semanas del sprint. **Laia Claramunt** revisa en la pantalla de la
+sala el avance global:
+> *«Hoy cerramos formalmente la Semana 2. En la Semana 1 creamos el esqueleto y la identidad de nuestro software.
+Durante estos últimos cuatro días habéis convertido el programa en un auténtico motor matemático: domináis los
+operadores compuestos (`+=`), la descomposición con módulo (`%`) y las conversiones de tipo con casting.*
 >
-> *Hoy dedicaremos estas dos horas a auditar y afianzar la versión **v0.6 de vuestro proyecto propio de la bolsa de proyectos**. No debe quedar ni un solo cálculo ambiguo ni una división entera accidental.*
+> *Hoy dedicaremos estas dos horas a auditar y afianzar la versión **v0.6 de vuestro proyecto propio de la bolsa de
+proyectos**. No debe quedar ni un solo cálculo ambiguo ni una división entera accidental.*
 >
 > *Al sonar el timbre, la versión v0.6 de vuestra aplicación debe estar confirmada y subida a GitHub»*.
 
 ---
 
 ### 2. Checklist técnico de calidad del código para la versión v0.6
+
 Antes de realizar el commit, cada estudiante debe verificar los siguientes 5 puntos en IntelliJ:
-1. **Ausencia absoluta de condicionales o bucles:** El código se ejecuta de forma estrictamente secuencial de principio a fin (**100 % fiel a RA1**).
-2. **Casting explícito justificado:** Al menos una división entre enteros cuenta con `(double)` para preservar la precisión decimal.
+
+1. **Ausencia absoluta de condicionales o bucles:** El código se ejecuta de forma estrictamente secuencial de principio
+   a fin (**100 % fiel a RA1**).
+2. **Casting explícito justificado:** Al menos una división entre enteros cuenta con `(double)` para preservar la
+   precisión decimal.
 3. **Uso del operador módulo (`%`):** Al menos una magnitud se descompone o calcula mediante el residuo de una división.
-4. **Protección con paréntesis `()`:** Las fórmulas complejas están agrupadas con paréntesis para garantizar la precedencia matemática sin ambigüedades.
-5. **Indentación automática:** Se ha pulsado `Ctrl + Alt + L` para ordenar el código según el estándar de estilo oficial.
+4. **Protección con paréntesis `()`:** Las fórmulas complejas están agrupadas con paréntesis para garantizar la
+   precedencia matemática sin ambigüedades.
+5. **Indentación automática:** Se ha pulsado `Ctrl + Alt + L` para ordenar el código según el estándar de estilo
+   oficial.
 
 ---
 
 ### 3. Taller guiado: La versión v0.6 del Proyecto Propio del Estudiante
 
-Cada estudiante comprueba que su clase única `pr/src/MiProyecto.java` ha evolucionado de forma acumulativa e incremental:
+Cada estudiante comprueba que su clase única `pr/src/MiProyecto.java` ha evolucionado de forma acumulativa e
+incremental:
 
 ```java
 /**
  * PROYECTO: [Nombre de tu Proyecto Elegido de la Bolsa de Proyectos]
  * Consultora: AzaharTech Software Consulting
- * 
+ *
  * Versión 0.6: Motor secuencial de cálculo avanzado, descomposición con módulo
  * y conversiones de tipo explícitas (casting).
  * Módulo: Programación (PR) - Sprint 1 (RA1)
- * 
+ *
  * @author [Tus Apellidos, Tu Nombre]
  * @version 0.6 (Cierre Semana 2 - Septiembre 2026)
  */
+
 import java.util.Scanner;
 
 public class MiProyecto {
     public static void main(String[] args) {
         Scanner teclado = new Scanner(System.in);
-        
+
         // 1. Variables de infraestructura (Día 1)
         int idSucursal;
         double balanceInicial;
         int contadorOperaciones = 0; // Día 5: Contador
-        
+
         // [NUEVO DÍA 6] Variables de descomposición con módulo (%)
         int unidadesTotalesProcesadas;
         int lotesCompletos;
         int unidadesSobrantes;
         int capacidadPorLote = 24; // Empaquetado estándar
-        
+
         // 2. Variables de cliente y estado (Día 2)
         String nombreCliente;
         String identificadorFiscal;
         char categoriaCliente;
         boolean cuentaVerificada = true;
-        
+
         // 3. Variables de cálculo y casting (Días 3 y 7)
         int operacionesManana;
         int operacionesTarde;
@@ -1486,50 +1607,50 @@ public class MiProyecto {
         double volumenTotalCalculado;
         double ratioAprovechamientoReal;
         int ratioAprovechamientoEntero;
-        
+
         // Captura de datos interactiva
         System.out.println("=================================================");
         System.out.println("   SISTEMA DE GESTIÓN OPERATIVA - AZAHARTECH     ");
         System.out.println("=================================================");
         System.out.print("ID Sucursal / Almacén: ");
         idSucursal = teclado.nextInt();
-        
+
         System.out.print("Balance base (€): ");
         balanceInicial = teclado.nextDouble();
-        
+
         System.out.print("Volumen bruto de unidades a empaquetar: ");
         unidadesTotalesProcesadas = teclado.nextInt();
-        
+
         teclado.nextLine(); // Limpieza obligatoria de buffer
-        
+
         System.out.print("Identificador fiscal (DNI/CIF): ");
         identificadorFiscal = teclado.nextLine();
-        
+
         System.out.print("Nombre completo del cliente: ");
         nombreCliente = teclado.nextLine();
-        
+
         System.out.print("Categoría (A, B o C): ");
         categoriaCliente = teclado.next().charAt(0);
-        
+
         System.out.print("Operaciones turno mañana: ");
         operacionesManana = teclado.nextInt();
-        
+
         System.out.print("Operaciones turno tarde: ");
         operacionesTarde = teclado.nextInt();
-        
+
         // [DÍA 5] Uso de incremento unario y asignación compuesta
         contadorOperaciones++;
         totalOperaciones = operacionesManana + operacionesTarde;
         volumenTotalCalculado = totalOperaciones * tarifaPorOperacion;
-        
+
         // [DÍA 6] Descomposición secuencial con división entera y módulo (%)
         lotesCompletos = unidadesTotalesProcesadas / capacidadPorLote;
         unidadesSobrantes = unidadesTotalesProcesadas % capacidadPorLote;
-        
+
         // [DÍA 7] Casting explícito a (double) para cálculo de ratio porcentual exacto
-        ratioAprovechamientoReal = (((double)(unidadesTotalesProcesadas - unidadesSobrantes)) / unidadesTotalesProcesadas) * 100.0;
+        ratioAprovechamientoReal = (((double) (unidadesTotalesProcesadas - unidadesSobrantes)) / unidadesTotalesProcesadas) * 100.0;
         ratioAprovechamientoEntero = (int) ratioAprovechamientoReal; // Casting a entero
-        
+
         // Salida estructurada de la versión v0.6
         System.out.println("-------------------------------------------------");
         System.out.println("REGISTRO DE OPERACIÓN #" + contadorOperaciones);
@@ -1542,7 +1663,7 @@ public class MiProyecto {
         System.out.println("Sobrantes:       " + unidadesSobrantes + " unidades sueltas.");
         System.out.println("Rendimiento:     " + ratioAprovechamientoReal + " % (Entero: " + ratioAprovechamientoEntero + " %)");
         System.out.println("=================================================");
-        
+
         teclado.close();
     }
 }
@@ -1563,9 +1684,14 @@ git push
 ---
 
 ### Balance pedagógico de la Semana 2 (Enfoque Código Vivo)
-1. **Crecimiento orgánico del software:** La clase `ControlAccesoQR.java` ha evolucionado de la v0.3 a la v0.6 sin desechar una sola línea de la semana anterior.
-2. **Dominio matemático sin condicionales:** El alumno ha resuelto descomposiciones de tiempo y cálculos de aforo usando exclusivamente división entera, módulo (`%`) y casting `(double)`.
-3. **El proyecto propio sigue el mismo ritmo:** El estudiante dispone de la versión v0.6 de `MiProyecto.java` en GitHub, lista para recibir en la **Semana 3** las constantes inmutables `final`, secuencias de escape y el formateo profesional con `printf` para alcanzar la versión final `v1.0`.
+
+1. **Crecimiento orgánico del software:** La clase `ControlAccesoQR.java` ha evolucionado de la v0.3 a la v0.6 sin
+   desechar una sola línea de la semana anterior.
+2. **Dominio matemático sin condicionales:** El alumno ha resuelto descomposiciones de tiempo y cálculos de aforo usando
+   exclusivamente división entera, módulo (`%`) y casting `(double)`.
+3. **El proyecto propio sigue el mismo ritmo:** El estudiante dispone de la versión v0.6 de `MiProyecto.java` en GitHub,
+   lista para recibir en la **Semana 3** las constantes inmutables `final`, secuencias de escape y el formateo
+   profesional con `printf` para alcanzar la versión final `v1.0`.
 
 # MÓDULO PROFESIONAL: PROGRAMACIÓN (PR)
 
@@ -1574,34 +1700,50 @@ git push
 ---
 
 # SEMANA 3: LA ARQUITECTURA DEL CÓDIGO — CONSTANTES, ESCAPES, PRINTF Y CONSOLIDACIÓN v1.0 (8 HORAS)
+
 ### Hilo conductor metodológico: «Código Incremental Vivo»
-Llegamos a la semana final del Sprint 1. Partiendo de la versión `ControlAccesoQR v0.6` (que ya cuenta con captura completa, descomposición con módulo y casting), evolucionamos nuestro archivo maestro eliminando números mágicos (`v0.7`), maquetando con secuencias de escape (`v0.8`), formateando con `printf` (`v0.9`) y sellando la versión definitiva `v1.0` secuencial con comentarios formales, mientras el estudiante concluye paralelamente su archivo único `MiProyecto.java`.
+
+Llegamos a la semana final del Sprint 1. Partiendo de la versión `ControlAccesoQR v0.6` (que ya cuenta con captura
+completa, descomposición con módulo y casting), evolucionamos nuestro archivo maestro eliminando números mágicos
+(`v0.7`), maquetando con secuencias de escape (`v0.8`), formateando con `printf` (`v0.9`) y sellando la versión
+definitiva `v1.0` secuencial con comentarios formales, mientras el estudiante concluye paralelamente su archivo único
+`MiProyecto.java`.
 
 ---
 
 ## DÍA 9 (Lunes, 28 de septiembre de 2026 — 2 horas lectivas)
+
 ### Versión de la aplicación: `ControlAccesoQR v0.7` (Inmutabilidad con `final` y Extracción de Números Mágicos)
-* **Objetivo técnico:** Refactorizar el código maestro extrayendo todos los literales fijos a constantes inmutables declaradas con la palabra clave `final` bajo la convención `UPPER_SNAKE_CASE`.
+
+* **Objetivo técnico:** Refactorizar el código maestro extrayendo todos los literales fijos a constantes inmutables
+  declaradas con la palabra clave `final` bajo la convención `UPPER_SNAKE_CASE`.
 * **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.e, RA1.f.
 
 ---
 
 ### 1. Caso práctico narrativo en AzaharTech
-Es lunes 28 de septiembre por la mañana. En la sala técnica de **AzaharTech**, **Alba Torres** proyecta en el monitor principal la clase `ControlAccesoQR.java` tal y como quedó el jueves anterior (versión v0.6). Con el cursor, resalta varios números y textos dispersos por las líneas de cálculo:
+
+Es lunes 28 de septiembre por la mañana. En la sala técnica de **AzaharTech**, **Alba Torres** proyecta en el monitor
+principal la clase `ControlAccesoQR.java` tal y como quedó el jueves anterior (versión v0.6). Con el cursor, resalta
+varios números y textos dispersos por las líneas de cálculo:
 
 ```java
 int minutosTotalesLectivos = (totalSesiones * 50) + minutosExtraGuardia;
-horasUptime = segundosActividadTerminal / 3600;
-minutosUptime = (segundosActividadTerminal % 3600) / 60;
-porcentajeOcupacionReal = ((double) contadorFichajesTerminal / aforoMaximoVestibulo) * 100.0;
+horasUptime =segundosActividadTerminal /3600;
+minutosUptime =(segundosActividadTerminal %3600)/60;
+porcentajeOcupacionReal =((double)contadorFichajesTerminal /aforoMaximoVestibulo)*100.0;
 ```
 
 Alba se dirige a **Pau Ferrer** y al estudiante:
-> *«Fijaos en esos números: `50`, `3600`, `60`, `100.0`. En la ingeniería de software profesional los llamamos **números mágicos (*magic numbers*)**: valores fijos incrustados directamente en mitad de las operaciones matemáticas.*
+> *«Fijaos en esos números: `50`, `3600`, `60`, `100.0`. En la ingeniería de software profesional los llamamos **números
+mágicos (*magic numbers*)**: valores fijos incrustados directamente en mitad de las operaciones matemáticas.*
 >
-> *¿Qué ocurre si la dirección del IES El Caminàs decide cambiar la duración de las sesiones lectivas a 55 minutos el curso que viene? Tendríamos que buscar ese `50` en mitad de las fórmulas, arriesgándonos a cambiar un dato por error.*
+> *¿Qué ocurre si la dirección del IES El Caminàs decide cambiar la duración de las sesiones lectivas a 55 minutos el
+curso que viene? Tendríamos que buscar ese `50` en mitad de las fórmulas, arriesgándonos a cambiar un dato por error.*
 >
-> *Hoy abriremos nuestro archivo `ControlAccesoQR` y lo refactorizaremos a la versión **v0.7**: extraeremos todos los valores fijos y los convertiremos en **constantes inmutables protegidas por el compilador con la palabra clave `final`** al inicio del método»*.
+> *Hoy abriremos nuestro archivo `ControlAccesoQR` y lo refactorizaremos a la versión **v0.7**: extraeremos todos los
+valores fijos y los convertiremos en **constantes inmutables protegidas por el compilador con la palabra clave `final`**
+al inicio del método»*.
 
 ---
 
@@ -1619,8 +1761,10 @@ Alba se dirige a **Pau Ferrer** y al estudiante:
 └──────────────────────────┴───────────────────────────┴─────────────────────────────────┘
 ```
 
-1. **La palabra reservada `final`:** Le indica al compilador que la posición de memoria es de solo lectura. Cualquier intento de reasignar su valor provocará un error de compilación.
-2. **Convención `UPPER_SNAKE_CASE`:** Todas las letras en mayúsculas separadas por guiones bajos (`_`). Permite que cualquier miembro del equipo identifique al instante que se trata de un valor inmutable.
+1. **La palabra reservada `final`:** Le indica al compilador que la posición de memoria es de solo lectura. Cualquier
+   intento de reasignar su valor provocará un error de compilación.
+2. **Convención `UPPER_SNAKE_CASE`:** Todas las letras en mayúsculas separadas por guiones bajos (`_`). Permite que
+   cualquier miembro del equipo identifique al instante que se trata de un valor inmutable.
 3. **Literales numéricos tipados:** El sufijo `L` para enteros largos (`long`) y `F` para decimales simples (`float`).
 
 ---
@@ -1630,6 +1774,7 @@ Alba se dirige a **Pau Ferrer** y al estudiante:
 Abrimos el archivo maestro y extraemos todos los números fijos a la cabecera de la clase.
 
 ##### Paso A. Actualización en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.7)
+
 ```psc
 Algoritmo ControlAccesoQR
     // =========================================================================
@@ -1710,15 +1855,17 @@ FinAlgoritmo
 ```
 
 ##### Paso B. Refactorización en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.7)
+
 ```java
 /**
  * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
  * Cliente: IES El Caminàs (Castellón de la Plana)
  * Consultora: AzaharTech Software Consulting
- * 
+ *
  * Versión 0.7: Parametrización con constantes inmutables ('final') y eliminación de números mágicos.
  * Módulo: Programación (PR) - Sprint 1 (RA1)
  */
+
 import java.util.Scanner;
 
 public class ControlAccesoQR {
@@ -1732,36 +1879,36 @@ public class ControlAccesoQR {
         final int SEGUNDOS_POR_HORA = 3600;
         final int SEGUNDOS_POR_MINUTO = 60;
         final double FACTOR_PORCENTAJE = 100.0;
-        
+
         // -------------------------------------------------------------
         // 2. VARIABLES DE MEMORIA
         // -------------------------------------------------------------
         Scanner teclado = new Scanner(System.in);
-        
+
         int terminalId;
         double tempVestibulo;
         int contadorFichajesTerminal = 0;
         int segundosActividadTerminal;
         int aforoMaximoVestibulo;
-        
+
         String dniEstudiante;
         String nombreEstudiante;
         char letraGrupo;
         boolean matriculaActiva = true;
-        
+
         int sesionesManana;
         int sesionesTarde;
         int totalSesiones;
         int minutosExtraGuardia;
         int minutosTotalesLectivos;
-        
+
         int horasUptime;
         int minutosUptime;
         int segundosUptime;
         double porcentajeOcupacionReal;
         int porcentajeOcupacionTruncado;
         String tokenResumen;
-        
+
         // -------------------------------------------------------------
         // 3. ENTRADA DE DATOS
         // -------------------------------------------------------------
@@ -1771,54 +1918,54 @@ public class ControlAccesoQR {
         System.out.println("=================================================");
         System.out.print("ID Terminal: ");
         terminalId = teclado.nextInt();
-        
+
         System.out.print("Temperatura sensor (ºC): ");
         tempVestibulo = teclado.nextDouble();
-        
+
         System.out.print("Segundos acumulados de actividad: ");
         segundosActividadTerminal = teclado.nextInt();
-        
+
         System.out.print("Aforo máximo permitido en vestíbulo: ");
         aforoMaximoVestibulo = teclado.nextInt();
-        
+
         teclado.nextLine(); // Limpieza obligatoria del buffer
-        
+
         System.out.print("DNI Estudiante: ");
         dniEstudiante = teclado.nextLine();
-        
+
         System.out.print("Nombre completo: ");
         nombreEstudiante = teclado.nextLine();
-        
+
         System.out.print("Grupo (letra): ");
         letraGrupo = teclado.next().charAt(0);
-        
+
         System.out.print("Sesiones turno mañana: ");
         sesionesManana = teclado.nextInt();
-        
+
         System.out.print("Sesiones turno tarde: ");
         sesionesTarde = teclado.nextInt();
-        
+
         System.out.print("Minutos de guardia/tutoría: ");
         minutosExtraGuardia = teclado.nextInt();
-        
+
         // -------------------------------------------------------------
         // 4. PROCESAMIENTO SECUENCIAL USANDO CONSTANTES
         // -------------------------------------------------------------
         contadorFichajesTerminal++;
         totalSesiones = sesionesManana + sesionesTarde;
         minutosTotalesLectivos = (totalSesiones * MINUTOS_POR_SESION) + minutosExtraGuardia;
-        
+
         // Descomposición horaria con constantes inmutables
         horasUptime = segundosActividadTerminal / SEGUNDOS_POR_HORA;
         minutosUptime = (segundosActividadTerminal % SEGUNDOS_POR_HORA) / SEGUNDOS_POR_MINUTO;
         segundosUptime = segundosActividadTerminal % SEGUNDOS_POR_MINUTO;
-        
+
         // Cálculo de porcentaje con casting y factor porcentual constante
         porcentajeOcupacionReal = ((double) contadorFichajesTerminal / aforoMaximoVestibulo) * FACTOR_PORCENTAJE;
         porcentajeOcupacionTruncado = (int) porcentajeOcupacionReal;
-        
+
         tokenResumen = PREFIJO_CENTRO + "-" + dniEstudiante + "-T" + terminalId;
-        
+
         // -------------------------------------------------------------
         // 5. SALIDA CONSOLIDADA
         // -------------------------------------------------------------
@@ -1830,7 +1977,7 @@ public class ControlAccesoQR {
         System.out.println("AFORO:      " + porcentajeOcupacionReal + " % (Panel: " + porcentajeOcupacionTruncado + " %)");
         System.out.println("UPTIME:     " + horasUptime + "h " + minutosUptime + "m " + segundosUptime + "s");
         System.out.println("=================================================");
-        
+
         teclado.close();
     }
 }
@@ -1839,27 +1986,39 @@ public class ControlAccesoQR {
 ---
 
 #### 4. Trabajo del estudiante: Refactorización de su proyecto propio
+
 El estudiante abre su archivo maestro `MiProyecto.java` (versión v0.6):
+
 * Extrae todos los números y cadenas fijas a constantes `final` al inicio del método `main`.
-* Sustituye en todas las operaciones del programa los literales sueltos por los identificadores de constantes en mayúsculas (`UPPER_SNAKE_CASE`).
+* Sustituye en todas las operaciones del programa los literales sueltos por los identificadores de constantes en
+  mayúsculas (`UPPER_SNAKE_CASE`).
 * Compila y comprueba que el programa se ejecuta de forma idéntica, pero con una mantenibilidad infinitamente superior.
 
 ---
 ---
 
 ## DÍA 10 (Martes, 29 de septiembre de 2026 — 2 horas lectivas)
+
 ### Versión de la aplicación: `ControlAccesoQR v0.8` (Secuencias de Escape y Maquetación de Consola)
-* **Objetivo técnico:** Maquetar la salida del terminal utilizando secuencias de escape universales (`\n`, `\t`, `\"`, `\\`), alineando etiquetas informativas y controlando saltos de línea sin concatenaciones superfluas.
+
+* **Objetivo técnico:** Maquetar la salida del terminal utilizando secuencias de escape universales (`\n`, `\t`, `\"`,
+  `\\`), alineando etiquetas informativas y controlando saltos de línea sin concatenaciones superfluas.
 * **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.f.
 
 ---
 
 ### 1. Caso práctico narrativo en AzaharTech
+
 Es martes por la mañana. **Pau Ferrer** muestra la consola de IntelliJ con la versión v0.7 en ejecución:
-> *«El cálculo con constantes funciona de maravilla, pero la salida sigue teniendo un aspecto descuidado: para separar bloques tengo que poner `System.out.println("");` repetidas veces y las palabras 'TOKEN', 'CENTRO' y 'PERMANENCIA' no están alineadas porque cada palabra tiene una longitud distinta»*.
+> *«El cálculo con constantes funciona de maravilla, pero la salida sigue teniendo un aspecto descuidado: para separar
+bloques tengo que poner `System.out.println("");` repetidas veces y las palabras 'TOKEN', 'CENTRO' y 'PERMANENCIA' no
+están alineadas porque cada palabra tiene una longitud distinta»*.
 
 **Laia Claramunt** y **Alba Torres** le indican la barra invertida (**`\`**):
-> *«Hoy evolucionaremos `ControlAccesoQR.java` a la versión **v0.8**. Utilizaremos **secuencias de escape**: introduciremos tabuladores horizontales (`\t`) para crear columnas alineadas, saltos de línea (`\n`) para separar bloques en una sola instrucción y escaparemos comillas dobles (`\"`) para citar el protocolo oficial del centro educativo»*.
+> *«Hoy evolucionaremos `ControlAccesoQR.java` a la versión **v0.8**. Utilizaremos **secuencias de escape**:
+introduciremos tabuladores horizontales (`\t`) para crear columnas alineadas, saltos de línea (`\n`) para separar
+bloques en una sola instrucción y escaparemos comillas dobles (`\"`) para citar el protocolo oficial del centro
+educativo»*.
 
 ---
 
@@ -1888,6 +2047,7 @@ Es martes por la mañana. **Pau Ferrer** muestra la consola de IntelliJ con la v
 Modificamos el bloque de salida del archivo maestro `ControlAccesoQR` incorporando las secuencias de escape.
 
 ##### Paso A. Expansión en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.8)
+
 ```psc
 Algoritmo ControlAccesoQR
     // =========================================================================
@@ -1974,6 +2134,7 @@ FinAlgoritmo
 ```
 
 ##### Paso B. Expansión en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.8)
+
 Actualizamos directamente el bloque de salida de nuestro archivo maestro `ControlAccesoQR.java`:
 
 ```java
@@ -1981,10 +2142,11 @@ Actualizamos directamente el bloque de salida de nuestro archivo maestro `Contro
  * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
  * Cliente: IES El Caminàs (Castellón de la Plana)
  * Consultora: AzaharTech Software Consulting
- * 
+ *
  * Versión 0.8: Maquetación visual mediante secuencias de escape (\n, \t, \", \\).
  * Módulo: Programación (PR) - Sprint 1 (RA1)
  */
+
 import java.util.Scanner;
 
 public class ControlAccesoQR {
@@ -1997,83 +2159,83 @@ public class ControlAccesoQR {
         final int SEGUNDOS_POR_HORA = 3600;
         final int SEGUNDOS_POR_MINUTO = 60;
         final double FACTOR_PORCENTAJE = 100.0;
-        
+
         Scanner teclado = new Scanner(System.in);
-        
+
         int terminalId;
         double tempVestibulo;
         int contadorFichajesTerminal = 0;
         int segundosActividadTerminal;
         int aforoMaximoVestibulo;
-        
+
         String dniEstudiante;
         String nombreEstudiante;
         char letraGrupo;
         boolean matriculaActiva = true;
-        
+
         int sesionesManana;
         int sesionesTarde;
         int totalSesiones;
         int minutosExtraGuardia;
         int minutosTotalesLectivos;
-        
+
         int horasUptime;
         int minutosUptime;
         int segundosUptime;
         double porcentajeOcupacionReal;
         int porcentajeOcupacionTruncado;
         String tokenResumen;
-        
+
         // Entrada de datos
         System.out.println("=================================================");
         System.out.println("   AZAHARTECH - TERMINAL " + NOMBRE_INSTITUTO);
         System.out.println("=================================================");
         System.out.print("ID Terminal: ");
         terminalId = teclado.nextInt();
-        
+
         System.out.print("Temperatura sensor (ºC): ");
         tempVestibulo = teclado.nextDouble();
-        
+
         System.out.print("Segundos acumulados de actividad: ");
         segundosActividadTerminal = teclado.nextInt();
-        
+
         System.out.print("Aforo máximo permitido en vestíbulo: ");
         aforoMaximoVestibulo = teclado.nextInt();
-        
+
         teclado.nextLine(); // Limpieza de buffer
-        
+
         System.out.print("DNI Estudiante: ");
         dniEstudiante = teclado.nextLine();
-        
+
         System.out.print("Nombre completo: ");
         nombreEstudiante = teclado.nextLine();
-        
+
         System.out.print("Grupo (letra): ");
         letraGrupo = teclado.next().charAt(0);
-        
+
         System.out.print("Sesiones turno mañana: ");
         sesionesManana = teclado.nextInt();
-        
+
         System.out.print("Sesiones turno tarde: ");
         sesionesTarde = teclado.nextInt();
-        
+
         System.out.print("Minutos de guardia/tutoría: ");
         minutosExtraGuardia = teclado.nextInt();
-        
+
         // Procesamiento
         contadorFichajesTerminal++;
         totalSesiones = sesionesManana + sesionesTarde;
         minutosTotalesLectivos = (totalSesiones * MINUTOS_POR_SESION) + minutosExtraGuardia;
-        
+
         horasUptime = segundosActividadTerminal / SEGUNDOS_POR_HORA;
         minutosUptime = (segundosActividadTerminal % SEGUNDOS_POR_HORA) / SEGUNDOS_POR_MINUTO;
         segundosUptime = segundosActividadTerminal % SEGUNDOS_POR_MINUTO;
-        
+
         porcentajeOcupacionReal = ((double) contadorFichajesTerminal / aforoMaximoVestibulo) * FACTOR_PORCENTAJE;
         porcentajeOcupacionTruncado = (int) porcentajeOcupacionReal;
-        
+
         tokenResumen = PREFIJO_CENTRO + "-" + dniEstudiante + "-T" + terminalId;
-        
+
         // [NUEVO DÍA 10] Salida estructurada con secuencias de escape
         System.out.println("\n==========================================================");
         System.out.println("ENTIDAD:\t" + NOMBRE_INSTITUTO);
@@ -2090,7 +2252,7 @@ public class ControlAccesoQR {
         System.out.println("SERVICIO:\t" + horasUptime + "h " + minutosUptime + "m " + segundosUptime + "s");
         System.out.println("REGISTRO LOG:\t" + RUTA_LOGS);
         System.out.println("=========================================================");
-        
+
         teclado.close();
     }
 }
@@ -2099,7 +2261,9 @@ public class ControlAccesoQR {
 ---
 
 #### 4. Trabajo del estudiante: Evolución de su proyecto propio
+
 El estudiante abre su archivo maestro `MiProyecto.java` (en v0.7):
+
 * Sustituye las concatenaciones desalineadas por tabuladores `\t` para alinear las etiquetas de los datos.
 * Añade comillas escapadas `\"` para citar el nombre comercial de su cliente y barras `\\` para rutas de auditoría.
 * Comprueba que la salida luce limpia y profesional.
@@ -2108,17 +2272,26 @@ El estudiante abre su archivo maestro `MiProyecto.java` (en v0.7):
 ---
 
 ## DÍA 11 (Miércoles, 30 de septiembre de 2026 — 2 horas lectivas)
+
 ### Versión de la aplicación: `ControlAccesoQR v0.9` (Salida Formateada Profesional con `printf`)
-* **Objetivo técnico:** Sustituir las concatenaciones de salida por plantillas de formato profesionales mediante `System.out.printf()`, controlando el ancho de columnas, la alineación y acotando los decimales con precisión matemática.
+
+* **Objetivo técnico:** Sustituir las concatenaciones de salida por plantillas de formato profesionales mediante
+  `System.out.printf()`, controlando el ancho de columnas, la alineación y acotando los decimales con precisión
+  matemática.
 * **Criterios de Evaluación vinculados:** RA1.a, RA1.b, RA1.e.
 
 ---
 
 ### 1. Caso práctico narrativo en AzaharTech
+
 Es miércoles por la mañana. **Laia Claramunt** revisa la versión v0.8:
-> *«La tabulación con `\t` es un avance, pero tiene un punto débil: si el nombre de un alumno es muy largo (como 'Constantinopla'), el tabulador salta a la siguiente parada y rompe la columna. Además, los decimales del porcentaje siguen mostrando hasta quince dígitos.*
+> *«La tabulación con `\t` es un avance, pero tiene un punto débil: si el nombre de un alumno es muy largo (como '
+Constantinopla'), el tabulador salta a la siguiente parada y rompe la columna. Además, los decimales del porcentaje
+siguen mostrando hasta quince dígitos.*
 >
-> *Hoy alcanzaremos la versión **v0.9**: eliminaremos los `println` del ticket y utilizaremos **`System.out.printf()`**. Definiremos anchos de campo fijos, alinearemos textos a la izquierda y números a la derecha, y redondearemos los decimales automáticamente a exactamente dos posiciones»*.
+> *Hoy alcanzaremos la versión **v0.9**: eliminaremos los `println` del ticket y utilizaremos **`System.out.printf()`**.
+Definiremos anchos de campo fijos, alinearemos textos a la izquierda y números a la derecha, y redondearemos los
+decimales automáticamente a exactamente dos posiciones»*.
 
 ---
 
@@ -2147,9 +2320,11 @@ Es miércoles por la mañana. **Laia Claramunt** revisa la versión v0.8:
 
 ### 3. Andamiaje didáctico: Evolución a `ControlAccesoQR v0.9`
 
-Actualizamos el bloque final de impresión de `ControlAccesoQR` sustituyendo los textos concatenados por una plantilla con `printf`.
+Actualizamos el bloque final de impresión de `ControlAccesoQR` sustituyendo los textos concatenados por una plantilla
+con `printf`.
 
 ##### Paso A. Expansión en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.9)
+
 ```psc
 Algoritmo ControlAccesoQR
     // =========================================================================
@@ -2232,15 +2407,17 @@ FinAlgoritmo
 ```
 
 ##### Paso B. Expansión en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.9)
+
 ```java
 /**
  * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
  * Cliente: IES El Caminàs (Castellón de la Plana)
  * Consultora: AzaharTech Software Consulting
- * 
+ *
  * Versión 0.9: Salida formateada profesional con System.out.printf().
  * Módulo: Programación (PR) - Sprint 1 (RA1)
  */
+
 import java.util.Scanner;
 
 public class ControlAccesoQR {
@@ -2252,83 +2429,83 @@ public class ControlAccesoQR {
         final int SEGUNDOS_POR_HORA = 3600;
         final int SEGUNDOS_POR_MINUTO = 60;
         final double FACTOR_PORCENTAJE = 100.0;
-        
+
         Scanner teclado = new Scanner(System.in);
-        
+
         int terminalId;
         double tempVestibulo;
         int contadorFichajesTerminal = 0;
         int segundosActividadTerminal;
         int aforoMaximoVestibulo;
-        
+
         String dniEstudiante;
         String nombreEstudiante;
         char letraGrupo;
         boolean matriculaActiva = true;
-        
+
         int sesionesManana;
         int sesionesTarde;
         int totalSesiones;
         int minutosExtraGuardia;
         int minutosTotalesLectivos;
-        
+
         int horasUptime;
         int minutosUptime;
         int segundosUptime;
         double porcentajeOcupacionReal;
         int porcentajeOcupacionTruncado;
         String tokenResumen;
-        
+
         // Entrada de datos
         System.out.println("=================================================");
         System.out.println("   AZAHARTECH - TERMINAL " + NOMBRE_INSTITUTO);
         System.out.println("=================================================");
         System.out.print("ID Terminal: ");
         terminalId = teclado.nextInt();
-        
+
         System.out.print("Temperatura sensor (ºC): ");
         tempVestibulo = teclado.nextDouble();
-        
+
         System.out.print("Segundos acumulados de actividad: ");
         segundosActividadTerminal = teclado.nextInt();
-        
+
         System.out.print("Aforo máximo permitido en vestíbulo: ");
         aforoMaximoVestibulo = teclado.nextInt();
-        
+
         teclado.nextLine(); // Limpieza obligatoria del buffer
-        
+
         System.out.print("DNI Estudiante: ");
         dniEstudiante = teclado.nextLine();
-        
+
         System.out.print("Nombre completo: ");
         nombreEstudiante = teclado.nextLine();
-        
+
         System.out.print("Grupo (letra): ");
         letraGrupo = teclado.next().charAt(0);
-        
+
         System.out.print("Sesiones turno mañana: ");
         sesionesManana = teclado.nextInt();
-        
+
         System.out.print("Sesiones turno tarde: ");
         sesionesTarde = teclado.nextInt();
-        
+
         System.out.print("Minutos de guardia/tutoría: ");
         minutosExtraGuardia = teclado.nextInt();
-        
+
         // Procesamiento
         contadorFichajesTerminal++;
         totalSesiones = sesionesManana + sesionesTarde;
         minutosTotalesLectivos = (totalSesiones * MINUTOS_POR_SESION) + minutosExtraGuardia;
-        
+
         horasUptime = segundosActividadTerminal / SEGUNDOS_POR_HORA;
         minutosUptime = (segundosActividadTerminal % SEGUNDOS_POR_HORA) / SEGUNDOS_POR_MINUTO;
         segundosUptime = segundosActividadTerminal % SEGUNDOS_POR_MINUTO;
-        
+
         porcentajeOcupacionReal = ((double) contadorFichajesTerminal / aforoMaximoVestibulo) * FACTOR_PORCENTAJE;
         porcentajeOcupacionTruncado = (int) porcentajeOcupacionReal;
-        
+
         tokenResumen = PREFIJO_CENTRO + "-" + dniEstudiante + "-T" + terminalId;
-        
+
         // [NUEVO DÍA 11] Salida formateada profesional con printf
         System.out.println("\n======================================================================");
         System.out.println("             INFORME OFICIAL DE ACCESO EN VESTÍBULO                   ");
@@ -2342,7 +2519,7 @@ public class ControlAccesoQR {
         System.out.printf("AFORO OCUPADO:   %6.2f %% (Indicador panel: %03d %%)%n", porcentajeOcupacionReal, porcentajeOcupacionTruncado);
         System.out.printf("SERVICIO ACTIVO: %02dh %02dm %02ds (Sensor: %.1f ºC)%n", horasUptime, minutosUptime, segundosUptime, tempVestibulo);
         System.out.println("======================================================================");
-        
+
         teclado.close();
     }
 }
@@ -2351,36 +2528,49 @@ public class ControlAccesoQR {
 ---
 
 #### 4. Trabajo del estudiante: Evolución de su proyecto propio
+
 El estudiante abre su archivo `MiProyecto.java` (versión v0.8):
+
 * Sustituye todas las instrucciones de salida por llamadas a `System.out.printf()`.
-* Aplica especificadores con ancho fijo (`%-25s`), enteros con ceros a la izquierda (`%04d`) y redondeo a dos decimales (`%.2f`).
+* Aplica especificadores con ancho fijo (`%-25s`), enteros con ceros a la izquierda (`%04d`) y redondeo a dos decimales
+  (`%.2f`).
 * Ejecuta pruebas con distintos nombres para certificar que las columnas permanecen perfectamente alineadas.
 
 ---
 ---
 
 ## DÍA 12 (Jueves, 1 de octubre de 2026 — 2 horas lectivas)
+
 ### Versión de la aplicación: `ControlAccesoQR v1.0` (Documentación Javadoc y Cierre del Programa Secuencial)
-* **Objetivo técnico:** Incorporar comentarios formales de cabecera y línea, aplicar estándares de autoformateo de código en IntelliJ y sellar la versión definitiva v1.0 secuencial en GitHub.
+
+* **Objetivo técnico:** Incorporar comentarios formales de cabecera y línea, aplicar estándares de autoformateo de
+  código en IntelliJ y sellar la versión definitiva v1.0 secuencial en GitHub.
 * **Criterios de Evaluación vinculados:** RA1.a, RA1.b, RA1.c, RA1.d, RA1.e, RA1.f, RA1.g, RA1.h, RA1.i.
 
 ---
 
 ### 1. Caso práctico narrativo en AzaharTech
-Es jueves 1 de octubre. Mañana viernes concluye formalmente el **Sprint 1**. En la sala de juntas de **AzaharTech**, **Laia Claramunt** convoca a toda la célula de desarrollo frente al proyector:
 
-> *«Equipo, contemplad lo que hemos construido en doce días de trabajo: no tenemos doce programas huérfanos. Tenemos **un único software vivo, robusto y profesional que ha crecido día a día**.*
+Es jueves 1 de octubre. Mañana viernes concluye formalmente el **Sprint 1**. En la sala de juntas de **AzaharTech**,
+**Laia Claramunt** convoca a toda la célula de desarrollo frente al proyector:
+
+> *«Equipo, contemplad lo que hemos construido en doce días de trabajo: no tenemos doce programas huérfanos. Tenemos
+**un único software vivo, robusto y profesional que ha crecido día a día**.*
 >
-> *Hoy alcanzamos la versión **v1.0**: añadiremos la cabecera formal de documentación Javadoc, limpiaremos cualquier advertencia del compilador y dejaremos sellado el código del Reto 1 de vuestro proyecto propio en GitHub para la evaluación de mañana»*.
+> *Hoy alcanzamos la versión **v1.0**: añadiremos la cabecera formal de documentación Javadoc, limpiaremos cualquier
+advertencia del compilador y dejaremos sellado el código del Reto 1 de vuestro proyecto propio en GitHub para la
+evaluación de mañana»*.
 
 ---
 
 ### 2. Fundamento teórico: Documentación técnica y autoformateo
 
-1. **Comentarios Javadoc (`/** ... */`):** Permiten a las herramientas de ingeniería extraer manuales técnicos automáticos en formato HTML:
+1. **Comentarios Javadoc (`/** ... */`):** Permiten a las herramientas de ingeniería extraer manuales técnicos
+   automáticos en formato HTML:
     * `@author`: Desarrollador o célula de trabajo responsable.
     * `@version`: Número de versión semántica del software.
-2. **Autoformateo en IntelliJ (`Ctrl + Alt + L`):** Reorganiza el código para que respete las directrices internacionales de indentación (4 espacios) y separación de operadores.
+2. **Autoformateo en IntelliJ (`Ctrl + Alt + L`):** Reorganiza el código para que respete las directrices
+   internacionales de indentación (4 espacios) y separación de operadores.
 
 ---
 
@@ -2393,16 +2583,17 @@ Presentamos la versión íntegra y definitiva que el docente modela como cierre 
  * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
  * Cliente: IES El Caminàs (Castellón de la Plana)
  * Consultora: AzaharTech Software Consulting
- * 
+ *
  * Versión 1.0 (Definitiva Sprint 1):
  * Programa secuencial integral que captura parámetros de terminal y usuario,
  * realiza descomposiciones temporales y cálculos porcentuales de aforo sin pérdida
  * de precisión decimal, y emite un informe oficial formateado mediante printf.
- * 
+ *
  * @author Equipo AzaharTech (Alba Torres, Pau Ferrer)
  * @version 1.0 (Octubre 2026)
  * @since JDK 21 LTS
  */
+
 import java.util.Scanner;
 
 public class ControlAccesoQR {
@@ -2416,32 +2607,32 @@ public class ControlAccesoQR {
         final int SEGUNDOS_POR_HORA = 3600;
         final int SEGUNDOS_POR_MINUTO = 60;
         final double FACTOR_PORCENTAJE = 100.0;
-        
+
         // ---------------------------------------------------------------------
         // 2. DECLARACIÓN DE VARIABLES DE MEMORIA
         // ---------------------------------------------------------------------
         Scanner teclado = new Scanner(System.in);
-        
+
         // Variables de hardware y terminal
         int terminalId;
         double tempVestibulo;
         int contadorFichajesTerminal = 0; // Contador acumulativo
         int segundosActividadTerminal;
         int aforoMaximoVestibulo;
-        
+
         // Variables de identidad y estado del estudiante
         String dniEstudiante;
         String nombreEstudiante;
         char letraGrupo;
         boolean matriculaActiva = true;
-        
+
         // Variables de cómputo de sesiones
         int sesionesManana;
         int sesionesTarde;
         int totalSesiones;
         int minutosExtraGuardia;
         int minutosTotalesLectivos;
-        
+
         // Variables de magnitudes descompuestas y ratios
         int horasUptime;
         int minutosUptime;
@@ -2449,7 +2640,7 @@ public class ControlAccesoQR {
         double porcentajeOcupacionReal;
         int porcentajeOcupacionTruncado;
         String tokenResumen;
-        
+
         // ---------------------------------------------------------------------
         // 3. CAPTURA INTERACTIVA DE DATOS
         // ---------------------------------------------------------------------
@@ -2459,58 +2650,58 @@ public class ControlAccesoQR {
         System.out.println("=================================================");
         System.out.print("ID Terminal: ");
         terminalId = teclado.nextInt();
-        
+
         System.out.print("Temperatura sensor (ºC): ");
         tempVestibulo = teclado.nextDouble();
-        
+
         System.out.print("Segundos acumulados de actividad: ");
         segundosActividadTerminal = teclado.nextInt();
-        
+
         System.out.print("Aforo máximo permitido en vestíbulo: ");
         aforoMaximoVestibulo = teclado.nextInt();
-        
+
         teclado.nextLine(); // Limpieza obligatoria del buffer de teclado
-        
+
         System.out.print("DNI Estudiante: ");
         dniEstudiante = teclado.nextLine();
-        
+
         System.out.print("Nombre completo: ");
         nombreEstudiante = teclado.nextLine();
-        
+
         System.out.print("Grupo (letra): ");
         letraGrupo = teclado.next().charAt(0);
-        
+
         System.out.print("Sesiones turno mañana: ");
         sesionesManana = teclado.nextInt();
-        
+
         System.out.print("Sesiones turno tarde: ");
         sesionesTarde = teclado.nextInt();
-        
+
         System.out.print("Minutos de guardia/tutoría: ");
         minutosExtraGuardia = teclado.nextInt();
-        
+
         // ---------------------------------------------------------------------
         // 4. PROCESAMIENTO SECUENCIAL Y OPERACIONES MATEMÁTICAS
         // ---------------------------------------------------------------------
         // Incremento unario del contador de accesos
         contadorFichajesTerminal++;
-        
+
         // Suma y cálculo de permanencia lectiva
         totalSesiones = sesionesManana + sesionesTarde;
         minutosTotalesLectivos = (totalSesiones * MINUTOS_POR_SESION) + minutosExtraGuardia;
-        
+
         // Descomposición temporal exacta mediante división entera y módulo (%)
         horasUptime = segundosActividadTerminal / SEGUNDOS_POR_HORA;
         minutosUptime = (segundosActividadTerminal % SEGUNDOS_POR_HORA) / SEGUNDOS_POR_MINUTO;
         segundosUptime = segundosActividadTerminal % SEGUNDOS_POR_MINUTO;
-        
+
         // Casting explícito a (double) para evitar la división entera a cero
         porcentajeOcupacionReal = ((double) contadorFichajesTerminal / aforoMaximoVestibulo) * FACTOR_PORCENTAJE;
         porcentajeOcupacionTruncado = (int) porcentajeOcupacionReal; // Casting a entero
-        
+
         // Construcción del token identificador QR
         tokenResumen = PREFIJO_CENTRO + "-" + dniEstudiante + "-T" + terminalId;
-        
+
         // ---------------------------------------------------------------------
         // 5. SALIDA FORMATEADA PROFESIONAL (System.out.printf)
         // ---------------------------------------------------------------------
@@ -2526,7 +2717,7 @@ public class ControlAccesoQR {
         System.out.printf("AFORO OCUPADO:   %6.2f %% (Indicador panel: %03d %%)%n", porcentajeOcupacionReal, porcentajeOcupacionTruncado);
         System.out.printf("SERVICIO ACTIVO: %02dh %02dm %02ds (Sensor: %.1f ºC)%n", horasUptime, minutosUptime, segundosUptime, tempVestibulo);
         System.out.println("======================================================================");
-        
+
         // Cierre preventivo del recurso de entrada
         teclado.close();
     }
@@ -2536,10 +2727,13 @@ public class ControlAccesoQR {
 ---
 
 #### 4. Trabajo del estudiante: La versión v1.0 de su proyecto propio
+
 Cada estudiante finaliza su archivo `pr/src/MiProyecto.java` (o `Reto1Completo.java`):
+
 1. Incorpora la cabecera Javadoc con sus datos.
 2. Aplica el formateador de código en IntelliJ (`Ctrl + Alt + L`).
-3. Comprueba que el programa compila limpiamente y que la salida por consola con `printf` es una tabla perfectamente alineada.
+3. Comprueba que el programa compila limpiamente y que la salida por consola con `printf` es una tabla perfectamente
+   alineada.
 4. Realiza el commit final del módulo de Programación para el Sprint 1:
    ```bash
    git add pr/
@@ -2550,6 +2744,10 @@ Cada estudiante finaliza su archivo `pr/src/MiProyecto.java` (o `Reto1Completo.j
 ---
 
 ### Balance final de la Semana 3 y cierre del Sprint 1 (PR - 24 horas)
-* **Metodología de Código Vivo cumplida:** Durante las tres semanas hemos visto crecer **una única aplicación** desde su estructura vacía hasta un software secuencial completo de 120 líneas de código, limpio, formateado y libre de errores.
-* **100 % ceñido a RA1:** Se han dominado todos los Criterios de Evaluación oficiales (**CE 1.a al CE 1.i**) sin anticipar condicionales ni bucles.
-* **Entrega lista:** El estudiante tiene su proyecto propio en GitHub en versión `v1.0`, listo para ser sellado mañana viernes bajo la etiqueta **`v0.1.0-sprint1`**.
+
+* **Metodología de Código Vivo cumplida:** Durante las tres semanas hemos visto crecer **una única aplicación** desde su
+  estructura vacía hasta un software secuencial completo de 120 líneas de código, limpio, formateado y libre de errores.
+* **100 % ceñido a RA1:** Se han dominado todos los Criterios de Evaluación oficiales (**CE 1.a al CE 1.i**) sin
+  anticipar condicionales ni bucles.
+* **Entrega lista:** El estudiante tiene su proyecto propio en GitHub en versión `v1.0`, listo para ser sellado mañana
+  viernes bajo la etiqueta **`v0.1.0-sprint1`**.

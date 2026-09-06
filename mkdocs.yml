@@ -1,4 +1,4 @@
-site_name: Programacion
+site_name: Programación
 site_url: https://garmarcj.github.io/programacion/
 theme:
   name: material
@@ -26,6 +26,6 @@ plugins:
   - with-pdf:
       output_path: pdf/programacion.pdf
       cover: true
-      toc_title: "programacion"
+      toc_title: "programación"
       exclude_pages:
         - licencia.md
