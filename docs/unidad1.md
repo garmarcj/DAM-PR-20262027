@@ -1619,10 +1619,7 @@ git push
 
 ---
 
-# SEMANA 3: LA ARQUITECTURA DEL CÓDIGO — CONSTANTES, ESCAPES, PRINTF Y CONSOLIDACIÓN v1.0 (8 HORAS)
-
-### Hilo conductor metodológico: «Código Incremental Vivo»
-
+## Semana 3. La arquitectura del código - constantes, escapes y printf
 Llegamos a la semana final del Sprint 1. Partiendo de la versión `ControlAccesoQR v0.6` (que ya cuenta con captura
 completa, descomposición con módulo y casting), evolucionamos nuestro archivo maestro eliminando números mágicos
 (`v0.7`), maquetando con secuencias de escape (`v0.8`), formateando con `printf` (`v0.9`) y sellando la versión
@@ -1630,20 +1627,12 @@ definitiva `v1.0` secuencial con comentarios formales, mientras el estudiante co
 `MiProyecto.java`.
 
 ---
-
-## DÍA 9 (Lunes, 28 de septiembre de 2026 — 2 horas lectivas)
-
-### Versión de la aplicación: `ControlAccesoQR v0.7` (Inmutabilidad con `final` y Extracción de Números Mágicos)
-
-* **Objetivo técnico:** Refactorizar el código maestro extrayendo todos los literales fijos a constantes inmutables
-  declaradas con la palabra clave `final` bajo la convención `UPPER_SNAKE_CASE`.
-* **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.e, RA1.f.
+### Día 9 - 2 sesiones
 
 ---
 
-### 1. Caso práctico narrativo en AzaharTech
-
-Es lunes 28 de septiembre por la mañana. En la sala técnica de **AzaharTech**, **Alba Torres** proyecta en el monitor
+#### 1. Caso guía en AzaharTech
+Es lunes por la tarde. En la sala técnica de **AzaharTech**, **Alba Torres** proyecta en el monitor
 principal la clase `ControlAccesoQR.java` tal y como quedó el jueves anterior (versión v0.6). Con el cursor, resalta
 varios números y textos dispersos por las líneas de cálculo:
 
@@ -1667,8 +1656,7 @@ al inicio del método»*.
 
 ---
 
-### 2. Fundamento teórico: Constantes inmutables y literales tipados
-
+#### 2. Fundamento teórico: constantes inmutables y literales tipados
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │                        ELIMINACIÓN DE NÚMEROS MÁGICOS EN MEMORIA                       │
@@ -1681,20 +1669,18 @@ al inicio del método»*.
 └──────────────────────────┴───────────────────────────┴─────────────────────────────────┘
 ```
 
-1. **La palabra reservada `final`:** Le indica al compilador que la posición de memoria es de solo lectura. Cualquier
+1. **La palabra reservada `final`.** Le indica al compilador que la posición de memoria es de solo lectura. Cualquier
    intento de reasignar su valor provocará un error de compilación.
-2. **Convención `UPPER_SNAKE_CASE`:** Todas las letras en mayúsculas separadas por guiones bajos (`_`). Permite que
+2. **Convención `UPPER_SNAKE_CASE`.** Todas las letras en mayúsculas separadas por guiones bajos (`_`). Permite que
    cualquier miembro del equipo identifique al instante que se trata de un valor inmutable.
-3. **Literales numéricos tipados:** El sufijo `L` para enteros largos (`long`) y `F` para decimales simples (`float`).
+3. **Literales numéricos tipados.** El sufijo `L` para enteros largos (`long`) y `F` para decimales simples (`float`).
 
 ---
 
-### 3. Andamiaje didáctico: Refactorización a `ControlAccesoQR v0.7`
+#### 3. Refactorización a `ControlAccesoQR v0.7`
+Abrimos el archivo y extraemos todos los números fijos a la cabecera de la clase.
 
-Abrimos el archivo maestro y extraemos todos los números fijos a la cabecera de la clase.
-
-##### Paso A. Actualización en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.7)
-
+##### Paso A. Refactorización en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.7)
 ```psc
 Algoritmo ControlAccesoQR
     // =========================================================================
@@ -1774,8 +1760,7 @@ Algoritmo ControlAccesoQR
 FinAlgoritmo
 ```
 
-##### Paso B. Refactorización en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.7)
-
+##### Paso B. Refactarización en Java (`pr/src/ControlAccesoQR.java` — v0.7)
 ```java
 /**
  * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
@@ -1905,9 +1890,8 @@ public class ControlAccesoQR {
 
 ---
 
-#### 4. Trabajo del estudiante: Refactorización de su proyecto propio
-
-El estudiante abre su archivo maestro `MiProyecto.java` (versión v0.6):
+#### 4. Trabajo del estudiante: refactorización de su proyecto propio
+El estudiante abre su archivo maestro `.java` (versión v0.6):
 
 * Extrae todos los números y cadenas fijas a constantes `final` al inicio del método `main`.
 * Sustituye en todas las operaciones del programa los literales sueltos por los identificadores de constantes en
@@ -1916,20 +1900,12 @@ El estudiante abre su archivo maestro `MiProyecto.java` (versión v0.6):
 
 ---
 ---
-
-## DÍA 10 (Martes, 29 de septiembre de 2026 — 2 horas lectivas)
-
-### Versión de la aplicación: `ControlAccesoQR v0.8` (Secuencias de Escape y Maquetación de Consola)
-
-* **Objetivo técnico:** Maquetar la salida del terminal utilizando secuencias de escape universales (`\n`, `\t`, `\"`,
-  `\\`), alineando etiquetas informativas y controlando saltos de línea sin concatenaciones superfluas.
-* **Criterios de Evaluación vinculados:** RA1.a, RA1.d, RA1.f.
+### Día 10 - 2 sesiones
 
 ---
 
-### 1. Caso práctico narrativo en AzaharTech
-
-Es martes por la mañana. **Pau Ferrer** muestra la consola de IntelliJ con la versión v0.7 en ejecución:
+#### 1. Caso guía en AzaharTech
+Es martes por la tarde. **Pau Ferrer** muestra la consola de IntelliJ con la versión v0.7 en ejecución:
 > *«El cálculo con constantes funciona de maravilla, pero la salida sigue teniendo un aspecto descuidado: para separar
 bloques tengo que poner `System.out.println("");` repetidas veces y las palabras 'TOKEN', 'CENTRO' y 'PERMANENCIA' no
 están alineadas porque cada palabra tiene una longitud distinta»*.
@@ -1942,8 +1918,7 @@ educativo»*.
 
 ---
 
-### 2. Fundamento teórico: Secuencias de escape en cadenas Java
-
+#### 2. Fundamento teórico: secuencias de escape en cadenas Java
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │                        SECUENCIAS DE ESCAPE EN CADENAS DE TEXTO                        │
@@ -1962,12 +1937,10 @@ educativo»*.
 
 ---
 
-### 3. Andamiaje didáctico: Evolución a `ControlAccesoQR v0.8`
-
+### 3. Evolución a `ControlAccesoQR v0.8`
 Modificamos el bloque de salida del archivo maestro `ControlAccesoQR` incorporando las secuencias de escape.
 
-##### Paso A. Expansión en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.8)
-
+##### Paso A. Evolución en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.8)
 ```psc
 Algoritmo ControlAccesoQR
     // =========================================================================
@@ -2053,8 +2026,7 @@ Algoritmo ControlAccesoQR
 FinAlgoritmo
 ```
 
-##### Paso B. Expansión en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.8)
-
+##### Paso B. Evolución en Java (`pr/src/ControlAccesoQR.java` — v0.8)
 Actualizamos directamente el bloque de salida de nuestro archivo maestro `ControlAccesoQR.java`:
 
 ```java
@@ -2180,9 +2152,8 @@ public class ControlAccesoQR {
 
 ---
 
-#### 4. Trabajo del estudiante: Evolución de su proyecto propio
-
-El estudiante abre su archivo maestro `MiProyecto.java` (en v0.7):
+#### 4. Trabajo del estudiante: evolución de su proyecto propio
+El estudiante abre su archivo `.java` (en v0.7):
 
 * Sustituye las concatenaciones desalineadas por tabuladores `\t` para alinear las etiquetas de los datos.
 * Añade comillas escapadas `\"` para citar el nombre comercial de su cliente y barras `\\` para rutas de auditoría.
@@ -2191,20 +2162,12 @@ El estudiante abre su archivo maestro `MiProyecto.java` (en v0.7):
 ---
 ---
 
-## DÍA 11 (Miércoles, 30 de septiembre de 2026 — 2 horas lectivas)
-
-### Versión de la aplicación: `ControlAccesoQR v0.9` (Salida Formateada Profesional con `printf`)
-
-* **Objetivo técnico:** Sustituir las concatenaciones de salida por plantillas de formato profesionales mediante
-  `System.out.printf()`, controlando el ancho de columnas, la alineación y acotando los decimales con precisión
-  matemática.
-* **Criterios de Evaluación vinculados:** RA1.a, RA1.b, RA1.e.
+### Día 11 - 2 sesiones
 
 ---
 
-### 1. Caso práctico narrativo en AzaharTech
-
-Es miércoles por la mañana. **Laia Claramunt** revisa la versión v0.8:
+#### 1. Caso guía en AzaharTech
+Es miércoles por la tarde. **Laia Claramunt** revisa la versión v0.8:
 > *«La tabulación con `\t` es un avance, pero tiene un punto débil: si el nombre de un alumno es muy largo (como '
 Constantinopla'), el tabulador salta a la siguiente parada y rompe la columna. Además, los decimales del porcentaje
 siguen mostrando hasta quince dígitos.*
@@ -2215,8 +2178,7 @@ decimales automáticamente a exactamente dos posiciones»*.
 
 ---
 
-### 2. Fundamento teórico: Especificadores de formato en `System.out.printf()`
-
+#### 2. Fundamento teórico: especificadores de formato en `System.out.printf()`
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │                        PLANTILLA DE FORMATO PROFESIONAL PRINTF                         │
@@ -2238,13 +2200,11 @@ decimales automáticamente a exactamente dos posiciones»*.
 
 ---
 
-### 3. Andamiaje didáctico: Evolución a `ControlAccesoQR v0.9`
-
+#### 3. Evolución a `ControlAccesoQR v0.9`
 Actualizamos el bloque final de impresión de `ControlAccesoQR` sustituyendo los textos concatenados por una plantilla
 con `printf`.
 
-##### Paso A. Expansión en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.9)
-
+##### Paso A. Evolución en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.9)
 ```psc
 Algoritmo ControlAccesoQR
     // =========================================================================
@@ -2326,7 +2286,7 @@ Algoritmo ControlAccesoQR
 FinAlgoritmo
 ```
 
-##### Paso B. Expansión en Java en IntelliJ (`pr/src/ControlAccesoQR.java` — v0.9)
+##### Paso B. Evolución en Java (`pr/src/ControlAccesoQR.java` — v0.9)
 
 ```java
 /**
@@ -2447,54 +2407,44 @@ public class ControlAccesoQR {
 
 ---
 
-#### 4. Trabajo del estudiante: Evolución de su proyecto propio
-
-El estudiante abre su archivo `MiProyecto.java` (versión v0.8):
+#### 4. Trabajo del estudiante: evolución de su proyecto propio
+El estudiante abre su archivo `.java` (versión v0.8):
 
 * Sustituye todas las instrucciones de salida por llamadas a `System.out.printf()`.
-* Aplica especificadores con ancho fijo (`%-25s`), enteros con ceros a la izquierda (`%04d`) y redondeo a dos decimales
-  (`%.2f`).
+* Aplica especificadores con ancho fijo, enteros con ceros a la izquierda y redondeo a dos decimales.
 * Ejecuta pruebas con distintos nombres para certificar que las columnas permanecen perfectamente alineadas.
 
 ---
 ---
 
-## DÍA 12 (Jueves, 1 de octubre de 2026 — 2 horas lectivas)
-
-### Versión de la aplicación: `ControlAccesoQR v1.0` (Documentación Javadoc y Cierre del Programa Secuencial)
-
-* **Objetivo técnico:** Incorporar comentarios formales de cabecera y línea, aplicar estándares de autoformateo de
-  código en IntelliJ y sellar la versión definitiva v1.0 secuencial en GitHub.
-* **Criterios de Evaluación vinculados:** RA1.a, RA1.b, RA1.c, RA1.d, RA1.e, RA1.f, RA1.g, RA1.h, RA1.i.
+### Día 12 - 2 sesiones
 
 ---
 
-### 1. Caso práctico narrativo en AzaharTech
-
+#### 1. Caso guía en AzaharTech
 Es jueves 1 de octubre. Mañana viernes concluye formalmente el **Sprint 1**. En la sala de juntas de **AzaharTech**,
-**Laia Claramunt** convoca a toda la célula de desarrollo frente al proyector:
+**Laia Claramunt** convoca a todo el equipo de desarrollo frente al proyector:
 
-> *«Equipo, contemplad lo que hemos construido en doce días de trabajo: no tenemos doce programas huérfanos. Tenemos
-**un único software vivo, robusto y profesional que ha crecido día a día**.*
+> *«Equipo, contemplad lo que hemos construido en doce días de trabajo: tenemos
+**un software vivo, robusto y profesional que ha crecido día a día**.*
 >
 > *Hoy alcanzamos la versión **v1.0**: añadiremos la cabecera formal de documentación Javadoc, limpiaremos cualquier
-advertencia del compilador y dejaremos sellado el código del Reto 1 de vuestro proyecto propio en GitHub para la
+advertencia del compilador y dejaremos sellado el código de vuestro proyecto propio en GitHub para la
 evaluación de mañana»*.
 
 ---
 
-### 2. Fundamento teórico: Documentación técnica y autoformateo
-
-1. **Comentarios Javadoc (`/** ... */`):** Permiten a las herramientas de ingeniería extraer manuales técnicos
+#### 2. Fundamento teórico: Documentación técnica y autoformateo
+1. **Comentarios Javadoc (`/** ... */`).** Permiten a las herramientas de ingeniería extraer manuales técnicos
    automáticos en formato HTML:
-    * `@author`: Desarrollador o célula de trabajo responsable.
-    * `@version`: Número de versión semántica del software.
-2. **Autoformateo en IntelliJ (`Ctrl + Alt + L`):** Reorganiza el código para que respete las directrices
+    * `@author`. Desarrollador o equipo de trabajo responsable.
+    * `@version`. Número de versión semántica del software.
+2. **Autoformateo en IntelliJ (`Ctrl + Alt + L`).** Reorganiza el código para que respete las directrices
    internacionales de indentación (4 espacios) y separación de operadores.
 
 ---
 
-### 3. El Código Maestro Definitivo del Sprint 1: `ControlAccesoQR v1.0`
+#### 3. El código definitivo del Sprint 1: `ControlAccesoQR v1.0`
 
 Presentamos la versión íntegra y definitiva que el docente modela como cierre del caso guía:
 
@@ -2646,9 +2596,8 @@ public class ControlAccesoQR {
 
 ---
 
-#### 4. Trabajo del estudiante: La versión v1.0 de su proyecto propio
-
-Cada estudiante finaliza su archivo `pr/src/MiProyecto.java` (o `Reto1Completo.java`):
+#### 4. Trabajo del estudiante: la versión v1.0 de su proyecto propio
+Cada estudiante finaliza su archivo `pr/src/NombreDeSuProyecto.java`:
 
 1. Incorpora la cabecera Javadoc con sus datos.
 2. Aplica el formateador de código en IntelliJ (`Ctrl + Alt + L`).
@@ -2663,11 +2612,6 @@ Cada estudiante finaliza su archivo `pr/src/MiProyecto.java` (o `Reto1Completo.j
 
 ---
 
-### Balance final de la Semana 3 y cierre del Sprint 1 (PR - 24 horas)
-
-* **Metodología de Código Vivo cumplida:** Durante las tres semanas hemos visto crecer **una única aplicación** desde su
-  estructura vacía hasta un software secuencial completo de 120 líneas de código, limpio, formateado y libre de errores.
-* **100 % ceñido a RA1:** Se han dominado todos los Criterios de Evaluación oficiales (**CE 1.a al CE 1.i**) sin
-  anticipar condicionales ni bucles.
-* **Entrega lista:** El estudiante tiene su proyecto propio en GitHub en versión `v1.0`, listo para ser sellado mañana
+### Cierre del Sprint 1
+* **Entrega lista.** El estudiante tiene su proyecto propio en GitHub en versión `v1.0`, listo para ser sellado mañana
   viernes bajo la etiqueta **`v0.1.0-sprint1`**.
