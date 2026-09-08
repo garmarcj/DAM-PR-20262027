@@ -1,4 +1,4 @@
-# Sprint 1. Algorítmica y fundamentos de programación
+# Sprint 1. Introducción a la programación
 
 ---
 
