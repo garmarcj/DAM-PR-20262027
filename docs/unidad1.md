@@ -60,72 +60,39 @@ ambiente del sensor térmico.*
 
 ```psc
 Algoritmo ControlAccesoQR
-    // =========================================================================
-    // SISTEMA DE CONTROL DE ASISTENCIA QR - IES EL CAMINAS (Castellon)
-    // Version: 0.1 (Esqueleto y Parametros Fisicos)
-    // =========================================================================
-    
-    // 1. Declaracion de variables en memoria
     Definir terminalId Como Entero
     Definir tempVestibulo Como Real
     
-    // 2. Captura de parametros iniciales
-    Escribir "================================================="
-    Escribir "   AZAHARTECH - TERMINAL DE ACCESO VESTIBULO     "
-    Escribir "   Cliente: IES El Caminas (Curso 2026/2027)     "
-    Escribir "================================================="
-    Escribir "Introduce el numero identificador del terminal (ID):"
+    Escribir "ID del terminal:"
     Leer terminalId
-    Escribir "Introduce la temperatura del sensor del vestibulo (C):"
+    Escribir "Temperatura del sensor (ºC):"
     Leer tempVestibulo
     
-    // 3. Confirmacion de parametros en pantalla
-    Escribir "-------------------------------------------------"
     Escribir "Terminal configurado: #", terminalId
-    Escribir "Lectura termica:      ", tempVestibulo, " C"
-    Escribir "Estado del hardware:  EN ESPERA"
+    Escribir "Sensor termica:        ", tempVestibulo, " ºC"
 FinAlgoritmo
 ```
 
 ##### Paso B. Traducción a Java (`pr/src/ControlAccesoQR.java` — v0.1)
 
 ```java
-/**
- * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
- * Cliente: IES El Caminàs (Castellón de la Plana)
- * Consultora: AzaharTech Software Consulting
- *
- * Versión 0.1: Esqueleto de ejecución y parámetros numéricos del terminal.
- * Módulo: Programación (PR) - Sprint 1 (RA1)
- */
-
 import java.util.Scanner;
 
 public class ControlAccesoQR {
     public static void main(String[] args) {
-        // Inicialización del lector de consola
         Scanner teclado = new Scanner(System.in);
 
-        // 1. Declaración de variables numéricas primitivas en memoria
         int terminalId;
         double tempVestibulo;
 
-        // 2. Entrada de datos interactiva
-        System.out.println("=================================================");
-        System.out.println("   AZAHARTECH - TERMINAL DE ACCESO VESTÍBULO     ");
-        System.out.println("   Cliente: IES El Caminàs (Curso 2026/2027)     ");
-        System.out.println("=================================================");
-        System.out.print("Introduce el número identificador del terminal (ID): ");
+        System.out.print("ID del terminal: ");
         terminalId = teclado.nextInt();
 
-        System.out.print("Introduce la temperatura del sensor del vestíbulo (ºC): ");
+        System.out.print("Temperatura del sensor (ºC): ");
         tempVestibulo = teclado.nextDouble();
-
-        // 3. Salida de confirmación del terminal
-        System.out.println("-------------------------------------------------");
+        
         System.out.println("Terminal configurado: #" + terminalId);
-        System.out.println("Lectura térmica:      " + tempVestibulo + " ºC");
-        System.out.println("Estado del hardware:  EN ESPERA");
+        System.out.println("Lectura térmica:       " + tempVestibulo + " ºC");
 
         teclado.close();
     }
@@ -194,124 +161,84 @@ Observa cómo el código de ayer se amplía añadiendo los bloques de identidad 
 
 ##### Paso A. Evolución en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.2)
 
-```psc
-Algoritmo ControlAccesoQR
-    // =========================================================================
-    // SISTEMA DE CONTROL DE ASISTENCIA QR - IES EL CAMINAS (Castellon)
-    // Version: 0.2 (Evolucion: incorporacion de identidad del alumnado)
-    // =========================================================================
-    
-    // 1. Declaracion de variables del terminal (Día 1)
-    Definir terminalId Como Entero
-    Definir tempVestibulo Como Real
-    
-    // [NUEVO DÍA 2] Declaracion de variables de identidad del usuario
-    Definir nombreEstudiante Como Cadena
-    Definir dniEstudiante Como Cadena
-    Definir letraGrupo Como Caracter
-    Definir matriculaActiva Como Logico
-    
-    // 2. Captura de parametros del terminal (Día 1)
-    Escribir "=== AZAHARTECH: TERMINAL DE ACCESO VESTIBULO ==="
-    Escribir "Introduce el numero identificador del terminal (ID):"
-    Leer terminalId
-    Escribir "Introduce la temperatura del sensor (C):"
-    Leer tempVestibulo
-    
-    // [NUEVO DÍA 2] Captura de datos del alumno que escanea
-    Escribir "-------------------------------------------------"
-    Escribir "ESCANEANDO IDENTIFICADOR DE ESTUDIANTE..."
-    Escribir "Introduce el DNI del alumno:"
-    Leer dniEstudiante
-    Escribir "Introduce el nombre completo del alumno:"
-    Leer nombreEstudiante
-    Escribir "Introduce la letra de su grupo (A, B o C):"
-    Leer letraGrupo
-    
-    matriculaActiva <- Verdadero // Estado por defecto
-    
-    // 3. Salida de datos consolidada
-    Escribir "================================================="
-    Escribir "REGISTRO DE FICHAJE EMITIDO:"
-    Escribir "Terminal:   #", terminalId, " (Sensor: ", tempVestibulo, " C)"
-    Escribir "Estudiante: ", nombreEstudiante, " (DNI: ", dniEstudiante, ")"
-    Escribir "Grupo:      ", letraGrupo, " DAM"
-    Escribir "Matricula:  Activa (", matriculaActiva, ")"
-    Escribir "================================================="
-FinAlgoritmo
-```
+  ```psc
+  Algoritmo ControlAccesoQR
+      Definir terminalId Como Entero
+      Definir tempVestibulo Como Real
+      
+      Definir nombrePersona, dniPersona Como Cadena
+      Definir perfilPersona Como Caracter
+      Definir esEntrada Como Logico
+      
+      Escribir "ID del terminal:"
+      Leer terminalId
+      Escribir "Temperatura del sensor (ºC):"
+      Leer tempVestibulo
+      
+      Escribir "DNI de la persona:"
+      Leer dniPersona
+      Escribir "Nombre completo:"
+      Leer nombrePersona
+      Escribir "Perfil de acceso (E = Estudiante, D = Docente, V = Visita):"
+      Leer perfilPersona
+      
+      esEntrada <- Verdadero
+      
+      Escribir "Terminal configurado: #", terminalId
+      Escribir "Sensor termico: ", tempVestibulo, " ºC"
+      Escribir "Persona: ", nombrePersona, " (DNI: ", dniPersona, ")"
+      Escribir "Perfil: ", perfilPersona
+      Escribir "Sentido del paso:  Entrada (", esEntrada, ")"
+  FinAlgoritmo
+  ```
 
 ##### Paso B. Evolución en Java (`pr/src/ControlAccesoQR.java` — v0.2)
 
 Abrimos el archivo `ControlAccesoQR.java` en IntelliJ y lo modificamos directamente:
 
-```java
-/**
- * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
- * Cliente: IES El Caminàs (Castellón de la Plana)
- * Consultora: AzaharTech Software Consulting
- *
- * Versión 0.2: Incorporación de identidad del alumnado y tipos alfanuméricos.
- * Módulo: Programación (PR) - Sprint 1 (RA1)
- */
+  ```java
+  import java.util.Scanner;
 
-import java.util.Scanner;
+  public class ControlAccesoQR {
+      public static void main(String[] args) {
+          Scanner teclado = new Scanner(System.in);
+          
+          int terminalId;
+          double tempVestibulo;
+          
+          String dniPersona;
+          String nombrePersona;
+          char perfilPersona;
+          boolean esEntrada;
+          
+          System.out.print("ID del terminal: ");
+          terminalId = teclado.nextInt();
+          
+          System.out.print("Temperatura del sensor (ºC): ");
+          tempVestibulo = teclado.nextDouble();
+          teclado.nextLine();
+          
+          System.out.print("DNI de la persona: ");
+          dniPersona = teclado.nextLine();
+          
+          System.out.print("Nombre completo: ");
+          nombrePersona = teclado.nextLine();
+          
+          System.out.print("Perfil de acceso (E = Estudiante, D = Docente, V = Visita):");
+          perfilPersona = teclado.next().charAt(0);
+          
+          esEntrada = true;
 
-public class ControlAccesoQR {
-    public static void main(String[] args) {
-        Scanner teclado = new Scanner(System.in);
-
-        // 1. Variables de hardware y terminal (Día 1)
-        int terminalId;
-        double tempVestibulo;
-
-        // [NUEVO DÍA 2] Variables de identidad y estado lógico
-        String dniEstudiante;
-        String nombreEstudiante;
-        char letraGrupo;
-        boolean matriculaActiva;
-
-        // 2. Captura de parámetros del terminal (Día 1)
-        System.out.println("=================================================");
-        System.out.println("   AZAHARTECH - TERMINAL DE ACCESO VESTÍBULO     ");
-        System.out.println("   Cliente: IES El Caminàs (Curso 2026/2027)     ");
-        System.out.println("=================================================");
-        System.out.print("Introduce el número identificador del terminal (ID): ");
-        terminalId = teclado.nextInt();
-
-        System.out.print("Introduce la temperatura del sensor (ºC): ");
-        tempVestibulo = teclado.nextDouble();
-
-        // [LIMPIEZA DE BUFFER OBLIGATORIA]
-        teclado.nextLine(); // Consume el salto de línea residual antes de leer texto
-
-        // [NUEVO DÍA 2] Captura de datos del alumno
-        System.out.println("-------------------------------------------------");
-        System.out.println("REGISTRO DE ACCESO EN CURSO...");
-        System.out.print("Introduce el DNI del alumno: ");
-        dniEstudiante = teclado.nextLine();
-
-        System.out.print("Introduce el nombre completo del alumno: ");
-        nombreEstudiante = teclado.nextLine(); // Permite capturar nombres y apellidos con espacios
-
-        System.out.print("Introduce la letra de su grupo (A, B o C): ");
-        letraGrupo = teclado.next().charAt(0); // Extrae el primer carácter introducido
-
-        matriculaActiva = true; // Asignación de literal booleano
-
-        // 3. Salida de datos consolidada
-        System.out.println("=================================================");
-        System.out.println("REGISTRO DE FICHAJE EMITIDO:");
-        System.out.println("Terminal:   #" + terminalId + " (Sensor: " + tempVestibulo + " ºC)");
-        System.out.println("Estudiante: " + nombreEstudiante + " (DNI: " + dniEstudiante + ")");
-        System.out.println("Grupo:      " + letraGrupo + " DAM");
-        System.out.println("Matrícula:  Activa (" + matriculaActiva + ")");
-        System.out.println("=================================================");
-
-        teclado.close();
-    }
-}
-```
+          System.out.println("Terminal configurado: #" + terminalId);
+          System.out.println("Sensor termico: " + tempVestibulo + " ºC)");
+          System.out.println("Persona: " + nombrePersona + " (DNI: " + dniPersona + ")");
+          System.out.println("Perfil: " + perfilPersona);
+          System.out.println("Sentido del paso:  Entrada (" + esEntrada + ")");
+          
+          teclado.close();
+      }
+  }
+  ```
 
 ---
 
@@ -362,157 +289,137 @@ Ampliamos el código de la versión v0.2 añadiendo el bloque de cálculo de ses
 de confirmación.
 
 ##### Paso A. Evolución en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.3)
-```psc
-Algoritmo ControlAccesoQR
-    // =========================================================================
-    // SISTEMA DE CONTROL DE ASISTENCIA QR - IES EL CAMINAS (Castellon)
-    // Version: 0.3 (Evolucion: Calculo de Tiempos y Concatenacion)
-    // =========================================================================
-    
-    // 1. Variables previas (Días 1 y 2)
-    Definir terminalId Como Entero
-    Definir tempVestibulo Como Real
-    Definir nombreEstudiante, dniEstudiante Como Cadena
-    Definir letraGrupo Como Caracter
-    Definir matriculaActiva Como Logico
-    
-    // [NUEVO DÍA 3] Variables de computo de sesiones lectivas
-    Definir sesionesManana, sesionesTarde Como Entero
-    Definir totalSesiones Como Entero
-    Definir minutosPorSesion Como Entero
-    Definir minutosTotalesLectivos Como Entero
-    Definir tokenResumen Como Cadena
-    
-    // 2. Captura de datos previos
-    Escribir "=== AZAHARTECH: TERMINAL DE ACCESO VESTIBULO ==="
-    Escribir "Introduce el ID del terminal y temperatura:"
-    Leer terminalId
-    Leer tempVestibulo
-    
-    Escribir "Introduce DNI, nombre y grupo:"
-    Leer dniEstudiante
-    Leer nombreEstudiante
-    Leer letraGrupo
-    matriculaActiva <- Verdadero
-    
-    // [NUEVO DÍA 3] Captura de sesiones lectivas
-    Escribir "-------------------------------------------------"
-    Escribir "COMPUTO DE HORAS LECTIVAS:"
-    Escribir "Introduce sesiones programadas manana:"
-    Leer sesionesManana
-    Escribir "Introduce sesiones programadas tarde:"
-    Leer sesionesTarde
-    
-    minutosPorSesion <- 50 // Cada clase dura 50 minutos
-    
-    // [NUEVO DÍA 3] Procesamiento aritmético secuencial
-    totalSesiones <- sesionesManana + sesionesTarde
-    minutosTotalesLectivos <- totalSesiones * minutosPorSesion
-    
-    // Composicion de la cadena de confirmacion
-    tokenResumen <- dniEstudiante + "-SESIONES-" + ConvertirATexto(totalSesiones)
-    
-    // 3. Salida de datos unificada
-    Escribir "================================================="
-    Escribir "RESUMEN DE ASISTENCIA DIARIA:"
-    Escribir "Alumno:     " + nombreEstudiante + " (" + letraGrupo + " DAM)"
-    Escribir "Token:      " + tokenResumen
-    Escribir "Sesiones:   " + ConvertirATexto(totalSesiones) + " clases (" + ConvertirATexto(sesionesManana) + "M + " + ConvertirATexto(sesionesTarde) + "T)"
-    Escribir "Permanencia computada: " + ConvertirATexto(minutosTotalesLectivos) + " minutos lectivos."
-    Escribir "================================================="
-FinAlgoritmo
-```
+  ```psc
+  Algoritmo ControlAccesoQR
+      Definir terminalId Como Entero
+      Definir tempVestibulo Como Real
+      
+      Definir nombrePersona, dniPersona Como Cadena
+      Definir perfilPersona Como Caracter
+      Definir esEntrada Como Logico
+      
+      Definir horaEntrada, minutoEntrada Como Entero
+      Definir horaSalida, minutoSalida Como Entero
+      Definir minutosTotalesEntrada Como Entero
+      Definir minutosTotalesSalida Como Entero
+      Definir minutosEstanciaTotal Como Entero
+      Definir tokenResumen Como Cadena
+      
+      Escribir "ID del terminal:"
+      Leer terminalId
+      Escribir "Temperatura del sensor (ºC):"
+      Leer tempVestibulo
+      
+      Escribir "DNI de la persona:"
+      Leer dniPersona
+      Escribir "Nombre completo:"
+      Leer nombrePersona
+      Escribir "Perfil de acceso (E = Estudiante, D = Docente, V = Visita):"
+      Leer perfilPersona
+      
+      esEntrada <- Verdadero
+      
+      Escribir "Introduce hora y minuto de entrada (por ejemplo, 8 15):"
+      Leer horaEntrada
+      Leer minutoEntrada
+      
+      Escribir "Introduce hora y minuto de salida (por ejemplo, 14 10):"
+      Leer horaSalida
+      Leer minutoSalida
+      
+      minutosTotalesEntrada <- (horaEntrada * 60) + minutoEntrada
+      minutosTotalesSalida <- (horaSalida * 60) + minutoSalida
+      minutosEstanciaTotal <- minutosTotalesSalida - minutosTotalesEntrada
+      
+      tokenResumen <- dniPersona + "-ESTANCIA-" + ConvertirATexto(minutosEstanciaTotal)
+      
+      Escribir "Terminal configurado: #", terminalId
+      Escribir "Sensor termico: ", tempVestibulo, " ºC"
+      Escribir "Persona: ", nombrePersona, " (DNI: ", dniPersona, ")"
+      Escribir "Perfil: ", perfilPersona
+      Escribir "Sentido del paso:  Entrada (", esEntrada, ")"
+      Escribir "Token:      ", tokenResumen
+      Escribir "Horario:    Entrada ", horaEntrada, ":", minutoEntrada, " | Salida ", horaSalida, ":", minutoSalida
+      Escribir "Permanencia total en centro: ", minutosEstanciaTotal, " minutos."
+  FinAlgoritmo
+  ```
 
 ##### Paso B. Evolución en Java (`pr/src/ControlAccesoQR.java` — v0.3)
 Abrimos nuestro archivo `ControlAccesoQR.java` y lo evolucionamos:
 
-```java
-/**
- * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
- * Cliente: IES El Caminàs (Castellón de la Plana)
- * Consultora: AzaharTech Software Consulting
- *
- * Versión 0.3: Cálculo aritmético de tiempos de permanencia y concatenación.
- * Módulo: Programación (PR) - Sprint 1 (RA1)
- */
+  ```java
+  import java.util.Scanner;
 
-import java.util.Scanner;
-
-public class ControlAccesoQR {
-    public static void main(String[] args) {
-        Scanner teclado = new Scanner(System.in);
-
-        // 1. Variables de hardware y terminal (Día 1)
-        int terminalId;
-        double tempVestibulo;
-
-        // Variables de identidad (Día 2)
-        String dniEstudiante;
-        String nombreEstudiante;
-        char letraGrupo;
-        boolean matriculaActiva;
-
-        // [NUEVO DÍA 3] Variables de cómputo horario y concatenación
-        int sesionesManana;
-        int sesionesTarde;
-        int totalSesiones;
-        int minutosPorSesion = 50; // Cada periodo lectivo son 50 minutos
-        int minutosTotalesLectivos;
-        String tokenResumen;
-
-        // 2. Captura de datos
-        System.out.println("=================================================");
-        System.out.println("   AZAHARTECH - TERMINAL DE ACCESO VESTÍBULO     ");
-        System.out.println("   Cliente: IES El Caminàs (Curso 2026/2027)     ");
-        System.out.println("=================================================");
-        System.out.print("ID Terminal: ");
-        terminalId = teclado.nextInt();
-
-        System.out.print("Temperatura sensor (ºC): ");
-        tempVestibulo = teclado.nextDouble();
-
-        teclado.nextLine(); // Limpieza de buffer
-
-        System.out.print("DNI Estudiante: ");
-        dniEstudiante = teclado.nextLine();
-
-        System.out.print("Nombre completo: ");
-        nombreEstudiante = teclado.nextLine();
-
-        System.out.print("Grupo (letra): ");
-        letraGrupo = teclado.next().charAt(0);
-
-        matriculaActiva = true;
-
-        // [NUEVO DÍA 3] Entrada de sesiones lectivas
-        System.out.println("-------------------------------------------------");
-        System.out.print("Sesiones programadas turno mañana: ");
-        sesionesManana = teclado.nextInt();
-
-        System.out.print("Sesiones programadas turno tarde: ");
-        sesionesTarde = teclado.nextInt();
-
-        // [NUEVO DÍA 3] Procesamiento aritmético secuencial
-        totalSesiones = sesionesManana + sesionesTarde;
-        minutosTotalesLectivos = totalSesiones * minutosPorSesion;
-
-        // Composición de cadena concatenada
-        tokenResumen = dniEstudiante + "-SESIONES-" + totalSesiones;
-
-        // 3. Salida de datos unificada
-        System.out.println("=================================================");
-        System.out.println("RESUMEN DE ASISTENCIA DIARIA:");
-        System.out.println("Alumno:     " + nombreEstudiante + " (" + letraGrupo + " DAM)");
-        System.out.println("Token:      " + tokenResumen);
-        // Uso de paréntesis protectores para garantizar suma aritmética antes de concatenar:
-        System.out.println("Sesiones:   " + (sesionesManana + sesionesTarde) + " clases (" + sesionesManana + "M + " + sesionesTarde + "T)");
-        System.out.println("Permanencia computada: " + minutosTotalesLectivos + " minutos lectivos.");
-        System.out.println("=================================================");
-
-        teclado.close();
-    }
-}
-```
+  public class ControlAccesoQR {
+      public static void main(String[] args) {
+          Scanner teclado = new Scanner(System.in);
+          
+          int terminalId;
+          double tempVestibulo;
+          
+          String dniPersona;
+          String nombrePersona;
+          char perfilPersona;
+          boolean esEntrada;
+          
+          int horaEntrada;
+          int minutoEntrada;
+          int horaSalida;
+          int minutoSalida;
+          int minutosTotalesEntrada;
+          int minutosTotalesSalida;
+          int minutosEstanciaTotal;
+          String tokenResumen;
+          
+          System.out.print("ID del terminal: ");
+          terminalId = teclado.nextInt();
+          
+          System.out.print("Temperatura del sensor (ºC): ");
+          tempVestibulo = teclado.nextDouble();
+          teclado.nextLine();
+          
+          System.out.print("DNI de la persona: ");
+          dniPersona = teclado.nextLine();
+          
+          System.out.print("Nombre completo: ");
+          nombrePersona = teclado.nextLine();
+          
+          System.out.print("Perfil de acceso (E = Estudiante, D = Docente, V = Visita):");
+          perfilPersona = teclado.next().charAt(0);
+          
+          esEntrada = true;
+          
+          System.out.print("Hora de entrada (0-23): ");
+          horaEntrada = teclado.nextInt();
+          
+          System.out.print("Minuto de entrada (0-59): ");
+          minutoEntrada = teclado.nextInt();
+          
+          System.out.print("Hora de salida (0-23): ");
+          horaSalida = teclado.nextInt();
+          
+          System.out.print("Minuto de salida (0-59): ");
+          minutoSalida = teclado.nextInt();
+          
+          minutosTotalesEntrada = (horaEntrada * 60) + minutoEntrada;
+          minutosTotalesSalida = (horaSalida * 60) + minutoSalida;
+          minutosEstanciaTotal = minutosTotalesSalida - minutosTotalesEntrada;
+          
+          tokenResumen = dniPersona + "-ESTANCIA-" + minutosEstanciaTotal;
+          
+          System.out.println("Terminal configurado: #" + terminalId);
+          System.out.println("Sensor termico: " + tempVestibulo + " ºC)");
+          System.out.println("Persona: " + nombrePersona + " (DNI: " + dniPersona + ")");
+          System.out.println("Perfil: " + perfilPersona);
+          System.out.println("Sentido del paso:  Entrada (" + esEntrada + ")");
+          System.out.println("Token: " + tokenResumen);
+          System.out.println("Horario:    Entrada " + horaEntrada + ":" + minutoEntrada + " | Salida " + horaSalida + ":" + minutoSalida);
+          System.out.println("Permanencia total en centro: " + minutosEstanciaTotal + " minutos.");
+          
+          teclado.close();
+      }
+  }
+  ```
 
 ---
 
@@ -556,96 +463,115 @@ commit formal en GitHub»*.
 Cada estudiante verifica que su archivo único `pr/src/NombreDeSuProyecto.java` cumple con el nivel de consolidación alcanzado en
 el caso guía:
 
-```java
-/**
- * PROYECTO: [Nombre de tu Proyecto Elegido de la Bolsa de Proyectos]
- * Consultora: AzaharTech Software Consulting
- *
- * Versión 0.3: Módulo acumulativo de captura de datos, tipado y cálculo aritmético.
- * Módulo: Programación (PR) - Sprint 1 (RA1)
- *
- * @author [Tus Apellidos, Tu Nombre]
- * @version 0.3 (Cierre Semana 1 - Septiembre 2026)
- */
+  ```java
+  /**
+   * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
+   * Cliente: IES El Caminàs (Castellón de la Plana)
+   * Consultora: AzaharTech Software Consulting
+   * 
+   * Versión 0.3: Captura completa de datos, cálculo de estancia horaria y formato limpio.
+   * Módulo: Programación (PR) - Sprint 1 (RA1)
+   */
+  import java.util.Scanner;
 
-import java.util.Scanner;
+  public class ControlAccesoQR {
+      public static void main(String[] args) {
+          // Canal de lectura de la entrada estándar
+          Scanner teclado = new Scanner(System.in);
 
-public class MiProyecto {
-    public static void main(String[] args) {
-        Scanner teclado = new Scanner(System.in);
+          // 1. Variables del terminal físico (Día 1)
+          int terminalId;
+          double tempVestibulo;
 
-        // 1. Variables numéricas de infraestructura (Día 1)
-        int idSucursal;
-        double balanceInicial;
+          // 2. Variables de identidad del usuario (Día 2)
+          String dniPersona;
+          String nombrePersona;
+          char perfilPersona;
+          boolean esEntrada;
 
-        // 2. Variables alfanuméricas de cliente y estado (Día 2)
-        String nombreCliente;
-        String identificadorFiscal;
-        char categoriaCliente;
-        boolean cuentaVerificada = true;
+          // 3. Variables de registro horario y estancia (Día 3)
+          int horaEntrada;
+          int minutoEntrada;
+          int horaSalida;
+          int minutoSalida;
+          int minutosTotalesEntrada;
+          int minutosTotalesSalida;
+          int minutosEstanciaTotal;
+          String tokenResumen;
 
-        // 3. Variables de cálculo aritmético (Día 3)
-        int operacionesManana;
-        int operacionesTarde;
-        int totalOperaciones;
-        double tarifaPorOperacion = 12.50;
-        double volumenTotalCalculado;
+          // Entrada de datos del hardware y usuario
+          System.out.println("=================================================");
+          System.out.println("   AZAHARTECH - TERMINAL DE ACCESO VESTÍBULO     ");
+          System.out.println("   Cliente: IES El Caminàs (Curso 2026/2027)     ");
+          System.out.println("=================================================");
+          System.out.print("ID del terminal: ");
+          terminalId = teclado.nextInt();
 
-        // Captura de datos interactiva
-        System.out.println("=================================================");
-        System.out.println("   SISTEMA DE GESTIÓN OPERATIVA - AZAHARTECH     ");
-        System.out.println("=================================================");
-        System.out.print("ID Sucursal / Almacén: ");
-        idSucursal = teclado.nextInt();
+          System.out.print("Temperatura del sensor (ºC): ");
+          tempVestibulo = teclado.nextDouble();
+          teclado.nextLine(); // Limpieza obligatoria del buffer de entrada
 
-        System.out.print("Balance base (€): ");
-        balanceInicial = teclado.nextDouble();
+          System.out.print("DNI de la persona: ");
+          dniPersona = teclado.nextLine();
 
-        teclado.nextLine(); // Limpieza obligatoria del buffer
+          System.out.print("Nombre completo: ");
+          nombrePersona = teclado.nextLine();
 
-        System.out.print("Identificador fiscal (DNI/CIF): ");
-        identificadorFiscal = teclado.nextLine();
+          System.out.print("Perfil de acceso (E = Estudiante, D = Docente, V = Visita): ");
+          perfilPersona = teclado.next().charAt(0);
 
-        System.out.print("Nombre completo del cliente: ");
-        nombreCliente = teclado.nextLine();
+          esEntrada = true;
 
-        System.out.print("Categoría (A, B o C): ");
-        categoriaCliente = teclado.next().charAt(0);
+          System.out.print("Hora de entrada (0-23): ");
+          horaEntrada = teclado.nextInt();
 
-        System.out.print("Operaciones registradas mañana: ");
-        operacionesManana = teclado.nextInt();
+          System.out.print("Minuto de entrada (0-59): ");
+          minutoEntrada = teclado.nextInt();
 
-        System.out.print("Operaciones registradas tarde: ");
-        operacionesTarde = teclado.nextInt();
+          System.out.print("Hora de salida (0-23): ");
+          horaSalida = teclado.nextInt();
 
-        // Procesamiento aritmético secuencial acumulativo
-        totalOperaciones = operacionesManana + operacionesTarde;
-        volumenTotalCalculado = totalOperaciones * tarifaPorOperacion;
+          System.out.print("Minuto de salida (0-59): ");
+          minutoSalida = teclado.nextInt();
 
-        // Salida estructurada de la versión v0.3
-        System.out.println("-------------------------------------------------");
-        System.out.println("RESUMEN DE OPERATIVA REGISTRADA:");
-        System.out.println("Cliente:     " + nombreCliente + " (" + identificadorFiscal + ")");
-        System.out.println("Categoría:   " + categoriaCliente + " | Estado activo: " + cuentaVerificada);
-        System.out.println("Operaciones: " + (operacionesManana + operacionesTarde) + " totales");
-        System.out.println("Volumen:     " + volumenTotalCalculado + " € computados.");
-        System.out.println("=================================================");
+          // Conversión a minutos transcurridos
+          minutosTotalesEntrada = (horaEntrada * 60) + minutoEntrada;
+          minutosTotalesSalida = (horaSalida * 60) + minutoSalida;
 
-        teclado.close();
-    }
-}
-```
+          // Cálculo directo del tiempo total de permanencia en el centro
+          minutosEstanciaTotal = minutosTotalesSalida - minutosTotalesEntrada;
+
+          // Composición de cadena identificativa del registro
+          tokenResumen = dniPersona + "-ESTANCIA-" + minutosEstanciaTotal;
+
+          // Salida con formato
+          System.out.println("---------------------------------------------");
+          System.out.println("Terminal configurado:        #" + terminalId);
+          System.out.println("Sensor termico:              " + tempVestibulo + " ºC)");
+          System.out.println("Persona:                     " + nombrePersona + " (DNI: " + dniPersona + ")");
+          System.out.println("Perfil:                      " + perfilPersona);
+          System.out.println("Sentido del paso:            Entrada (" + esEntrada + ")");
+          System.out.println("Token:                       " + tokenResumen);
+          System.out.println("Horario:                     Entrada " + horaEntrada + ":" + minutoEntrada + " | Salida " + horaSalida + ":" + minutoSalida);
+          System.out.println("Permanencia total en centro: " + minutosEstanciaTotal + " minutos.");
+    
+          // Cierre del recurso para evitar advertencias del compilador
+          teclado.close();
+      }
+  }
+  ```
 
 ---
 
 #### 4. Cierre formal en git y sincronización con GitHub
 El estudiante confirma los avances de la primera semana en su repositorio:
 
-```bash
-git add pr/
-git commit -m "feat(pr): consolidar aplicacion v0.3 con captura completa de datos y calculos base"
-git push
-```
+1. Pulsa el atajo **`Ctrl + K`** (o haz clic en el icono verde de verificación **Commit** en la barra lateral izquierda).
+2. En el panel de Commit, marca las casillas de los archivos modificados dentro de `pr/` (`MiProyecto.java` y `MiProyecto.psc`).
+3. En la caja de texto para el mensaje, escribe siguiendo el estándar convencional:  
+   `feat(pr): consolidar version v0.3 con captura de datos, calculos aritmeticos y limpieza de codigo`
+4. Despliega el botón azul inferior y selecciona **«Commit and Push»**.
+5. En la ventana de confirmación que aparece, pulsa **Push** para enviar los cambios a GitHub.
 
 ---
 
