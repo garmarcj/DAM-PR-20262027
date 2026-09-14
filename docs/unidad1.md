@@ -106,8 +106,8 @@ public class ControlAccesoQR {
 Cada estudiante crea en su carpeta `pr/pseudocodigo/` el archivo maestro de su proyecto propio y en `pr/src/` la clase
 `.java` v0.1:
 
-* Define e inicializa dos variables numéricas (`int` y `double`) que representen datos físicos o de arranque de su
-  negocio (ej. código de sucursal y aforo; número de almacén y tarifa base).
+* Declara dos variables numéricas (`int` y `double`) que representen datos físicos o de arranque de su negocio
+* y asignales valores mediante la entrada por teclado.
 * Compila y verifica la ejecución en la consola de IntelliJ.
 
 ---
