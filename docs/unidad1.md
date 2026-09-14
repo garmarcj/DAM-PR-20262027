@@ -21,7 +21,7 @@ al proyector principal. En pantalla aparece el entorno de desarrollo IntelliJ ID
 la aplicación: **`ControlAccesoQR`**.*
 >
 > *Una aplicación profesional crece capa a capa. El equipo directivo del instituto necesita que el terminal empiece
-registrando los parámetros físicos del vestíbulo: el número del aula donde se ubica la pantalla y la temperatura
+registrando los parámetros físicos del vestíbulo: el identificador del terminal que controla la pantalla y la temperatura
 ambiente del sensor térmico.*
 >
 > *Hoy crearemos el esqueleto del programa, aprenderemos qué ocurre en la memoria RAM al reservar variables numéricas (
@@ -69,7 +69,7 @@ Algoritmo ControlAccesoQR
     Leer tempVestibulo
     
     Escribir "Terminal configurado: #", terminalId
-    Escribir "Sensor termica:        ", tempVestibulo, " ºC"
+    Escribir "Lectura térmica:        ", tempVestibulo, " ºC"
 FinAlgoritmo
 ```
 
@@ -230,7 +230,7 @@ Abrimos el archivo `ControlAccesoQR.java` en IntelliJ y lo modificamos directame
           esEntrada = true;
 
           System.out.println("Terminal configurado: #" + terminalId);
-          System.out.println("Lectura térmica: " + tempVestibulo + " ºC)");
+          System.out.println("Lectura térmica: " + tempVestibulo + " ºC");
           System.out.println("Persona: " + nombrePersona + " (DNI: " + dniPersona + ")");
           System.out.println("Perfil: " + perfilPersona);
           System.out.println("Sentido del paso:  Entrada (" + esEntrada + ")");
