@@ -563,7 +563,7 @@ el caso guía:
 
 ---
 
-#### 4. Cierre formal en git y sincronización con GitHub
+#### 4. (Hacerlo únicamente si el grupo de estudiantes ya ha sincronizado con GitHub en ED) Cierre formal en git y sincronización con GitHub
 El estudiante confirma los avances de la primera semana en su repositorio:
 
 1. Pulsa el atajo **`Ctrl + K`** (o haz clic en el icono verde de verificación **Commit** en la barra lateral izquierda).
