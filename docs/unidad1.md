@@ -185,7 +185,7 @@ Observa cómo el código de ayer se amplía añadiendo los bloques de identidad 
       esEntrada <- Verdadero
       
       Escribir "Terminal configurado: #", terminalId
-      Escribir "Sensor termico: ", tempVestibulo, " ºC"
+      Escribir "Lectura térmica: ", tempVestibulo, " ºC"
       Escribir "Persona: ", nombrePersona, " (DNI: ", dniPersona, ")"
       Escribir "Perfil: ", perfilPersona
       Escribir "Sentido del paso:  Entrada (", esEntrada, ")"
@@ -230,7 +230,7 @@ Abrimos el archivo `ControlAccesoQR.java` en IntelliJ y lo modificamos directame
           esEntrada = true;
 
           System.out.println("Terminal configurado: #" + terminalId);
-          System.out.println("Sensor termico: " + tempVestibulo + " ºC)");
+          System.out.println("Lectura térmica: " + tempVestibulo + " ºC)");
           System.out.println("Persona: " + nombrePersona + " (DNI: " + dniPersona + ")");
           System.out.println("Perfil: " + perfilPersona);
           System.out.println("Sentido del paso:  Entrada (" + esEntrada + ")");
@@ -334,7 +334,7 @@ de confirmación.
       tokenResumen <- dniPersona + "-ESTANCIA-" + ConvertirATexto(minutosEstanciaTotal)
       
       Escribir "Terminal configurado: #", terminalId
-      Escribir "Sensor termico: ", tempVestibulo, " ºC"
+      Escribir "Lectura térmica: ", tempVestibulo, " ºC"
       Escribir "Persona: ", nombrePersona, " (DNI: ", dniPersona, ")"
       Escribir "Perfil: ", perfilPersona
       Escribir "Sentido del paso:  Entrada (", esEntrada, ")"
@@ -408,7 +408,7 @@ Abrimos nuestro archivo `ControlAccesoQR.java` y lo evolucionamos:
           tokenResumen = dniPersona + "-ESTANCIA-" + minutosEstanciaTotal;
           
           System.out.println("Terminal configurado: #" + terminalId);
-          System.out.println("Sensor termico: " + tempVestibulo + " ºC)");
+          System.out.println("Lectura térmica: " + tempVestibulo + " ºC");
           System.out.println("Persona: " + nombrePersona + " (DNI: " + dniPersona + ")");
           System.out.println("Perfil: " + perfilPersona);
           System.out.println("Sentido del paso:  Entrada (" + esEntrada + ")");
@@ -547,7 +547,7 @@ el caso guía:
           // Salida con formato
           System.out.println("---------------------------------------------");
           System.out.println("Terminal configurado:        #" + terminalId);
-          System.out.println("Sensor termico:              " + tempVestibulo + " ºC)");
+          System.out.println("Lectura térmica:              " + tempVestibulo + " ºC");
           System.out.println("Persona:                     " + nombrePersona + " (DNI: " + dniPersona + ")");
           System.out.println("Perfil:                      " + perfilPersona);
           System.out.println("Sentido del paso:            Entrada (" + esEntrada + ")");
