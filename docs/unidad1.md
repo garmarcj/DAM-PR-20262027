@@ -106,11 +106,13 @@ public class ControlAccesoQR {
 Cada estudiante crea en su carpeta `pr/pseudocodigo/` el archivo maestro de su proyecto propio y en `pr/src/` la clase
 `.java` v0.1:
 
-* Declara dos variables numéricas (`int` y `double`) que representen datos físicos o de arranque de su negocio
-* y asignales valores mediante la entrada por teclado.
+* Declara dos variables numéricas (`int` y `double`) a su proyecto:
+  * En Aventura conversacional: puntos de vida (int puntosVida) y multiplicador de daño (double factorDano).
+  * En Motor de recomendación: identificador de ítem (int idItem) y valoración media (double valoracionMedia).
+  * En Simulador de físicas 2D: número de colisiones (int totalColisiones) y masa del cuerpo (double masaKg).
+  * En Bóveda de contraseñas: días para la caducidad (int diasCaducidad) y porcentaje de fortaleza (double nivelSeguridad).»
 * Compila y verifica la ejecución en la consola de IntelliJ.
 
----
 ---
 
 ### Día 2 - 2 sesiones
@@ -246,9 +248,11 @@ Abrimos el archivo `ControlAccesoQR.java` en IntelliJ y lo modificamos directame
 
 Cada estudiante abre sus archivos `.psc` y `.java`:
 
-* Añade los campos alfanuméricos de su proyecto (`String` para descripciones o clientes, `char` para códigos de zona o
-  categoría, `boolean` para disponibilidad o estado activo).
-* Aplica la limpieza del buffer con `teclado.nextLine()`.
+* Añade los campos alfanuméricos de su proyecto:
+  * En Aventura conversacional: nombre del héroe (String), clase de personaje 'G', 'M', 'P' (char) y si la partida está activa (boolean estaVivo). 
+  * En Motor de recomendación: título de la película/libro (String), tipo de contenido 'P', 'M', 'L' (char) y si está marcado como favorito (boolean esFavorito). 
+  * En Simulador de físicas 2D: etiqueta del cuerpo (String), tipo de partícula 'N', 'P', 'R' (char) y si tiene la gravedad activada (boolean gravedadActiva). 
+  * En Bóveda de contraseñas: nombre del servicio o web (String), nivel de política 'B', 'E', 'C' (char) y si requiere doble factor (boolean requiere2FA).»* Aplica la limpieza del buffer con `teclado.nextLine()`.
 * Ejecuta pruebas verificando que se pueden introducir nombres con espacios sin saltos inesperados.
 
 ---
@@ -426,11 +430,14 @@ Abrimos nuestro archivo `ControlAccesoQR.java` y lo evolucionamos:
 #### 4. Trabajo del estudiante: evolución de su proyecto propio
 El estudiante abre su archivo `.java`:
 
-* Incorpora el cálculo aritmético secuencial adaptado a su contexto.
+* Incorpora el cálculo aritmético secuencial adaptado a su proyecto.
+  * En Aventura conversacional: calcular el daño total (danoBase * factorDano) y restar la vida restante (puntosVida - danoTotal). 
+  * En Motor de recomendación: sumar puntuaciones por afinidad y calcular la diferencia respecto a la media de la comunidad.
+  * En Simulador de físicas 2D: calcular el desplazamiento lineal restando la posición inicial a la posición final calculada (posFinal - posInicial).
+  * En Bóveda de contraseñas: calcular los días de vigencia restantes restando los días transcurridos al límite de caducidad (diasCaducidad - diasTranscurridos).»
 * Utiliza paréntesis `()` para proteger una operación dentro de los mensajes de salida.
 * Compila y verifica que la concatenación no genera errores numéricos.
 
----
 ---
 
 ### Día 4 - 2 sesiones
