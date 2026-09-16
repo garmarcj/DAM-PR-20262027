@@ -121,12 +121,12 @@ Cada estudiante crea en su carpeta `pr/pseudocodigo/` el archivo maestro de su p
 
 #### 1. Caso guía en AzaharTech
 Es martes por la tarde. **Pau Ferrer** ejecuta `ControlAccesoQR` v0.1 y muestra la pantalla:
-> *«El terminal ya arranca y guarda el número de terminal `101` y la temperatura `21.5`. Pero cuando un estudiante
+> *«El terminal ya arranca y guarda el número de terminal `101` y la temperatura `21.5`. Pero cuando una persona
 acerca el móvil a la pantalla del vestíbulo, el sistema no sabe a quién pertenece ese escaneo»*.
 
 **Alba Torres** toma el teclado y abre el archivo de ayer:
 > *«No vamos a crear un programa nuevo. Vamos a evolucionar `ControlAccesoQR.java`. Añadiremos los campos para el nombre
-del estudiante, su DNI, la letra de su grupo y una bandera lógica que indique si su matrícula está activa.*
+de la persona, su DNI, el tipo de relación con el instituto (estudiante, docente, visita) y bandera lógica que indique si está entrando o saliendo.*
 >
 > *Pero atención a la trampa de Java: al leer números antes que textos, el buffer del teclado guarda un salto de línea
 invisible (`\n`) que debemos limpiar para que el programa no se salte la lectura del nombre»*.
@@ -249,10 +249,11 @@ Abrimos el archivo `ControlAccesoQR.java` en IntelliJ y lo modificamos directame
 Cada estudiante abre sus archivos `.psc` y `.java`:
 
 * Añade los campos alfanuméricos de su proyecto:
-  * En Aventura conversacional: nombre del héroe (String), clase de personaje 'G', 'M', 'P' (char) y si la partida está activa (boolean estaVivo). 
-  * En Motor de recomendación: título de la película/libro (String), tipo de contenido 'P', 'M', 'L' (char) y si está marcado como favorito (boolean esFavorito). 
-  * En Simulador de físicas 2D: etiqueta del cuerpo (String), tipo de partícula 'N', 'P', 'R' (char) y si tiene la gravedad activada (boolean gravedadActiva). 
-  * En Bóveda de contraseñas: nombre del servicio o web (String), nivel de política 'B', 'E', 'C' (char) y si requiere doble factor (boolean requiere2FA).»* Aplica la limpieza del buffer con `teclado.nextLine()`.
+  * En Aventura conversacional: nombre del héroe (String), clase de personaje 'G' de Guerrero, 'M' de Mago, 'P' de Pícaro (char) y si la partida está activa (boolean estaVivo). 
+  * En Motor de recomendación: título de la película/libro (String), tipo de contenido 'P' de Película, 'M' de Música, 'L' de Libro (char) y si está marcado como favorito (boolean esFavorito). 
+  * En Simulador de físicas 2D: etiqueta del cuerpo (String), tipo de partícula 'N' de Normal, 'P' de Pesada, 'R' de Rebote especial (char) y si tiene la gravedad activada (boolean gravedadActiva). 
+  * En Bóveda de contraseñas: nombre del servicio o web (String), nivel de política 'B' de Básica, 'E' de Estricta, 'C' de Corporativa (char) y si requiere doble factor (boolean requiere2FA).»
+  * Aplica la limpieza del buffer con `teclado.nextLine()`.
 * Ejecuta pruebas verificando que se pueden introducir nombres con espacios sin saltos inesperados.
 
 ---
@@ -264,10 +265,8 @@ Cada estudiante abre sus archivos `.psc` y `.java`:
 
 #### 1. Caso guía en AzaharTech
 Es miércoles por la tarde. **Laia Claramunt** revisa la versión v0.2:
-> *«El sistema ya sabe qué terminal lee y qué alumno pasa. Ahora el IES El Caminàs nos pide procesar el tiempo lectivo:
-cada acceso matutino suma una sesión base de 50 minutos lectivos. Si el alumno entra también por la tarde a un taller
-voluntario de refuerzo, debemos sumar ambos accesos y calcular cuántos minutos lectivos totales acumula en el centro
-hoy.*
+> *«El sistema ya sabe qué terminal lee, la temperatura del vestíbulo y quién pasa. Ahora el IES El Caminàs nos pide procesar el tiempo que la persona permanece en el instituto:
+para cada acceso debemos calcular los minutos que hay entre la hora de entrada y la hora de salida.*
 >
 > *Hoy aprenderemos a operar matemáticamente sobre las variables de nuestro programa y a componer un mensaje unificado
 donde convivan números y texto sin que el operador `+` distorsione los cálculos»*.
@@ -448,7 +447,7 @@ El estudiante abre su archivo `.java`:
 Es jueves por la tarde. Concluyen las primeras 8 horas de Programación. **Laia Claramunt** revisa la versión v0.3 en el
 repositorio:
 > *«Fijaos en lo que habéis logrado en solo cuatro días: tenemos **una aplicación viva que ya sabe capturar datos del
-hardware, identificar al usuario y calcular tiempos lectivos**.*
+hardware, identificar al usuario y calcular tiempos de estancia en el centro educativo**.*
 >
 > *Hoy cada uno de vosotros va a dedicar estas dos horas a auditar, limpiar y documentar la versión v0.3 de su
 **proyecto propio de la bolsa de proyectos**. Aplicaremos la indentación oficial, cerraremos recursos y realizaremos el
@@ -471,32 +470,20 @@ Cada estudiante verifica que su archivo único `pr/src/NombreDeSuProyecto.java` 
 el caso guía:
 
   ```java
-  /**
-   * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
-   * Cliente: IES El Caminàs (Castellón de la Plana)
-   * Consultora: AzaharTech Software Consulting
-   * 
-   * Versión 0.3: Captura completa de datos, cálculo de estancia horaria y formato limpio.
-   * Módulo: Programación (PR) - Sprint 1 (RA1)
-   */
   import java.util.Scanner;
 
   public class ControlAccesoQR {
       public static void main(String[] args) {
-          // Canal de lectura de la entrada estándar
           Scanner teclado = new Scanner(System.in);
-
-          // 1. Variables del terminal físico (Día 1)
+          
           int terminalId;
           double tempVestibulo;
-
-          // 2. Variables de identidad del usuario (Día 2)
+          
           String dniPersona;
           String nombrePersona;
           char perfilPersona;
           boolean esEntrada;
-
-          // 3. Variables de registro horario y estancia (Día 3)
+          
           int horaEntrada;
           int minutoEntrada;
           int horaSalida;
@@ -505,8 +492,7 @@ el caso guía:
           int minutosTotalesSalida;
           int minutosEstanciaTotal;
           String tokenResumen;
-
-          // Entrada de datos del hardware y usuario
+          
           System.out.println("=================================================");
           System.out.println("   AZAHARTECH - TERMINAL DE ACCESO VESTÍBULO     ");
           System.out.println("   Cliente: IES El Caminàs (Curso 2026/2027)     ");
@@ -516,7 +502,7 @@ el caso guía:
 
           System.out.print("Temperatura del sensor (ºC): ");
           tempVestibulo = teclado.nextDouble();
-          teclado.nextLine(); // Limpieza obligatoria del buffer de entrada
+          teclado.nextLine();
 
           System.out.print("DNI de la persona: ");
           dniPersona = teclado.nextLine();
@@ -540,18 +526,14 @@ el caso guía:
 
           System.out.print("Minuto de salida (0-59): ");
           minutoSalida = teclado.nextInt();
-
-          // Conversión a minutos transcurridos
+          
           minutosTotalesEntrada = (horaEntrada * 60) + minutoEntrada;
           minutosTotalesSalida = (horaSalida * 60) + minutoSalida;
-
-          // Cálculo directo del tiempo total de permanencia en el centro
+          
           minutosEstanciaTotal = minutosTotalesSalida - minutosTotalesEntrada;
 
-          // Composición de cadena identificativa del registro
           tokenResumen = dniPersona + "-ESTANCIA-" + minutosEstanciaTotal;
-
-          // Salida con formato
+          
           System.out.println("---------------------------------------------");
           System.out.println("Terminal configurado:        #" + terminalId);
           System.out.println("Lectura térmica:              " + tempVestibulo + " ºC");
@@ -561,8 +543,7 @@ el caso guía:
           System.out.println("Token:                       " + tokenResumen);
           System.out.println("Horario:                     Entrada " + horaEntrada + ":" + minutoEntrada + " | Salida " + horaSalida + ":" + minutoSalida);
           System.out.println("Permanencia total en centro: " + minutosEstanciaTotal + " minutos.");
-    
-          // Cierre del recurso para evitar advertencias del compilador
+          
           teclado.close();
       }
   }
