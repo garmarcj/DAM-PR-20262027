@@ -431,7 +431,7 @@ El estudiante abre su archivo `.java`:
 
 * Incorpora el cálculo aritmético secuencial adaptado a su proyecto.
   * En Aventura conversacional: calcular el daño total (danoBase * factorDano) y restar la vida restante (puntosVida - danoTotal). 
-  * En Motor de recomendación: sumar puntuaciones por afinidad y calcular la diferencia respecto a la media de la comunidad.
+  * En Motor de recomendación: sumar puntuaciones por afinidad (afinidadGenero + afinidadDirector) y calcular la diferencia respecto a la media de la comunidad (totalAfinidad - mediaComunidad).
   * En Simulador de físicas 2D: calcular el desplazamiento lineal restando la posición inicial a la posición final calculada (posFinal - posInicial).
   * En Bóveda de contraseñas: calcular los días de vigencia restantes restando los días transcurridos al límite de caducidad (diasCaducidad - diasTranscurridos).»
 * Utiliza paréntesis `()` para proteger una operación dentro de los mensajes de salida.
