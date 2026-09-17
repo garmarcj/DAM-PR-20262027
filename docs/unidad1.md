@@ -457,8 +457,7 @@ commit formal en GitHub»*.
 
 #### 2. Estándares de calidad de código en AzaharTech
 1. **Autoformateo en IntelliJ.** Todo código debe pasar por el formateador automático del IDE pulsando **
-   `Ctrl + Alt + L`** (en Windows/Linux) o **`Cmd + Option + L`** (en macOS). La indentación debe ser homogénea de 4
-   espacios.
+   `Ctrl + Alt + L`** (en GNU/Linux). La indentación debe ser homogénea de 4 espacios.
 2. **Nombres descriptivos.** Las variables deben reflejar su propósito (`minutosTotalesLectivos`, no `mtl`).
 3. **Cierre de recursos.** Toda clase que utilice `Scanner` debe cerrarlo explícitamente con `.close()` al final del
    `main`.

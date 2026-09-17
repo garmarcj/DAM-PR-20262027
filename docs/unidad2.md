@@ -1,3 +1,3 @@
-# Unidad 2: Tema avanzado
+# Unidad 2
 
-Aquí iría el contenido de la **Unidad 2**.
+Aquí irá el contenido de la **Unidad 2**.
