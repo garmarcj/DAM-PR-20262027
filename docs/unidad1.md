@@ -579,7 +579,7 @@ y como quedó el jueves anterior (versión v0.3). Quiere añadir un contador par
 terminal a lo largo de la mañana y ha escrito:
 
 ```java
-totalFichajesTerminal = totalFichajesTerminal +1;
+totalFichajesTerminal = totalFichajesTerminal + 1;
 minutosTotalesLectivos = minutosTotalesLectivos + minutosExtra;
 ```
 
@@ -618,23 +618,17 @@ evitar efectos secundarios en la memoria»*.
 ##### A. Operadores unarios de incremento (`++`) y decremento (`--`)
 Aumentan o disminuyen el valor de una variable entera exactamente en una unidad:
 
-* **Post-incremento (`variable++`):** El valor actual de la variable se utiliza en la expresión donde se encuentra y,
+* **Post-incremento (`variable++`).** El valor actual de la variable se utiliza en la expresión donde se encuentra y,
   **justo después de ser leído**, la variable se incrementa en 1 en la memoria RAM.
-* **Pre-incremento (`++variable`):** La variable se incrementa en 1 en la memoria RAM **antes** de que su valor sea
+* **Pre-incremento (`++variable`).** La variable se incrementa en 1 en la memoria RAM **antes** de que su valor sea
   leído o utilizado en la expresión circundante.
 
 ```java
 // Ejemplo de análisis de memoria en AzaharTech:
 int accesos = 10;
-System.out.
-
-println(accesos++); // Imprime 10 en consola. En memoria RAM pasa a valer 11.
-System.out.
-
-println(accesos);   // Imprime 11.
-System.out.
-
-println(++accesos); // En memoria RAM sube a 12 y luego imprime 12.
+System.out.println(accesos++); // Imprime 10 en consola. En memoria RAM pasa a valer 11.
+System.out.println(accesos);   // Imprime 11.
+System.out.println(++accesos); // En memoria RAM sube a 12 y luego imprime 12.
 ```
 
 ---
@@ -647,72 +641,69 @@ compuestas.
 
 ```psc
 Algoritmo ControlAccesoQR
-    // =========================================================================
-    // SISTEMA DE CONTROL DE ASISTENCIA QR - IES EL CAMINAS (Castellon)
-    // Version: 0.4 (Evolucion: Asignacion Compuesta y Contadores de Sesion)
-    // =========================================================================
-    
-    // Variables de hardware y terminal
     Definir terminalId Como Entero
     Definir tempVestibulo Como Real
+    Definir nombrePersona, dniPersona Como Cadena
+    Definir perfilPersona Como Caracter
+    Definir esEntrada Como Logico
     
-    // Variables de identidad del estudiante
-    Definir nombreEstudiante, dniEstudiante Como Cadena
-    Definir letraGrupo Como Caracter
-    Definir matriculaActiva Como Logico
-    
-    // Variables de sesiones lectivas
-    Definir sesionesManana, sesionesTarde, totalSesiones Como Entero
-    Definir minutosPorSesion, minutosTotalesLectivos Como Entero
+    Definir horaEntrada, minutoEntrada Como Entero
+    Definir horaSalida, minutoSalida Como Entero
+    Definir minutosTotalesEntrada Como Entero
+    Definir minutosTotalesSalida Como Entero
+    Definir minutosEstanciaTotal Como Entero
     Definir tokenResumen Como Cadena
     
-    // [NUEVO DÍA 5] Contadores y acumuladores globales del terminal
-    Definir contadorFichajesTerminal Como Entero
-    Definir minutosExtraGuardia Como Entero
+    Definir personasEnCentro, aforoDisponible, idUltimoFichaje Como Entero
+    personasEnCentro <- 120
+    aforoDisponible <- 80
+    idUltimoFichaje <- 1042
     
-    contadorFichajesTerminal <- 0
-    
-    // Entrada de datos del terminal y alumno
-    Escribir "=== AZAHARTECH: TERMINAL IES EL CAMINAS (v0.4) ==="
-    Escribir "Introduce ID del terminal y temperatura:"
+    Escribir "ID del terminal:"
     Leer terminalId
+    Escribir "Temperatura del sensor (ºC):"
     Leer tempVestibulo
     
-    Escribir "Introduce DNI, nombre y grupo:"
-    Leer dniEstudiante
-    Leer nombreEstudiante
-    Leer letraGrupo
-    matriculaActiva <- Verdadero
+    Escribir "DNI de la persona:"
+    Leer dniPersona
+    Escribir "Nombre completo:"
+    Leer nombrePersona
+    Escribir "Perfil de acceso (E = Estudiante, D = Docente, V = Visita):"
+    Leer perfilPersona
+
+    esEntrada <- Verdadero
     
-    Escribir "Introduce sesiones programadas manana y tarde:"
-    Leer sesionesManana
-    Leer sesionesTarde
+    Escribir "Introduce hora y minuto de entrada (por ejemplo, 8 15):"
+    Leer horaEntrada
+    Leer minutoEntrada
+    Escribir "Introduce hora y minuto de salida (por ejemplo, 14 10):"
+    Leer horaSalida
+    Leer minutoSalida
+        
+    minutosTotalesEntrada <- (horaEntrada * 60) + minutoEntrada
+    minutosTotalesSalida <- (horaSalida * 60) + minutoSalida
+    minutosEstanciaTotal <- minutosTotalesSalida - minutosTotalesEntrada
     
-    Escribir "Introduce minutos adicionales de guardia/tutoría:"
-    Leer minutosExtraGuardia
+    personasEnCentro <- personasEnCentro + 1
+    aforoDisponible <- aforoDisponible - 1
+    idUltimoFichaje <- idUltimoFichaje + 1        
+      
+    tokenResumen <- dniPersona
+    tokenResumen <- tokenResumen + "-T" + ConvertirATexto(terminalId)
+    tokenResumen <- tokenResumen + "-ESTANCIA-" + ConvertirATexto(minutosEstanciaTotal)
+    tokenResumen <- tokenResumen + "-REG" + ConvertirATexto(idUltimoFichaje)
     
-    minutosPorSesion <- 50
-    
-    // [REFACTORIZACIÓN DÍA 5] Procesamiento aritmético secuencial acumulativo
-    // Simulamos el incremento del contador de fichajes del terminal
-    contadorFichajesTerminal <- contadorFichajesTerminal + 1
-    
-    totalSesiones <- sesionesManana + sesionesTarde
-    minutosTotalesLectivos <- totalSesiones * minutosPorSesion
-    
-    // Acumulación compuesta de minutos extraordinarios
-    minutosTotalesLectivos <- minutosTotalesLectivos + minutosExtraGuardia
-    
-    tokenResumen <- dniEstudiante + "-T" + ConvertirATexto(terminalId) + "-F" + ConvertirATexto(contadorFichajesTerminal)
-    
-    // Salida de datos actualizada
-    Escribir "================================================="
-    Escribir "FICHAJE CONFIRMADO (Registro #" + ConvertirATexto(contadorFichajesTerminal) + "):"
-    Escribir "Alumno:      " + nombreEstudiante + " (" + letraGrupo + " DAM)"
-    Escribir "Token QR:    " + tokenResumen
-    Escribir "Total clases:" + ConvertirATexto(totalSesiones) + " sesiones."
-    Escribir "Permanencia acumulada: " + ConvertirATexto(minutosTotalesLectivos) + " minutos."
-    Escribir "================================================="
+    Escribir "Terminal configurado: #", terminalId
+    Escribir "Lectura térmica: ", tempVestibulo, " ºC"
+    Escribir "Persona: ", nombrePersona, " (DNI: ", dniPersona, ")"
+    Escribir "Perfil: ", perfilPersona
+    Escribir "Sentido del paso:  Entrada (", esEntrada, ")"
+    Escribir "Token:      ", tokenResumen
+    Escribir "Horario:    Entrada ", horaEntrada, ":", minutoEntrada, " | Salida ", horaSalida, ":", minutoSalida
+    Escribir "Permanencia total en centro: ", minutosEstanciaTotal, " minutos."
+    Escribir "Estado actual del aforo:"
+    Escribir "- personas en el centro: ", personasEnCentro, " (+1)"
+    Escribir "- plazas libres: ", aforoDisponible, " (-1)"
 FinAlgoritmo
 ```
 
@@ -720,96 +711,80 @@ FinAlgoritmo
 Abrimos nuestro archivo maestro `ControlAccesoQR.java` y aplicamos directamente la refactorización:
 
 ```java
-/**
- * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
- * Cliente: IES El Caminàs (Castellón de la Plana)
- * Consultora: AzaharTech Software Consulting
- *
- * Versión 0.4: Operadores de asignación compuesta e incrementos unarios.
- * Módulo: Programación (PR) - Sprint 1 (RA1)
- */
-
 import java.util.Scanner;
 
 public class ControlAccesoQR {
     public static void main(String[] args) {
         Scanner teclado = new Scanner(System.in);
 
-        // 1. Variables de hardware y terminal
         int terminalId;
         double tempVestibulo;
+        String nombrePersona, dniPersona;
+        char perfilPersona;
+        boolean esEntrada;
 
-        // Variables de identidad
-        String dniEstudiante;
-        String nombreEstudiante;
-        char letraGrupo;
-        boolean matriculaActiva;
-
-        // Variables de cómputo de sesiones
-        int sesionesManana;
-        int sesionesTarde;
-        int totalSesiones;
-        int minutosPorSesion = 50;
-        int minutosTotalesLectivos;
+        int horaEntrada, minutoEntrada;
+        int horaSalida, minutoSalida;
+        int minutosTotalesEntrada;
+        int minutosTotalesSalida;
+        int minutosEstanciaTotal;
         String tokenResumen;
+        
+        int personasEnCentro = 120;
+        int aforoDisponible = 80;
+        int idUltimoFichaje = 1042;
 
-        // [NUEVO DÍA 5] Contadores globales y acumuladores de tiempo
-        int contadorFichajesTerminal = 0; // Inicialización en memoria
-        int minutosExtraGuardia;
-
-        // 2. Captura de datos
-        System.out.println("=================================================");
-        System.out.println("   AZAHARTECH - TERMINAL IES EL CAMINÀS (v0.4)   ");
-        System.out.println("=================================================");
-        System.out.print("ID Terminal: ");
+        System.out.print("ID del terminal: ");
         terminalId = teclado.nextInt();
 
-        System.out.print("Temperatura sensor (ºC): ");
+        System.out.print("Temperatura del sensor (ºC): ");
         tempVestibulo = teclado.nextDouble();
 
-        teclado.nextLine(); // Limpieza obligatoria del buffer
-
-        System.out.print("DNI Estudiante: ");
-        dniEstudiante = teclado.nextLine();
+        teclado.nextLine();
+        
+        System.out.print("DNI de la persona: ");
+        dniPersona = teclado.nextLine();
 
         System.out.print("Nombre completo: ");
-        nombreEstudiante = teclado.nextLine();
+        nombrePersona = teclado.nextLine();
 
-        System.out.print("Grupo (letra): ");
-        letraGrupo = teclado.next().charAt(0);
+        System.out.print("Perfil de acceso (E = Estudiante, D = Docente, V = Visita): ");
+        perfilPersona = teclado.next().charAt(0);
 
-        matriculaActiva = true;
+        esEntrada = true;
 
-        System.out.print("Sesiones programadas turno mañana: ");
-        sesionesManana = teclado.nextInt();
+        System.out.print("Introduce hora y minuto de entrada (por ejemplo, 8 15): ");
+        horaEntrada = teclado.nextInt();
+        minutoEntrada = teclado.nextInt();
 
-        System.out.print("Sesiones programadas turno tarde: ");
-        sesionesTarde = teclado.nextInt();
-
-        System.out.print("Minutos adicionales de guardia/tutoría: ");
-        minutosExtraGuardia = teclado.nextInt();
-
-        // [REFACTORIZACIÓN DÍA 5] Uso de operador de incremento unario
-        contadorFichajesTerminal++; // Registra el paso del alumno por el torno
-
-        // Cálculo base
-        totalSesiones = sesionesManana + sesionesTarde;
-        minutosTotalesLectivos = totalSesiones * minutosPorSesion;
-
-        // [REFACTORIZACIÓN DÍA 5] Uso de asignación compuesta (+=)
-        minutosTotalesLectivos += minutosExtraGuardia; // Acumula minutos sin repetir variable
-
-        // Composición del token identificador
-        tokenResumen = dniEstudiante + "-T" + terminalId + "-F" + contadorFichajesTerminal;
-
-        // 3. Salida de datos consolidada
-        System.out.println("=================================================");
-        System.out.println("FICHAJE CONFIRMADO (Registro #" + contadorFichajesTerminal + "):");
-        System.out.println("Alumno:      " + nombreEstudiante + " (" + letraGrupo + " DAM)");
-        System.out.println("Token QR:    " + tokenResumen);
-        System.out.println("Total clases:" + totalSesiones + " sesiones.");
-        System.out.println("Permanencia acumulada: " + minutosTotalesLectivos + " minutos.");
-        System.out.println("=================================================");
+        System.out.print("Introduce hora y minuto de salida (por ejemplo, 14 10): ");
+        horaSalida = teclado.nextInt();
+        minutoSalida = teclado.nextInt();
+        
+        minutosTotalesEntrada = (horaEntrada * 60) + minutoEntrada;
+        minutosTotalesSalida = (horaSalida * 60) + minutoSalida;
+        minutosEstanciaTotal = minutosTotalesSalida - minutosTotalesEntrada;
+        
+        personasEnCentro++;
+        aforoDisponible--;
+        idUltimoFichaje++;
+        
+        tokenResumen = dniPersona;
+        tokenResumen += "-T" + terminalId;
+        tokenResumen += "-ESTANCIA-" + minutosEstanciaTotal;
+        tokenResumen += "-REG" + idUltimoFichaje;
+        
+        System.out.println("Terminal configurado: #" + terminalId);
+        System.out.println("Lectura térmica: " + tempVestibulo + " ºC");
+        System.out.println("Persona: " + nombrePersona + " (DNI: " + dniPersona + ")");
+        System.out.println("Perfil: " + perfilPersona);
+        System.out.println("Sentido del paso:  Entrada (" + esEntrada + ")");
+        System.out.println("Token:      " + tokenResumen);
+        System.out.println("Horario:    Entrada " + horaEntrada + ":" + minutoEntrada + " | Salida " + horaSalida + ":" + minutoSalida);
+        System.out.println("Permanencia total en centro: " + minutosEstanciaTotal + " minutos.");
+        System.out.println("Estado actual del aforo:");
+        System.out.println("- personas en el centro: " + personasEnCentro + " (+1)");
+        System.out.println("- plazas libres: " + aforoDisponible + " (-1)");
 
         teclado.close();
     }
@@ -818,12 +793,12 @@ public class ControlAccesoQR {
 
 ---
 
-#### 4. Trabajo del estudiante: Refactorización de su proyecto propio
+#### 4. Trabajo del estudiante: refactorización de su proyecto propio
 El estudiante abre su archivo maestro `.java` (que dejó en v0.3 el jueves anterior):
 
 * Declara un contador de operaciones y lo incrementa con `++`.
 * Sustituye las sumas de acumulación por operadores compuestos `+=` o `-=`.
-* Ejecuta el código en IntelliJ comprobando que los acumuladores actualizan la memoria RAM correctamente.
+* Ejecuta el código en IntelliJ comprobando que los acumuladores actualizan las variables correctamente.
 
 ---
 ---
