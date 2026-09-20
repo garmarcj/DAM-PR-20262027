@@ -802,11 +802,6 @@ public class ControlAccesoQR {
 ---
 
 #### 4. Trabajo del estudiante: refactorización de su proyecto propio
-EAquí tienes el punto 4 del **Día 5** adaptado con la misma estructura y con ejemplos concretos para los cuatro proyectos seleccionados:
-
----
-
-#### 4. Trabajo del estudiante: refactorización de su proyecto propio
 El estudiante abre su archivo `.java` (que dejó en v0.3 el jueves anterior):
 
 * Aplica los operadores unarios de incremento (`++`) y decremento (`--`) sobre contadores de eventos o estados numéricos de su sistema:
