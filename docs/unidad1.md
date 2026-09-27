@@ -1403,7 +1403,7 @@ Antes de realizar el commit, cada estudiante debe verificar los siguientes 5 pun
 
 ---
 
-### 3. La versión v0.6 del proyecto propio del estudiante
+#### 3. La versión v0.6 del proyecto propio del estudiante
 Cada estudiante comprueba que su clase única `pr/src/MiProyecto.java` ha evolucionado de forma acumulativa e
 incremental tanto en pseudocódigo como en Java:
 
@@ -1624,8 +1624,8 @@ El estudiante actualiza su repositorio con los avances de la segunda semana desd
 ## Semana 3. La arquitectura del código - constantes, escapes y printf
 Llegamos a la semana final del Sprint 1. Partiendo de la versión `ControlAccesoQR v0.6` (que ya cuenta con captura
 completa, descomposición con módulo y casting), evolucionamos nuestro archivo maestro eliminando números mágicos
-(`v0.7`), maquetando con secuencias de escape (`v0.8`), formateando con `printf` (`v0.9`) y sellando la versión
-definitiva `v1.0` secuencial con comentarios formales, mientras el estudiante concluye paralelamente su archivo único
+(`v0.7`), maquetando con secuencias de escape (`v0.8`), formateando con `printf` (`v0.9`) y registrando la versión
+definitiva `v1.0` secuencial con comentarios formales, mientras el estudiante concluye paralelamente su archivo
 `MiProyecto.java`.
 
 ---
@@ -1685,205 +1685,215 @@ Abrimos el archivo y extraemos todos los números fijos a la cabecera de la clas
 ##### Paso A. Refactorización en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.7)
 ```psc
 Algoritmo ControlAccesoQR
-    // =========================================================================
-    // SISTEMA DE CONTROL DE ASISTENCIA QR - IES EL CAMINAS (Castellon)
-    // Version: 0.7 (Evolucion: Extraccion de Constantes Inmutables)
-    // =========================================================================
-    
-    // [NUEVO DÍA 9] Declaracion centralizada de constantes de configuracion
-    Definir NOMBRE_INSTITUTO, PREFIJO_CENTRO Como Cadena
-    Definir MINUTOS_POR_SESION, SEGUNDOS_POR_HORA, SEGUNDOS_POR_MINUTO Como Entero
+    Definir NOMBRE_CENTRO, PREFIJO_CENTRO Como Cadena
+    Definir MINUTOS_POR_HORA, SEGUNDOS_POR_HORA, SEGUNDOS_POR_MINUTO Como Entero
     Definir FACTOR_PORCENTAJE Como Real
     
-    NOMBRE_INSTITUTO <- "IES El Caminas (Castellon)"
+    NOMBRE_CENTRO <- "IES El Caminas (Castellon)"
     PREFIJO_CENTRO <- "CAMINAS"
-    MINUTOS_POR_SESION <- 50
+    MINUTOS_POR_HORA <- 60
     SEGUNDOS_POR_HORA <- 3600
     SEGUNDOS_POR_MINUTO <- 60
     FACTOR_PORCENTAJE <- 100.0
     
-    // Variables de memoria
-    Definir terminalId, contadorFichajesTerminal, aforoMaximoVestibulo Como Entero
-    Definir tempVestibulo, porcentajeOcupacionReal Como Real
-    Definir porcentajeOcupacionTruncado Como Entero
-    Definir nombreEstudiante, dniEstudiante, tokenResumen Como Cadena
-    Definir letraGrupo Como Caracter
-    Definir matriculaActiva Como Logico
-    Definir sesionesManana, sesionesTarde, totalSesiones, minutosTotalesLectivos Como Entero
-    Definir minutosExtraGuardia, segundosActividadTerminal Como Entero
+    Definir terminalId Como Entero
+    Definir tempVestibulo Como Real
+    
+    Definir nombrePersona, dniPersona Como Cadena
+    Definir perfilPersona Como Caracter
+    Definir esEntrada Como Logico
+    
+    Definir horaEntrada, minutoEntrada Como Entero
+    Definir horaSalida, minutoSalida Como Entero
+    Definir minutosTotalesEntrada, minutosTotalesSalida, minutosEstanciaTotal Como Entero
+    Definir tokenResumen Como Cadena
+    
+    Definir personasEnCentro, aforoDisponible, idUltimoFichaje Como Entero
+    personasEnCentro <- 1200
+    aforoDisponible <- 800
+    idUltimoFichaje <- 1042
+    
+    Definir segundosActividadTerminal Como Entero
     Definir horasUptime, minutosUptime, segundosUptime Como Entero
+
+    Definir aforoTotal Como Entero
+    Definir porcentajeOcupacionReal Como Real
+    Definir porcentajeOcupacionEntero Como Entero
     
-    contadorFichajesTerminal <- 0
-    
-    // Captura de datos
-    Escribir "=== AZAHARTECH: TERMINAL " + NOMBRE_INSTITUTO + " (v0.7) ==="
-    Escribir "ID Terminal, temperatura y segundos de actividad:"
+    Escribir "ID del terminal:"
     Leer terminalId
+    Escribir "Temperatura del sensor (ºC):"
     Leer tempVestibulo
+    Escribir "Segundos de actividad del terminal (uptime):"
     Leer segundosActividadTerminal
     
-    Escribir "Aforo maximo del vestibulo:"
-    Leer aforoMaximoVestibulo
+    Escribir "DNI de la persona:"
+    Leer dniPersona
+    Escribir "Nombre completo:"
+    Leer nombrePersona
+    Escribir "Perfil de acceso (E = Estudiante, D = Docente, V = Visita):"
+    Leer perfilPersona
+
+    esEntrada <- Verdadero
     
-    Escribir "DNI, nombre y grupo del alumno:"
-    Leer dniEstudiante
-    Leer nombreEstudiante
-    Leer letraGrupo
-    matriculaActiva <- Verdadero
+    Escribir "Introduce hora y minuto de entrada (por ejemplo, 8 15):"
+    Leer horaEntrada
+    Leer minutoEntrada
+    Escribir "Introduce hora y minuto de salida (por ejemplo, 14 10):"
+    Leer horaSalida
+    Leer minutoSalida
+ 
+    minutosTotalesEntrada <- (horaEntrada * MINUTOS_POR_HORA) + minutoEntrada
+    minutosTotalesSalida <- (horaSalida * MINUTOS_POR_HORA) + minutoSalida
+    minutosEstanciaTotal <- minutosTotalesSalida - minutosTotalesEntrada
     
-    Escribir "Sesiones de manana, tarde y minutos de guardia:"
-    Leer sesionesManana
-    Leer sesionesTarde
-    Leer minutosExtraGuardia
-    
-    // Procesamiento usando exclusivamente constantes
-    contadorFichajesTerminal <- contadorFichajesTerminal + 1
-    totalSesiones <- sesionesManana + sesionesTarde
-    minutosTotalesLectivos <- (totalSesiones * MINUTOS_POR_SESION) + minutosExtraGuardia
+    personasEnCentro <- personasEnCentro + 1
+    aforoDisponible <- aforoDisponible - 1
+    idUltimoFichaje <- idUltimoFichaje + 1        
+      
+    tokenResumen <- PREFIJO_CENTRO + "-" + dniPersona
+    tokenResumen <- tokenResumen + "-T" + ConvertirATexto(terminalId)
+    tokenResumen <- tokenResumen + "-REG" + ConvertirATexto(idUltimoFichaje)
     
     horasUptime <- trunc(segundosActividadTerminal / SEGUNDOS_POR_HORA)
     minutosUptime <- trunc((segundosActividadTerminal MOD SEGUNDOS_POR_HORA) / SEGUNDOS_POR_MINUTO)
     segundosUptime <- segundosActividadTerminal MOD SEGUNDOS_POR_MINUTO
     
-    porcentajeOcupacionReal <- (contadorFichajesTerminal * FACTOR_PORCENTAJE) / aforoMaximoVestibulo
-    porcentajeOcupacionTruncado <- trunc(porcentajeOcupacionReal)
+    aforoTotal <- personasEnCentro + aforoDisponible
+    porcentajeOcupacionReal <- (personasEnCentro * FACTOR_PORCENTAJE) / aforoTotal
+    porcentajeOcupacionEntero <- trunc(porcentajeOcupacionReal)
     
-    tokenResumen <- PREFIJO_CENTRO + "-" + dniEstudiante + "-T" + ConvertirATexto(terminalId)
-    
-    // Salida consolidada
     Escribir "================================================="
-    Escribir "CENTRO:     ", NOMBRE_INSTITUTO
-    Escribir "FICHAJE:    #", contadorFichajesTerminal, " | TOKEN: ", tokenResumen
-    Escribir "ESTUDIANTE: ", nombreEstudiante, " (", letraGrupo, " DAM)"
-    Escribir "PERMANENCIA:", minutosTotalesLectivos, " min lectivos."
-    Escribir "AFORO:      ", porcentajeOcupacionReal, " % (Panel: ", porcentajeOcupacionTruncado, " %)"
-    Escribir "UPTIME:     ", horasUptime, "h ", minutosUptime, "m ", segundosUptime, "s"
+    Escribir "CENTRO:               ", NOMBRE_CENTRO
+    Escribir "Terminal configurado: #", terminalId
+    Escribir "Lectura térmica:      ", tempVestibulo, " ºC"
+    Escribir "Fichaje emitido:      #", idUltimoFichaje
+    Escribir "Persona:              ", nombrePersona, " (DNI: ", dniPersona, ")"
+    Escribir "Perfil:               ", perfilPersona
+    Escribir "Sentido del paso:     Entrada (", esEntrada, ")"
+    Escribir "Token:                ", tokenResumen
+    Escribir "Horario:      Entrada ", horaEntrada, ":", minutoEntrada, " | Salida ", horaSalida, ":", minutoSalida
+    Escribir "Permanencia en centro:", minutosEstanciaTotal, " minutos."
+    Escribir "Diagnóstico del terminal (uptime):"
+    Escribir horasUptime, " horas, ", minutosUptime, " minutos y ", segundosUptime, " segundos en servicio."
+    Escribir "Estado del aforo (capacidad: ", aforoTotal, " plazas):"
+    Escribir "- personas en el centro: ", personasEnCentro, " (+1)"
+    Escribir "- plazas libres:         ", aforoDisponible, " (-1)"
+    Escribir "- ocupación exacta:      ", porcentajeOcupacionReal, " %"
+    Escribir "- ocupación en panel:    ", porcentajeOcupacionEntero, " %"
     Escribir "================================================="
 FinAlgoritmo
 ```
 
 ##### Paso B. Refactarización en Java (`pr/src/ControlAccesoQR.java` — v0.7)
 ```java
-/**
- * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
- * Cliente: IES El Caminàs (Castellón de la Plana)
- * Consultora: AzaharTech Software Consulting
- *
- * Versión 0.7: Parametrización con constantes inmutables ('final') y eliminación de números mágicos.
- * Módulo: Programación (PR) - Sprint 1 (RA1)
- */
-
 import java.util.Scanner;
 
 public class ControlAccesoQR {
     public static void main(String[] args) {
-        // -------------------------------------------------------------
-        // 1. CONSTANTES INMUTABLES DEL SISTEMA (UPPER_SNAKE_CASE)
-        // -------------------------------------------------------------
-        final String NOMBRE_INSTITUTO = "IES El Caminàs (Castellón)";
+        final String NOMBRE_CENTRO = "IES El Caminàs (Castellón)";
         final String PREFIJO_CENTRO = "CAMINAS";
-        final int MINUTOS_POR_SESION = 50;
+        final int MINUTOS_POR_HORA = 60;
         final int SEGUNDOS_POR_HORA = 3600;
         final int SEGUNDOS_POR_MINUTO = 60;
         final double FACTOR_PORCENTAJE = 100.0;
-
-        // -------------------------------------------------------------
-        // 2. VARIABLES DE MEMORIA
-        // -------------------------------------------------------------
+        
         Scanner teclado = new Scanner(System.in);
 
         int terminalId;
         double tempVestibulo;
-        int contadorFichajesTerminal = 0;
-        int segundosActividadTerminal;
-        int aforoMaximoVestibulo;
+        String nombrePersona, dniPersona;
+        char perfilPersona;
+        boolean esEntrada;
 
-        String dniEstudiante;
-        String nombreEstudiante;
-        char letraGrupo;
-        boolean matriculaActiva = true;
-
-        int sesionesManana;
-        int sesionesTarde;
-        int totalSesiones;
-        int minutosExtraGuardia;
-        int minutosTotalesLectivos;
-
-        int horasUptime;
-        int minutosUptime;
-        int segundosUptime;
-        double porcentajeOcupacionReal;
-        int porcentajeOcupacionTruncado;
+        int horaEntrada, minutoEntrada;
+        int horaSalida, minutoSalida;
+        int minutosTotalesEntrada, minutosTotalesSalida, minutosEstanciaTotal;
         String tokenResumen;
 
-        // -------------------------------------------------------------
-        // 3. ENTRADA DE DATOS
-        // -------------------------------------------------------------
-        System.out.println("=================================================");
-        System.out.println("   AZAHARTECH - TERMINAL " + NOMBRE_INSTITUTO);
-        System.out.println("   Versión 0.7 (Parámetros Inmutables Activos)   ");
-        System.out.println("=================================================");
-        System.out.print("ID Terminal: ");
+        int personasEnCentro = 1200;
+        int aforoDisponible = 800;
+        int idUltimoFichaje = 1042;
+
+        int segundosActividadTerminal;
+        int horasUptime, minutosUptime, segundosUptime;
+
+        int aforoTotal;
+        double porcentajeOcupacionReal;
+        int porcentajeOcupacionEntero;
+        
+        System.out.print("ID del terminal: ");
         terminalId = teclado.nextInt();
 
-        System.out.print("Temperatura sensor (ºC): ");
+        System.out.print("Temperatura del sensor (ºC): ");
         tempVestibulo = teclado.nextDouble();
 
-        System.out.print("Segundos acumulados de actividad: ");
+        System.out.print("Segundos acumulados de actividad (uptime): ");
         segundosActividadTerminal = teclado.nextInt();
 
-        System.out.print("Aforo máximo permitido en vestíbulo: ");
-        aforoMaximoVestibulo = teclado.nextInt();
+        teclado.nextLine();
 
-        teclado.nextLine(); // Limpieza obligatoria del buffer
-
-        System.out.print("DNI Estudiante: ");
-        dniEstudiante = teclado.nextLine();
+        System.out.print("DNI de la persona: ");
+        dniPersona = teclado.nextLine();
 
         System.out.print("Nombre completo: ");
-        nombreEstudiante = teclado.nextLine();
+        nombrePersona = teclado.nextLine();
 
-        System.out.print("Grupo (letra): ");
-        letraGrupo = teclado.next().charAt(0);
+        System.out.print("Perfil de acceso (E = Estudiante, D = Docente, V = Visita): ");
+        perfilPersona = teclado.next().charAt(0);
 
-        System.out.print("Sesiones turno mañana: ");
-        sesionesManana = teclado.nextInt();
+        esEntrada = true;
 
-        System.out.print("Sesiones turno tarde: ");
-        sesionesTarde = teclado.nextInt();
+        System.out.print("Hora de entrada (0-23): ");
+        horaEntrada = teclado.nextInt();
 
-        System.out.print("Minutos de guardia/tutoría: ");
-        minutosExtraGuardia = teclado.nextInt();
+        System.out.print("Minuto de entrada (0-59): ");
+        minutoEntrada = teclado.nextInt();
 
-        // -------------------------------------------------------------
-        // 4. PROCESAMIENTO SECUENCIAL USANDO CONSTANTES
-        // -------------------------------------------------------------
-        contadorFichajesTerminal++;
-        totalSesiones = sesionesManana + sesionesTarde;
-        minutosTotalesLectivos = (totalSesiones * MINUTOS_POR_SESION) + minutosExtraGuardia;
+        System.out.print("Hora de salida (0-23): ");
+        horaSalida = teclado.nextInt();
 
-        // Descomposición horaria con constantes inmutables
+        System.out.print("Minuto de salida (0-59): ");
+        minutoSalida = teclado.nextInt();
+        
+        minutosTotalesEntrada = (horaEntrada * MINUTOS_POR_HORA) + minutoEntrada;
+        minutosTotalesSalida = (horaSalida * MINUTOS_POR_HORA) + minutoSalida;
+        minutosEstanciaTotal = minutosTotalesSalida - minutosTotalesEntrada;
+        
+        personasEnCentro++;
+        aforoDisponible--;
+        idUltimoFichaje++;
+        
+        tokenResumen = PREFIJO_CENTRO + "-" + dniPersona;
+        tokenResumen += "-T" + terminalId;
+        tokenResumen += "-ESTANCIA-" + minutosEstanciaTotal;
+        tokenResumen += "-REG" + idUltimoFichaje;
+        
         horasUptime = segundosActividadTerminal / SEGUNDOS_POR_HORA;
         minutosUptime = (segundosActividadTerminal % SEGUNDOS_POR_HORA) / SEGUNDOS_POR_MINUTO;
         segundosUptime = segundosActividadTerminal % SEGUNDOS_POR_MINUTO;
-
-        // Cálculo de porcentaje con casting y factor porcentual constante
-        porcentajeOcupacionReal = ((double) contadorFichajesTerminal / aforoMaximoVestibulo) * FACTOR_PORCENTAJE;
-        porcentajeOcupacionTruncado = (int) porcentajeOcupacionReal;
-
-        tokenResumen = PREFIJO_CENTRO + "-" + dniEstudiante + "-T" + terminalId;
-
-        // -------------------------------------------------------------
-        // 5. SALIDA CONSOLIDADA
-        // -------------------------------------------------------------
-        System.out.println("=================================================");
-        System.out.println("CENTRO:     " + NOMBRE_INSTITUTO);
-        System.out.println("FICHAJE:    #" + contadorFichajesTerminal + " | TOKEN: " + tokenResumen);
-        System.out.println("ESTUDIANTE: " + nombreEstudiante + " (" + letraGrupo + " DAM)");
-        System.out.println("PERMANENCIA:" + minutosTotalesLectivos + " min lectivos.");
-        System.out.println("AFORO:      " + porcentajeOcupacionReal + " % (Panel: " + porcentajeOcupacionTruncado + " %)");
-        System.out.println("UPTIME:     " + horasUptime + "h " + minutosUptime + "m " + segundosUptime + "s");
-        System.out.println("=================================================");
+        
+        aforoTotal = personasEnCentro + aforoDisponible;
+        porcentajeOcupacionReal = ((double) personasEnCentro / aforoTotal) * FACTOR_PORCENTAJE;
+        porcentajeOcupacionEntero = (int) porcentajeOcupacionReal;
+        
+        System.out.println("CENTRO:               " + NOMBRE_CENTRO);
+        System.out.println("Terminal configurado: #" + terminalId);
+        System.out.println("Lectura térmica:      " + tempVestibulo + " ºC");
+        System.out.println("Fichaje emitido:      #" + idUltimoFichaje);
+        System.out.println("Persona:              " + nombrePersona + " (DNI: " + dniPersona + ")");
+        System.out.println("Perfil:               " + perfilPersona);
+        System.out.println("Sentido del paso:     Entrada (" + esEntrada + ")");
+        System.out.println("Token QR:             " + tokenResumen);
+        System.out.println("Horario registrado:   Entrada " + horaEntrada + ":" + minutoEntrada + " | Salida " + horaSalida + ":" + minutoSalida);
+        System.out.println("Permanencia en centro:" + minutosEstanciaTotal + " minutos.");
+        System.out.println("Diagnóstico del terminal (uptime):");
+        System.out.println(horasUptime + " horas, " + minutosUptime + " minutos y " + segundosUptime + " segundos en servicio.");
+        System.out.println("Estado del aforo (capacidad: " + aforoTotal + " plazas):");
+        System.out.println("- personas en el centro: " + personasEnCentro + " (+1)");
+        System.out.println("- plazas libres:         " + aforoDisponible + " (-1)");
+        System.out.println("- ocupación exacta:      " + porcentajeOcupacionReal + " %");
+        System.out.println("- ocupación en panel:    " + porcentajeOcupacionEntero + " %");
 
         teclado.close();
     }
@@ -1900,7 +1910,6 @@ El estudiante abre su archivo maestro `.java` (versión v0.6):
   mayúsculas (`UPPER_SNAKE_CASE`).
 * Compila y comprueba que el programa se ejecuta de forma idéntica, pero con una mantenibilidad infinitamente superior.
 
----
 ---
 ### Día 10 - 2 sesiones
 
@@ -1939,92 +1948,106 @@ educativo»*.
 
 ---
 
-### 3. Evolución a `ControlAccesoQR v0.8`
+#### 3. Evolución a `ControlAccesoQR v0.8`
 Modificamos el bloque de salida del archivo maestro `ControlAccesoQR` incorporando las secuencias de escape.
 
 ##### Paso A. Evolución en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.8)
 ```psc
 Algoritmo ControlAccesoQR
-    // =========================================================================
-    // SISTEMA DE CONTROL DE ASISTENCIA QR - IES EL CAMINAS (Castellon)
-    // Version: 0.8 (Evolucion: Secuencias de Escape y Formato de Consola)
-    // =========================================================================
-    
-    // Constantes
-    Definir NOMBRE_INSTITUTO, PREFIJO_CENTRO Como Cadena
-    Definir MINUTOS_POR_SESION, SEGUNDOS_POR_HORA, SEGUNDOS_POR_MINUTO Como Entero
+    Definir NOMBRE_CENTRO, PREFIJO_CENTRO, RUTA_LOGS Como Cadena
+    Definir MINUTOS_POR_HORA, SEGUNDOS_POR_HORA, SEGUNDOS_POR_MINUTO Como Entero
     Definir FACTOR_PORCENTAJE Como Real
     
-    NOMBRE_INSTITUTO <- "IES El Caminas (Castellon)"
+    NOMBRE_CENTRO <- "IES El Caminas (Castellon)"
     PREFIJO_CENTRO <- "CAMINAS"
-    MINUTOS_POR_SESION <- 50
+    RUTA_LOGS <- "C:\\caminas\\terminal\\logs"
+    MINUTOS_POR_HORA <- 60
     SEGUNDOS_POR_HORA <- 3600
     SEGUNDOS_POR_MINUTO <- 60
     FACTOR_PORCENTAJE <- 100.0
+
+    Definir terminalId Como Entero
+    Definir tempVestibulo Como Real
     
-    // Variables
-    Definir terminalId, contadorFichajesTerminal, aforoMaximoVestibulo Como Entero
-    Definir tempVestibulo, porcentajeOcupacionReal Como Real
-    Definir porcentajeOcupacionTruncado Como Entero
-    Definir nombreEstudiante, dniEstudiante, tokenResumen Como Cadena
-    Definir letraGrupo Como Caracter
-    Definir matriculaActiva Como Logico
-    Definir sesionesManana, sesionesTarde, totalSesiones, minutosTotalesLectivos Como Entero
-    Definir minutosExtraGuardia, segundosActividadTerminal Como Entero
+    Definir nombrePersona, dniPersona Como Cadena
+    Definir perfilPersona Como Caracter
+    Definir esEntrada Como Logico
+    
+    Definir horaEntrada, minutoEntrada Como Entero
+    Definir horaSalida, minutoSalida Como Entero
+    Definir minutosTotalesEntrada, minutosTotalesSalida, minutosEstanciaTotal Como Entero
+    Definir tokenResumen Como Cadena
+    
+    Definir personasEnCentro, aforoDisponible, idUltimoFichaje Como Entero
+    personasEnCentro <- 1200
+    aforoDisponible <- 800
+    idUltimoFichaje <- 1042
+    
+    Definir segundosActividadTerminal Como Entero
     Definir horasUptime, minutosUptime, segundosUptime Como Entero
     
-    contadorFichajesTerminal <- 0
+    Definir aforoTotal Como Entero
+    Definir porcentajeOcupacionReal Como Real
+    Definir porcentajeOcupacionEntero Como Entero
     
-    // Entrada de datos
-    Escribir "=== AZAHARTECH: TERMINAL IES EL CAMINAS (v0.8) ==="
-    Escribir "ID Terminal, temperatura y segundos de actividad:"
+    Escribir "=== AZAHARTECH: TERMINAL ", NOMBRE_CENTRO, " (v0.8) ==="
+    Escribir "ID del terminal:"
     Leer terminalId
+    Escribir "Temperatura del sensor (ºC):"
     Leer tempVestibulo
+    Escribir "Introduce segundos de actividad del terminal (uptime):"
     Leer segundosActividadTerminal
-    Escribir "Aforo maximo del vestibulo:"
-    Leer aforoMaximoVestibulo
     
-    Escribir "DNI, nombre y grupo del alumno:"
-    Leer dniEstudiante
-    Leer nombreEstudiante
-    Leer letraGrupo
-    matriculaActiva <- Verdadero
+    Escribir "DNI de la persona:"
+    Leer dniPersona
+    Escribir "Nombre completo:"
+    Leer nombrePersona
+    Escribir "Perfil de acceso (E = Estudiante, D = Docente, V = Visita):"
+    Leer perfilPersona
+
+    esEntrada <- Verdadero
     
-    Escribir "Sesiones de manana, tarde y minutos de guardia:"
-    Leer sesionesManana
-    Leer sesionesTarde
-    Leer minutosExtraGuardia
+    Escribir "Introduce hora y minuto de entrada (por ejemplo, 8 15):"
+    Leer horaEntrada
+    Leer minutoEntrada
+    Escribir "Introduce hora y minuto de salida (por ejemplo, 14 10):"
+    Leer horaSalida
+    Leer minutoSalida
+        
+    minutosTotalesEntrada <- (horaEntrada * MINUTOS_POR_HORA) + minutoEntrada
+    minutosTotalesSalida <- (horaSalida * MINUTOS_POR_HORA) + minutoSalida
+    minutosEstanciaTotal <- minutosTotalesSalida - minutosTotalesEntrada
     
-    // Cálculos
-    contadorFichajesTerminal <- contadorFichajesTerminal + 1
-    totalSesiones <- sesionesManana + sesionesTarde
-    minutosTotalesLectivos <- (totalSesiones * MINUTOS_POR_SESION) + minutosExtraGuardia
+    personasEnCentro <- personasEnCentro + 1
+    aforoDisponible <- aforoDisponible - 1
+    idUltimoFichaje <- idUltimoFichaje + 1        
+      
+    tokenResumen <- PREFIJO_CENTRO + "-" + dniPersona
+    tokenResumen <- tokenResumen + "-T" + ConvertirATexto(terminalId)
+    tokenResumen <- tokenResumen + "-ESTANCIA-" + ConvertirATexto(minutosEstanciaTotal)
+    tokenResumen <- tokenResumen + "-REG" + ConvertirATexto(idUltimoFichaje)
     
     horasUptime <- trunc(segundosActividadTerminal / SEGUNDOS_POR_HORA)
     minutosUptime <- trunc((segundosActividadTerminal MOD SEGUNDOS_POR_HORA) / SEGUNDOS_POR_MINUTO)
     segundosUptime <- segundosActividadTerminal MOD SEGUNDOS_POR_MINUTO
     
-    porcentajeOcupacionReal <- (contadorFichajesTerminal * FACTOR_PORCENTAJE) / aforoMaximoVestibulo
-    porcentajeOcupacionTruncado <- trunc(porcentajeOcupacionReal)
+    aforoTotal <- personasEnCentro + aforoDisponible // 1201 + 799 = 2000
+    porcentajeOcupacionReal <- (personasEnCentro * FACTOR_PORCENTAJE) / aforoTotal
+    porcentajeOcupacionEntero <- trunc(porcentajeOcupacionReal)
     
-    tokenResumen <- PREFIJO_CENTRO + "-" + dniEstudiante + "-T" + ConvertirATexto(terminalId)
-    
-    // [NUEVO DÍA 10] Salida estructurada con tabuladores y saltos limpios
-    Escribir ""
-    Escribir "=========================================================="
-    Escribir "ENTIDAD:\t", NOMBRE_INSTITUTO
+    Escribir "ENTIDAD:\t", NOMBRE_CENTRO
     Escribir "SISTEMA:\t\"Control de Acceso Dinamico QR\""
     Escribir "UBICACION:\tVestibulo Principal \\ Edificio A"
-    Escribir "=========================================================="
-    Escribir "FICHAJE N.:\t#", contadorFichajesTerminal, "\t\tESTADO:\tVALIDO"
-    Escribir "ESTUDIANTE:\t", nombreEstudiante
-    Escribir "IDENTIFICADOR:\t", dniEstudiante, "\tGRUPO:\t", letraGrupo, " DAM"
+    Escribir "FICHAJE N.:\t#", idUltimoFichaje, "\t\tESTADO:\tVALIDO"
+    Escribir "PERSONA:\t", nombrePersona
+    Escribir "IDENTIFICADOR:\t", dniPersona, "\tPERFIL:\t", perfilPersona
+    Escribir "SENTIDO:\tEntrada (", esEntrada, ")"
     Escribir "TOKEN QR:\t", tokenResumen
-    Escribir "----------------------------------------------------------"
-    Escribir "PERMANENCIA:\t", minutosTotalesLectivos, " minutos lectivos."
-    Escribir "OCUPACION:\t", porcentajeOcupacionReal, " % (Panel: ", porcentajeOcupacionTruncado, " %)"
+    Escribir "HORARIO:\tEntrada ", horaEntrada, ":", minutoEntrada, " | Salida ", horaSalida, ":", minutoSalida
+    Escribir "PERMANENCIA:\t", minutosEstanciaTotal, " minutos en el centro."
+    Escribir "AFORO (", aforoTotal, "):\t", porcentajeOcupacionReal, " % (Panel: ", porcentajeOcupacionEntero, " %)"
     Escribir "SERVICIO:\t", horasUptime, "h ", minutosUptime, "m ", segundosUptime, "s"
-    Escribir "=========================================================="
+    Escribir "REGISTRO LOG:\t", RUTA_LOGS
 FinAlgoritmo
 ```
 
@@ -2032,24 +2055,14 @@ FinAlgoritmo
 Actualizamos directamente el bloque de salida de nuestro archivo maestro `ControlAccesoQR.java`:
 
 ```java
-/**
- * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
- * Cliente: IES El Caminàs (Castellón de la Plana)
- * Consultora: AzaharTech Software Consulting
- *
- * Versión 0.8: Maquetación visual mediante secuencias de escape (\n, \t, \", \\).
- * Módulo: Programación (PR) - Sprint 1 (RA1)
- */
-
 import java.util.Scanner;
 
 public class ControlAccesoQR {
     public static void main(String[] args) {
-        // Constantes inmutables
-        final String NOMBRE_INSTITUTO = "IES El Caminàs (Castellón)";
+        final String NOMBRE_CENTRO = "IES El Caminàs (Castellón)";
         final String PREFIJO_CENTRO = "CAMINAS";
         final String RUTA_LOGS = "C:\\caminas\\terminal\\logs";
-        final int MINUTOS_POR_SESION = 50;
+        final int MINUTOS_POR_HORA = 60;
         final int SEGUNDOS_POR_HORA = 3600;
         final int SEGUNDOS_POR_MINUTO = 60;
         final double FACTOR_PORCENTAJE = 100.0;
@@ -2058,94 +2071,92 @@ public class ControlAccesoQR {
 
         int terminalId;
         double tempVestibulo;
-        int contadorFichajesTerminal = 0;
-        int segundosActividadTerminal;
-        int aforoMaximoVestibulo;
 
-        String dniEstudiante;
-        String nombreEstudiante;
-        char letraGrupo;
-        boolean matriculaActiva = true;
+        String nombrePersona, dniPersona;
+        char perfilPersona;
+        boolean esEntrada;
 
-        int sesionesManana;
-        int sesionesTarde;
-        int totalSesiones;
-        int minutosExtraGuardia;
-        int minutosTotalesLectivos;
-
-        int horasUptime;
-        int minutosUptime;
-        int segundosUptime;
-        double porcentajeOcupacionReal;
-        int porcentajeOcupacionTruncado;
+        int horaEntrada, minutoEntrada;
+        int horaSalida, minutoSalida;
+        int minutosTotalesEntrada, minutosTotalesSalida, minutosEstanciaTotal;
         String tokenResumen;
 
-        // Entrada de datos
-        System.out.println("=================================================");
-        System.out.println("   AZAHARTECH - TERMINAL " + NOMBRE_INSTITUTO);
-        System.out.println("=================================================");
-        System.out.print("ID Terminal: ");
+        int personasEnCentro = 1200;
+        int aforoDisponible = 800;
+        int idUltimoFichaje = 1042;
+
+        int segundosActividadTerminal;
+        int horasUptime, minutosUptime, segundosUptime;
+
+        int aforoTotal;
+        double porcentajeOcupacionReal;
+        int porcentajeOcupacionEntero;
+        
+        System.out.println("=== AZAHARTECH: TERMINAL " + NOMBRE_CENTRO + " (v0.8) ===");
+        System.out.print("ID del terminal: ");
         terminalId = teclado.nextInt();
 
-        System.out.print("Temperatura sensor (ºC): ");
+        System.out.print("Temperatura del sensor (ºC): ");
         tempVestibulo = teclado.nextDouble();
 
-        System.out.print("Segundos acumulados de actividad: ");
+        System.out.print("Segundos acumulados de actividad (uptime): ");
         segundosActividadTerminal = teclado.nextInt();
 
-        System.out.print("Aforo máximo permitido en vestíbulo: ");
-        aforoMaximoVestibulo = teclado.nextInt();
+        teclado.nextLine();
 
-        teclado.nextLine(); // Limpieza de buffer
-
-        System.out.print("DNI Estudiante: ");
-        dniEstudiante = teclado.nextLine();
+        System.out.print("DNI de la persona: ");
+        dniPersona = teclado.nextLine();
 
         System.out.print("Nombre completo: ");
-        nombreEstudiante = teclado.nextLine();
+        nombrePersona = teclado.nextLine();
 
-        System.out.print("Grupo (letra): ");
-        letraGrupo = teclado.next().charAt(0);
+        System.out.print("Perfil de acceso (E = Estudiante, D = Docente, V = Visita): ");
+        perfilPersona = teclado.next().charAt(0);
 
-        System.out.print("Sesiones turno mañana: ");
-        sesionesManana = teclado.nextInt();
+        esEntrada = true;
 
-        System.out.print("Sesiones turno tarde: ");
-        sesionesTarde = teclado.nextInt();
+        System.out.print("Introduce hora y minuto de entrada (por ejemplo, 8 15): ");
+        horaEntrada = teclado.nextInt();
+        minutoEntrada = teclado.nextInt();
 
-        System.out.print("Minutos de guardia/tutoría: ");
-        minutosExtraGuardia = teclado.nextInt();
+        System.out.print("Introduce hora y minuto de salida (por ejemplo, 14 10): ");
+        horaSalida = teclado.nextInt();
+        minutoSalida = teclado.nextInt();
 
-        // Procesamiento
-        contadorFichajesTerminal++;
-        totalSesiones = sesionesManana + sesionesTarde;
-        minutosTotalesLectivos = (totalSesiones * MINUTOS_POR_SESION) + minutosExtraGuardia;
+        minutosTotalesEntrada = (horaEntrada * MINUTOS_POR_HORA) + minutoEntrada;
+        minutosTotalesSalida = (horaSalida * MINUTOS_POR_HORA) + minutoSalida;
+        minutosEstanciaTotal = minutosTotalesSalida - minutosTotalesEntrada;
+
+        personasEnCentro++;
+        aforoDisponible--;
+        idUltimoFichaje++;
+
+        tokenResumen = PREFIJO_CENTRO + "-" + dniPersona;
+        tokenResumen += "-T" + terminalId;
+        tokenResumen += "-ESTANCIA-" + minutosEstanciaTotal;
+        tokenResumen += "-REG" + idUltimoFichaje;
 
         horasUptime = segundosActividadTerminal / SEGUNDOS_POR_HORA;
         minutosUptime = (segundosActividadTerminal % SEGUNDOS_POR_HORA) / SEGUNDOS_POR_MINUTO;
         segundosUptime = segundosActividadTerminal % SEGUNDOS_POR_MINUTO;
 
-        porcentajeOcupacionReal = ((double) contadorFichajesTerminal / aforoMaximoVestibulo) * FACTOR_PORCENTAJE;
-        porcentajeOcupacionTruncado = (int) porcentajeOcupacionReal;
-
-        tokenResumen = PREFIJO_CENTRO + "-" + dniEstudiante + "-T" + terminalId;
-
-        // [NUEVO DÍA 10] Salida estructurada con secuencias de escape
-        System.out.println("\n==========================================================");
-        System.out.println("ENTIDAD:\t" + NOMBRE_INSTITUTO);
+        aforoTotal = personasEnCentro + aforoDisponible;
+        porcentajeOcupacionReal = ((double) personasEnCentro / aforoTotal) * FACTOR_PORCENTAJE;
+        porcentajeOcupacionEntero = (int) porcentajeOcupacionReal;
+        
+        System.out.println("ENTIDAD:\t" + NOMBRE_CENTRO);
         System.out.println("SISTEMA:\t\"Control de Acceso Dinámico QR\"");
         System.out.println("UBICACIÓN:\tVestíbulo Principal \\ Edificio A");
-        System.out.println("==========================================================");
-        System.out.println("FICHAJE N.º:\t#" + contadorFichajesTerminal + "\t\tESTADO:\tVALIDADO");
-        System.out.println("ESTUDIANTE:\t" + nombreEstudiante);
-        System.out.println("IDENTIFICADOR:\t" + dniEstudiante + "\tGRUPO:\t" + letraGrupo + " DAM");
+        System.out.println("FICHAJE N.º:\t#" + idUltimoFichaje + "\t\tESTADO:\tVALIDADO");
+        System.out.println("PERSONA:\t" + nombrePersona);
+        System.out.println("IDENTIFICADOR:\t" + dniPersona + "\tPERFIL:\t" + perfilPersona);
+        System.out.println("SENTIDO:\tEntrada (" + esEntrada + ")");
         System.out.println("TOKEN QR:\t" + tokenResumen);
-        System.out.println("----------------------------------------------------------");
-        System.out.println("PERMANENCIA:\t" + minutosTotalesLectivos + " minutos lectivos.");
-        System.out.println("OCUPACIÓN:\t" + porcentajeOcupacionReal + " % (Panel: " + porcentajeOcupacionTruncado + " %)");
+        System.out.println("HORARIO:\tEntrada " + horaEntrada + ":" + minutoEntrada + " | Salida " + horaSalida + ":" + minutoSalida);
+        System.out.println("PERMANENCIA:\t" + minutosEstanciaTotal + " minutos en el centro.");
+        System.out.println("AFORO (" + aforoTotal + "):\t" + porcentajeOcupacionReal + " % (Panel: " + porcentajeOcupacionEntero + " %)");
         System.out.println("SERVICIO:\t" + horasUptime + "h " + minutosUptime + "m " + segundosUptime + "s");
         System.out.println("REGISTRO LOG:\t" + RUTA_LOGS);
-        System.out.println("=========================================================");
 
         teclado.close();
     }
