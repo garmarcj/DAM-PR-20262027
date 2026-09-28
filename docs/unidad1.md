@@ -1905,10 +1905,15 @@ public class ControlAccesoQR {
 #### 4. Trabajo del estudiante: refactorización de su proyecto propio
 El estudiante abre su archivo maestro `.java` (versión v0.6):
 
-* Extrae todos los números y cadenas fijas a constantes `final` al inicio del método `main`.
-* Sustituye en todas las operaciones del programa los literales sueltos por los identificadores de constantes en
-  mayúsculas (`UPPER_SNAKE_CASE`).
-* Compila y comprueba que el programa se ejecuta de forma idéntica, pero con una mantenibilidad infinitamente superior.
+El estudiante abre su archivo maestro .java (versión v0.6):
+
+* Extrae todos los números mágicos y cadenas de texto fijas a constantes `final` al inicio de la clase, aplicando la convención UPPER_SNAKE_CASE:  
+    * En Aventura conversacional: declarar constantes para el nombre del reino o mundo, la salud máxima inicial, la capacidad de la mochila y el factor de daño desarmado.  
+    * En Motor de recomendación: declarar constantes para la plataforma, el umbral de afinidad alta, la puntuación máxima y el factor porcentual.  
+    * En Simulador de físicas 2D: declarar constantes para la aceleración gravitatoria, el coeficiente de fricción estándar y los límites del escenario.  
+    * En Bóveda de contraseñas: declarar constantes para el nombre del almacén, el periodo de caducidad estándar en días, la longitud mínima de clave y los días de una semana.  
+* Sustituye en todas las operaciones del programa los literales sueltos por los nuevos identificadores de constantes.  
+* Compila y comprueba que el programa se ejecuta de forma idéntica, pero con una mantenibilidad y legibilidad muy superiores.  
 
 ---
 ### Día 10 - 2 sesiones
@@ -2174,11 +2179,15 @@ public class ControlAccesoQR {
 ---
 
 #### 4. Trabajo del estudiante: evolución de su proyecto propio
-El estudiante abre su archivo `.java` (en v0.7):
+El estudiante abre su archivo maestro .java (versión v0.7):
 
-* Sustituye las concatenaciones desalineadas por tabuladores `\t` para alinear las etiquetas de los datos.
-* Añade comillas escapadas `\"` para citar el nombre comercial de su cliente y barras `\\` para rutas de auditoría.
-* Comprueba que la salida se muestra limpia y profesional.
+* Maqueta la salida por consola utilizando secuencias de escape (\n, \t, \", \\) para dar formato a la presentación de datos:
+  * En Aventura conversacional: maquetar la cabecera de la ficha del héroe con tabulaciones para alinear atributos, comillas en el título de la misión activa y barras en la ruta de guardado.  
+  * En Motor de recomendación: maquetar el reporte de afinidad con tabulaciones alineadas, comillas en las etiquetas de género y ruta del catálogo de datos. 
+  * En Simulador de físicas 2D: maquetar el panel de telemetría cinemática con columnas tabuladas, comillas en el material y ruta de exportación de telemetría. 
+  * En Bóveda de contraseñas: maquetar la ficha de credencial con tabulaciones limpias, y barra escapada en la ruta de la base cifrada.
+
+* Comprueba que la consola muestra los bloques visuales ordenados sin desalineaciones tipográficas y sin concatenaciones superfluas.
 
 ---
 
@@ -2443,11 +2452,15 @@ public class ControlAccesoQR {
 ---
 
 #### 4. Trabajo del estudiante: evolución de su proyecto propio
-El estudiante abre su archivo `.java` (versión v0.8):
+El estudiante abre su archivo maestro .java (versión v0.8):
 
-* Sustituye todas las instrucciones de salida por llamadas a `System.out.printf()`.
-* Aplica especificadores con ancho fijo, enteros con ceros a la izquierda y redondeo a dos decimales.
-* Ejecuta pruebas con distintos nombres para certificar que las columnas permanecen perfectamente alineadas.
+* Sustituye las instrucciones de salida concatenada por plantillas formateadas con System.out.printf(), aplicando especificadores de texto alineado a la izquierda (%-25s), enteros tabulados o con ceros a la izquierda (%04d), decimales acotados (%.2f) y saltos independientes (%n):  
+  * En Aventura conversacional: maquetar la tabla de resumen del estado del héroe con columnas fijas para el identificador del jugador, nombre de personaje, nivel y porcentaje de salud formateado a dos decimales.  
+    * En Motor de recomendación: generar el informe oficial de coincidencias con ancho fijo para el título del ítem, año de lanzamiento, puntuación de afinidad exacta con dos decimales y ranking.  
+    * En Simulador de físicas 2D: generar el cuadro de telemetría cinemática con columnas alineadas para el ID de partícula, material, coordenadas espaciales con dos decimales y velocidad instantánea.  
+    *  En Bóveda de contraseñas: generar el reporte de auditoría de credenciales con columnas alineadas para el ID de clave, servicio web, días de vigencia restantes y porcentaje de vida útil consumida con dos decimales.  
+
+* Ejecuta pruebas introduciendo cadenas de distinta longitud para verificar que las columnas permanecen perfectamente rectas y alineadas verticalmente.
 
 ---
 
