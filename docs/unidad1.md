@@ -2183,7 +2183,7 @@ El estudiante abre su archivo maestro .java (versión v0.7):
 
 * Maqueta la salida por consola utilizando secuencias de escape (\n, \t, \", \\) para dar formato a la presentación de datos:
   * En Aventura conversacional: maquetar la cabecera de la ficha del héroe con tabulaciones para alinear atributos, comillas en el título de la misión activa y barras en la ruta de guardado.  
-  * En Motor de recomendación: maquetar el reporte de afinidad con tabulaciones alineadas, comillas en las etiquetas de género y ruta del catálogo de datos. 
+  * En Motor de recomendación: maquetar el informe de afinidad con tabulaciones alineadas, comillas en las etiquetas de género y ruta del catálogo de datos. 
   * En Simulador de físicas 2D: maquetar el panel de telemetría cinemática con columnas tabuladas, comillas en el material y ruta de exportación de telemetría. 
   * En Bóveda de contraseñas: maquetar la ficha de credencial con tabulaciones limpias, y barra escapada en la ruta de la base cifrada.
 
@@ -2458,7 +2458,7 @@ El estudiante abre su archivo maestro .java (versión v0.8):
   * En Aventura conversacional: maquetar la tabla de resumen del estado del héroe con columnas fijas para el identificador del jugador, nombre de personaje, nivel y porcentaje de salud formateado a dos decimales.  
     * En Motor de recomendación: generar el informe oficial de coincidencias con ancho fijo para el título del ítem, año de lanzamiento, puntuación de afinidad exacta con dos decimales y ranking.  
     * En Simulador de físicas 2D: generar el cuadro de telemetría cinemática con columnas alineadas para el ID de partícula, material, coordenadas espaciales con dos decimales y velocidad instantánea.  
-    *  En Bóveda de contraseñas: generar el reporte de auditoría de credenciales con columnas alineadas para el ID de clave, servicio web, días de vigencia restantes y porcentaje de vida útil consumida con dos decimales.  
+    *  En Bóveda de contraseñas: generar el informe de auditoría de credenciales con columnas alineadas para el ID de clave, servicio web, días de vigencia restantes y porcentaje de vida útil consumida con dos decimales.  
 
 * Ejecuta pruebas introduciendo cadenas de distinta longitud para verificar que las columnas permanecen perfectamente rectas y alineadas verticalmente.
 
