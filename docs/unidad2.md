@@ -4772,4 +4772,365 @@ Pasamos al dojo de entrenamiento para programar, con tres **katas de dificultad 
   3. Redacta dos líneas de comentario en tu código explicando por qué ocurre esto:  
      *«`LocalTime` solo almacena horas del reloj sin fecha asociada. Al calcular la diferencia entre las 23:00 y las 02:00 del mismo día, Java calcula que las 02:00 ocurrieron 21 horas antes. Para turnos que cruzan la medianoche en sistemas profesionales es necesario combinar fecha y hora mediante la clase `LocalDateTime`»*.
 
+---
 
+### Día 23 - 2 sesiones
+
+---
+
+#### 1. Caso guía en AzaharTech
+Son las tres de la tarde del jueves 22 de octubre. Concluimos las 24 horas lectivas del **Sprint 2 de Programación**. 
+
+En la sala de reuniones de **AzaharTech**, **Pau Ferrer** proyecta el archivo `ControlAccesoQR.java`. El programa compila sin errores, genera los tokens con `Random`, calcula distancias con `Math`, parsea datos con `Integer` y gestiona las horas reales con `LocalTime` y `Duration`.
+
+Sin embargo, **Alba Torres** señala el monitor con preocupación:
+> *«Pau, el software funciona, pero hemos creado un 'método Dios' (*God Method*): tenemos más de ciento veinte líneas de código acumuladas dentro del `main`. La captura por teclado, las conversiones de hora, la descomposición de segundos, las fórmulas matemáticas y la composición de los tokens están todas mezcladas en un único bloque monolítico.*
+>
+> *Si mañana el IES El Caminàs nos pide reutilizar la fórmula del token QR para una aplicación web o para la puerta norte, tendríamos que copiar y pegar código duplicado.*
+>
+> *En AzaharTech el código debe ser modular y mantenible. Hasta ahora hemos aprendido a invocar métodos estáticos ajenos de la biblioteca de Java como `Math.max()` o `Integer.parseInt()`. Hoy daremos el gran salto de ingeniería: **aprenderemos a codificar nuestros propios métodos estáticos auxiliares** con sus parámetros y valores de retorno, transformando el `main` en un orquestador limpio y elegante»*.
+
+---
+
+#### 2. Fundamento teórico: codificación de métodos estáticos propios, parámetros y retorno
+
+```
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                        ANATOMÍA DE UN MÉTODO ESTÁTICO EN JAVA                          │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│ public static tipoRetorno nombreMetodo( TipoParam1 param1, TipoParam2 param2... ) {    │
+│     // 1. Ámbito local: variables que solo existen dentro de este método               │
+│     // 2. Procesamiento o cálculo                                                      │
+│     return valorCalculado; // Devuelve el dato a quien lo invocó                       │
+│ }                                                                                      │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+##### A. ¿Por qué creamos métodos estáticos dentro de la clase?
+Java permite modularizar cualquier programa estructurándolo en **métodos estáticos auxiliares (*funciones de clase*)** dentro del mismo archivo por los siguientes motivos:
+1. **Legibilidad y auto-documentación.** El código se lee como un texto estructurado donde el nombre del método explica *qué* hace, ocultando los detalles de *cómo* lo hace.
+2. **Reutilización (*DRY - Don't Repeat Yourself*).** Si necesitamos calcular la distancia o construir un token en dos sitios diferentes, invocamos al método sin duplicar fórmulas.
+3. **Mantenibilidad y aislamiento.** Si cambia la regla de cálculo de la estancia, solo modificamos el método responsable, sin tocar el resto de la aplicación.
+
+##### B. Parámetros formales y el paso de parámetros por valor
+* **Parámetros formales.** Son las variables declaradas entre los paréntesis de la cabecera del método que reciben los datos necesarios para operar (*por ejemplo, `LocalTime entrada, LocalTime salida`*).
+* **Argumentos reales.** Son los valores o variables concretas que se le pasan al método en el momento de la llamada desde el `main` (*por ejemplo, `tiempoEntrada, tiempoSalida`*).
+* **Paso por valor estricto en Java.** Java **siempre pasa los argumentos por valor (hace una copia)**:
+  * Si pasas un tipo primitivo (`int`, `double`), el método recibe una copia del número. Modificar el parámetro dentro del método jamás altera la variable original del `main`.
+  * Si pasas un objeto, se copia el puntero de referencia en el Stack, permitiendo operar sobre la instancia compartida en el Heap.
+
+##### C. La sentencia `return` y el ámbito local (*Scope*)
+* **Tipo de retorno.** Indica qué tipo de dato devuelven las instrucciones del método (`int`, `double`, `String`, etc.). Si el método no devuelve ningún dato y solo ejecuta acciones de salida, se define como **`void`**.
+* **La instrucción `return`.** Detiene de forma inmediata la ejecución del método y transfiere el resultado al punto exacto del `main` donde se produjo la llamada.
+* **Ámbito local (*Scope*).** Cualquier variable declarada dentro de un método auxiliar nace y muere dentro de sus llaves `{}`. No consume memoria en el Stack cuando el método termina.
+
+---
+
+#### 3. El código guia final para el Sprint 2: `ControlAccesoQR v2.0` (modularizado)
+
+Refactorizamos la clase guia `ControlAccesoQR.java` descomponiendo los bloques de cálculo en cuatro métodos estáticos auxiliares limpios:
+
+```java
+/**
+ * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ * 
+ * Versión 2.0:
+ * Sistema integral de acceso orientado a objetos basado en clases predefinidas.
+ * Incorpora la codificación de métodos estáticos propios con parámetros y retorno,
+ * desacoplando la lógica de cálculo, descomposición temporal y construcción de tokens.
+ * 
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer)
+ * @version 2.0 (Octubre 2026)
+ * @since JDK 21 LTS
+ * 
+ */
+
+import java.util.Scanner;
+import java.util.Random;
+import java.time.LocalTime;
+import java.time.LocalDate;
+import java.time.Duration;
+
+public class ControlAccesoQR {
+
+    // -------------------------------------------------------------------------
+    // 1. CONSTANTES INMUTABLES DEL SISTEMA (configuración corporativa)
+    // -------------------------------------------------------------------------
+    final static String NOMBRE_CENTRO = "IES El Caminàs (Castellón)";
+    final static String PREFIJO_CENTRO = "CAMINAS";
+    final static String RUTA_LOGS = ".\\caminas\\terminal\\logs";
+    
+    final static int MINUTOS_POR_HORA = 60;
+    final static int SEGUNDOS_POR_HORA = 3600;
+    final static int SEGUNDOS_POR_MINUTO = 60;
+    final static int JORNADA_BASE_MINUTOS = 480; // 8 horas
+    final static double FACTOR_PORCENTAJE = 100.0;
+
+    final static int ID_TERMINAL_PUERTA_NORTE = 102;
+    final static int BASE_TOKEN_SEGURIDAD = 1000;
+    final static int RANGO_TOKEN_SEGURIDAD = 9000;
+    final static long SEMILLA_CALIBRACION = 987654321L;
+
+    final static double TEMP_MIN_SEGURA = 15.0;
+    final static double TEMP_MAX_SEGURA = 35.0;
+    final static double MAX_VARIACION_TERMICA = 0.5;
+    final static int LONGITUD_DNI_ESTANDAR = 9;
+
+    // -------------------------------------------------------------------------
+    // 2. MÉTODOS ESTÁTICOS PROPIOS (modularización de la lógica del sistema)
+    // -------------------------------------------------------------------------
+
+    /**
+     * Calcula la estancia neta en minutos entre dos marcas temporales usando Duration.
+     */
+    public static int calcularEstanciaMinutos(LocalTime entrada, LocalTime salida) {
+        return (int) Duration.between(entrada, salida).toMinutes();
+    }
+
+    /**
+     * Calcula el porcentaje de ocupación con precisión decimal aplicando casting explícito.
+     */
+    public static double calcularPorcentajeOcupacion(int personas, int aforoTotal) {
+        return ((double) personas / aforoTotal) * FACTOR_PORCENTAJE;
+    }
+
+    /**
+     * Construye y concatena el token QR oficial parametrizado para cualquier monitor.
+     */
+    public static String construirTokenQR(String prefijo, String dni, int terminalId, int codigoSec, int idFichaje) {
+        String token = prefijo + "-" + dni;
+        token += "-T" + terminalId;
+        token += "-SEC#" + codigoSec;
+        token += "-REG" + idFichaje;
+        return token;
+    }
+
+    /**
+     * Calcula la distancia euclídea (hipotenusa) a la pantalla mediante el teorema de Pitágoras.
+     */
+    public static double calcularDistanciaDiagonal(double x, double y) {
+        return Math.sqrt(Math.pow(x, 2.0) + Math.pow(y, 2.0));
+    }
+
+    // -------------------------------------------------------------------------
+    // 3. MÉTODO PRINCIPAL: ORQUESTADOR SECUENCIAL DEL FLUJO
+    // -------------------------------------------------------------------------
+    public static void main(String[] args) {
+        Scanner teclado = new Scanner(System.in);
+
+        // Generadores independientes en el Heap
+        Random generadorVestibulo   = new Random();
+        Random generadorPuertaNorte = new Random();
+        Random generadorCalibracion = new Random(SEMILLA_CALIBRACION);
+
+        LocalDate fechaActual = LocalDate.now();
+        LocalTime horaEmisionQr = LocalTime.now();
+
+        int terminalId;
+        double tempVestibulo;
+
+        String nombrePersonaBruto, nombrePersonaLimpio;
+        String dniPersonaBruto, dniPersonaLimpio;
+        char perfilPersonaBruto;
+        char perfilNormalizado;
+        boolean esLetraValida;
+        boolean esEntrada = true;
+
+        int horaEntrada, minutoEntrada;
+        int horaSalida, minutoSalida;
+
+        int personasEnCentro = 1200;
+        int aforoDisponible = 800;
+        int idUltimoFichaje = 1042;
+
+        int segundosActividadTerminal;
+        double coordenadaXMetros, coordenadaYMetros;
+
+        // Captura de datos interactiva
+        System.out.println("=================================================");
+        System.out.println("   AZAHARTECH - TERMINAL " + NOMBRE_CENTRO);
+        System.out.println("   Versión 2.0 Oficial (Arquitectura Modular)       ");
+        System.out.println("=================================================");
+        System.out.print("Introduce identificador del terminal en texto (ej. 101): ");
+        terminalId = Integer.parseInt(teclado.nextLine());
+
+        System.out.print("Temperatura base del sensor (ºC): ");
+        tempVestibulo = teclado.nextDouble();
+
+        System.out.print("Segundos de actividad del terminal (uptime): ");
+        segundosActividadTerminal = teclado.nextInt();
+
+        System.out.print("Distancia horizontal a pantalla en metros (eje X): ");
+        coordenadaXMetros = teclado.nextDouble();
+
+        System.out.print("Altura de la pantalla de TV en metros (eje Y): ");
+        coordenadaYMetros = teclado.nextDouble();
+
+        teclado.nextLine(); // Limpieza del buffer de entrada
+
+        System.out.print("DNI de la persona: ");
+        dniPersonaBruto = teclado.nextLine();
+
+        System.out.print("Nombre completo: ");
+        nombrePersonaBruto = teclado.nextLine();
+
+        // Normalización y limpieza con métodos de String y Character
+        dniPersonaLimpio = dniPersonaBruto.trim().toUpperCase();
+        nombrePersonaLimpio = nombrePersonaBruto.trim().toUpperCase();
+
+        System.out.print("Perfil de acceso (e = estudiante, d = docente, v = visita): ");
+        perfilPersonaBruto = teclado.next().charAt(0);
+        perfilNormalizado = Character.toUpperCase(perfilPersonaBruto);
+        esLetraValida = Character.isLetter(perfilNormalizado);
+
+        System.out.print("Hora de entrada (0-23): ");
+        horaEntrada = teclado.nextInt();
+        System.out.print("Minuto de entrada (0-59): ");
+        minutoEntrada = teclado.nextInt();
+
+        System.out.print("Hora de salida (0-23): ");
+        horaSalida = teclado.nextInt();
+        System.out.print("Minuto de salida (0-59): ");
+        minutoSalida = teclado.nextInt();
+
+        // ---------------------------------------------------------------------
+        // INVOCACIÓN DE NUESTROS MÉTODOS ESTÁTICOS PROPIOS
+        // ---------------------------------------------------------------------
+        LocalTime tiempoEntrada = LocalTime.of(horaEntrada, minutoEntrada);
+        LocalTime tiempoSalida  = LocalTime.of(horaSalida, minutoSalida);
+
+        // 1. Llamada a método propio de cómputo de tiempo
+        int minutosEstanciaTotal = calcularEstanciaMinutos(tiempoEntrada, tiempoSalida);
+
+        personasEnCentro++;
+        aforoDisponible--;
+        idUltimoFichaje++;
+
+        // Generación de códigos numéricos
+        int codigoTokenVestibulo   = BASE_TOKEN_SEGURIDAD + generadorVestibulo.nextInt(RANGO_TOKEN_SEGURIDAD);
+        int codigoTokenPuertaNorte = BASE_TOKEN_SEGURIDAD + generadorPuertaNorte.nextInt(RANGO_TOKEN_SEGURIDAD);
+        int codigoTestCalibracion  = BASE_TOKEN_SEGURIDAD + generadorCalibracion.nextInt(RANGO_TOKEN_SEGURIDAD);
+
+        double tempCalibrada = tempVestibulo + (generadorCalibracion.nextDouble() * MAX_VARIACION_TERMICA);
+        boolean sensorNfcOperativo = generadorCalibracion.nextBoolean();
+
+        int desviacionJornadaMinutos = Math.abs(minutosEstanciaTotal - JORNADA_BASE_MINUTOS);
+        double tempSeguraAcotada = Math.max(TEMP_MIN_SEGURA, Math.min(tempCalibrada, TEMP_MAX_SEGURA));
+
+        int aforoTotal = personasEnCentro + aforoDisponible;
+        int aforoSeguroVisualizado = Math.min(personasEnCentro, aforoTotal);
+
+        // 2. Llamadas a método propio para construir los tokens de forma limpia y reutilizable
+        String tokenResumenVestibulo   = construirTokenQR(PREFIJO_CENTRO, dniPersonaLimpio, terminalId, codigoTokenVestibulo, idUltimoFichaje);
+        String tokenResumenPuertaNorte = construirTokenQR(PREFIJO_CENTRO, dniPersonaLimpio, ID_TERMINAL_PUERTA_NORTE, codigoTokenPuertaNorte, idUltimoFichaje);
+
+        // 3. Llamada a método propio para el cálculo porcentual con casting
+        double porcentajeOcupacionReal = calcularPorcentajeOcupacion(aforoSeguroVisualizado, aforoTotal);
+        int porcentajeOcupacionRedondeado = (int) Math.round(porcentajeOcupacionReal);
+
+        // 4. Llamada a método propio para la distancia geométrica
+        double distanciaDiagonalAntena = calcularDistanciaDiagonal(coordenadaXMetros, coordenadaYMetros);
+
+        // Descomposición temporal de servicio del terminal
+        int horasUptime   = segundosActividadTerminal / SEGUNDOS_POR_HORA;
+        int minutosUptime = (segundosActividadTerminal % SEGUNDOS_POR_HORA) / SEGUNDOS_POR_MINUTO;
+        int segundosUptime = segundosActividadTerminal % SEGUNDOS_POR_MINUTO;
+
+        // Métodos de String para desglose de DNI
+        String numeroDniSolo = dniPersonaLimpio.substring(0, dniPersonaLimpio.length() - 1);
+        char letraFinalDni   = dniPersonaLimpio.charAt(dniPersonaLimpio.length() - 1);
+        boolean esLongitudDniCorrecta = (dniPersonaLimpio.length() == LONGITUD_DNI_ESTANDAR);
+        String tokenFormatoBarras = tokenResumenVestibulo.replace("-", "/");
+
+        // ---------------------------------------------------------------------
+        // SALIDA FORMATEADA PROFESIONAL (System.out.printf)
+        // ---------------------------------------------------------------------
+        System.out.println("\n======================================================================");
+        System.out.println("             INFORME OFICIAL DE ACCESO EN VESTÍBULO                   ");
+        System.out.println("======================================================================");
+        System.out.printf("CENTRO:               %-30s | FECHA: %s%n", NOMBRE_CENTRO, fechaActual);
+        System.out.printf("REGISTRO N.º:         #%05d | HORA EMISIÓN QR: %s%n", idUltimoFichaje, horaEmisionQr);
+        System.out.printf("TOKEN QR VESTÍBULO:   %s%n", tokenResumenVestibulo);
+        System.out.printf("TOKEN FORMATO BARRAS: %s (replace)%n", tokenFormatoBarras);
+        System.out.printf("TOKEN QR PUERTA NORTE:%s%n", tokenResumenPuertaNorte);
+        System.out.printf("PERSONA:              %-30s | LONGITUD: %d%n", nombrePersonaLimpio, nombrePersonaLimpio.length());
+        System.out.printf("DNI DESGLOSADO:       Número: %s | Letra: '%c'%n", numeroDniSolo, letraFinalDni);
+        System.out.printf("PERFIL PROCESADO:     %c (Válido: %b) | SENTIDO: Entrada (%b)%n", perfilNormalizado, esLetraValida, esEntrada);
+        System.out.println("----------------------------------------------------------------------");
+        System.out.printf("HORARIO FORMAL:       Entrada %s | Salida %s (LocalTime)%n", tiempoEntrada, tiempoSalida);
+        System.out.printf("PERMANENCIA EXACTA:   %03d minutos (Método modular calcularEstancia)%n", minutosEstanciaTotal);
+        System.out.printf("DESVIACIÓN JORNADA:   %03d min respecto a jornada completa (480 min).%n", desviacionJornadaMinutos);
+        System.out.println("----------------------------------------------------------------------");
+        System.out.printf("OCUPACIÓN REDONDEADA: %d %% (Math.round) | Exacta: %6.2f %%%n", porcentajeOcupacionRedondeado, porcentajeOcupacionReal);
+        System.out.printf("DISTANCIA ENFOQUE TV: %.2f metros (Método modular calcularDistancia)%n", distanciaDiagonalAntena);
+        System.out.printf("ACTIVO:               %02dh %02dm %02ds (Sensor acotado: %.1f ºC)%n", horasUptime, minutosUptime, segundosUptime, tempSeguraAcotada);
+        System.out.printf("DIAGNÓSTICO TEST:     Patrón #%04d | Sensor NFC: Activo (%b)%n", codigoTestCalibracion, sensorNfcOperativo);
+        System.out.printf("REGISTRO LOG:         %s%n", RUTA_LOGS);
+        System.out.println("======================================================================");
+
+        teclado.close();
+    }
+}
+```
+
+---
+
+#### 4. Segunda sesión: dojo de entrenamiento y katas de código
+
+Pasamos al dojo de entrenamiento para programar, con tres **katas de programación modular** para entrenar la codificación de métodos estáticos, la gestión de parámetros y el ámbito de memoria:
+
+---
+
+##### Kata 1 (Cinturón blanco / Nivel base). Extracción de métodos estáticos en tu proyecto propio
+* **Objetivo.** Refactorizar tu clase `MiProyecto.java` (versión v1.9) extrayendo al menos **dos métodos estáticos auxiliares propios** (`public static`) con parámetros de entrada y sentencia `return`, eliminando la acumulación de cálculos dentro del `main`.
+* **Aplicación según tu proyecto elegido:**
+  * En **Aventura conversacional**. Codificar un método estático `public static int calcularDanoTotal(int fuerza, int factorArma)` y un método `public static String formatearEstadoHeroe(String nombre, int vida, int oro)`.
+  * En **Motor de recomendación**. Codificar un método estático `public static double calcularPuntuacionAfinidad(double base, double pesoTag)` y un método `public static String generarCodigoItem(String categoria, int anio, int id)`.
+  * En **Simulador de físicas 2D**. Codificar un método estático `public static double calcularModuloVelocidad(double vx, double vy)` y un método `public static double proyectarPosicionFinal(double vInicial, double aceleracion, double tiempo)`.
+  * En **Bóveda de contraseñas**. Codificar un método estático `public static int calcularDiasRestantes(int diasTotales, int diasConsumidos)` y un método `public static String formatearCredencialSegura(String servicio, String usuario, int pin)`.
+
+---
+
+##### Kata 2 (Cinturón marrón / Nivel avanzado). El aislamiento del ámbito local (*scope*) y paso por valor
+* **Contexto técnico.** Demostrar empíricamente que modificar un parámetro primitivo dentro de un método estático no tiene ningún efecto sobre la variable original del `main`.
+* **Misión de la kata:**
+  1. En una clase de prueba llamada `PruebaPasoPorValor.java`, escribe el siguiente método estático:
+     ```java
+     public static void intentarModificar(int numero) {
+         numero = numero + 100; // Modificamos el parámetro local
+         System.out.println("Dentro del método: numero = " + numero);
+     }
+     ```
+  2. En el `main`, declara `int valor = 50;`, invoca `intentarModificar(valor);` e imprime después el contenido de `valor`.
+  3. Comprueba en la consola que fuera del método la variable sigue valiendo `50`.
+  4. Redacta dos líneas de comentario en tu código explicando por qué ocurre esto: **Java pasa los argumentos primitivos por copia de valor; el método opera sobre una celda del Stack aislada que se destruye al llegar a su llave de cierre**.
+
+---
+
+##### Kata 3 (Cinturón negro / «Hacker AzaharTech»). Composición y encadenamiento de métodos estáticos
+* **Contexto de arquitectura.** Demostrar cómo el valor devuelto por un método estático puede actuar como argumento de entrada de otro sin necesidad de crear variables intermedias en el `main`.
+* **Misión de la kata:**
+  1. En tu proyecto propio o en una clase de prueba, codifica dos métodos estáticos complementarios: uno que calcule un valor numérico (`calcularSubtotal`) y otro que lo reciba para aplicar un factor (`aplicarImpuesto`).
+  2. En el `main`, realiza la invocación encadenada en una sola línea:
+     ```java
+     double totalFinal = aplicarImpuesto(calcularSubtotal(unidades, precioBase));
+     ```
+  3. Anota en tu cuaderno técnico cómo la JVM apila y desapila las llamadas en el *Call Stack* de dentro hacia afuera.
+
+---
+
+#### 5. Cierre formal en Git y sincronización visual en IntelliJ
+Cada estudiante finaliza el Sprint 2 registrando su código modular en GitHub desde la interfaz gráfica de IntelliJ IDEA:
+
+1. Aplica el autoformateo oficial: `Ctrl + Alt + L`.
+2. Optimiza las importaciones para limpiar dependencias no usadas: `Ctrl + Alt + O`.
+3. Abre el panel lateral **Commit** (`Alt + 0` o `Ctrl + K`).
+4. Selecciona tu archivo `pr/src/MiProyecto.java`.
+5. Escribe el mensaje convencional de entrega del hito:
+   ```text
+   refactor(pr): modularizar aplicacion v2.0 con metodos estaticos propios y cierre de sprint 2
+   ```
+6. Pulsa **Commit and Push...** y confirma el envío al servidor remoto de GitHub.
+7. Mañana viernes, durante la sesión de Entornos de Desarrollo, registraras todo el repositorio bajo la etiqueta oficial de release **`v0.2.0-sprint2`**.
