@@ -3,11 +3,16 @@ site_url: https://garmarcj.github.io/DAM-PR-20262027/
 theme:
   name: material
   language: es
+  palette:
+    scheme: default
+    primary: indigo
   features:
     - navigation.instant
     - navigation.top
+    - navigation.sections
     - search.highlight
     - search.suggest
+    - content.code.copy
     - content.tabs.link
 nav:
   - Inicio: index.md
