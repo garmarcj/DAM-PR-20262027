@@ -2040,8 +2040,6 @@ public class ControlAccesoQR {
 
 El estudiante abre su archivo maestro `.java` (versión v0.6):
 
-El estudiante abre su archivo maestro .java (versión v0.6):
-
 * Extrae todos los números mágicos y cadenas de texto fijas a constantes `final` al inicio de la clase, aplicando la
   convención UPPER_SNAKE_CASE:
     * En Aventura conversacional: declarar constantes para el nombre del reino o mundo, la salud máxima inicial, la
