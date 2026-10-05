@@ -307,7 +307,7 @@ de confirmación.
 ##### Paso A. Evolución en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.3)
 
 ```psc
-  Algoritmo ControlAccesoQR
+Algoritmo ControlAccesoQR
       Definir terminalId Como Entero
       Definir tempVestibulo Como Real
       
@@ -358,8 +358,8 @@ de confirmación.
       Escribir "Token:      ", tokenResumen
       Escribir "Horario:    Entrada ", horaEntrada, ":", minutoEntrada, " | Salida ", horaSalida, ":", minutoSalida
       Escribir "Permanencia total en centro: ", minutosEstanciaTotal, " minutos."
-  FinAlgoritmo
- ```
+FinAlgoritmo
+```
 
 ##### Paso B. Evolución en Java (`pr/src/ControlAccesoQR.java` — v0.3)
 
