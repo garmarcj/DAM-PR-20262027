@@ -204,8 +204,8 @@ Observa cómo el código de ayer se amplía añadiendo los bloques de identidad 
 
 Abrimos el archivo `ControlAccesoQR.java` en IntelliJ y lo modificamos directamente:
 
-  ```java
-  import java.util.Scanner;
+```java
+import java.util.Scanner;
 
 public class ControlAccesoQR {
     public static void main(String[] args) {
@@ -246,7 +246,7 @@ public class ControlAccesoQR {
         teclado.close();
     }
 }
-  ```
+```
 
 ---
 
