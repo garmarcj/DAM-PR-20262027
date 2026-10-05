@@ -204,7 +204,7 @@ Observa cómo el código de ayer se amplía añadiendo los bloques de identidad 
 
 Abrimos el archivo `ControlAccesoQR.java` en IntelliJ y lo modificamos directamente:
 
-```java
+```java  
 import java.util.Scanner;
 
 public class ControlAccesoQR {
@@ -306,7 +306,7 @@ de confirmación.
 
 ##### Paso A. Evolución en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v0.3)
 
-  ```psc
+```psc
   Algoritmo ControlAccesoQR
       Definir terminalId Como Entero
       Definir tempVestibulo Como Real
@@ -359,14 +359,14 @@ de confirmación.
       Escribir "Horario:    Entrada ", horaEntrada, ":", minutoEntrada, " | Salida ", horaSalida, ":", minutoSalida
       Escribir "Permanencia total en centro: ", minutosEstanciaTotal, " minutos."
   FinAlgoritmo
-  ```
+ ```
 
 ##### Paso B. Evolución en Java (`pr/src/ControlAccesoQR.java` — v0.3)
 
 Abrimos nuestro archivo `ControlAccesoQR.java` y lo evolucionamos:
 
-  ```java
-  import java.util.Scanner;
+```java
+import java.util.Scanner;
 
 public class ControlAccesoQR {
     public static void main(String[] args) {
@@ -437,7 +437,7 @@ public class ControlAccesoQR {
         teclado.close();
     }
 }
-  ```
+```
 
 ---
 
@@ -491,8 +491,8 @@ commit formal en GitHub»*.
 Cada estudiante verifica que su archivo único `pr/src/MiProyecto.java` cumple con el nivel de consolidación alcanzado en
 el caso guía:
 
-  ```java
-  import java.util.Scanner;
+```java
+import java.util.Scanner;
 
 public class ControlAccesoQR {
     public static void main(String[] args) {
@@ -569,7 +569,7 @@ public class ControlAccesoQR {
         teclado.close();
     }
 }
-  ```
+```
 
 ---
 
