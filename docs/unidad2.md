@@ -369,21 +369,15 @@ public class ControlAccesoQR {
 
 ---
 
-El término **«Kata»** (procedente del *Software Craftsmanship* y las artes marciales) es una elección excelente: transmite la idea de **entrenamiento deliberado, técnica depurada y repetición consciente** para interiorizar la mecánica del código, algo que encaja a la perfección con un grupo que ya tiene base de Grado Medio.
-
-A continuación tienes el **apartado 4 del Día 13 (Día 1 del Sprint 2)** completamente adaptado a la terminología de **Katas de código**, estructuradas por niveles de maestría:
-
----
-
 #### 4. Dojo de entrenamiento y katas de código
 
-Durante esta segunda hora, el aula se transforma en un **dojo de programación**. El trabajo pasa a ser **100 % activo e individual**, estructurado en tres **katas de dificultad progresiva** para entrenar la memoria, la instanciación de objetos y la generación pseudoaleatoria:
+Pasamos al dojo de entrenamiento para programar, con tres **katas de dificultad progresiva** para entrenar la memoria, la instanciación de objetos y la generación pseudoaleatoria:
 
 ---
 
-### Kata 1 (Cinturón blanco / Nivel base). Adaptación al proyecto propio
-* **Objetivo:** Instanciar la clase predefinida `Random` en el montículo (*Heap*) y utilizarla para generar una magnitud aleatoria propia del dominio de tu proyecto.
-* **Instrucciones:** Abre tu archivo `MiProyecto.java` (en versión v1.0) e incorpora un generador aleatorio:
+##### Kata 1 (Cinturón blanco / Nivel base). Adaptación al proyecto propio
+* **Objetivo.** Instanciar la clase predefinida `Random` en el montículo (*Heap*) y utilizarla para generar una magnitud aleatoria propia del dominio de tu proyecto.
+* **Instrucciones.** Abre tu archivo `MiProyecto.java` (en versión v1.0) e incorpora un generador aleatorio:
   * En **Aventura conversacional**. Instanciar `Random` para simular una tirada de iniciativa o factor de suerte entre 1 y 20.
   * En **Motor de recomendación**. Instanciar `Random` para simular la variación aleatoria de afinidad de un usuario invitado.
   * En **Simulador de físicas 2D**. Instanciar `Random` para generar la velocidad inicial aleatoria de la partícula entre 5.0 y 25.0 m/s.
@@ -391,7 +385,7 @@ Durante esta segunda hora, el aula se transforma en un **dojo de programación**
 
 ---
 
-### Kata 2 (Cinturón marrón / Nivel avanzado. Acotación matemática en rango `[MIN, MAX]`
+##### Kata 2 (Cinturón marrón / Nivel avanzado. Acotación matemática en rango `[MIN, MAX]`
 * **Contexto técnico.** Cuando a `nextInt()` le pasamos un valor entre parentesis (`nextInt(tope)`), genera números enteros que van desde 0 hasta tope - 1. Por ejemplo, nextInt(10) genera valores del 0 al 9.
 * **Desafío de la kata.** Diseña una fórmula matemática secuencial en una sola línea que utilice `random.nextInt()` para generar un número pseudoaleatorio acotado estrictamente dentro de un rango cerrado $[MIN, MAX]$ (donde ambos extremos están obligatoriamente incluidos), **sin utilizar estructuras condicionales `if`**:
   $$\text{Resultado} = MIN + \text{random.nextInt}((MAX - MIN) + 1)$$
@@ -399,7 +393,7 @@ Durante esta segunda hora, el aula se transforma en un **dojo de programación**
 
 ---
 
-### Kata 3 (Cinturón negro / Kata «Hacker AzaharTech»). El misterio de la semilla (*Seed*)
+##### Kata 3 (Cinturón negro / Kata «Hacker AzaharTech»). El misterio de la semilla (*Seed*)
 * **Contexto de seguridad.** La clase `Random` de Java no genera aleatoriedad pura física, sino secuencias matemáticas deterministas basadas en una «semilla» (*seed*).
 * **Misión de la kata:**
   1. Abre una clase de prueba temporal en tu proyecto.
