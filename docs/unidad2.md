@@ -952,9 +952,9 @@ Un método es un bloque de instrucciones asociado a un objeto que realiza una ta
 
 #### 3. Evolución del caso guía a `ControlAccesoQR v1.3`
 
-Ampliamos el programa incorporando la calibración técnica matutina del IES El Caminàs:  
+Ampliamos el programa incorporando la calibración técnica matutina del IES El Caminàs:    
 * Instanciamos un generador de calibración con semilla fija (`SEMILLA_CALIBRACION`).  
-* Generamos una pequeña fluctuación decimal con `nextDouble()` sobre la temperatura del vestíbulo.  
+* Generamos una pequeña fluctuación decimal con `nextDouble()` sobre la temperatura del vestíbulo.    
 * Simulamos el estado del sensor de respaldo NFC mediante `nextBoolean()`.  
 
 ##### Paso A. Algoritmo en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v1.3)
