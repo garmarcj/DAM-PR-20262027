@@ -1504,10 +1504,6 @@ Cada estudiante finaliza y entrega el avance de la primera semana del Sprint 2 d
 6. Pulsa **Commit and Push...** y confirma el envío al servidor remoto de GitHub.
 7. Comprueba en el navegador que tu repositorio muestra la versión v1.3 actualizada sin errores de compilación.
 
-Tiene todo el sentido del mundo: en un centro educativo no solo entran estudiantes, sino también docentes y personal de administración y servicios (PAS), cuya jornada laboral de referencia es de **8 horas diarias (480 minutos)**.
-
-A continuación tienes el **Día 17 completo actualizado**, sustituyendo los 360 minutos (6 h) por los **480 minutos (8 h)** tanto en la teoría como en PSeInt y Java:
-
 ---
 
 ## Semana 5. Métodos estáticos, clase Math y clases envoltorio (wrappers)
