@@ -2072,9 +2072,9 @@ La consola imprime un número disparatado porque en Java el símbolo `^` **no ca
 ```
 
 ##### A. El cálculo de potencias con `Math.pow()` frente a la trampa del operador `^`
-En muchos lenguajes o calculadoras, el acento circunflejo `^` representa una potencia. **En Java no.**
-* El operador `^` es un operador binario de álgebra booleana a nivel de bits (*XOR*). Escribir `3 ^ 2` en Java no calcula $3^2 = 9$; compara los bits `0011` y `0010` resultando en el número `1`.
-* Para calcular potencias en Java es obligatorio invocar al método estático `Math.pow(double base, double exponente)`:
+En muchos lenguajes o calculadoras, el acento circunflejo `^` representa una potencia. **En Java no.**  
+* El operador `^` es un operador binario de álgebra booleana a nivel de bits (*XOR*). Escribir `3 ^ 2` en Java no calcula $3^2 = 9$; compara los bits `0011` y `0010` resultando en el número `1`.  
+* Para calcular potencias en Java es obligatorio invocar al método estático `Math.pow(double base, double exponente)`:  
   ```java
   double cuadrado = Math.pow(3.0, 2.0); // Devuelve 9.0
   ```
