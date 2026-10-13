@@ -920,13 +920,13 @@ El departamento de informática del instituto ha planteado una nueva necesidad t
 ```
 
 ##### A. Constructores con parámetros frente a constructores vacíos
-Un **constructor** es un método especial de la clase cuya misión exclusiva es inicializar el estado del objeto en el momento exacto de su creación con `new`.
+Un **constructor** es un método especial de la clase cuya misión exclusiva es inicializar el estado del objeto en el momento exacto de su creación con `new`.  
 * **Constructor por defecto (sin argumentos):**  
   `Random r = new Random();`  
-  Inicializa la semilla interna utilizando el reloj del procesador (`System.currentTimeMillis()`). Cada ejecución produce secuencias numéricas distintas.
+  Inicializa la semilla interna utilizando el reloj del procesador (`System.currentTimeMillis()`). Cada ejecución produce secuencias numéricas distintas.  
 * **Constructor con parámetros:**  
   `Random rAuditoria = new Random(123456789L);`  
-  Pasa un valor inicial (`long`) para fijar la semilla en el Heap. Permite que el generador sea **completamente determinista y reproducible**, ideal para bancos de pruebas de software, auditorías y calibraciones de hardware.
+  Pasa un valor inicial (`long`) para fijar la semilla en el Heap. Permite que el generador sea **completamente determinista y reproducible**, ideal para bancos de pruebas de software, auditorías y calibraciones de hardware.  
 
 ##### B. Tipos de retorno y métodos de la clase `Random`
 Un método es un bloque de instrucciones asociado a un objeto que realiza una tarea y puede (o no) devolver un valor al punto del programa donde fue invocado:
@@ -952,10 +952,10 @@ Un método es un bloque de instrucciones asociado a un objeto que realiza una ta
 
 #### 3. Evolución del caso guía a `ControlAccesoQR v1.3`
 
-Ampliamos el programa incorporando la calibración técnica matutina del IES El Caminàs:
-* Instanciamos un generador de calibración con semilla fija (`SEMILLA_CALIBRACION`).
-* Generamos una pequeña fluctuación decimal con `nextDouble()` sobre la temperatura del vestíbulo.
-* Simulamos el estado del sensor de respaldo NFC mediante `nextBoolean()`.
+Ampliamos el programa incorporando la calibración técnica matutina del IES El Caminàs:  
+* Instanciamos un generador de calibración con semilla fija (`SEMILLA_CALIBRACION`).  
+* Generamos una pequeña fluctuación decimal con `nextDouble()` sobre la temperatura del vestíbulo.  
+* Simulamos el estado del sensor de respaldo NFC mediante `nextBoolean()`.  
 
 ##### Paso A. Algoritmo en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v1.3)
 
@@ -1383,14 +1383,14 @@ Son las tres de la tarde del jueves 8 de octubre. Llegamos a la última sesión 
 
 ##### A. La huella de un objeto en memoria: `NombreClase@hash`
 Cuando le pasas un objeto a `System.out.println()`, Java invoca internamente a su método de representación textual (`toString()`). Por defecto, para cualquier objeto estándar de la biblioteca que no redefina este texto, imprime:
-$$\text{NombreDelPaquete.NombreClase} + \text{"@"} + \text{CódigoHexadecimalDeMemoria}$$
-* Si dos variables imprimen códigos distintos (*ej. `@7ffe8a1` y `@1a2b3c`*), tenemos la certeza matemática de que residen en dos posiciones de memoria independientes del Heap.
-* Si imprimen el mismo código, son dos punteros hacia la misma instancia física.
+$$\text{NombreDelPaquete.NombreClase} + \text{"@"} + \text{CódigoHexadecimalDeMemoria}$$  
+* Si dos variables imprimen códigos distintos (*ej. `@7ffe8a1` y `@1a2b3c`*), tenemos la certeza matemática de que residen en dos posiciones de memoria independientes del Heap.  
+* Si imprimen el mismo código, son dos punteros hacia la misma instancia física.  
 
 ##### B. El operador `==` en tipos referencia
-A diferencia de los tipos primitivos (donde `5 == 5` compara valores numéricos), en los objetos el operador **`==` compara direcciones de memoria**:
-* Evalúa si ambas referencias del Stack apuntan al **mismo bloque del Heap**.
-* No compara si los generadores están configurados igual o si tienen la misma semilla; solo compara si **son físicamente el mismo objeto**.
+A diferencia de los tipos primitivos (donde `5 == 5` compara valores numéricos), en los objetos el operador **`==` compara direcciones de memoria**:  
+* Evalúa si ambas referencias del Stack apuntan al **mismo bloque del Heap**.  
+* No compara si los generadores están configurados igual o si tienen la misma semilla; solo compara si **son físicamente el mismo objeto**.  
 
 ##### C. El literal `null` frente a una referencia activa
 * Si imprimimos por consola una variable que vale `null`:
