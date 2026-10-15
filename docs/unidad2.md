@@ -2080,31 +2080,31 @@ En muchos lenguajes o calculadoras, el acento circunflejo `^` representa una pot
   ```
 
 ##### B. Raíces cuadradas con `Math.sqrt()` y el teorema de Pitágoras
-El método `Math.sqrt()` (*Square Root*) permite calcular distancias euclídeas, radios de cobertura o módulos de vectores combinándolo con potencias en una única línea de código:
+El método `Math.sqrt()` (*Square Root*) permite calcular distancias euclídeas, radios de cobertura o módulos de vectores combinándolo con potencias en una única línea de código:  
 
-$$d = \sqrt{x^2 + y^2} \quad \Longrightarrow \quad \text{double d} = \text{Math.sqrt}(\text{Math.pow}(x, 2) + \text{Math.pow}(y, 2));$$
+$$d = \sqrt{x^2 + y^2} \quad \Longrightarrow \quad \text{double d} = \text{Math.sqrt}(\text{Math.pow}(x, 2) + \text{Math.pow}(y, 2));$$  
 
-##### C. Truncamiento mediante *casting* frente a redondeo matemático con `Math.round()`
-Es vital distinguir qué hace la CPU en cada caso:
-1. **Truncamiento con casting `(int)`:** Descarta sin miramientos la parte decimal.
-  * `(int) 60.10` da `60`
-  * `(int) 60.99` da `60` *(¡pierde casi una unidad entera!)*
-2. **Redondeo matemático con `Math.round()`:** Aplica la regla estándar del redondeo aritmético:
-  * Suma $0.5$ al valor y trunca hacia abajo el resultado.
-  * `Math.round(60.49)` devuelve `60L`.
-  * `Math.round(60.50)` devuelve `61L`.
+##### C. Truncamiento mediante *casting* frente a redondeo matemático con `Math.round()`  
+Es vital distinguir qué hace la CPU en cada caso:  
+1. **Truncamiento con casting `(int)`:** Descarta sin miramientos la parte decimal.  
+  * `(int) 60.10` da `60`  
+  * `(int) 60.99` da `60` *(¡pierde casi una unidad entera!)*  
+2. **Redondeo matemático con `Math.round()`:** Aplica la regla estándar del redondeo aritmético:  
+  * Suma $0.5$ al valor y trunca hacia abajo el resultado.  
+  * `Math.round(60.49)` devuelve `60L`.  
+  * `Math.round(60.50)` devuelve `61L`.  
 
-> ⚠️ **Atención al tipo de retorno de `Math.round()`:**  
-> Cuando le pasamos un argumento de tipo `double`, `Math.round()` devuelve un entero largo de tipo **`long`** (64 bits). Si queremos almacenarlo en una variable `int`, debemos aplicar un casting explícito:  
-> `int ocupacionRedondeada = (int) Math.round(porcentajeDecimal);`
+> ⚠️ **Atención al tipo de retorno de `Math.round()`:**    
+> Cuando le pasamos un argumento de tipo `double`, `Math.round()` devuelve un entero largo de tipo **`long`** (64 bits). Si queremos almacenarlo en una variable `int`, debemos aplicar un casting explícito:    
+> `int ocupacionRedondeada = (int) Math.round(porcentajeDecimal);`  
 
 ---
 
 #### 3. Evolución del caso guía a `ControlAccesoQR v1.5`
 
-Ampliamos el programa incorporando:
-1. Las coordenadas espaciales del sensor del vestíbulo ($x = 3.0\text{ m}$, $y = 4.0\text{ m}$) y el cálculo de la distancia diagonal de cobertura mediante `Math.pow()` y `Math.sqrt()`.
-2. El redondeo matemático oficial del porcentaje de aforo con `Math.round()` para el panel visual del centro, comparándolo con el valor truncado.
+Ampliamos el programa incorporando:  
+1. Las coordenadas espaciales del sensor del vestíbulo ($x = 3.0\text{ m}$, $y = 4.0\text{ m}$) y el cálculo de la distancia diagonal de cobertura mediante `Math.pow()` y `Math.sqrt()`.  
+2. El redondeo matemático oficial del porcentaje de aforo con `Math.round()` para el panel visual del centro, comparándolo con el valor truncado.  
 
 ##### Paso A. Algoritmo en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v1.5)
 
