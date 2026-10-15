@@ -2084,12 +2084,12 @@ El método `Math.sqrt()` (*Square Root*) permite calcular distancias euclídeas,
 
 $$d = \sqrt{x^2 + y^2} \quad \Longrightarrow \quad \text{double d} = \text{Math.sqrt}(\text{Math.pow}(x, 2) + \text{Math.pow}(y, 2));$$  
 
-##### C. Truncamiento mediante *casting* frente a redondeo matemático con `Math.round()`  
+##### C. Truncamiento mediante *casting* frente a redondeo matemático con `Math.round()`    
 Es vital distinguir qué hace la CPU en cada caso:  
-1. **Truncamiento con casting `(int)`:** Descarta sin miramientos la parte decimal.  
+1. **Truncamiento con casting `(int)`:** Descarta sin miramientos la parte decimal.    
   * `(int) 60.10` da `60`  
-  * `(int) 60.99` da `60` *(¡pierde casi una unidad entera!)*  
-2. **Redondeo matemático con `Math.round()`:** Aplica la regla estándar del redondeo aritmético:  
+  * `(int) 60.99` da `60` *(¡pierde casi una unidad entera!)*    
+2. **Redondeo matemático con `Math.round()`:** Aplica la regla estándar del redondeo aritmético:    
   * Suma $0.5$ al valor y trunca hacia abajo el resultado.  
   * `Math.round(60.49)` devuelve `60L`.  
   * `Math.round(60.50)` devuelve `61L`.  
