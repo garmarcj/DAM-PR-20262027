@@ -33,27 +33,15 @@ Sobre la pantalla de la sala de reuniones, **Alba Torres** y **Pau Ferrer** proy
 
 Hasta la versión `v2.0`, el puntero de instrucción del procesador (*Program Counter* o PC) recorría el método `main` de manera estrictamente lineal. Las **estructuras de control de selección** alteran esta linealidad, permitiendo que la máquina virtual elija rutas alternativas en tiempo de ejecución tras evaluar una expresión booleana.
 
-```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                        ARQUITECTURA DEL FLUJO CONDICIONAL EN JVM                       │
-├────────────────────────────────────────────────────────────────────────────────────────┤
-│                           [ Expresión Booleana ]                                       │
-│                                  │                                                     │
-│                  ¿Condición evaluada a true o false?                                   │
-│                        /                    \                                          │
-│                 (true)/                      \(false)                                  │
-│                      ▼                        ▼                                        │
-│          ┌───────────────────────┐ ┌───────────────────────┐                           │
-│          │    Rama IF (Then)     │ │    Rama ELSE (Sino)   │                           │
-│          │  Ejecuta bloque de    │ │  Ejecuta bloque de    │                           │
-│          │  autorización         │ │  denegación           │                           │
-│          └───────────────────────┘ └───────────────────────┘                           │
-│                        \                     /                                         │
-│                         └─────────┬─────────┘                                          │
-│                                   ▼                                                    │
-│                        [ Flujo convergente ]                                           │
-│                       (Continúa la ejecución)                                          │
-└────────────────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    Inicio([Puntero PC: Flujo Secuencial]) --> Condicion{"¿Condición booleana?<br/>(temperaturaApta && hayAforo)"}
+    
+    Condicion -- true --> RamaIf["<b>Rama IF (Then)</b><br/>• Torno desbloqueado<br/>• personasEnCentro++<br/>• Emitir Token QR"]
+    Condicion -- false --> RamaElse["<b>Rama ELSE (Sino)</b><br/>• Torno bloqueado<br/>• Alarma acústica<br/>• Asignar motivoDenegacion"]
+    
+    RamaIf --> Fin([Flujo Convergente: Generar informe])
+    RamaElse --> Fin
 ```
 
 ##### A. Estructuras condicionales en Java (`if`, `if-else`, `if-else if-else`)
@@ -97,7 +85,103 @@ Toda variable declarada en el interior de las llaves `{ }` de un bloque nace y m
 
 #### 3. Evolución del caso guía a `ControlAccesoQR v2.1`
 
-Evolucionamos el código de la versión `v2.0`. Mantenemos intactas todas las constantes inmutables, los métodos modulares construidos en el Sprint 2 y las entradas de datos, e introducimos la lógica de decisión mediante `if-else` para gobernar las mutaciones de estado y la respuesta del terminal.
+En esta versión sustituimos la mutación ciega de estado de la versión `v2.0` por un **árbol de decisión condicional**. Conservamos intactas las constantes corporativas, los métodos modulares construidos en el Sprint 2 y la captura interactiva por teclado.
+
+##### A. Comparativa de cambios respecto a v2.0 (`diff`)
+
+```diff
+- // =========================================================================
+- // EN v2.0: Mutación ciega e incondicional (la puerta siempre se abría)
+- // =========================================================================
+- personasEnCentro++;
+- aforoDisponible--;
+- idUltimoFichaje++;
+
++ // =========================================================================
++ // EN v2.1: Mutación condicionada al cumplimiento estricto de requisitos
++ // =========================================================================
++ boolean temperaturaApta = (tempVestibulo >= TEMP_CORPORAL_MIN_FALLO && tempVestibulo <= TEMP_CORPORAL_MAX_FIEBRE);
++ boolean aforoSuficiente = (aforoDisponible > 0);
++ boolean perfilPermitido = esLetraValida && (perfilNormalizado == 'E' || perfilNormalizado == 'D' || perfilNormalizado == 'V');
++
++ if (!temperaturaApta) {
++     accesoConcedido = false;
++     motivoDenegacion = String.format("Lectura térmica anómala (%.1f ºC fuera de rango)", tempVestibulo);
++ } else if (!aforoSuficiente) {
++     accesoConcedido = false;
++     motivoDenegacion = "Aforo de recinto saturado. No hay plazas libres disponibles.";
++ } else if (!esLongitudDniCorrecta) {
++     accesoConcedido = false;
++     motivoDenegacion = "Documento irregular. El DNI debe contener exactamente 9 caracteres.";
++ } else if (!perfilPermitido) {
++     accesoConcedido = false;
++     motivoDenegacion = "Perfil de acceso '" + perfilNormalizado + "' no autorizado por jefatura.";
++ } else {
++     accesoConcedido = true;
++     personasEnCentro++;
++     aforoDisponible--;
++     idUltimoFichaje++;
++ }
+```
+
+##### B. Foco en la novedad: árbol de decisión y salida bifurcada
+
+Observa cómo se integran las nuevas variables de control dentro de `main` y cómo se bifurca la respuesta visual:
+
+```java
+// ... [Captura de datos previa con Scanner y cálculo de tiempos idéntico a v2.0] ...
+
+// 1. Declaración en el ámbito de main para su consumo en el informe final
+boolean accesoConcedido;
+String motivoDenegacion = "";
+
+// 2. Evaluación lógica de condiciones de negocio
+boolean temperaturaApta = (tempVestibulo >= TEMP_CORPORAL_MIN_FALLO && tempVestibulo <= TEMP_CORPORAL_MAX_FIEBRE);
+boolean aforoSuficiente = (aforoDisponible > 0);
+boolean perfilPermitido = esLetraValida && (perfilNormalizado == 'E' || perfilNormalizado == 'D' || perfilNormalizado == 'V');
+
+if (!temperaturaApta) {
+    accesoConcedido = false;
+    motivoDenegacion = String.format("Lectura térmica anómala (%.1f ºC fuera del rango %.1f-%.1f ºC)", 
+            tempVestibulo, TEMP_CORPORAL_MIN_FALLO, TEMP_CORPORAL_MAX_FIEBRE);
+} else if (!aforoSuficiente) {
+    accesoConcedido = false;
+    motivoDenegacion = "Aforo de recinto saturado. No hay plazas libres disponibles.";
+} else if (!esLongitudDniCorrecta) {
+    accesoConcedido = false;
+    motivoDenegacion = "Documento irregular. El DNI debe contener exactamente 9 caracteres.";
+} else if (!perfilPermitido) {
+    accesoConcedido = false;
+    motivoDenegacion = "Perfil de acceso '" + perfilNormalizado + "' no autorizado por jefatura de estudios.";
+} else {
+    accesoConcedido = true;
+    // Mutación condicionada: solo muta el estado si el acceso es estrictamente legítimo
+    personasEnCentro++;
+    aforoDisponible--;
+    idUltimoFichaje++;
+}
+
+// 3. Emisión de informe bifurcado según el veredicto
+if (accesoConcedido) {
+    System.out.println("----------------------------------------------------------------------");
+    System.out.println(">> VEREDICTO:         [ACCESO AUTORIZADO - TORNO ABIERTO]");
+    System.out.printf(">> TOKEN QR EMITIDO:  %s%n", tokenResumenVestibulo);
+    System.out.printf(">> TOKEN BARRAS:      %s%n", tokenFormatoBarras);
+    System.out.printf(">> PUERTA NORTE LINK: %s%n", tokenResumenPuertaNorte);
+} else {
+    System.out.println("----------------------------------------------------------------------");
+    System.out.println(">> VEREDICTO:         [ACCESO DENEGADO - TORNO BLOQUEADO]");
+    System.out.printf(">> MOTIVO RECHAZO:    %s%n", motivoDenegacion);
+    System.out.println(">> PROTOCOLO:         Diríjase a la conserjería central para verificación manual.");
+}
+
+// ... [Resto del informe de telemetría y diagnóstico idéntico a v2.0] ...
+```
+
+##### C. Código fuente completo integrado
+
+<details>
+<summary><b>🔍 Desplegar archivo completo ControlAccesoQR.java (v2.1)</b></summary>
 
 ```java
 /**
@@ -289,7 +373,6 @@ public class ControlAccesoQR {
         // ---------------------------------------------------------------------
         // 4. BIFURCACIÓN CONDICIONAL (NOVEDAD SPRINT 3 - DÍA 24)
         // ---------------------------------------------------------------------
-        // Declaración en el ámbito de main para su consumo en la salida posterior
         boolean accesoConcedido;
         String motivoDenegacion = "";
 
@@ -313,7 +396,6 @@ public class ControlAccesoQR {
             motivoDenegacion = "Perfil de acceso '" + perfilNormalizado + "' no autorizado por jefatura de estudios.";
         } else {
             accesoConcedido = true;
-            // Mutación de estado condicionada: solo muta si el acceso es válido
             personasEnCentro++;
             aforoDisponible--;
             idUltimoFichaje++;
@@ -386,6 +468,8 @@ public class ControlAccesoQR {
     }
 }
 ```
+
+</details>
 
 ---
 
@@ -467,7 +551,7 @@ Es la mañana del **martes 27 de octubre de 2026** en las oficinas de **AzaharTe
 > boolean perfilPermitido = esLetraValida && (perfilNormalizado == 'E' || perfilNormalizado == 'D' || perfilNormalizado == 'V');
 > ```
 > *En la realidad cotidiana del instituto coexisten cuatro perfiles diferenciados con **normativas de acceso y permanencia específicas**:*
-> 
+>
 > 1. **Perfil 'E' (Estudiante).** Debe asignarse a *"Aulas y Talleres"*, con una estancia lectiva máxima de 360 minutos y control de puntualidad: si accede después de las 08:15 h, el terminal debe registrar una advertencia de *"RETRASO LECTIVO"*.*
 > 2. **Perfil 'D' (Docente).** Se asigna a *"Departamentos y Claustro"*, con una jornada base de 480 minutos y sin restricción de retraso matinal.*
 > 3. **Perfil 'V' (Visita externa).** Solo puede acceder a *"Secretaría y Vestíbulo"*, con un límite de permanencia de 120 minutos.*
@@ -481,29 +565,21 @@ Es la mañana del **martes 27 de octubre de 2026** en las oficinas de **AzaharTe
 
 Cuando el flujo del programa debe ramificarse en función de valores discretos exactos de una variable primitiva o inmutable (`char`, `byte`, `short`, `int`, `String` o tipos enumerados), la estructura estándar en programación estructurada es la **sentencia `switch`**.
 
-```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                   ARQUITECTURA DE CONTROL: SENTENCIA SWITCH CLÁSICA                    │
-├────────────────────────────────────────────────────────────────────────────────────────┤
-│                             [ Selector Discreto (char) ]                               │
-│                                           │                                            │
-│                 ┌──────────────┬──────────┴───┬──────────────┐                         │
-│                 │ 'E'          │ 'D'          │ 'V'          │ 'A'                     │
-│                 ▼              ▼              ▼              ▼                         │
-│           ┌───────────┐  ┌───────────┐  ┌───────────┐  ┌───────────┐                   │
-│           │Estudiante │  │  Docente  │  │  Visita   │  │   P.A.S.  │                   │
-│           │360 min max│  │480 min max│  │120 min max│  │420 min max│                   │
-│           │   break;  │  │   break;  │  │   break;  │  │   break;  │                   │
-│           └─────┬─────┘  └─────┬─────┘  └─────┬─────┘  └─────┬─────┘                   │
-│                 │              │              │              │                         │
-│                 └──────────────┴──────┬───────┴──────────────┘                         │
-│                                       ▼                                                │
-│                      [ default: Asignación por defecto ]                               │
-│                                  (break;)                                              │
-│                                       │                                                │
-│                                       ▼                                                │
-│                             [ Flujo convergente ]                                      │
-└────────────────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    Selector["Selector discreto: <b>perfilNormalizado (char)</b>"] --> Switch{"switch (perfil)"}
+    
+    Switch -- "case 'E'" --> Estudiante["<b>Estudiante Oficial</b><br/>• Zona: Aulas y Talleres<br/>• Estancia: 360 min max"]
+    Switch -- "case 'D'" --> Docente["<b>Docente / Claustro</b><br/>• Zona: Departamentos<br/>• Estancia: 480 min max"]
+    Switch -- "case 'V'" --> Visita["<b>Visita Externa</b><br/>• Zona: Secretaría<br/>• Estancia: 120 min max"]
+    Switch -- "case 'A'" --> PAS["<b>Personal P.A.S.</b><br/>• Zona: Edificio Gestión<br/>• Estancia: 420 min max"]
+    Switch -- "default" --> Desconocido["<b>Perfil No Catalogado</b><br/>• Acceso Denegado<br/>• Estancia: 0 min"]
+    
+    Estudiante --> Break([break; -> Salida del switch])
+    Docente --> Break
+    Visita --> Break
+    PAS --> Break
+    Desconocido --> Break
 ```
 
 ##### A. Componentes de la sentencia `switch` clásica
@@ -544,10 +620,137 @@ Para controlar la puntualidad del alumnado, combinamos condicionales con método
 
 #### 3. Evolución del caso guía a `ControlAccesoQR v2.2`
 
-Evolucionamos el código de la versión `v2.1` a la **`v2.2`**. Mantenemos intactas todas las constantes, los métodos modulares construidos en sprints anteriores y la captura de datos por consola, incorporando:
-1. La constante horaria de puntualidad lectiva (`HORA_LIMITE_PUNTUALIDAD = LocalTime.of(8, 15)`).
-2. Métodos estáticos modulares que emplean la **sentencia `switch` clásica con `break`** para determinar la denominación del perfil, la zona física asignada y el límite de estancia autorizado.
-3. Validación de retraso lectivo condicionada al rol de estudiante mediante `isAfter()`.
+En esta versión incorporamos la selección múltiple por perfil delegando cada asignación en métodos estáticos modulares, añadimos la comprobación de puntualidad con `isAfter()` y actualizamos el informe de consola.
+
+##### A. Comparativa de cambios respecto a v2.1 (`diff`)
+
+```diff
+  // =========================================================================
+  // CONSTANTES DEL SISTEMA
+  // =========================================================================
++ final static LocalTime HORA_LIMITE_PUNTUALIDAD = LocalTime.of(8, 15);
+
+  // =========================================================================
+  // MÉTODOS ESTÁTICOS PROPIOS (Modularización con switch clásico)
+  // =========================================================================
++ public static String obtenerDescripcionPerfil(char perfil) { ... }
++ public static String determinarZonaAutorizada(char perfil) { ... }
++ public static int obtenerEstanciaMaximaPorPerfil(char perfil) { ... }
+
+  // =========================================================================
+  // MÉTODO MAIN: Toma de decisiones
+  // =========================================================================
+- boolean perfilPermitido = esLetraValida && (perfilNormalizado == 'E' || perfilNormalizado == 'D' || perfilNormalizado == 'V');
++ boolean perfilReconocido;
++ switch (perfilNormalizado) {
++     case 'E':
++     case 'D':
++     case 'V':
++     case 'A':
++         perfilReconocido = true;
++         break;
++     default:
++         perfilReconocido = false;
++         break;
++ }
++
++ String descripcionRol    = obtenerDescripcionPerfil(perfilNormalizado);
++ String zonaDesignada     = determinarZonaAutorizada(perfilNormalizado);
++ int estanciaMaxPermitida = obtenerEstanciaMaximaPorPerfil(perfilNormalizado);
++ boolean esRetrasoLectivo = (perfilNormalizado == 'E') && tiempoEntrada.isAfter(HORA_LIMITE_PUNTUALIDAD);
+```
+
+##### B. Foco en la novedad: métodos modulares y bifurcación con `switch`
+
+Observa cómo aislamos la lógica de cada atributo del perfil en métodos independientes y cómo controlamos la puntualidad:
+
+```java
+// -------------------------------------------------------------------------
+// Métodos estáticos modulares gobernados por switch clásico
+// -------------------------------------------------------------------------
+public static String obtenerDescripcionPerfil(char perfil) {
+    String descripcion;
+    switch (perfil) {
+        case 'E':
+            descripcion = "Estudiante Oficial";
+            break;
+        case 'D':
+            descripcion = "Docente / Claustro";
+            break;
+        case 'V':
+            descripcion = "Visita Externa / Proveedor";
+            break;
+        case 'A':
+            descripcion = "Personal de Administración y Servicios (PAS)";
+            break;
+        default:
+            descripcion = "Perfil No Catalogado";
+            break;
+    }
+    return descripcion;
+}
+
+public static String determinarZonaAutorizada(char perfil) {
+    String zona;
+    switch (perfil) {
+        case 'E':
+            zona = "Aulas Docentes y Talleres de Informática";
+            break;
+        case 'D':
+            zona = "Departamentos Didácticos, Aulas y Sala de Profesores";
+            break;
+        case 'V':
+            zona = "Secretaría, Conserjería y Despachos de Dirección";
+            break;
+        case 'A':
+            zona = "Área de Gestión Administrativa y Archivo Central";
+            break;
+        default:
+            zona = "Acceso Denegado / Zona No Autorizada";
+            break;
+    }
+    return zona;
+}
+
+public static int obtenerEstanciaMaximaPorPerfil(char perfil) {
+    int estanciaMinutos;
+    switch (perfil) {
+        case 'E':
+            estanciaMinutos = 360; // 6 horas lectivas
+            break;
+        case 'D':
+            estanciaMinutos = 480; // 8 horas jornada docente
+            break;
+        case 'V':
+            estanciaMinutos = 120; // 2 horas límite visitas
+            break;
+        case 'A':
+            estanciaMinutos = 420; // 7 horas jornada administrativa
+            break;
+        default:
+            estanciaMinutos = 0;
+            break;
+    }
+    return estanciaMinutos;
+}
+
+// -------------------------------------------------------------------------
+// Dentro de main: Invocación e informe condicional de puntualidad
+// -------------------------------------------------------------------------
+// [Tras validar y autorizar el acceso...]
+System.out.printf("ROL CLASIFICADO:      [%c] %-25s | Válido: %b%n", perfilNormalizado, descripcionRol, perfilReconocido);
+System.out.printf("ZONA ASIGNADA:        %s%n", zonaDesignada);
+System.out.printf("LÍMITE AUTORIZADO:    %d minutos (Tiempo previsto: %d min)%n", estanciaMaxPermitida, minutosEstanciaTotal);
+
+if (esRetrasoLectivo && accesoConcedido) {
+    System.out.println(">> AVISO PUNTUALIDAD: [RETRASO LECTIVO REGISTRADO - Entrada posterior a las 08:15]");
+}
+```
+
+##### C. Código fuente completo integrado
+
+<details>
+<summary><b>🔍 Desplegar archivo completo ControlAccesoQR.java (v2.2)</b></summary>
 
 ```java
 /**
@@ -941,15 +1144,17 @@ public class ControlAccesoQR {
 }
 ```
 
+</details>
+
 ---
 
 #### 4. Segunda sesión: dojo de entrenamiento y katas de código
 
 En esta sesión práctica, cada alumno desarrollará directamente en Java estructuras de selección múltiple sobre el archivo maestro de su especialidad técnica.
 
-##### Kata 1 (Cinturón blanco / Nivel base). Selección múltiple con `switch` y `break`
+##### Kata 1 (Cinturón blanco / Nivel base). Selección múltiple clásica con `switch` y `break`
 
-Abre tu archivo `pr/src/MiProyecto.java` e implementa una sentencia `switch` que controle la toma de decisiones en función de una variable discreta, asegurando la inclusión de `break` en cada caso y una cláusula `default`:
+Abre tu archivo `pr/src/MiProyecto.java` e implementa una sentencia `switch` tradicional que controle la toma de decisiones en función de una variable discreta, asegurando la inclusión de `break` en cada caso y una cláusula `default`:
 
 * **Aventura conversacional.** Evalúa mediante un `switch` clásico el carácter del comando táctico introducido por el jugador (`'A'`, `'D'`, `'H'`, `'U'`). Cada caso debe actualizar las variables de combate (modificador de ataque, defensa, probabilidad de huida o puntos de curación mediante poción) y finalizar con su correspondiente sentencia `break`, contemplando una cláusula `default` para comandos desconocidos que penalice el turno del jugador.
 * **Motor de recomendación.** Implementa un `switch` clásico sobre el carácter identificador de la categoría de contenido (`'C'` para Cine, `'M'` para Música, `'V'` para Videojuegos, `'L'` para Literatura). En cada caso, asigna el umbral mínimo de afinidad porcentual exigido y una cadena con la etiqueta descriptiva del sector, incluyendo una cláusula `default` de seguridad para categorías no catalogadas.
@@ -1040,33 +1245,22 @@ El resultado fue inmediato y desastroso: la consola arrojó una traza roja de ex
 
 Una **excepción** en Java es un objeto que representa una condición anómala acontecida durante la ejecución. Si el hilo de ejecución no intercepta la excepción, la máquina virtual finaliza abruptamente el método `main`.
 
-```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                      FLUJO DE CAPTURA DE EXCEPCIONES EN LA JVM                         │
-├────────────────────────────────────────────────────────────────────────────────────────┤
-│                          ┌───────────────────────────┐                                 │
-│                          │      Bloque TRY { }       │                                 │
-│                          │  Lecturas y conversiones  │                                 │
-│                          │  sensibles a fallos       │                                 │
-│                          └─────────────┬─────────────┘                                 │
-│                                        │                                               │
-│                        ¿Ocurre una excepción en tiempo de ejecución?                   │
-│                                  /           \                                         │
-│                          (Sí)   /             \  (No)                                  │
-│                                ▼               ▼                                       │
-│                    ┌──────────────────────┐  [ Flujo normal ]                          │
-│                    │   Bloque CATCH { }   │  (Continúa a la evaluación                 │
-│                    │ Intercepta el error, │   de aforo y seguridad)                    │
-│                    │ asigna motivo de     │            │                               │
-│                    │ rechazo y activa     │            │                               │
-│                    │ bandera de fallo     │            │                               │
-│                    └──────────┬───────────┘            │                               │
-│                               │                        │                               │
-│                               └───────────┬────────────┘                               │
-│                                           ▼                                            │
-│                              [ Flujo convergente seguro ]                              │
-│                           (Torno cerrado / Emisión de log)                             │
-└────────────────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+   subgraph TryBlock ["Bloque vigilado TRY { }"]
+      L1["Integer.parseInt(teclado.nextLine())"]
+      L2["Double.parseDouble(teclado.nextLine())"]
+      L3["LocalTime.of(hora, minuto)"]
+      L1 --> L2 --> L3
+   end
+
+   L1 -.->|Lanza NumberFormatException| Catch1["<b>CATCH (NumberFormatException e)</b><br/>datosCorrectos = false<br/>motivo = 'Formato numérico erróneo'"]
+   L2 -.->|Lanza NumberFormatException| Catch1
+   L3 -.->|Lanza DateTimeException| Catch2["<b>CATCH (DateTimeException e)</b><br/>datosCorrectos = false<br/>motivo = 'Hora fuera de límites'"]
+
+   L3 -->|Sin errores| NormalFlow["Flujo normal: evaluar aforo y reglas"]
+   Catch1 --> Convergencia["Flujo de seguridad: Torno Bloqueado"]
+   Catch2 --> Convergencia
 ```
 
 ##### A. Anatomía del bloque `try-catch`
@@ -1103,11 +1297,132 @@ try {
 
 #### 3. Evolución del caso guía a `ControlAccesoQR v2.3`
 
-Evolucionamos el código de la versión `v2.2`. Mantenemos íntegras todas las constantes, los métodos modulares construidos con sentencias `switch` clásicas y la presentación formateada, incorporando:
-1. La importación de `java.time.DateTimeException`.
-2. Inicialización defensiva de variables en el ámbito de `main`.
-3. Bloque `try-catch` para capturar `NumberFormatException` y `DateTimeException` durante la lectura de datos.
-4. Integración de la bandera `datosSintacticamenteCorrectos` como primer filtro excluyente en la toma de decisiones.
+En esta versión envolvemos la captura de datos en un bloque vigilado `try-catch`, inicializamos las variables con valores defensivos por encima del bloque para preservar su ámbito e introducimos la bandera `datosSintacticamenteCorrectos` como primer filtro de decisión.
+
+##### A. Comparativa de cambios respecto a v2.2 (`diff`)
+
+```diff
++ import java.time.DateTimeException;
+
+  // =========================================================================
+  // MÉTODO MAIN: Inicialización previa de variables (Block Scope)
+  // =========================================================================
++ boolean datosSintacticamenteCorrectos = true;
++ String motivoDenegacion = "";
+
+  // =========================================================================
+  // CAPTURA VIGILADA CON TRY-CATCH
+  // =========================================================================
+- terminalId = Integer.parseInt(teclado.nextLine());
+- tempVestibulo = teclado.nextDouble();
+- tiempoEntrada = LocalTime.of(horaEntrada, minutoEntrada);
++ try {
++     terminalId = Integer.parseInt(teclado.nextLine().trim());
++     tempVestibulo = Double.parseDouble(teclado.nextLine().trim());
++     // ... [Lecturas restantes] ...
++     tiempoEntrada = LocalTime.of(horaEntrada, minutoEntrada);
++     tiempoSalida  = LocalTime.of(horaSalida, minutoSalida);
++ } catch (NumberFormatException e) {
++     datosSintacticamenteCorrectos = false;
++     motivoDenegacion = "Error de formato de entrada: se introdujo texto en un campo numérico.";
++ } catch (DateTimeException e) {
++     datosSintacticamenteCorrectos = false;
++     motivoDenegacion = "Error temporal cronológico: hora (0-23) o minuto (0-59) fuera de límites.";
++ }
+
+  // =========================================================================
+  // TOMA DE DECISIONES DEFENSIVA
+  // =========================================================================
++ if (!datosSintacticamenteCorrectos) {
++     accesoConcedido = false; // Denegación inmediata sin evaluar más reglas
++ } else if (!temperaturaApta) { ...
+```
+
+##### B. Foco en la novedad: bloque vigilado y cortocircuito de seguridad
+
+Observa cómo se estructura la captura protegida y cómo la bandera de integridad actúa de escudo en el árbol de decisión:
+
+```java
+// -------------------------------------------------------------------------
+// Inicialización defensiva de variables en el ámbito de main
+// -------------------------------------------------------------------------
+int terminalId = 0;
+double tempVestibulo = 0.0;
+int horaEntrada = 0, minutoEntrada = 0;
+int horaSalida = 0, minutoSalida = 0;
+LocalTime tiempoEntrada = LocalTime.of(8, 0);
+LocalTime tiempoSalida  = LocalTime.of(14, 0);
+
+boolean datosSintacticamenteCorrectos = true;
+String motivoDenegacion = "";
+
+// -------------------------------------------------------------------------
+// Captura vigilada interactiva
+// -------------------------------------------------------------------------
+try {
+    System.out.print("Introduce identificador del terminal en texto (ej. 101): ");
+    terminalId = Integer.parseInt(teclado.nextLine().trim());
+
+    System.out.print("Temperatura base del sensor (ºC): ");
+    tempVestibulo = Double.parseDouble(teclado.nextLine().trim());
+
+    // ... [Lecturas de uptime, coordenadas, DNI, nombre y perfil] ...
+
+    System.out.print("Hora de entrada (0-23): ");
+    horaEntrada = Integer.parseInt(teclado.nextLine().trim());
+    System.out.print("Minuto de entrada (0-59): ");
+    minutoEntrada = Integer.parseInt(teclado.nextLine().trim());
+
+    System.out.print("Hora de salida (0-23): ");
+    horaSalida = Integer.parseInt(teclado.nextLine().trim());
+    System.out.print("Minuto de salida (0-59): ");
+    minutoSalida = Integer.parseInt(teclado.nextLine().trim());
+
+    // Construcción cronológica vigilada
+    tiempoEntrada = LocalTime.of(horaEntrada, minutoEntrada);
+    tiempoSalida  = LocalTime.of(horaSalida, minutoSalida);
+
+} catch (NumberFormatException e) {
+    datosSintacticamenteCorrectos = false;
+    motivoDenegacion = "Error de formato de entrada: se introdujo un valor alfanumérico en un campo numérico.";
+} catch (DateTimeException e) {
+    datosSintacticamenteCorrectos = false;
+    motivoDenegacion = "Error temporal cronológico: hora (0-23) o minuto (0-59) fuera de límites válidos.";
+}
+
+// -------------------------------------------------------------------------
+// Árbol de decisión defensivo
+// -------------------------------------------------------------------------
+boolean accesoConcedido;
+
+if (!datosSintacticamenteCorrectos) {
+    // Si la captura arrojó excepciones, se aborta la autorización de inmediato
+    accesoConcedido = false;
+} else if (!temperaturaApta) {
+    accesoConcedido = false;
+    motivoDenegacion = String.format("Lectura térmica anómala (%.1f ºC fuera del rango %.1f-%.1f ºC)", 
+            tempVestibulo, TEMP_CORPORAL_MIN_FALLO, TEMP_CORPORAL_MAX_FIEBRE);
+} else if (!aforoSuficiente) {
+    accesoConcedido = false;
+    motivoDenegacion = "Aforo de recinto saturado. No hay plazas libres disponibles.";
+} else if (!esLongitudDniCorrecta) {
+    accesoConcedido = false;
+    motivoDenegacion = "Documento irregular. El DNI debe contener exactamente 9 caracteres.";
+} else if (!perfilReconocido) {
+    accesoConcedido = false;
+    motivoDenegacion = "Perfil '" + perfilNormalizado + "' no autorizado por jefatura de estudios.";
+} else {
+    accesoConcedido = true;
+    personasEnCentro++;
+    aforoDisponible--;
+    idUltimoFichaje++;
+}
+```
+
+##### C. Código fuente completo integrado
+
+<details>
+<summary><b>🔍 Desplegar archivo completo ControlAccesoQR.java (v2.3)</b></summary>
 
 ```java
 /**
@@ -1116,7 +1431,7 @@ Evolucionamos el código de la versión `v2.2`. Mantenemos íntegras todas las c
  * Consultora: AzaharTech Software Consulting
  * 
  * Versión 2.3:
- * Incorpora gestión básica de excepciones con bloques try-catch (Sprint 3).
+ * Incorpora gestión básica de excepciones con bloques try-catch (Sprint 3: «El laberinto de la lógica»).
  * Protege el flujo ante NumberFormatException y DateTimeException en la captura interactiva.
  * Integra la bandera de integridad de datos en el árbol de decisión para evitar caídas del terminal.
  * Mantiene la lógica de perfiles modularizada mediante sentencias switch clásicas.
@@ -1528,6 +1843,8 @@ public class ControlAccesoQR {
 }
 ```
 
+</details>
+
 ---
 
 #### 4. Segunda sesión: dojo de entrenamiento y katas de código
@@ -1673,10 +1990,114 @@ Donde $P$ es el número de puntos de decisión (`if`, `else if`, `case`, operado
 
 #### 3. Evolución del caso guía a `ControlAccesoQR v2.4` (Java nativo)
 
-Evolucionamos el código de la versión `v2.3` a la **`v2.4`**. Mantenemos todas las constantes inmutables, la captura con `try-catch` y la salida formateada completa, incorporando:
-1. Métodos estáticos predicado específicos (`esTemperaturaCorporalSegura`, `esDocumentoValido`, `esPerfilAutorizado`).
-2. Desacoplamiento de la validación del perfil: el `switch` clásico ahora encapsula la comprobación booleana de pertenencia a los roles del centro.
-3. Reducción de la carga cognitiva en el bloque decisional de `main`.
+En esta versión extraemos las reglas de validación biométrica, documental y de perfil hacia métodos predicado estáticos (`boolean`), aligerando el árbol de decisión de `main` y reduciendo notablemente su complejidad ciclomática.
+
+##### A. Comparativa de cambios respecto a v2.3 (`diff`)
+
+```diff
+  // =========================================================================
+  // MÉTODOS PREDICADO BOOLEANOS (Extracción modular de reglas de negocio)
+  // =========================================================================
++ public static boolean esTemperaturaCorporalSegura(double temperatura) {
++     return (temperatura >= TEMP_CORPORAL_MIN_FALLO && temperatura <= TEMP_CORPORAL_MAX_FIEBRE);
++ }
++
++ public static boolean esDocumentoValido(String dni) {
++     return (dni != null && dni.length() == LONGITUD_DNI_ESTANDAR);
++ }
++
++ public static boolean esPerfilAutorizado(char perfil) {
++     boolean autorizado;
++     switch (perfil) {
++         case 'E': case 'D': case 'V': case 'A': autorizado = true; break;
++         default: autorizado = false; break;
++     }
++     return autorizado;
++ }
+
+  // =========================================================================
+  // MÉTODO MAIN: Árbol de decisión desacoplado
+  // =========================================================================
+- boolean esLongitudDniCorrecta = (dniPersonaLimpio.length() == LONGITUD_DNI_ESTANDAR);
++ boolean esLongitudDniCorrecta = esDocumentoValido(dniPersonaLimpio);
+- boolean perfilReconocido;
+- switch (perfilNormalizado) { ... } // Se traslada al método predicado
++ boolean perfilReconocido = esPerfilAutorizado(perfilNormalizado);
+
+  if (!datosSintacticamenteCorrectos) {
+      accesoConcedido = false;
+- } else if (!temperaturaApta) {
++ } else if (!esTemperaturaCorporalSegura(tempVestibulo)) {
+      accesoConcedido = false;
+      motivoDenegacion = String.format("Lectura térmica anómala (%.1f ºC fuera del rango %.1f-%.1f ºC)", 
+              tempVestibulo, TEMP_CORPORAL_MIN_FALLO, TEMP_CORPORAL_MAX_FIEBRE);
+  } else if (aforoDisponible <= 0) {
+```
+
+##### B. Foco en la novedad: métodos predicado y árbol de decisión limpio
+
+Observa la claridad semántica que adquiere el orquestador `main` al apoyarse en funciones que responden preguntas booleanas concretas:
+
+```java
+// -------------------------------------------------------------------------
+// Métodos predicado estáticos puros
+// -------------------------------------------------------------------------
+public static boolean esTemperaturaCorporalSegura(double temperatura) {
+    return (temperatura >= TEMP_CORPORAL_MIN_FALLO && temperatura <= TEMP_CORPORAL_MAX_FIEBRE);
+}
+
+public static boolean esDocumentoValido(String dni) {
+    return (dni != null && dni.length() == LONGITUD_DNI_ESTANDAR);
+}
+
+public static boolean esPerfilAutorizado(char perfil) {
+    boolean autorizado;
+    switch (perfil) {
+        case 'E':
+        case 'D':
+        case 'V':
+        case 'A':
+            autorizado = true;
+            break;
+        default:
+            autorizado = false;
+            break;
+    }
+    return autorizado;
+}
+
+// -------------------------------------------------------------------------
+// Árbol de decisión limpio en main
+// -------------------------------------------------------------------------
+boolean accesoConcedido;
+
+if (!datosSintacticamenteCorrectos) {
+    accesoConcedido = false;
+} else if (!esTemperaturaCorporalSegura(tempVestibulo)) {
+    accesoConcedido = false;
+    motivoDenegacion = String.format("Lectura térmica anómala (%.1f ºC fuera del rango %.1f-%.1f ºC)", 
+            tempVestibulo, TEMP_CORPORAL_MIN_FALLO, TEMP_CORPORAL_MAX_FIEBRE);
+} else if (aforoDisponible <= 0) {
+    accesoConcedido = false;
+    motivoDenegacion = "Aforo de recinto saturado. No hay plazas libres disponibles.";
+} else if (!esLongitudDniCorrecta) {
+    accesoConcedido = false;
+    motivoDenegacion = "Documento irregular. El DNI debe contener exactamente 9 caracteres.";
+} else if (!perfilReconocido) {
+    accesoConcedido = false;
+    motivoDenegacion = "Perfil '" + perfilNormalizado + "' no autorizado por jefatura de estudios.";
+} else {
+    accesoConcedido = true;
+    personasEnCentro++;
+    aforoDisponible--;
+    idUltimoFichaje++;
+}
+```
+
+##### C. Código fuente completo integrado
+
+<details>
+<summary><b>🔍 Desplegar archivo completo ControlAccesoQR.java (v2.4)</b></summary>
 
 ```java
 /**
@@ -2117,6 +2538,8 @@ public class ControlAccesoQR {
 }
 ```
 
+</details>
+
 ---
 
 #### 4. Segunda sesión: dojo de entrenamiento y katas de código
@@ -2154,4 +2577,3 @@ Donde $P$ representa el número de predicados decisionales (`if`, `case`, operad
 **Reto técnico:** redacta un comentario técnico en la cabecera de tu clase documentando:
 1. El cálculo exacto de la complejidad ciclomática de tu clase antes y después de extraer los métodos predicado.
 2. Por qué mantener la complejidad ciclomática de cualquier método por debajo de 10 ($V(G) \le 10$) reduce exponencialmente la probabilidad de defectos lógicos y facilita la cobertura completa de pruebas unitarias (*branch coverage*) antes de abordar las estructuras de repetición en la Semana 8.
-
