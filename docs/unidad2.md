@@ -217,7 +217,7 @@ public class ControlAccesoQR {
         // ---------------------------------------------------------------------
         final String NOMBRE_CENTRO = "IES El Caminàs (Castellón)";
         final String PREFIJO_CENTRO = "CAMINAS";
-        final String RUTA_LOGS = ".\caminas\terminal\logs";
+        final String RUTA_LOGS = ".\\caminas\\terminal\\logs";
         final int MINUTOS_POR_HORA = 60;
         final int SEGUNDOS_POR_HORA = 3600;
         final int SEGUNDOS_POR_MINUTO = 60;
@@ -1604,10 +1604,11 @@ $$\text{ValorAcotado} = \text{Math.max}(MIN, \text{Math.min}(\text{lecturaBruta}
 #### 3. Evolución del caso guía a `ControlAccesoQR v1.4`
 
 Ampliamos el programa incorporando el uso de métodos estáticos de `Math`:
-1. Definimos una **jornada laboral/centro de referencia de 480 minutos (8 horas)**, representativa del personal docente y PAS.
-2. Calculamos con **`Math.abs()`** la desviación absoluta en minutos que la estancia de la persona representa respecto a esa jornada de 8 horas.
-3. Acotamos la lectura térmica del sensor mediante **`Math.max()` y `Math.min()`** para que el valor visualizado en pantalla nunca baje de $15.0$ ºC ni supere los $35.0$ ºC.
-4. Acotamos el aforo con **`Math.min()`** para garantizar que el panel nunca muestre más personas que la capacidad máxima física del centro (2000 plazas).
+
+1. Definimos una **jornada laboral/centro de referencia de 480 minutos (8 horas)**, representativa del personal docente y PAS.  
+2. Calculamos con **`Math.abs()`** la desviación absoluta en minutos que la estancia de la persona representa respecto a esa jornada de 8 horas.  
+3. Acotamos la lectura térmica del sensor mediante **`Math.max()` y `Math.min()`** para que el valor visualizado en pantalla nunca baje de $15.0$ ºC ni supere los $35.0$ ºC.  
+4. Acotamos el aforo con **`Math.min()`** para garantizar que el panel nunca muestre más personas que la capacidad máxima física del centro (2000 plazas).  
 
 ##### Paso A. Algoritmo en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v1.4)
 
@@ -2597,26 +2598,29 @@ double temperatura = Double.parseDouble(textoTemp); // Devuelve el primitivo dou
 
 ##### C. Constantes de límite de memoria: `MAX_VALUE` y `MIN_VALUE`
 Las clases envoltorio exponen constantes públicas que nos permiten consultar los límites físicos absolutos que puede almacenar cada tipo sin desbordar la memoria:
-* `Integer.MAX_VALUE`: $2.147.483.647$ (el número entero más alto representable en 32 bits).
-* `Integer.MIN_VALUE`: $-2.147.483.648$.
-* `Double.MAX_VALUE`: Aprox. $1.79 \times 10^{308}$.
+
+* `Integer.MAX_VALUE`: $2.147.483.647$ (el número entero más alto representable en 32 bits).  
+* `Integer.MIN_VALUE`: $-2.147.483.648$.  
+* `Double.MAX_VALUE`: Aprox. $1.79 \times 10^{308}$.  
 
 ##### D. Métodos de utilidad de la clase `Character`
 La clase envoltorio `Character` ofrece métodos estáticos indispensables para manipular caracteres individuales sin necesidad de tablas ASCII manuales:
-* `Character.toUpperCase(char c)`: Convierte un carácter a mayúscula (*ej. `'e'` $\rightarrow$ `'E'`*).
-* `Character.toLowerCase(char c)`: Convierte un carácter a minúscula.
-* `Character.isDigit(char c)`: Devuelve un `boolean` indicando si el carácter es un dígito numérico entre `'0'` y `'9'`.
-* `Character.isLetter(char c)`: Devuelve un `boolean` indicando si el carácter es una letra alfabética.
+
+* `Character.toUpperCase(char c)`: Convierte un carácter a mayúscula (*ej. `'e'` $\rightarrow$ `'E'`*).  
+* `Character.toLowerCase(char c)`: Convierte un carácter a minúscula.  
+* `Character.isDigit(char c)`: Devuelve un `boolean` indicando si el carácter es un dígito numérico entre `'0'` y `'9'`.  
+* `Character.isLetter(char c)`: Devuelve un `boolean` indicando si el carácter es una letra alfabética.  
 
 ---
 
 #### 3. Evolución del caso guía a `ControlAccesoQR v1.6`
 
 Ampliamos el programa incorporando el uso de clases envoltorio:
-1. Simulamos que la configuración del terminal llega empaquetada como texto (`"101"` y `"2000"`) y la parseamos a variables enteras con **`Integer.parseInt()`**.
-2. Normalizamos el perfil de acceso del usuario (`perfilPersona`) convirtiéndolo automáticamente a mayúsculas mediante **`Character.toUpperCase()`**.
-3. Verificamos con **`Character.isLetter()`** si el perfil introducido es un carácter alfabético válido.
-4. Consultamos **`Integer.MAX_VALUE`** en la telemetría del terminal para certificar el límite máximo teórico de registros antes de desbordar la memoria del contador.
+
+1. Simulamos que la configuración del terminal llega empaquetada como texto (`"101"` y `"2000"`) y la parseamos a variables enteras con **`Integer.parseInt()`**.  
+2. Normalizamos el perfil de acceso del usuario (`perfilPersona`) convirtiéndolo automáticamente a mayúsculas mediante **`Character.toUpperCase()`**.  
+3. Verificamos con **`Character.isLetter()`** si el perfil introducido es un carácter alfabético válido.  
+4. Consultamos **`Integer.MAX_VALUE`** en la telemetría del terminal para certificar el límite máximo teórico de registros antes de desbordar la memoria del contador.  
 
 ##### Paso A. Algoritmo en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v1.6)
 
