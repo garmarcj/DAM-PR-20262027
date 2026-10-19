@@ -2565,7 +2565,7 @@ Pau comenta desconcertado:
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │                        TIPOS PRIMITIVOS Y SUS CLASES ENVOLTORIO                        │
 ├─────────────────────┬───────────────────────┬──────────────────────────────────────────┤
-│ Tipo Primitivo      │ Clase Envoltorio      │ Método estático de parseo (de String a X)│
+│ Tipo Primitivo      │ Clase Envoltorio      │ Ejemplos de métodos estáticos            │
 │ (En memoria Stack)  │ (Objeto en java.lang) │                                          │
 ├─────────────────────┼───────────────────────┼──────────────────────────────────────────┤
 │ int                 │ Integer               │ Integer.parseInt("101")    -> 101        │
