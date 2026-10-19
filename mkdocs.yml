@@ -19,15 +19,24 @@ nav:
   - Inicio: index.md
   - Unidad 1: unidad1.md
   - Unidad 2: unidad2.md
+
+extra_javascript:
+  - https://unpkg.com
+
 markdown_extensions:
   - admonition
   - footnotes
   - toc:
       permalink: true
   - pymdownx.highlight
-  - pymdownx.superfences
   - pymdownx.details
   - pymdownx.tabbed
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
 plugins:
   - with-pdf:
       output_path: pdf/programacion.pdf
