@@ -20,9 +20,6 @@ nav:
   - Unidad 1: unidad1.md
   - Unidad 2: unidad2.md
 
-extra_css:
-  - stylesheets/custom.css
-
 extra_javascript:
   - https://unpkg.com
 
@@ -31,6 +28,7 @@ markdown_extensions:
   - footnotes
   - toc:
       permalink: true
+      toc_depth: 3
   - pymdownx.highlight
   - pymdownx.details
   - pymdownx.tabbed
