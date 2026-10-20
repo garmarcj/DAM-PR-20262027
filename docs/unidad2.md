@@ -2,7 +2,7 @@
 
 ---
 
-## Semana 4. Fundamentos de POO, instanciación y gestión de memoria (Stack vs. Heap)
+## Semana 4. POO, instanciación y memoria Stack/Heap
 Esta semana marca la entrada formal en los fundamentos de la Programación Orientada a Objetos (POO). A lo largo de estas
 sesiones dejaremos atrás la visión lineal del código para comprender cómo la Máquina Virtual de Java estructura y gestiona
 la memoria real, diferenciando las referencias en la pila (Stack) de los objetos dinámicos alojados en el montón (Heap). 
@@ -1506,7 +1506,7 @@ Cada estudiante finaliza y entrega el avance de la primera semana del Sprint 2 d
 
 ---
 
-## Semana 5. Métodos estáticos, clase Math y clases envoltorio (wrappers)
+## Semana 5. Clase Math, wrappers y métodos estáticos
 Tras asentar el funcionamiento de la memoria dinámica en el montículo (Heap) durante la primera semana, 
 el equipo de desarrollo de AzaharTech aborda en esta segunda semana la frontera entre los métodos ligados 
 a objetos vivos y los métodos estáticos (de clase), que ofrecen utilidades de cálculo directo sin necesidad 
@@ -3048,7 +3048,7 @@ Pasamos al dojo de entrenamiento para programar, con tres **katas de dificultad 
 
 ---
 
-## Semana 6. Métodos avanzados de String y gestion temporal con java.time (LocalTime)
+## Semana 6. Métodos String y tiempo con java.time
 Encaramos la recta final del Sprint 2 adentrándonos en el procesamiento avanzado de información textual y en la gestión temporal 
 moderna del software. A lo largo de esta semana, el equipo de desarrollo de AzaharTech desentrañará el funcionamiento interno y la 
 inmutabilidad de la clase String en la memoria Heap, dominando métodos esenciales de inspección (length, charAt, contains, indexOf) 

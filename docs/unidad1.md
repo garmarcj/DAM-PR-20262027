@@ -2,7 +2,7 @@
 
 ---
 
-## Semana 1. El nacimiento de la aplicación: estructura, variables y tipos de datos
+## Semana 1. Estructura, variables y tipos de datos
 
 A lo largo de este sprint desarrollaremos y evolucionaremos **un único archivo de pseudocódigo (`ControlAccesoQR.psc`) y
 una única clase Java (`ControlAccesoQR.java`)** para el caso guía del **IES El Caminàs**, mientras cada estudiante hace
@@ -588,7 +588,7 @@ El estudiante confirma los avances de la primera semana en su repositorio:
 
 ---
 
-## Semana 2. El motor matemático: operadores, expresiones y conversiones de tipo
+## Semana 2. Operadores, expresiones y casting
 
 Continuamos trabajando sobre el **mismo archivo maestro** que dejamos al final de la Semana 1. Tomamos la versión
 `ControlAccesoQR v0.3` y la evolucionamos progresivamente hasta la versión `v0.6` integrando operadores compuestos,
@@ -1748,7 +1748,7 @@ El estudiante actualiza su repositorio con los avances de la segunda semana desd
 
 ---
 
-## Semana 3. La arquitectura del código - constantes, escapes y printf
+## Semana 3. Constantes, formato y salida printf
 
 Llegamos a la semana final del Sprint 1. Partiendo de la versión `ControlAccesoQR v0.6` (que ya cuenta con captura
 completa, descomposición con módulo y casting), evolucionamos nuestro archivo maestro eliminando números mágicos
