@@ -20,6 +20,9 @@ nav:
   - Unidad 1: unidad1.md
   - Unidad 2: unidad2.md
 
+extra_css:
+  - stylesheets/custom.css
+
 extra_javascript:
   - https://unpkg.com
 

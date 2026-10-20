@@ -1,0 +1,9 @@
+/* Oculta los subelementos (h3, h4, etc.) de la barra lateral derecha por defecto */
+.md-nav--secondary .md-nav__list .md-nav__item .md-nav__list {
+    display: none;
+}
+
+/* Muestra los subelementos solo cuando el título padre está activo (el usuario está en esa sección) */
+.md-nav--secondary .md-nav__item--active > .md-nav__list {
+    display: block;
+}
