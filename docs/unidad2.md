@@ -3007,17 +3007,17 @@ Pasamos al dojo de entrenamiento para programar, con tres **katas de dificultad 
 ---
 
 ##### Kata 1 (Cinturón blanco / Nivel base). Parseo de entradas con `Integer.parseInt()` y `Double.parseDouble()`
-* **Objetivo:** Capturar al menos un dato numérico de tu proyecto propio en formato de texto plano (`String`) y transformarlo a primitivo mediante métodos de parseo de las clases *Wrapper*.
+* **Objetivo:** capturar al menos un dato numérico de tu proyecto propio en formato de texto plano (`String`) y transformarlo a primitivo mediante métodos de parseo de las clases *Wrapper*.
 * **Aplicación según tu proyecto elegido:**
-  * En **Aventura conversacional**: capturar el código de armadura como texto (`"75"`) y parsearlo a `int` con `Integer.parseInt()`, y capturar la bonificación de peso (`"1.25"`) y parsearla con `Double.parseDouble()`.
-  * En **Motor de recomendación**: capturar el código de año de estreno en texto (`"2024"`) y transformarlo con `Integer.parseInt()`, y parsear la puntuación de crítica externa (`"8.75"`) con `Double.parseDouble()`.
-  * En **Simulador de físicas 2D**: capturar el valor de fricción en texto (`"0.05"`) y parsearlo con `Double.parseDouble()`, y parsear el número de partículas del lote con `Integer.parseInt()`.
-  * En **Bóveda de contraseñas**: capturar el tiempo de caducidad en texto (`"90"`) y transformarlo con `Integer.parseInt()`, y parsear el coeficiente de fortaleza con `Double.parseDouble()`.
+  * En **Aventura conversacional**. Capturar el código de armadura como texto (`"75"`) y parsearlo a `int` con `Integer.parseInt()`, y capturar la bonificación de peso (`"1.25"`) y parsearla con `Double.parseDouble()`.
+  * En **Motor de recomendación**. Capturar el código de año de estreno en texto (`"2024"`) y transformarlo con `Integer.parseInt()`, y parsear la puntuación de crítica externa (`"8.75"`) con `Double.parseDouble()`.
+  * En **Simulador de físicas 2D**. Capturar el valor de fricción en texto (`"0.05"`) y parsearlo con `Double.parseDouble()`, y parsear el número de partículas del lote con `Integer.parseInt()`.
+  * En **Bóveda de contraseñas**. Capturar el tiempo de caducidad en texto (`"90"`) y transformarlo con `Integer.parseInt()`, y parsear el coeficiente de fortaleza con `Double.parseDouble()`.
 
 ---
 
 ##### Kata 2 (Cinturón marrón / Nivel avanzado). Inspección y normalización con la clase `Character`
-* **Contexto técnico:** Demostrar el uso de utilidades estáticas de caracteres para limpiar entradas sin usar condicionales.
+* **Contexto técnico:** demostrar el uso de utilidades estáticas de caracteres para limpiar entradas sin usar condicionales.
 * **Misión de la kata:**
   1. En una clase de prueba llamada `PruebaCaracteres.java`, solicita al usuario un código de autorización compuesto por un único carácter (por ejemplo, una letra de zona o sector).
   2. Utiliza `Character.toUpperCase(c)` para normalizar el carácter a mayúscula automáticamente.
@@ -3032,7 +3032,7 @@ Pasamos al dojo de entrenamiento para programar, con tres **katas de dificultad 
 ---
 
 ##### Kata 3 (Cinturón negro / «Hacker AzaharTech»). El desbordamiento de `Integer.MAX_VALUE`
-* **Contexto de sistemas:** En ingeniería del software, ignorar los límites de las clases envoltorio provoca graves fallos de desbordamiento (*overflow*).
+* **Contexto de sistemas:** en ingeniería del software, ignorar los límites de las clases envoltorio provoca graves fallos de desbordamiento (*overflow*).
 * **Misión de la kata:**
   1. En una clase de prueba temporal llamada `PruebaDesbordamiento.java`, escribe el siguiente experimento:
      ```java
@@ -3045,6 +3045,19 @@ Pasamos al dojo de entrenamiento para programar, con tres **katas de dificultad 
      ```
   2. Ejecuta el programa y comprueba que al sumar 1 al valor máximo positivo ($2.147.483.647$), la variable pasa automáticamente a valer el límite negativo más extremo ($-2.147.483.648$).
   3. Redacta dos líneas de comentario en tu código explicando por qué ocurre esto: **Java utiliza aritmética modular de complemento a dos con 32 bits, por lo que desbordar el bit de signo convierte el número positivo más alto en el número negativo más bajo**.
+
+---
+
+## Semana 6. Métodos avanzados de String y gestion temporal con java.time (LocalTime)
+Encaramos la recta final del Sprint 2 adentrándonos en el procesamiento avanzado de información textual y en la gestión temporal 
+moderna del software. A lo largo de esta semana, el equipo de desarrollo de AzaharTech desentrañará el funcionamiento interno y la 
+inmutabilidad de la clase String en la memoria Heap, dominando métodos esenciales de inspección (length, charAt, contains, indexOf) 
+y de transformación y recorte (substring, trim, toUpperCase, replace) para sanear y desglosar los datos de entrada del sistema. 
+Además, daremos el salto definitivo hacia la API oficial java.time, incorporando las clases LocalTime, LocalDate y Duration para 
+capturar marcas de tiempo reales del sistema operativo y calcular permanencias exactas sin necesidad de multiplicaciones manuales 
+por 60. Como culminación del sprint, aprenderemos a modularizar nuestra aplicación codificando métodos estáticos propios con 
+parámetros y valores de retorno, transformando el código en una arquitectura limpia, profesional y libre de bloques monolíticos, 
+sellando así la versión definitiva v2.0 de nuestro software.
 
 ---
 
@@ -3077,8 +3090,8 @@ Pau muestra un problema recurrente detectado en las pruebas de campo:
 ├────────────────────────────────────────────────────────────────────────────────────────┤
 │ String dni = "45123789K";                                                              │
 │                                                                                        │
-│ Carácter:  [ '4' ][ '5' ][ '1' ][ '2' ][ '3' ][ '7' ][ '8' ][ '9' ][ 'K' ]             │
 │ Índice:       0      1      2      3      4      5      6      7      8                │
+│ Carácter:  [ '4' ][ '5' ][ '1' ][ '2' ][ '3' ][ '7' ][ '8' ][ '9' ][ 'K' ]             │
 │                                                                                        │
 │ • Longitud total (length): 9 caracteres.                                               │
 │ • Primer carácter:         dni.charAt(0)                -> '4'                         │
@@ -3088,8 +3101,9 @@ Pau muestra un problema recurrente detectado en las pruebas de campo:
 
 ##### A. Inmutabilidad de la clase `String`
 En Java, los objetos de la clase `String` son **inmutables**: una vez que se crea una cadena en la memoria Heap, **su contenido jamás puede ser modificado**.
-* Cuando realizamos una concatenación como `texto += " nuevo"`, Java no altera el objeto original: crea un **objeto completamente nuevo** en el Heap con el texto resultante y reasigna la variable de referencia para que apunte al nuevo bloque.
-* Los métodos de la clase `String` nunca modifican la cadena original; realizan la operación y devuelven un nuevo resultado.
+
+* Cuando realizamos una concatenación como `texto += " nuevo"`, Java no altera el objeto original: crea un **objeto completamente nuevo** en el Heap con el texto resultante y reasigna la variable de referencia para que apunte al nuevo bloque.  
+* Los métodos de la clase `String` nunca modifican la cadena original; realizan la operación y devuelven un nuevo resultado.  
 
 ##### B. Métodos fundamentales de inspección y tamaño
 Al pertenecer a `java.lang`, no requieren ninguna sentencia `import`:
@@ -3098,7 +3112,7 @@ Al pertenecer a `java.lang`, no requieren ninguna sentencia `import`:
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │                        MÉTODOS DE INSPECCIÓN DE LA CLASE STRING                        │
 ├──────────────────────────┬───────────────────┬─────────────────────────────────────────┤
-│ Firma del método         │ Tipo de retorno   │ Comportamiento técnico                  │
+│ Firma del método         │ Tipo de retorno   │ Comportamiento                  │
 ├──────────────────────────┼───────────────────┼─────────────────────────────────────────┤
 │ cadena.length()          │ int               │ Devuelve el número total de caracteres. │
 ├──────────────────────────┼───────────────────┼─────────────────────────────────────────┤
@@ -3117,9 +3131,10 @@ Al pertenecer a `java.lang`, no requieren ninguna sentencia `import`:
 
 ##### C. La regla del índice base 0 y la extracción del último carácter
 En Java, los índices de las cadenas comienzan siempre en **`0`**:
-* El primer carácter reside en el índice `0`.
-* El último carácter reside obligatoriamente en el índice **`cadena.length() - 1`**.
-* **Peligro con los límites.** Intentar acceder a `cadena.charAt(cadena.length())` provoca una excepción crítica en tiempo de ejecución: **`StringIndexOutOfBoundsException`**, ya que ese índice queda fuera del rango asignado.
+
+* El primer carácter reside en el índice `0`.  
+* El último carácter reside obligatoriamente en el índice **`cadena.length() - 1`**.  
+* **Peligro con los límites.** Intentar acceder a `cadena.charAt(cadena.length())` provoca una excepción crítica en tiempo de ejecución: **`StringIndexOutOfBoundsException`**, ya que ese índice queda fuera del rango asignado.  
 
 ##### D. Evaluación con banderas booleanas
 Podemos evaluar la validez estructural de una cadena asignando el resultado de las comparaciones directamente a variables `boolean`:
@@ -3137,11 +3152,12 @@ boolean contieneSeparador = (tokenResumen.indexOf("-") != -1);
 #### 3. Evolución del caso guía a `ControlAccesoQR v1.7`
 
 Ampliamos el programa guía incorporando métodos de inspección de cadenas:
-1. Calculamos la longitud exacta del nombre y del DNI de la persona mediante **`length()`**.
-2. Extraemos automáticamente la letra final del DNI mediante **`charAt(length() - 1)`**.
-3. Verificamos mediante **`contains()`** que el token del vestíbulo contiene el prefijo oficial `"CAMINAS"`.
-4. Localizamos mediante **`indexOf()`** la posición del primer guion separador del token.
-5. Evaluamos con una expresión booleana si la longitud del DNI cumple la norma oficial de 9 caracteres.
+
+1. Calculamos la longitud exacta del nombre y del DNI de la persona mediante **`length()`**.  
+2. Extraemos automáticamente la letra final del DNI mediante **`charAt(length() - 1)`**.  
+3. Verificamos mediante **`contains()`** que el token del vestíbulo contiene el prefijo oficial `"CAMINAS"`.  
+4. Localizamos mediante **`indexOf()`** la posición del primer guion separador del token.  
+5. Evaluamos con una expresión booleana si la longitud del DNI cumple la norma oficial de 9 caracteres.  
 
 ##### Paso A. Algoritmo en PSeInt (`pr/pseudocodigo/ControlAccesoQR.psc` — v1.7)
 
