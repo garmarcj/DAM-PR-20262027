@@ -3274,9 +3274,6 @@ En el desarrollo corporativo, los ingenieros no prueban los bucles tecleando man
 3. **Reto de auditoría y análisis.**  
    Comprueba que el bucle procesa secuencialmente todas las solicitudes en milisegundos, que los acumuladores de sesión reflejan exactamente el número de casos inyectados en el fichero de texto y que el programa finaliza imprimiendo la auditoría final sin que el terminal quede bloqueado en una espera infinita de teclado (*hang state*). Documenta en un comentario de la clase los resultados obtenidos en el procesamiento automatizado del lote.
 
-# Sprint 3. Uso de estructuras de control
-## Semana 8. Bucles while, do-while y centinelas
-
 ---
 
 ### Día 29 - 2 sesiones
@@ -3870,9 +3867,6 @@ En el desarrollo de software de alto rendimiento, los ingenieros miden con preci
    Ejecuta tu programa configurando una cola o ráfaga de 100 iteraciones y luego una de 10.000 iteraciones.
 3. **Reto de análisis:**  
    Calcula en un informe por consola el tiempo medio consumido por cada iteración individual (nanosegundos por ciclo). Documenta en un comentario de tu clase cómo influye el compilador JIT (*Just-In-Time*) de la máquina virtual, explicando por qué las iteraciones intermedias y finales suelen ejecutarse a mayor velocidad que las primeras vueltas debido a la optimización dinámica del código nativo.
-
-# Sprint 3. Uso de estructuras de control
-## Semana 8. Bucles while, do-while y centinelas
 
 ---
 
