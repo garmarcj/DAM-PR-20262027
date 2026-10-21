@@ -2578,7 +2578,8 @@ Donde $P$ representa el número de predicados decisionales (`if`, `case`, operad
 1. El cálculo exacto de la complejidad ciclomática de tu clase antes y después de extraer los métodos predicado.
 2. Por qué mantener la complejidad ciclomática de cualquier método por debajo de 10 ($V(G) \le 10$) reduce exponencialmente la probabilidad de defectos lógicos y facilita la cobertura completa de pruebas unitarias (*branch coverage*) antes de abordar las estructuras de repetición en la Semana 8.
 
-# Sprint 3. Uso de estructuras de control
+---
+
 ## Semana 8. Estructuras de repetición e iteración (bucles `while` y `do-while`)
 
 ---
