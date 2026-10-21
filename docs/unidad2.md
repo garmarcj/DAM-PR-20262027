@@ -5143,4 +5143,9 @@ Cada estudiante finaliza el Sprint 2 registrando su código modular en GitHub de
    refactor(pr): modularizar aplicacion v2.0 con metodos estaticos propios y cierre de sprint 2
    ```
 6. Pulsa **Commit and Push...** y confirma el envío al servidor remoto de GitHub.
-7. Mañana viernes, durante la sesión de Entornos de Desarrollo, registrarás todo el repositorio bajo la etiqueta oficial de release **`v0.2.0-sprint2`**.
+
+## Cierre del Sprint 2
+
+* **Entrega lista.** El estudiante tiene su proyecto propio en GitHub en versión `v2.0`, listo para ser registrado
+  mañana
+  viernes bajo la etiqueta **`v0.2.0-sprint2`**.

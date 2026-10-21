@@ -2838,7 +2838,7 @@ Cada estudiante finaliza su archivo `pr/src/MiProyecto.java`:
 
 ---
 
-### Cierre del Sprint 1
+## Cierre del Sprint 1
 
 * **Entrega lista.** El estudiante tiene su proyecto propio en GitHub en versión `v1.0`, listo para ser registrado
   mañana
