@@ -5166,672 +5166,7 @@ En el desarrollo de software crítico, los invariantes de clase y de bucle garan
 
 ---
 
-### Día 31 - 2 sesiones
-
----
-
-#### 1. Caso guía en AzaharTech
-
-Son las 15:00 h del **jueves 5 de noviembre de 2026**. Con la sesión de hoy, los equipos de desarrollo de **AzaharTech** culminan la segunda semana del **Sprint 3: «El laberinto de la lógica»**. El terminal `v2.7` dispone de un menú consolidado que atiende fichajes individuales, ráfagas con `while` y métricas estadísticas en tiempo real sin arrays.
-
-Sin embargo, durante la reunión de seguimiento con el equipo directivo del **IES El Caminàs**, el coordinador de seguridad del instituto plantea un escenario crítico:
-
-> *«El sistema funciona con fluidez para registrar entradas por la mañana, pero un torno de acceso es **bidireccional**: a las 14:00 h centenares de personas abandonan las instalaciones a la vez.*
->
-> *Hasta hoy, el software solo sabía sumar personas al campus (`personasEnCentro++`). Si alguien sale del instituto, el sistema debe registrar el sentido de la marcha, **reducir la ocupación y liberar plazas en el aforo** (`aforoDisponible++`), vigilando estrictamente que el contador nunca caiga por debajo de cero (*underflow*).*
->
-> *Además, la normativa autonómica exige que el terminal cuente con un **protocolo de evacuación de emergencia**: si se activa la alarma de incendios, el sistema debe suspender los fichajes ordinarios y ejecutar un vaciado progresivo del recinto mediante un bucle `while (personasEnCentro > 0)` que supervise la salida completa de los ocupantes hasta certificar el desalojo total del centro»*.
-
-**Alba Torres** y **Laia Claramunt** recogen el guante y marcan el objetivo del día:
-
-> *«Hoy cerramos la Semana 8 dominando los **patrones avanzados de control por centinela y banderas de estado (*State Flags*)**.*
->
-> *Aprenderemos a diferenciar entre un **valor centinela de escape** y una **bandera lógica de control**, programaremos bucles de vaciado condicional con protección ante desbordamientos negativos y dotaremos al terminal de un control bidireccional seguro antes de abordar el bucle `for` la próxima semana»*.
-
----
-
-#### 2. Fundamento teórico: centinelas de escape, banderas de estado y bucles de vaciado
-
-En ingeniería de software, gobernar la detención de un bucle requiere seleccionar con precisión el mecanismo de control en función de la naturaleza del evento.
-
-```mermaid
-flowchart TD
-    Inicio([Inicio de Operación]) --> Seleccion{"Sentido del paso"}
-    
-    Seleccion -- "Entrada (E)" --> ValEntrada{"¿Aforo disponible?<br/>(aforoDisponible > 0)"}
-    ValEntrada -- true --> Suma["personasEnCentro++<br/>aforoDisponible--"]
-    ValEntrada -- false --> BloqueoEntrada["Torno bloqueado: Aforo saturado"]
-    
-    Seleccion -- "Salida (S)" --> ValSalida{"¿Hay ocupantes?<br/>(personasEnCentro > 0)"}
-    ValSalida -- true --> Resta["personasEnCentro--<br/>aforoDisponible++"]
-    ValSalida -- false --> BloqueoSalida["Torno bloqueado: Recinto vacío (Underflow guard)"]
-    
-    Seleccion -- "Evacuación (Simulacro)" --> BucleEvac{"while (personasEnCentro > 0)"}
-    BucleEvac -- true --> Desalojo["Desalojar bloque de personas<br/>personasEnCentro -= lote<br/>aforoDisponible += lote"]
-    Desalojo --> BucleEvac
-    BucleEvac -- false --> Certificado([Certificado de Centro Evacuado])
-```
-
-##### A. Valores centinela frente a banderas de estado (*Flags*)
-
-Aunque ambos mecanismos controlan la continuidad de las estructuras de repetición, responden a conceptos distintos:
-
-| Mecanismo | Definición técnica | Tipo de dato típico | Caso de uso en AzaharTech |
-| :--- | :--- | :--- | :--- |
-| **Valor Centinela (*Sentinel Value*)** | Dato especial fuera del rango de negocio que señala el fin de una secuencia | `String` (`"FIN"`), `int` (`-1`) | Teclear DNI `"SALIR"` para interrumpir una cola interactiva |
-| **Bandera de Estado (*State Flag*)** | Variable lógica que almacena si se ha producido una condición crítica | `boolean` (`emergenciaActiva`) | Bandera que detiene las entradas si salta la alarma de incendios |
-| **Invariante de Bucle** | Condición matemática que debe cumplirse antes, durante y después de iterar | Expresión booleana compuesta | Garantizar siempre que $0 \le \text{personasEnCentro} \le \text{AFORO\_MAXIMO}$ |
-
-##### B. Protección ante subdesbordamiento (*Underflow Guard*)
-
-Al decrementar contadores en un bucle de salida, es imprescindible aplicar una guardia condicional previa. Si se permite restar cuando `personasEnCentro == 0`, el sistema incurre en una inconsistencia física (número negativo de ocupantes dentro de un edificio). Toda operación de salida debe condicionarse estrictamente a `personasEnCentro > 0`.
-
-##### C. Bucles de drenaje progresivo (*Draining Loops*)
-
-Para modelar procesos de descarga (como vaciar una cola de impresión, purgar un búfer de red o evacuar un edificio), se emplea el patrón de **bucle de drenaje**:
-```java
-while (personasEnCentro > 0) {
-    int loteSalida = Math.min(personasEnCentro, CAPACIDAD_PUERTA);
-    personasEnCentro -= loteSalida;
-    aforoDisponible += loteSalida;
-    // Registro de progreso...
-}
-```
-El uso de `Math.min` garantiza que en la última iteración no se resten más personas de las que realmente quedan en el interior del recinto.
-
----
-
-#### 3. Evolución del caso guía a `ControlAccesoQR v2.8` (Java nativo)
-
-Evolucionamos la versión `v2.7` a la **`v2.8`**, completando las operaciones de la Semana 8. Mantenemos todas las constantes inmutables, la captura con `try-catch` y los métodos predicado, incorporando:
-1. Control bidireccional en el fichaje individual: selector de sentido del paso (`'E'` = Entrada, `'S'` = Salida) con protección ante *underflow*.
-2. Opción 4 del menú: **Protocolo de evacuación de emergencia** gobernado por un bucle `while` de vaciado progresivo.
-3. Actualización de agregados en ambos sentidos: las salidas liberan aforo y computan en el histórico de tránsitos.
-4. Desconexión del terminal reubicada en la opción 5.
-
-##### A. Comparativa de cambios respecto a v2.7 (`diff`)
-
-```diff
-  // =========================================================================
-  // MENÚ DE OPERACIONES: Opción de evacuación y sentido de paso
-  // =========================================================================
-- System.out.println("  [4] Cerrar jornada y apagar terminal");
-+ System.out.println("  [4] Activar protocolo de evacuación / desalojo rápido (while)");
-+ System.out.println("  [5] Cerrar jornada y apagar terminal");
-
-  switch (opcionMenu) {
-      case 1:
-          // Captura de sentido de paso ('E' / 'S')
-+         System.out.print("Sentido del paso (E = Entrada, S = Salida): ");
-+         char sentido = teclado.nextLine().trim().toUpperCase().charAt(0);
-+         if (sentido == 'S') {
-+             if (personasEnCentro > 0) {
-+                 personasEnCentro--;
-+                 aforoDisponible++;
-+                 System.out.println(">> SALIDA REGISTRADA: Torno desbloqueado hacia el exterior.");
-+             } else {
-+                 System.out.println(">> BLOQUEO: No constan personas dentro del centro.");
-+             }
-+         } else {
-+             // [Lógica previa de entrada y comprobación de aforo disponible...]
-+         }
-          break;
-
-+     case 4:
-+         // PROTOCOLO DE EVACUACIÓN CON BUCLE WHILE DE DRENAJE
-+         System.out.println(">> ALERTA: Iniciando desalojo ordenado de emergencia...");
-+         while (personasEnCentro > 0) {
-+             int desalojadosLote = Math.min(personasEnCentro, 250); // Salida en oleadas
-+             personasEnCentro -= desalojadosLote;
-+             aforoDisponible += desalojadosLote;
-+             System.out.printf("  -> Evacuadas %d personas. Quedan dentro: %d%n", desalojadosLote, personasEnCentro);
-+         }
-+         System.out.println(">> EVACUACIÓN COMPLETADA: Recinto 100% desalojado.");
-+         break;
-
--     case 4: sesionActiva = false; break;
-+     case 5: sesionActiva = false; break;
-```
-
-##### B. Foco en la novedad: tránsito bidireccional y vaciado de emergencia
-
-Observa cómo se gestiona el sentido de paso y cómo el bucle `while` de evacuación garantiza matemáticamente que el campus quede vacío sin valores negativos:
-
-```java
-// -------------------------------------------------------------------------
-// Gestión bidireccional en el fichaje individual
-// -------------------------------------------------------------------------
-System.out.print("Sentido del tránsito (E = Entrada, S = Salida): ");
-String lineaSentido = teclado.nextLine().trim().toUpperCase();
-char sentidoTransito = lineaSentido.isEmpty() ? 'E' : lineaSentido.charAt(0);
-
-if (sentidoTransito == 'S') {
-    // Protección de subdesbordamiento: no se puede salir si el centro está vacío
-    if (personasEnCentro > 0) {
-        personasEnCentro--;
-        aforoDisponible++;
-        totalFichajesAutorizados++;
-        System.out.printf(">> SALIDA AUTORIZADA: Buen viaje, %s. Plazas libres: %d%n", 
-                nombrePersonaLimpio, aforoDisponible);
-    } else {
-        totalFichajesDenegados++;
-        System.err.println(">> ALERTA DE SEGURIDAD: Imposible registrar salida; el recinto ya figura vacío.");
-    }
-} else {
-    // Proceso ordinario de entrada (verificación de aforo y temperatura...)
-}
-
-// -------------------------------------------------------------------------
-// Operación 4: Bucle while de drenaje para evacuación de emergencia
-// -------------------------------------------------------------------------
-case 4:
-    System.out.println("\n--- [PROTOCOLO DE EMERGENCIA: EVACUACIÓN GENERAL] ---");
-    if (personasEnCentro == 0) {
-        System.out.println(">> El campus ya se encuentra completamente vacío.");
-    } else {
-        int loteEvacuacion = 300; // Capacidad de desagüe simultánea de las puertas de emergencia
-        int oleada = 1;
-
-        while (personasEnCentro > 0) {
-            int personasQueSalen = Math.min(personasEnCentro, loteEvacuacion);
-            personasEnCentro -= personasQueSalen;
-            aforoDisponible += personasQueSalen;
-
-            System.out.printf("  -> Oleada #%d: Evacuadas %d personas por salidas de emergencia (Restantes: %d)%n",
-                    oleada, personasQueSalen, personasEnCentro);
-            oleada++;
-        }
-        System.out.println(">> CERTIFICACIÓN DE SEGURIDAD: Campus 100% desalojado. Aforo libre restaurado.");
-    }
-    break;
-```
-
-##### C. Código fuente completo integrado
-
-<details>
-<summary><b>🔍 Desplegar archivo completo ControlAccesoQR.java (v2.8)</b></summary>
-
-```java
-/**
- * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
- * Cliente: IES El Caminàs (Castellón de la Plana)
- * Consultora: AzaharTech Software Consulting
- * 
- * Versión 2.8:
- * Cierre de la Semana 8 (Estructuras de repetición iterativas y centinelas).
- * Incorpora tránsito bidireccional (Entrada/Salida) con protección ante underflow.
- * Despliega protocolo de evacuación de emergencia mediante bucle while de drenaje.
- * Mantiene consola interactiva, acumuladores estadísticos y blindaje try-catch.
- * 
- * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
- * @version 2.8 (Noviembre 2026)
- * @since JDK 21 LTS
- * 
- */
-
-import java.util.Scanner;
-import java.util.Random;
-import java.time.LocalTime;
-import java.time.LocalDate;
-import java.time.Duration;
-import java.time.DateTimeException;
-
-public class ControlAccesoQR {
-
-    // -------------------------------------------------------------------------
-    // 1. CONSTANTES INMUTABLES DEL SISTEMA (configuración corporativa)
-    // -------------------------------------------------------------------------
-    final static String NOMBRE_CENTRO = "IES El Caminàs (Castellón)";
-    final static String PREFIJO_CENTRO = "CAMINAS";
-    final static String RUTA_LOGS = ".\\caminas\\terminal\\logs";
-
-    final static int MINUTOS_POR_HORA = 60;
-    final static int SEGUNDOS_POR_HORA = 3600;
-    final static int SEGUNDOS_POR_MINUTO = 60;
-    final static int JORNADA_BASE_MINUTOS = 480; // 8 horas
-    final static double FACTOR_PORCENTAJE = 100.0;
-
-    final static int ID_TERMINAL_PUERTA_NORTE = 102;
-    final static int BASE_TOKEN_SEGURIDAD = 1000;
-    final static int RANGO_TOKEN_SEGURIDAD = 9000;
-    final static long SEMILLA_CALIBRACION = 987654321L;
-
-    final static double TEMP_MIN_SEGURA = 15.0;
-    final static double TEMP_MAX_SEGURA = 35.0;
-    final static double MAX_VARIACION_TERMICA = 0.5;
-    final static int LONGITUD_DNI_ESTANDAR = 9;
-
-    // Umbrales biométricos y capacidad
-    final static double TEMP_CORPORAL_MAX_FIEBRE = 37.5;
-    final static double TEMP_CORPORAL_MIN_FALLO = 35.0;
-
-    // Control de puntualidad lectiva
-    final static LocalTime HORA_LIMITE_PUNTUALIDAD = LocalTime.of(8, 15);
-
-    // -------------------------------------------------------------------------
-    // 2. MÉTODOS ESTÁTICOS PROPIOS (modularización de la lógica del sistema)
-    // -------------------------------------------------------------------------
-
-    public static int calcularEstanciaMinutos(LocalTime entrada, LocalTime salida) {
-        return (int) Duration.between(entrada, salida).toMinutes();
-    }
-
-    public static double calcularPorcentajeOcupacion(int personas, int aforoTotal) {
-        return ((double) personas / aforoTotal) * FACTOR_PORCENTAJE;
-    }
-
-    public static String construirTokenQR(String prefijo, String dni, int terminalId, int codigoSec, int idFichaje) {
-        String token = prefijo + "-" + dni;
-        token += "-T" + terminalId;
-        token += "-SEC#" + codigoSec;
-        token += "-REG" + idFichaje;
-        return token;
-    }
-
-    public static double calcularDistanciaDiagonal(double x, double y) {
-        return Math.sqrt(Math.pow(x, 2.0) + Math.pow(y, 2.0));
-    }
-
-    public static String obtenerDescripcionPerfil(char perfil) {
-        String descripcion;
-        switch (perfil) {
-            case 'E':
-                descripcion = "Estudiante Oficial";
-                break;
-            case 'D':
-                descripcion = "Docente / Claustro";
-                break;
-            case 'V':
-                descripcion = "Visita Externa / Proveedor";
-                break;
-            case 'A':
-                descripcion = "Personal de Administración y Servicios (PAS)";
-                break;
-            default:
-                descripcion = "Perfil No Catalogado";
-                break;
-        }
-        return descripcion;
-    }
-
-    public static String determinarZonaAutorizada(char perfil) {
-        String zona;
-        switch (perfil) {
-            case 'E':
-                zona = "Aulas Docentes y Talleres de Informática";
-                break;
-            case 'D':
-                zona = "Departamentos Didácticos, Aulas y Sala de Profesores";
-                break;
-            case 'V':
-                zona = "Secretaría, Conserjería y Despachos de Dirección";
-                break;
-            case 'A':
-                zona = "Área de Gestión Administrativa y Archivo Central";
-                break;
-            default:
-                zona = "Acceso Denegado / Zona No Autorizada";
-                break;
-        }
-        return zona;
-    }
-
-    public static int obtenerEstanciaMaximaPorPerfil(char perfil) {
-        int estanciaMinutos;
-        switch (perfil) {
-            case 'E':
-                estanciaMinutos = 360;
-                break;
-            case 'D':
-                estanciaMinutos = 480;
-                break;
-            case 'V':
-                estanciaMinutos = 120;
-                break;
-            case 'A':
-                estanciaMinutos = 420;
-                break;
-            default:
-                estanciaMinutos = 0;
-                break;
-        }
-        return estanciaMinutos;
-    }
-
-    // -------------------------------------------------------------------------
-    // 3. MÉTODOS PREDICADO BOOLEANOS (reglas de negocio desacopladas)
-    // -------------------------------------------------------------------------
-
-    public static boolean esTemperaturaCorporalSegura(double temperatura) {
-        return (temperatura >= TEMP_CORPORAL_MIN_FALLO && temperatura <= TEMP_CORPORAL_MAX_FIEBRE);
-    }
-
-    public static boolean esDocumentoValido(String dni) {
-        return (dni != null && dni.length() == LONGITUD_DNI_ESTANDAR);
-    }
-
-    public static boolean esPerfilAutorizado(char perfil) {
-        boolean autorizado;
-        switch (perfil) {
-            case 'E':
-            case 'D':
-            case 'V':
-            case 'A':
-                autorizado = true;
-                break;
-            default:
-                autorizado = false;
-                break;
-        }
-        return autorizado;
-    }
-
-    // -------------------------------------------------------------------------
-    // 4. MÉTODO PRINCIPAL: CONSOLA BIDIRECCIONAL Y PROTOCOLO DE EVACUACIÓN
-    // -------------------------------------------------------------------------
-    public static void main(String[] args) {
-        Scanner teclado = new Scanner(System.in);
-
-        Random generadorVestibulo = new Random();
-        Random generadorPuertaNorte = new Random();
-        Random generadorCalibracion = new Random(SEMILLA_CALIBRACION);
-
-        LocalDate fechaActual = LocalDate.now();
-
-        // Estado persistente del campus
-        int personasEnCentro = 1190;
-        int aforoDisponible = 10;
-        int idUltimoFichaje = 1042;
-
-        int totalFichajesProcesados = 0;
-        int totalFichajesAutorizados = 0;
-        int totalFichajesDenegados = 0;
-
-        // Acumuladores estadísticos
-        double tempMaximaRegistrada = -1.0;
-        double tempMinimaRegistrada = 100.0;
-        int minutosEstanciaAcumulados = 0;
-
-        boolean sesionActiva = true;
-
-        System.out.println("======================================================================");
-        System.out.println("   AZAHARTECH · CONTROL BIDIRECCIONAL DE ACCESOS - IES EL CAMINÀS    ");
-        System.out.println("   Versión 2.8 Oficial (Sprint 3: Tránsito Bidireccional y Evacuación) ");
-        System.out.println("======================================================================");
-
-        // BUCLE PRINCIPAL DE GESTIÓN (MENÚ DE OPERACIONES)
-        do {
-            System.out.println("\n----------------------------------------------------------------------");
-            System.out.println("                    PANEL DE OPERACIONES DEL TORNO                    ");
-            System.out.println("----------------------------------------------------------------------");
-            System.out.println("  [1] Registrar tránsito individual (Entrada / Salida)");
-            System.out.println("  [2] Procesar cola en ráfaga (Modo Burst con bucle while)");
-            System.out.println("  [3] Consultar telemetría y métricas de ocupación en vivo");
-            System.out.println("  [4] Activar protocolo de evacuación de emergencia (Draining while)");
-            System.out.println("  [5] Cerrar jornada y apagar terminal");
-            System.out.print("Seleccione una operación (1-5): ");
-
-            int opcionMenu = 0;
-            try {
-                opcionMenu = Integer.parseInt(teclado.nextLine().trim());
-            } catch (NumberFormatException e) {
-                opcionMenu = -1;
-            }
-
-            switch (opcionMenu) {
-                case 1:
-                    // OPERACIÓN 1: TRÁNSITO INDIVIDUAL BIDIRECCIONAL
-                    totalFichajesProcesados++;
-
-                    System.out.println("\n--- [MODO 1: TRÁNSITO INDIVIDUAL] ---");
-                    System.out.print("Sentido del tránsito (E = Entrada, S = Salida): ");
-                    String lineaSentido = teclado.nextLine().trim().toUpperCase();
-                    char sentidoTransito = lineaSentido.isEmpty() ? 'E' : lineaSentido.charAt(0);
-
-                    System.out.print("Nombre completo: ");
-                    String nombrePersonaLimpio = teclado.nextLine().trim().toUpperCase();
-
-                    if (sentidoTransito == 'S') {
-                        // SALIDA: Guardia de subdesbordamiento (Underflow Guard)
-                        if (personasEnCentro > 0) {
-                            personasEnCentro--;
-                            aforoDisponible++;
-                            totalFichajesAutorizados++;
-                            idUltimoFichaje++;
-
-                            System.out.println(">> VEREDICTO: [SALIDA AUTORIZADA - TORNO EXTERIOR ABIERTO]");
-                            System.out.printf(">> PASO REGISTRADO: Hasta pronto, %s. Ocupación campus: %d%n",
-                                    nombrePersonaLimpio, personasEnCentro);
-                        } else {
-                            totalFichajesDenegados++;
-                            System.err.println(">> ALERTA: Imposible autorizar salida; no constan ocupantes dentro del centro.");
-                        }
-                    } else {
-                        // ENTRADA: Validación biométrica y de aforo
-                        int terminalId = 0;
-                        double tempVestibulo = 0.0;
-                        String dniPersonaLimpio = "";
-                        char perfilNormalizado = ' ';
-                        boolean datosSintacticamenteCorrectos = true;
-                        String motivoDenegacion = "";
-
-                        try {
-                            System.out.print("ID Terminal (ej. 101): ");
-                            terminalId = Integer.parseInt(teclado.nextLine().trim());
-
-                            System.out.print("Temperatura sensor (ºC): ");
-                            tempVestibulo = Double.parseDouble(teclado.nextLine().trim());
-
-                            System.out.print("DNI del usuario: ");
-                            dniPersonaLimpio = teclado.nextLine().trim().toUpperCase();
-
-                            System.out.print("Perfil (E=Estudiante, D=Docente, V=Visita, A=Admin): ");
-                            String lineaPerfil = teclado.nextLine().trim();
-                            perfilNormalizado = lineaPerfil.isEmpty() ? '?' : Character.toUpperCase(lineaPerfil.charAt(0));
-
-                        } catch (NumberFormatException e) {
-                            datosSintacticamenteCorrectos = false;
-                            motivoDenegacion = "Error de formato numérico en los datos introducidos.";
-                        }
-
-                        boolean accesoConcedido;
-                        if (!datosSintacticamenteCorrectos) {
-                            accesoConcedido = false;
-                            totalFichajesDenegados++;
-                        } else if (!esTemperaturaCorporalSegura(tempVestibulo)) {
-                            accesoConcedido = false;
-                            motivoDenegacion = String.format("Temperatura anómala (%.1f ºC fuera de rango)", tempVestibulo);
-                            totalFichajesDenegados++;
-                        } else if (aforoDisponible <= 0) {
-                            accesoConcedido = false;
-                            motivoDenegacion = "Aforo de campus saturado.";
-                            totalFichajesDenegados++;
-                        } else if (!esDocumentoValido(dniPersonaLimpio)) {
-                            accesoConcedido = false;
-                            motivoDenegacion = "Documento irregular (longitud no reglamentaria de 9).";
-                            totalFichajesDenegados++;
-                        } else if (!esPerfilAutorizado(perfilNormalizado)) {
-                            accesoConcedido = false;
-                            motivoDenegacion = "Perfil no catalogado por el centro.";
-                            totalFichajesDenegados++;
-                        } else {
-                            accesoConcedido = true;
-                            totalFichajesAutorizados++;
-                            personasEnCentro++;
-                            aforoDisponible--;
-                            idUltimoFichaje++;
-
-                            tempMaximaRegistrada = Math.max(tempMaximaRegistrada, tempVestibulo);
-                            tempMinimaRegistrada = Math.min(tempMinimaRegistrada, tempVestibulo);
-                            minutosEstanciaAcumulados += 360;
-                        }
-
-                        int codigoToken = BASE_TOKEN_SEGURIDAD + generadorVestibulo.nextInt(RANGO_TOKEN_SEGURIDAD);
-                        String token = construirTokenQR(PREFIJO_CENTRO, dniPersonaLimpio, terminalId, codigoToken, idUltimoFichaje);
-
-                        if (accesoConcedido) {
-                            System.out.printf(">> VEREDICTO: [ENTRADA AUTORIZADA] Torno desbloqueado para %s [Token: %s]%n",
-                                    nombrePersonaLimpio, token);
-                        } else {
-                            System.out.printf(">> VEREDICTO: [ENTRADA DENEGADA] Torno bloqueado. Causa: %s%n", motivoDenegacion);
-                        }
-                    }
-                    break;
-
-                case 2:
-                    // OPERACIÓN 2: MODO RÁFAGA CON BUCLE WHILE
-                    System.out.println("\n--- [MODO 2: RÁFAGA DE COLA EN VESTÍBULO] ---");
-                    System.out.printf("Plazas libres disponibles: %d%n", aforoDisponible);
-                    System.out.print("Número de personas esperando en la fila: ");
-                    int personasEnCola = 0;
-                    try {
-                        personasEnCola = Integer.parseInt(teclado.nextLine().trim());
-                    } catch (NumberFormatException e) {
-                        personasEnCola = 0;
-                    }
-
-                    while (personasEnCola > 0 && aforoDisponible > 0) {
-                        totalFichajesProcesados++;
-                        totalFichajesAutorizados++;
-                        personasEnCentro++;
-                        aforoDisponible--;
-                        idUltimoFichaje++;
-                        personasEnCola--;
-
-                        double tempSimulada = 36.3 + (generadorVestibulo.nextDouble() * 0.7);
-                        tempMaximaRegistrada = Math.max(tempMaximaRegistrada, tempSimulada);
-                        tempMinimaRegistrada = Math.min(tempMinimaRegistrada, tempSimulada);
-                        minutosEstanciaAcumulados += 360;
-
-                        System.out.printf("  -> Fichaje #%05d validado en ráfaga. Plazas restantes: %d%n",
-                                idUltimoFichaje, aforoDisponible);
-                    }
-
-                    if (personasEnCola > 0 && aforoDisponible == 0) {
-                        System.out.printf(">> AVISO: Aforo saturado. %d personas permanecen retenidas en espera.%n", personasEnCola);
-                    } else {
-                        System.out.println(">> Ráfaga completada con éxito.");
-                    }
-                    break;
-
-                case 3:
-                    // OPERACIÓN 3: TELEMETRÍA Y AGREGADOS EN VIVO
-                    System.out.println("\n--- [MODO 3: MONITOR DE TELEMETRÍA EN VIVO] ---");
-                    int aforoTotal = personasEnCentro + aforoDisponible;
-                    double porcentajeOcupacion = calcularPorcentajeOcupacion(personasEnCentro, aforoTotal);
-                    double estanciaMedia = totalFichajesAutorizados > 0 
-                            ? ((double) minutosEstanciaAcumulados / totalFichajesAutorizados) : 0.0;
-
-                    System.out.printf("OCUPACIÓN ACTUAL:         %d/%d personas (%6.2f %%)%n", personasEnCentro, aforoTotal, porcentajeOcupacion);
-                    System.out.printf("PLAZAS LIBRES:            %d vacantes disponibles%n", aforoDisponible);
-                    System.out.printf("TRANSACCIONES TOTALES:    %d registros (%d autorizados, %d denegados)%n",
-                            totalFichajesProcesados, totalFichajesAutorizados, totalFichajesDenegados);
-                    System.out.printf("PICO TÉRMICO MÁXIMO:      %.1f ºC%n", Math.max(0.0, tempMaximaRegistrada));
-                    System.out.printf("PICO TÉRMICO MÍNIMO:      %.1f ºC%n", tempMinimaRegistrada > 50.0 ? 0.0 : tempMinimaRegistrada);
-                    System.out.printf("ESTANCIA PROMEDIO:        %.1f minutos (Total acumulado: %d min)%n",
-                            estanciaMedia, minutosEstanciaAcumulados);
-                    break;
-
-                case 4:
-                    // OPERACIÓN 4: PROTOCOLO DE EVACUACIÓN CON BUCLE WHILE DE DRENAJE
-                    System.out.println("\n--- [MODO 4: PROTOCOLO DE EVACUACIÓN DE EMERGENCIA] ---");
-                    if (personasEnCentro == 0) {
-                        System.out.println(">> El campus ya se encuentra completamente vacío.");
-                    } else {
-                        int loteSalidaSimultanea = 300; // Capacidad de evacuación de los portones de emergencia
-                        int oleada = 1;
-
-                        while (personasEnCentro > 0) {
-                            int evacuadosLote = Math.min(personasEnCentro, loteSalidaSimultanea);
-                            personasEnCentro -= evacuadosLote;
-                            aforoDisponible += evacuadosLote;
-
-                            System.out.printf("  -> Oleada #%d: Desalojadas %d personas por salidas de emergencia (Ocupantes restantes: %d)%n",
-                                    oleada, evacuadosLote, personasEnCentro);
-                            oleada++;
-                        }
-                        System.out.println(">> CERTIFICACIÓN DE SEGURIDAD: Recinto 100% desalojado. Aforo íntegro restaurado.");
-                    }
-                    break;
-
-                case 5:
-                    // OPERACIÓN 5: APAGADO Y SALIDA
-                    System.out.println("\n>> Desconectando terminal de presencia de forma ordenada...");
-                    sesionActiva = false; // Mutación del centinela que rompe el do-while
-                    break;
-
-                default:
-                    System.err.println(">> Error: Opción no válida. Seleccione una operación entre 1 y 5.");
-                    break;
-            }
-
-        } while (sesionActiva);
-
-        // AUDITORÍA FINAL AL APAGAR
-        System.out.println("\n======================================================================");
-        System.out.println("          AUDITORÍA FINAL DE LA JORNADA · IES EL CAMINÀS              ");
-        System.out.println("======================================================================");
-        System.out.printf("TOTAL OPERACIONES GESTIONADAS: %d%n", totalFichajesProcesados);
-        System.out.printf("ACCESOS AUTORIZADOS (TOTAL):   %d%n", totalFichajesAutorizados);
-        System.out.printf("ACCESOS DENEGADOS (BLOQUEO):   %d%n", totalFichajesDenegados);
-        System.out.printf("OCUPACIÓN FINAL REGISTRADA:    %d personas%n", personasEnCentro);
-        System.out.println("ESTADO DEL DISPOSITIVO:        Terminal desconectado de forma segura.");
-        System.out.println("======================================================================");
-
-        teclado.close();
-    }
-}
-```
-
-</details>
-
----
-
-#### 4. Segunda sesión: dojo de entrenamiento y katas de código
-
-En esta sesión práctica de cierre de semana, cada alumno implementará patrones avanzados de centinela, flujo bidireccional y guardias de subdesbordamiento en su proyecto.
-
-##### Kata 1 (Cinturón blanco / Nivel base). Control bidireccional y vaciado en proyectos asignados
-
-Abre el archivo `pr/src/MiProyecto.java` de tu especialidad e implementa una rutina de drenaje progresivo con bucle `while` combinada con protección ante subdesbordamiento:
-
-* **Aventura conversacional.** Diseña una mecánica de combate con puntos de escudo defensivo. Permite al jugador regenerar o perder escudo según la acción; implementa una rutina de vaciado progresivo mediante un bucle `while (escudoActual > 0)` que simule un ataque de drenaje mágico masivo del enemigo, absorbiendo el escudo en paquetes mediante `Math.min` sin permitir que el valor caiga en cifras negativas.
-* **Motor de recomendación.** Modela un sistema de catálogo dinámico con gestión bidireccional (añadir nuevos productos recomendados y dar de baja contenidos obsoletos con guardia ante lista vacía). Implementa una opción de purga total mediante un bucle `while (itemsPendientes > 0)` que libere la cola de recomendaciones por lotes emitiendo el balance final.
-* **Simulador de físicas 2D.** Incorpora una rutina de amortiguación o frenada gradual mediante un bucle `while (velocidadActual > 0.0)`. En cada ciclo, aplica un coeficiente de frenado cinemático que reduzca la velocidad sin sobrepasar el reposo absoluto (`0.0`), registrando la distancia total recorrida hasta la detención completa del móvil.
-* **Bóveda de contraseñas.** Construye un procedimiento de formateo seguro o autodestrucción de credenciales ante brecha de seguridad. Emplea un bucle `while (credencialesActivas > 0)` que sobreescriba y desaloje las claves almacenadas en bloques, garantizando que el contador de registros descienda limpiamente hasta cero antes de certificar el bloqueo de la bóveda.
-
----
-
-##### Kata 2 (Cinturón marrón / Nivel avanzado). El patrón de valor centinela de escape (*Sentinel Value*)
-
-A diferencia de las banderas booleanas, un **valor centinela** es un dato del mismo tipo que las entradas normales pero con un valor reservado que señala el fin de la transmisión:
-
-1. **Lectura iterativa hasta centinela:** Diseña un bucle `while` que solicite lecturas continuadas por consola hasta que el usuario introduzca una palabra reservada o valor centinela (por ejemplo, teclear el texto `"FIN"` o un valor numérico `-1`):
-   ```java
-   System.out.print("Introduce identificador de usuario (o 'FIN' para terminar el lote): ");
-   String entrada = teclado.nextLine().trim();
-
-   while (!entrada.equalsIgnoreCase("FIN")) {
-       // Procesar entrada válida...
-       
-       System.out.print("Introduce identificador de usuario (o 'FIN' para terminar): ");
-       entrada = teclado.nextLine().trim();
-   }
-   ```
-2. **Refactorización defensiva:** Asegúrate de que el valor centinela no sea contabilizado erróneamente como un dato real de negocio ni altere los acumuladores de medias o extremos estadísticos de tu aplicación.
-
----
-
-##### Kata 3 (Cinturón negro / «Hacker AzaharTech»). Auditoría de invariantes y prueba de esfuerzo de subdesbordamiento
-
-En el desarrollo de software crítico, los invariantes de clase y de bucle garantizan la integridad matemática del estado en memoria:
-
-1. **Definición de la prueba de esfuerzo (*Stress Test*):**  
-   Diseña un caso de prueba en tu programa que intente ejecutar reiteradamente operaciones de decremento o salida cuando el contador ya haya alcanzado el valor cero (por ejemplo, solicitar 10 salidas consecutivas en un centro con 0 ocupantes, o drenar un recurso agotado).
-2. **Verificación de la condición invariante:**  
-   Comprueba que tu guardia condicional intercepta el intento en el 100 % de los casos, impidiendo que la variable de estado decremente hacia valores negativos (*underflow*).
-3. **Certificación técnica:**  
-   Redacta un comentario técnico en la cabecera de tu clase formalizando el **invariante de bucle** de tu sistema (por ejemplo, $\forall t \in \text{Ejecución}, \; 0 \le \text{recurso}(t) \le \text{LÍMITE}$), explicando por qué la verificación previa al decremento es la base de la seguridad concurrente y transaccional en sistemas de producción.
+## Semana 9. Bucles for, control por banderas y depuración
 
 ---
 
@@ -6002,7 +5337,7 @@ case 4:
  * Consultora: AzaharTech Software Consulting
  * 
  * Versión 2.9:
- * Apertura de la Semana 9 (Bucles for, saltos y depuración).
+ * Apertura de la Semana 9 (Bucles for, control por banderas y depuración).
  * Incorpora el bucle contador for clásico para secuencias deterministas:
  * - Autodiagnóstico secuencial de sensores de paso de hardware.
  * - Tabla de proyección horaria de aforo para la jornada lectiva.
@@ -6458,3 +5793,2003 @@ Uno de los errores más comunes en la historia de la informática es el fallo de
    * ¿Qué ocurre si el inicio y el fin coinciden (`i = 5; i <= 5`)? Comprueba que se ejecuta exactamente una vez.
 3. **Certificación:**  
    Añade un comentario en la cabecera del bucle documentando que el rango de iteraciones ha sido auditado contra errores de desfase de límites.
+
+---
+
+### Día 33 - 2 sesiones
+
+---
+
+#### 1. Caso guía en AzaharTech
+
+Son las 15:00 h del **martes 10 de noviembre de 2026**. En la sede de **AzaharTech**, el equipo de desarrollo continúa desplegando la última semana del **Sprint 3**. Tras dominar ayer el bucle contador `for` simple para inspeccionar secuencias lineales de sensores, un nuevo requerimiento de infraestructura llega desde el **IES El Caminàs**.
+
+El coordinador TIC del instituto explica el despliegue físico del centro:
+
+> *«Nuestro campus no depende de un único torno aislado. Contamos con **3 accesos físicos perimetrales**:*
+> 1. *Acceso 1: Torno Vestíbulo Central (Edificio Principal).*
+> 2. *Acceso 2: Torno Puerta Norte (Ciclos Formativos de Informática).*
+> 3. *Acceso 3: Torno Puerta Sur (Talleres y Cafetería).*
+>
+> *Cada uno de estos 3 accesos dispone de **4 canales de paso bidireccionales** independientes con lectores ópticos. En conserjería necesitan visualizar en pantalla una **matriz de estado global del campus (3 accesos $\times$ 4 canales)** en forma de tabla visual bidimensional (filas y columnas) que represente el estado operativo de los 12 puntos de paso.*
+>
+> *Un bucle simple solo sabe avanzar en una única dimensión (una lista lineal). Para generar una cuadrícula o matriz bidimensional necesitamos que un bucle recorra las filas (los accesos) y, por cada fila, otro bucle recorra todas sus columnas (los canales de paso)»*.
+
+**Alba Torres** toma el teclado y plantea el reto técnico a **Pau Ferrer**:
+
+> *«Pau, acabamos de entrar en el terreno de los **bucles anidados (*Nested Loops*)**.*
+>
+> *Hoy aprenderemos cómo interactúan dos bucles `for` coordinados como las manecillas de un reloj: el bucle interior gira a toda velocidad completando todas las columnas antes de que el bucle exterior avance un solo paso a la siguiente fila. Analizaremos su **complejidad temporal cuadrática $O(N \times M)$** y generaremos el mapa visual matricial de los accesos del instituto»*.
+
+---
+
+#### 2. Fundamento teórico: bucles anidados y matrices lógicas en consola
+
+Un **bucle anidado** es una estructura de control donde el cuerpo de una sentencia de repetición contiene en su interior otro bucle completo.
+
+```mermaid
+flowchart TD
+    Inicio([Inicio de Matriz]) --> BucleExtInit["<b>Bucle Exterior: Filas (Acceso i = 1)</b>"]
+    
+    BucleExtInit --> CondExt{"¿i <= TOTAL_TORNOS?<br/>(i <= 3)"}
+    
+    CondExt -- true --> BucleIntInit["<b>Bucle Interior: Columnas (Canal j = 1)</b>"]
+    BucleIntInit --> CondInt{"¿j <= CANALES?<br/>(j <= 4)"}
+    
+    CondInt -- true --> Cuerpo["<b>Imprimir celda [i, j]:</b><br/>System.out.printf(' [T%d-C%d: OK] ', i, j);"]
+    Cuerpo --> PasoInt["j++ (Siguiente canal)"]
+    PasoInt --> CondInt
+    
+    CondInt -- false --> SaltoFila["<b>Salto de línea:</b><br/>System.out.println();"]
+    SaltoFila --> PasoExt["i++ (Siguiente torno)"]
+    PasoExt --> CondExt
+    
+    CondExt -- false --> Fin([Fin de Matriz Bidimensional])
+```
+
+##### A. La analogía del reloj mecánico
+
+Para comprender la ejecución de dos bucles anidados, el modelo mental más intuitivo es el segundero y el minutero de un reloj:
+* El **bucle exterior** ($i$) representa las horas o los minutos: avanza lentamente, un solo paso cada vez.
+* El **bucle interior** ($j$) representa los segundos: por cada unidad que avanza el exterior, el interior debe dar **una vuelta completa de principio a fin**.
+
+```java
+for (int i = 1; i <= 3; i++) {       // FILAS (Exterior)
+    for (int j = 1; j <= 4; j++) {   // COLUMNAS (Interior)
+        System.out.print("[" + i + "," + j + "] ");
+    }
+    System.out.println();             // Salto de línea al terminar cada fila
+}
+```
+
+##### B. Impresión de cuadrículas: `print()` frente a `println()`
+
+La representación visual de matrices en consola exige coordinar dos métodos de salida:
+1. `System.out.print(...)` / `System.out.printf(...)`: se utiliza **dentro del bucle interior** para imprimir los elementos de la fila uno al lado del otro en horizontal, separados por espacios.
+2. `System.out.println()`: se invoca **en el bucle exterior, justo después de que el bucle interior termina**, para romper la línea y bajar el cursor a la siguiente fila.
+
+##### C. Análisis de complejidad temporal cuadrática
+
+El número total de ejecuciones del cuerpo más interno es el **producto cartesiano** de las dimensiones:
+
+$$\text{Total Iteraciones} = N \times M$$
+
+| Dimensión exterior ($N$ filas) | Dimensión interior ($M$ columnas) | Iteraciones totales | Complejidad algorítmica |
+| :---: | :---: | :---: | :---: |
+| 3 tornos | 4 canales de paso | **12 ejecuciones** | $O(N \times M)$ |
+| 10 aulas | 25 puestos informáticos | **250 ejecuciones** | $O(N \times M)$ |
+| 1.000 registros | 1.000 comparaciones | **1.000.000 ejecuciones** | $O(N^2)$ (Cuadrática) |
+
+---
+
+#### 3. Evolución del caso guía a `ControlAccesoQR v2.10` (Java nativo)
+
+Evolucionamos la versión `v2.9` a la **`v2.10`**. Conservamos intactas todas las constantes corporativas, los métodos modulares y la captura protegida, incorporando:
+1. Constantes para la arquitectura del campus: `TOTAL_TORNOS_CAMPUS = 3` y `CANALES_POR_TORNO = 4`.
+2. Actualización de la **Opción 4 del menú**: ampliación del diagnóstico para generar la **Matriz visual de supervisión del campus (3 $\times$ 4)** mediante bucles `for` anidados.
+3. Simulación de telemetría de canales cruzada con indicadores de paso en cuadrícula.
+
+##### A. Comparativa de cambios respecto a v2.9 (`diff`)
+
+```diff
+  // =========================================================================
+  // CONSTANTES DE ARQUITECTURA MULTI-ACCESO DEL CAMPUS
+  // =========================================================================
+  final static int NUM_SENSORES_TORNO = 8;
+  final static int HORAS_TURNO_LECTIVO = 6;
++ final static int TOTAL_TORNOS_CAMPUS = 3;
++ final static int CANALES_POR_TORNO = 4;
+
+  // =========================================================================
+  // MENÚ DE OPERACIONES: Opción 4 ampliada con matriz bidimensional
+  // =========================================================================
+- System.out.println("  [4] Diagnóstico de sensores y proyección horaria (bucles for)");
++ System.out.println("  [4] Diagnóstico hardware y matriz perimetral del campus (bucles anidados)");
+
+  case 4:
+      // [Diagnóstico lineal de sensores de v2.9...]
+
++     // MATRIZ BIDIMENSIONAL DE ACCESOS Y CANALES (BUCLES ANIDADOS)
++     System.out.println("\n--- [MATRIZ DE SUPERVISIÓN PERIMETRAL: 3 TORNOS x 4 CANALES] ---");
++     for (int torno = 1; torno <= TOTAL_TORNOS_CAMPUS; torno++) {
++         System.out.printf("Torno #%d | ", torno);
++         for (int canal = 1; canal <= CANALES_POR_TORNO; canal++) {
++             boolean operativo = ((torno + canal) % 2 == 0);
++             System.out.printf("[C%d: %s] ", canal, operativo ? "OK" : "BUSY");
++         }
++         System.out.println(); // Salto de línea tras completar las columnas del torno
++     }
+      break;
+```
+
+##### B. Foco en la novedad: generación de la matriz de accesos con bucles anidados
+
+Observa la coordinación entre el índice exterior `torno` y el interior `canal`, junto con el uso estricto de `print` horizontal y `println` de cierre de fila:
+
+```java
+// -------------------------------------------------------------------------
+// Operación 4 (Ampliación Día 33): Matriz perimetral con bucles for anidados
+// -------------------------------------------------------------------------
+System.out.println("\n--- [MAPA VISUAL PERIMETRAL: 3 TORNOS x 4 CANALES DE PASO] ---");
+System.out.println("Ubicación campus      | Canal 1     Canal 2     Canal 3     Canal 4");
+System.out.println("-------------------------------------------------------------------");
+
+// BUCLE EXTERIOR: Itera sobre los 3 tornos físicos del campus (FILAS)
+for (int torno = 1; torno <= TOTAL_TORNOS_CAMPUS; torno++) {
+    String nombreAcceso = switch (torno) {
+        case 1 -> "Vestíbulo Central  | ";
+        case 2 -> "Puerta Norte Ciclos| ";
+        case 3 -> "Puerta Sur Talleres| ";
+        default -> "Acceso Perimetral  | ";
+    };
+    System.out.print(nombreAcceso);
+
+    // BUCLE INTERIOR: Itera sobre los 4 canales de cada torno (COLUMNAS)
+    for (int canal = 1; canal <= CANALES_POR_TORNO; canal++) {
+        // Simulación determinista de estado del canal mediante paridad de índices
+        boolean canalDespejado = ((torno + canal) % 2 == 0);
+        String estadoVisual = canalDespejado ? "[ACTIVO]  " : "[PASO]    ";
+
+        // Salida horizontal sin salto de línea
+        System.out.print(estadoVisual);
+    }
+
+    // Salto de línea obligatorio al completar todos los canales del torno actual
+    System.out.println();
+}
+System.out.println("-------------------------------------------------------------------");
+```
+
+##### C. Código fuente completo integrado
+
+<details>
+<summary><b>🔍 Desplegar archivo completo ControlAccesoQR.java (v2.10)</b></summary>
+
+```java
+/**
+ * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ * 
+ * Versión 2.10:
+ * Consolidación de la Semana 9 (Bucles for, control por banderas y depuración).
+ * Incorpora bucles for anidados para la generación de matrices bidimensionales:
+ * - Mapa visual perimetral de supervisión del campus (3 tornos x 4 canales).
+ * - Algoritmo de renderizado tabular horizontal (print) y salto de fila (println).
+ * Mantiene la consola interactiva, tránsito bidireccional y blindaje try-catch.
+ * 
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 2.10 (Noviembre 2026)
+ * @since JDK 21 LTS
+ * 
+ */
+
+import java.util.Scanner;
+import java.util.Random;
+import java.time.LocalTime;
+import java.time.LocalDate;
+import java.time.Duration;
+import java.time.DateTimeException;
+
+public class ControlAccesoQR {
+
+    // -------------------------------------------------------------------------
+    // 1. CONSTANTES INMUTABLES DEL SISTEMA (configuración corporativa)
+    // -------------------------------------------------------------------------
+    final static String NOMBRE_CENTRO = "IES El Caminàs (Castellón)";
+    final static String PREFIJO_CENTRO = "CAMINAS";
+    final static String RUTA_LOGS = ".\\caminas\\terminal\\logs";
+
+    final static int MINUTOS_POR_HORA = 60;
+    final static int SEGUNDOS_POR_HORA = 3600;
+    final static int SEGUNDOS_POR_MINUTO = 60;
+    final static int JORNADA_BASE_MINUTOS = 480; // 8 horas
+    final static double FACTOR_PORCENTAJE = 100.0;
+
+    final static int ID_TERMINAL_PUERTA_NORTE = 102;
+    final static int BASE_TOKEN_SEGURIDAD = 1000;
+    final static int RANGO_TOKEN_SEGURIDAD = 9000;
+    final static long SEMILLA_CALIBRACION = 987654321L;
+
+    final static double TEMP_MIN_SEGURA = 15.0;
+    final static double TEMP_MAX_SEGURA = 35.0;
+    final static double MAX_VARIACION_TERMICA = 0.5;
+    final static int LONGITUD_DNI_ESTANDAR = 9;
+
+    // Umbrales biométricos y capacidad
+    final static double TEMP_CORPORAL_MAX_FIEBRE = 37.5;
+    final static double TEMP_CORPORAL_MIN_FALLO = 35.0;
+
+    // Control de puntualidad y hardware perimetral (Semana 9)
+    final static LocalTime HORA_LIMITE_PUNTUALIDAD = LocalTime.of(8, 15);
+    final static int NUM_SENSORES_TORNO = 8;
+    final static int HORAS_TURNO_LECTIVO = 6;
+    final static int TOTAL_TORNOS_CAMPUS = 3;
+    final static int CANALES_POR_TORNO = 4;
+
+    // -------------------------------------------------------------------------
+    // 2. MÉTODOS ESTÁTICOS PROPIOS (modularización de la lógica del sistema)
+    // -------------------------------------------------------------------------
+
+    public static int calcularEstanciaMinutos(LocalTime entrada, LocalTime salida) {
+        return (int) Duration.between(entrada, salida).toMinutes();
+    }
+
+    public static double calcularPorcentajeOcupacion(int personas, int aforoTotal) {
+        return ((double) personas / aforoTotal) * FACTOR_PORCENTAJE;
+    }
+
+    public static String construirTokenQR(String prefijo, String dni, int terminalId, int codigoSec, int idFichaje) {
+        String token = prefijo + "-" + dni;
+        token += "-T" + terminalId;
+        token += "-SEC#" + codigoSec;
+        token += "-REG" + idFichaje;
+        return token;
+    }
+
+    public static double calcularDistanciaDiagonal(double x, double y) {
+        return Math.sqrt(Math.pow(x, 2.0) + Math.pow(y, 2.0));
+    }
+
+    public static String obtenerDescripcionPerfil(char perfil) {
+        String descripcion;
+        switch (perfil) {
+            case 'E':
+                descripcion = "Estudiante Oficial";
+                break;
+            case 'D':
+                descripcion = "Docente / Claustro";
+                break;
+            case 'V':
+                descripcion = "Visita Externa / Proveedor";
+                break;
+            case 'A':
+                descripcion = "Personal de Administración y Servicios (PAS)";
+                break;
+            default:
+                descripcion = "Perfil No Catalogado";
+                break;
+        }
+        return descripcion;
+    }
+
+    public static String determinarZonaAutorizada(char perfil) {
+        String zona;
+        switch (perfil) {
+            case 'E':
+                zona = "Aulas Docentes y Talleres de Informática";
+                break;
+            case 'D':
+                zona = "Departamentos Didácticos, Aulas y Sala de Profesores";
+                break;
+            case 'V':
+                zona = "Secretaría, Conserjería y Despachos de Dirección";
+                break;
+            case 'A':
+                zona = "Área de Gestión Administrativa y Archivo Central";
+                break;
+            default:
+                zona = "Acceso Denegado / Zona No Autorizada";
+                break;
+        }
+        return zona;
+    }
+
+    public static int obtenerEstanciaMaximaPorPerfil(char perfil) {
+        int estanciaMinutos;
+        switch (perfil) {
+            case 'E':
+                estanciaMinutos = 360;
+                break;
+            case 'D':
+                estanciaMinutos = 480;
+                break;
+            case 'V':
+                estanciaMinutos = 120;
+                break;
+            case 'A':
+                estanciaMinutos = 420;
+                break;
+            default:
+                estanciaMinutos = 0;
+                break;
+        }
+        return estanciaMinutos;
+    }
+
+    // -------------------------------------------------------------------------
+    // 3. MÉTODOS PREDICADO BOOLEANOS (reglas de negocio desacopladas)
+    // -------------------------------------------------------------------------
+
+    public static boolean esTemperaturaCorporalSegura(double temperatura) {
+        return (temperatura >= TEMP_CORPORAL_MIN_FALLO && temperatura <= TEMP_CORPORAL_MAX_FIEBRE);
+    }
+
+    public static boolean esDocumentoValido(String dni) {
+        return (dni != null && dni.length() == LONGITUD_DNI_ESTANDAR);
+    }
+
+    public static boolean esPerfilAutorizado(char perfil) {
+        boolean autorizado;
+        switch (perfil) {
+            case 'E':
+            case 'D':
+            case 'V':
+            case 'A':
+                autorizado = true;
+                break;
+            default:
+                autorizado = false;
+                break;
+        }
+        return autorizado;
+    }
+
+    // -------------------------------------------------------------------------
+    // 4. MÉTODO PRINCIPAL: CONSOLA DE SERVICIO CON BUCLES ANIDADOS (DÍA 33)
+    // -------------------------------------------------------------------------
+    public static void main(String[] args) {
+        Scanner teclado = new Scanner(System.in);
+
+        Random generadorVestibulo = new Random();
+        Random generadorPuertaNorte = new Random();
+        Random generadorCalibracion = new Random(SEMILLA_CALIBRACION);
+
+        LocalDate fechaActual = LocalDate.now();
+
+        // Estado persistente del campus
+        int personasEnCentro = 1190;
+        int aforoDisponible = 10;
+        int idUltimoFichaje = 1042;
+
+        int totalFichajesProcesados = 0;
+        int totalFichajesAutorizados = 0;
+        int totalFichajesDenegados = 0;
+
+        double tempMaximaRegistrada = -1.0;
+        double tempMinimaRegistrada = 100.0;
+        int minutosEstanciaAcumulados = 0;
+
+        boolean sesionActiva = true;
+
+        System.out.println("======================================================================");
+        System.out.println("   AZAHARTECH · CONTROL INTEGRAL DEL CAMPUS - IES EL CAMINÀS          ");
+        System.out.println("   Versión 2.10 Oficial (Sprint 3: Bucles Anidados y Matriz de Accesos) ");
+        System.out.println("======================================================================");
+
+        // BUCLE PRINCIPAL DE GESTIÓN (MENÚ DE OPERACIONES)
+        do {
+            System.out.println("\n----------------------------------------------------------------------");
+            System.out.println("                    PANEL DE OPERACIONES DEL TORNO                    ");
+            System.out.println("----------------------------------------------------------------------");
+            System.out.println("  [1] Registrar tránsito individual (Entrada / Salida)");
+            System.out.println("  [2] Procesar cola en ráfaga (Modo Burst con bucle while)");
+            System.out.println("  [3] Consultar telemetría y métricas de ocupación en vivo");
+            System.out.println("  [4] Diagnóstico hardware y matriz perimetral del campus (bucles anidados)");
+            System.out.println("  [5] Activar protocolo de evacuación de emergencia");
+            System.out.println("  [6] Cerrar jornada y apagar terminal");
+            System.out.print("Seleccione una operación (1-6): ");
+
+            int opcionMenu = 0;
+            try {
+                opcionMenu = Integer.parseInt(teclado.nextLine().trim());
+            } catch (NumberFormatException e) {
+                opcionMenu = -1;
+            }
+
+            switch (opcionMenu) {
+                case 1:
+                    // TRÁNSITO INDIVIDUAL
+                    totalFichajesProcesados++;
+                    System.out.println("\n--- [MODO 1: TRÁNSITO INDIVIDUAL] ---");
+                    System.out.print("Sentido del tránsito (E = Entrada, S = Salida): ");
+                    String lineaSentido = teclado.nextLine().trim().toUpperCase();
+                    char sentidoTransito = lineaSentido.isEmpty() ? 'E' : lineaSentido.charAt(0);
+
+                    System.out.print("Nombre completo: ");
+                    String nombrePersonaLimpio = teclado.nextLine().trim().toUpperCase();
+
+                    if (sentidoTransito == 'S') {
+                        if (personasEnCentro > 0) {
+                            personasEnCentro--;
+                            aforoDisponible++;
+                            totalFichajesAutorizados++;
+                            idUltimoFichaje++;
+                            System.out.println(">> VEREDICTO: [SALIDA AUTORIZADA] Torno exterior abierto.");
+                        } else {
+                            totalFichajesDenegados++;
+                            System.err.println(">> ALERTA: Imposible autorizar salida; recinto vacío.");
+                        }
+                    } else {
+                        int terminalId = 0;
+                        double tempVestibulo = 0.0;
+                        String dniPersonaLimpio = "";
+                        char perfilNormalizado = ' ';
+                        boolean datosSintacticamenteCorrectos = true;
+                        String motivoDenegacion = "";
+
+                        try {
+                            System.out.print("ID Terminal: ");
+                            terminalId = Integer.parseInt(teclado.nextLine().trim());
+                            System.out.print("Temperatura (ºC): ");
+                            tempVestibulo = Double.parseDouble(teclado.nextLine().trim());
+                            System.out.print("DNI: ");
+                            dniPersonaLimpio = teclado.nextLine().trim().toUpperCase();
+                            System.out.print("Perfil (E/D/V/A): ");
+                            String lineaPerfil = teclado.nextLine().trim();
+                            perfilNormalizado = lineaPerfil.isEmpty() ? '?' : Character.toUpperCase(lineaPerfil.charAt(0));
+                        } catch (NumberFormatException e) {
+                            datosSintacticamenteCorrectos = false;
+                            motivoDenegacion = "Error de formato numérico.";
+                        }
+
+                        boolean accesoConcedido;
+                        if (!datosSintacticamenteCorrectos) {
+                            accesoConcedido = false;
+                            totalFichajesDenegados++;
+                        } else if (!esTemperaturaCorporalSegura(tempVestibulo)) {
+                            accesoConcedido = false;
+                            motivoDenegacion = "Temperatura anómala.";
+                            totalFichajesDenegados++;
+                        } else if (aforoDisponible <= 0) {
+                            accesoConcedido = false;
+                            motivoDenegacion = "Aforo completo.";
+                            totalFichajesDenegados++;
+                        } else if (!esDocumentoValido(dniPersonaLimpio)) {
+                            accesoConcedido = false;
+                            motivoDenegacion = "DNI no reglamentario.";
+                            totalFichajesDenegados++;
+                        } else if (!esPerfilAutorizado(perfilNormalizado)) {
+                            accesoConcedido = false;
+                            motivoDenegacion = "Perfil no catalogado.";
+                            totalFichajesDenegados++;
+                        } else {
+                            accesoConcedido = true;
+                            totalFichajesAutorizados++;
+                            personasEnCentro++;
+                            aforoDisponible--;
+                            idUltimoFichaje++;
+
+                            tempMaximaRegistrada = Math.max(tempMaximaRegistrada, tempVestibulo);
+                            tempMinimaRegistrada = Math.min(tempMinimaRegistrada, tempVestibulo);
+                            minutosEstanciaAcumulados += 360;
+                        }
+
+                        int codigoToken = BASE_TOKEN_SEGURIDAD + generadorVestibulo.nextInt(RANGO_TOKEN_SEGURIDAD);
+                        String token = construirTokenQR(PREFIJO_CENTRO, dniPersonaLimpio, terminalId, codigoToken, idUltimoFichaje);
+                        System.out.printf(">> VEREDICTO: %s [Token: %s]%n",
+                                accesoConcedido ? "[ENTRADA AUTORIZADA]" : "[ENTRADA DENEGADA - " + motivoDenegacion + "]", token);
+                    }
+                    break;
+
+                case 2:
+                    // RÁFAGA DE COLA CON WHILE
+                    System.out.println("\n--- [MODO 2: RÁFAGA CON BUCLE WHILE] ---");
+                    System.out.print("Personas en cola: ");
+                    int personasEnCola = 0;
+                    try {
+                        personasEnCola = Integer.parseInt(teclado.nextLine().trim());
+                    } catch (NumberFormatException e) {
+                        personasEnCola = 0;
+                    }
+
+                    while (personasEnCola > 0 && aforoDisponible > 0) {
+                        totalFichajesProcesados++;
+                        totalFichajesAutorizados++;
+                        personasEnCentro++;
+                        aforoDisponible--;
+                        idUltimoFichaje++;
+                        personasEnCola--;
+
+                        double tempSimulada = 36.4 + (generadorVestibulo.nextDouble() * 0.6);
+                        tempMaximaRegistrada = Math.max(tempMaximaRegistrada, tempSimulada);
+                        tempMinimaRegistrada = Math.min(tempMinimaRegistrada, tempSimulada);
+                        minutosEstanciaAcumulados += 360;
+                    }
+                    System.out.printf(">> Ráfaga procesada. Plazas disponibles: %d%n", aforoDisponible);
+                    break;
+
+                case 3:
+                    // TELEMETRÍA EN VIVO
+                    System.out.println("\n--- [MODO 3: MONITOR DE TELEMETRÍA] ---");
+                    int aforoTotal = personasEnCentro + aforoDisponible;
+                    double porcentajeOcupacion = calcularPorcentajeOcupacion(personasEnCentro, aforoTotal);
+                    System.out.printf("OCUPACIÓN: %d/%d (%6.2f %%) | VACANTES: %d%n",
+                            personasEnCentro, aforoTotal, porcentajeOcupacion, aforoDisponible);
+                    System.out.printf("PICO MÁX: %.1f ºC | PICO MÍN: %.1f ºC%n",
+                            Math.max(0.0, tempMaximaRegistrada), tempMinimaRegistrada > 50.0 ? 0.0 : tempMinimaRegistrada);
+                    break;
+
+                case 4:
+                    // DIAGNÓSTICO Y MATRIZ PERIMETRAL CON BUCLES ANIDADOS (DÍA 33)
+                    System.out.println("\n--- [MODO 4: DIAGNÓSTICO HARDWARE Y MATRIZ PERIMETRAL] ---");
+                    for (int sensor = 1; sensor <= NUM_SENSORES_TORNO; sensor++) {
+                        double latenciaTestMs = 0.8 + (sensor * 0.35);
+                        System.out.printf("  [Sensor IR #%02d]: ONLINE | Latencia: %4.2f ms | Estado: OK%n", sensor, latenciaTestMs);
+                    }
+
+                    // GENERACIÓN DE MATRIZ BIDIMENSIONAL CON BUCLES FOR ANIDADOS
+                    System.out.println("\n--- [MAPA VISUAL PERIMETRAL: 3 TORNOS x 4 CANALES DE PASO] ---");
+                    System.out.println("Ubicación campus      | Canal 1     Canal 2     Canal 3     Canal 4");
+                    System.out.println("-------------------------------------------------------------------");
+
+                    // BUCLE EXTERIOR: Filas (Tornos perimetrales)
+                    for (int torno = 1; torno <= TOTAL_TORNOS_CAMPUS; torno++) {
+                        String nombreAcceso = switch (torno) {
+                            case 1 -> "Vestíbulo Central  | ";
+                            case 2 -> "Puerta Norte Ciclos| ";
+                            case 3 -> "Puerta Sur Talleres| ";
+                            default -> "Acceso Perimetral  | ";
+                        };
+                        System.out.print(nombreAcceso);
+
+                        // BUCLE INTERIOR: Columnas (Canales de paso)
+                        for (int canal = 1; canal <= CANALES_POR_TORNO; canal++) {
+                            boolean canalDespejado = ((torno + canal) % 2 == 0);
+                            String estadoVisual = canalDespejado ? "[ACTIVO]  " : "[PASO]    ";
+                            System.out.print(estadoVisual);
+                        }
+
+                        // Salto de línea obligatorio tras completar cada fila de la matriz
+                        System.out.println();
+                    }
+                    System.out.println("-------------------------------------------------------------------");
+                    break;
+
+                case 5:
+                    // EVACUACIÓN CON WHILE
+                    System.out.println("\n--- [MODO 5: EVACUACIÓN DE EMERGENCIA] ---");
+                    while (personasEnCentro > 0) {
+                        int evacuados = Math.min(personasEnCentro, 300);
+                        personasEnCentro -= evacuados;
+                        aforoDisponible += evacuados;
+                        System.out.printf("  -> Desalojadas %d personas. Restantes: %d%n", evacuados, personasEnCentro);
+                    }
+                    System.out.println(">> RECINTO EVACUADO AL 100%.");
+                    break;
+
+                case 6:
+                    // SALIDA
+                    System.out.println("\n>> Desconectando terminal...");
+                    sesionActiva = false;
+                    break;
+
+                default:
+                    System.err.println(">> Opción no válida (1-6).");
+                    break;
+            }
+
+        } while (sesionActiva);
+
+        // AUDITORÍA FINAL
+        System.out.println("\n======================================================================");
+        System.out.println("          AUDITORÍA FINAL DE LA JORNADA · IES EL CAMINÀS              ");
+        System.out.println("======================================================================");
+        System.out.printf("OPERACIONES TOTALES:        %d%n", totalFichajesProcesados);
+        System.out.printf("PASOS AUTORIZADOS:          %d%n", totalFichajesAutorizados);
+        System.out.printf("PASOS DENEGADOS:            %d%n", totalFichajesDenegados);
+        System.out.printf("OCUPACIÓN FINAL:            %d personas%n", personasEnCentro);
+        System.out.println("ESTADO:                     Terminal apagado con éxito.");
+        System.out.println("======================================================================");
+
+        teclado.close();
+    }
+}
+```
+
+</details>
+
+---
+
+#### 4. Segunda sesión: dojo de entrenamiento y katas de código
+
+En esta sesión práctica, cada estudiante implementará bucles anidados para generar representaciones bidimensionales o matrices de cálculo en su proyecto técnico.
+
+##### Kata 1 (Cinturón blanco / Nivel base). Matrices bidimensionales en proyectos asignados
+
+Abre el archivo `pr/src/MiProyecto.java` de tu especialidad e implementa una estructura de dos bucles `for` anidados para modelar una cuadrícula o tabla de doble entrada:
+
+* **Aventura conversacional.** Genera en consola un mapa bidimensional de la mazmorra o sala de combate (por ejemplo, una cuadrícula de $5 \times 5$ celdas). El bucle exterior recorrerá las filas y el interior las columnas; imprime celdas vacías (`. `) y sitúa condicionalmente mediante las coordenadas $(fila, columna)$ la posición del héroe (`@ `) y del adversario (`M `).
+* **Motor de recomendación.** Modela una matriz de afinidad cruzada de contenidos. Define una tabla de $4 \times 4$ donde las filas representen perfiles de usuario tipo y las columnas representen categorías temáticas; calcula en cada intersección el coeficiente de recomendación multiplicativo e imprímelo en formato de tabla alineada.
+* **Simulador de físicas 2D.** Dibuja en la consola una cuadrícula cartesiana espacial (por ejemplo, $8 \times 8$ caracteres) donde el plano represente el área de impacto. En cada celda de la matriz $(x, y)$, comprueba si coincide con la posición redondeada del proyectil para imprimir el carácter de impacto (`* `) o el espacio vacío (`· `).
+* **Bóveda de contraseñas.** Construye una tarjeta de coordenadas criptográfica de autenticación de doble factor. Mediante bucles anidados, genera una cuadrícula de $4 \times 5$ celdas alfanuméricas con cabeceras de filas (letras A–D) y columnas (números 1–5), imprimiendo en cada casilla un código de seguridad pseudoaleatorio de dos dígitos.
+
+---
+
+##### Kata 2 (Cinturón marrón / Nivel avanzado). Bucles anidados dependientes y patrones geométricos
+
+Un **bucle anidado dependiente** ocurre cuando la cota o límite del bucle interior está condicionada por el valor actual del índice del bucle exterior:
+
+1. **El patrón triangular:** Analiza el siguiente fragmento donde el número de columnas impresas crece en cada fila:
+   ```java
+   for (int i = 1; i <= 5; i++) {
+       for (int j = 1; j <= i; j++) {
+           System.out.print("* ");
+       }
+       System.out.println();
+   }
+   ```
+2. **Cálculo de iteraciones acumuladas:** A diferencia de una matriz rectangular ($N \times M$), en un bucle triangular el número total de ejecuciones responde a la serie aritmética de Gauss:
+   $$\text{Total Iteraciones} = \frac{N \times (N + 1)}{2}$$
+3. **Refactorización en tu proyecto:** Aplica un bucle anidado dependiente en tu especialidad (por ejemplo, un escalado progresivo de daño por combos en la aventura, un árbol de pesos jerárquico en el recomendador o una pirámide de complejidad de contraseñas en la bóveda).
+
+---
+
+##### Kata 3 (Cinturón negro / «Hacker AzaharTech»). Auditoría de explosión combinatoria y análisis temporal $O(N \times M)$
+
+En el desarrollo de software corporativo, el anidamiento de bucles es una de las causas principales de degradación de rendimiento (*Performance Bottleneck*):
+
+1. **Modelado formal de la complejidad:**  
+   En un comentario al final de tu clase, calcula cuántas iteraciones se ejecutarían si la cuadrícula de tu programa escalara de las dimensiones de prueba ($3 \times 4 = 12$) a un entorno masivo de datos:
+   * Matriz $100 \times 100$: $10.000$ iteraciones.
+   * Matriz $1.000 \times 1.000$: $1.000.000$ iteraciones.
+   * Matriz tridimensional ($N \times M \times K$ con 3 bucles anidados) para $N=1.000$: $1.000.000.000$ iteraciones ($O(N^3)$).
+2. **Prueba de estrés de reloj:**  
+   Implementa una toma de tiempo con `System.currentTimeMillis()` alrededor de una simulación matricial a gran escala y comprueba experimentalmente cómo el tiempo de respuesta se multiplica de forma cuadrática al duplicar el tamaño de las filas y columnas.
+3. **Certificación de arquitectura:**  
+   Redacta un comentario técnico documentando por qué en los estándares de calidad de AzaharTech se prohíbe anidar más de dos bucles en el hilo principal de ejecución, exigiendo delegar procesamientos de orden superior a algoritmos de búsqueda indexada o procesamiento concurrente.
+
+---
+
+### Día 34 - 2 sesiones
+
+---
+
+#### 1. Caso guía en AzaharTech
+
+Son las 15:00 h del **miércoles 11 de noviembre de 2026**. En la sala de ingeniería de **AzaharTech**, el equipo de desarrollo afronta la penúltima jornada del **Sprint 3: «El laberinto de la lógica»**. La matriz bidimensional de supervisión perimetral desplegada ayer en la versión `v2.10` permitió al **IES El Caminàs** visualizar el estado de los 3 tornos y sus 4 canales de paso.
+
+Sin embargo, durante las pruebas de integración en el campus surgen dos situaciones operativas que exigen ajustar el comportamiento de los bucles:
+
+> *«Equipo, nuestros bucles actuales recorren rígidamente todas las celdas hasta el final sin considerar incidencias intermedias:*
+> 1. * **Canal en mantenimiento:** Si el canal 2 de la Puerta Norte está desconectado por revisión técnica, no debemos ejecutar su telemetría ordinaria; debemos detectarlo y procesar directamente la rama alternativa, manteniendo el flujo lineal del código.*
+> 2. * **Parada anticipada por seguridad perimetral:** Si durante el barrido de los tornos se detecta una alerta crítica de intrusión o avería grave, el escaneo debe concluir de inmediato. No tiene sentido seguir comprobando el resto de canales ni de accesos.*
+>
+> *En muchos entornos de programación no reglada se recurre a sentencias de salto incondicional como `break` o `continue` para interrumpir los bucles a la fuerza. Sin embargo, en AzaharTech aplicamos los principios más sólidos de la **Programación Estructurada**: el principio **SESE (*Single Entry, Single Exit*)**.*
+>
+> *Todo bucle debe tener **un único punto de entrada y un único punto de salida**, gobernado limpiamente por su **condición de cabecera**. Hoy aprenderemos a detener bucles simples y anidados mediante **banderas booleanas de estado (*State Flags*)** y a filtrar situaciones especiales mediante bifurcaciones condicionales directas, preservando la trazabilidad absoluta del programa»*.
+
+**Alba Torres** y **Laia Claramunt** abren el entorno de desarrollo y plantean la pauta técnica:
+
+> *«Al gobernar los bucles exclusivamente a través de su cabecera, el código resulta 100 % predecible, los invariantes matemáticos se cumplen en todo momento y eliminamos cualquier riesgo de provocar efectos secundarios imprevistos en la máquina virtual»*.
+
+---
+
+#### 2. Fundamento teórico: el principio SESE y control de bucles por banderas de estado
+
+El principio **SESE (*Single Entry, Single Exit*)** es uno de los pilares fundacionales de la programación estructurada (formalizado a partir del teorema de Böhm-Jacopini y los trabajos de Edsger Dijkstra). Establece que cualquier bloque de control (sea condicional o iterativo) debe comenzar por un único punto y finalizar ordenadamente por su condición de salida natural.
+
+```mermaid
+flowchart TD
+    Inicio([Entrada única al bucle SESE]) --> CondCabecera{"¿Condición de cabecera?<br/><b>(índice < LÍMITE && !banderaParada)</b>"}
+    
+    CondCabecera -- true --> EvaluacionFiltro{"¿Canal operativo?"}
+    
+    EvaluacionFiltro -- true --> ProcesoNormal["<b>Rama ordinaria:</b><br/>Procesar telemetría y lectura"]
+    EvaluacionFiltro -- false --> ProcesoAlternativo["<b>Rama de contingencia:</b><br/>Marcar estado en mantenimiento"]
+    
+    ProcesoNormal --> CheckAlarma{"¿Incidencia crítica?"}
+    ProcesoAlternativo --> CheckAlarma
+    
+    CheckAlarma -- sí --> ActivarBandera["<b>banderaParada = true</b><br/>(Señaliza el fin para la cabecera)"]
+    CheckAlarma -- no --> ContinuaFlujo["Mantiene banderaParada = false"]
+    
+    ActivarBandera --> Actualizacion["Actualización de índice (i++)"]
+    ContinuaFlujo --> Actualizacion
+    Actualizacion --> CondCabecera
+    
+    CondCabecera -- false --> Salida([Salida única del bucle])
+```
+
+##### A. Parada anticipada mediante expresiones compuestas en cabecera
+
+En Java, la cabecera de un bucle `for` no está limitada a comparar un número: admite **expresiones booleanas compuestas** con la misma flexibilidad que un bucle `while`.
+
+Si deseamos que un bucle se detenga en cuanto se produzca un evento crítico (por ejemplo, una alerta de seguridad o haber encontrado un dato buscado), introducimos una **bandera booleana de estado (*State Flag*)** en la propia condición de corte:
+
+```java
+boolean paradaRequerida = false;
+
+// El bucle avanza mientras no supere el límite Y no se haya levantado la bandera
+for (int i = 0; i < total && !paradaRequerida; i++) {
+    if (hayPeligro(i)) {
+        paradaRequerida = true; // Mutación que provocará la salida limpia en la cabecera
+    } else {
+        procesarElemento(i);
+    }
+}
+```
+
+##### B. Escape coordinado de bucles anidados sin saltos abruptos
+
+Cuando trabajamos con dos bucles anidados (filas y columnas), la misma bandera de estado se evalúa en las cabeceras de **ambos bucles**. En cuanto el bucle interior detecta la condición de corte y muta la bandera, el bucle interior finaliza ordenadamente y el bucle exterior también detecta la bandera en su siguiente evaluación, terminando ambos sin requerir instrucciones de salto:
+
+```java
+boolean incidenciaCritica = false;
+
+for (int fila = 1; fila <= MAX_FILAS && !incidenciaCritica; fila++) {
+    for (int col = 1; col <= MAX_COLS && !incidenciaCritica; col++) {
+        if (celdaCorrupta(fila, col)) {
+            incidenciaCritica = true; // Señaliza la parada a ambos niveles
+        } else {
+            inspeccionar(fila, col);
+        }
+    }
+}
+```
+
+##### C. Filtrado secuencial frente a interrupciones
+
+Para omitir el procesamiento de elementos en revisión o no computables, no es necesario saltar instrucciones a mitad de camino. La solución estructurada consiste en utilizar una **bifurcación condicional limpia (`if-else`)**: la rama afirmativa procesa el dato regular y la rama alternativa notifica la excepción técnica, convergiendo ambas de forma natural al cierre de la iteración.
+
+| Criterio | Enfoque no estructurado (con saltos) | Enfoque estructurado SESE (con banderas) |
+| :--- | :--- | :--- |
+| **Puntos de salida** | Múltiples salidas dispersas (`break` interior) | **Único punto de salida** en la cabecera del bucle |
+| **Control de la parada** | Ocurre de forma invisible dentro del cuerpo | **Explícito y visible** en la condición del bucle |
+| **Omisión de tareas** | Salto incondicional (`continue`) | Bifurcación condicional legible (`if-else`) |
+| **Trazabilidad y depuración** | Compleja: el cursor salta líneas de golpe | Predecible: flujo descendente continuo |
+
+---
+
+#### 3. Evolución del caso guía a `ControlAccesoQR v2.11` (Java nativo)
+
+Evolucionamos la versión `v2.10` a la **`v2.11`**. Mantenemos íntegras las constantes corporativas, los métodos modulares y la captura con `try-catch`, incorporando:
+1. **Control de ráfaga estructurado**: el bucle `while` de cola evalúa una bandera booleana `vetoJudicialDetectado` en su propia cabecera para suspender el paso de forma inmediata ante credenciales vetadas, sin emplear `break`.
+2. **Matriz perimetral gobernada por SESE**: los dos bucles `for` anidados evalúan la bandera `alarmaSabotajeDetectada` en sus respectivas cabeceras para detener el barrido perimetral ante emergencias.
+3. **Filtrado secuencial de canales**: el canal 2 de la Puerta Norte se gestiona mediante una bifurcación `if-else` afirmativa sin usar `continue`.
+
+##### A. Comparativa de cambios respecto a v2.10 (`diff`)
+
+```diff
+  // =========================================================================
+  // MODO 2: Ráfaga de cola gobernada por bandera booleana en cabecera
+  // =========================================================================
++ boolean vetoJudicialDetectado = false;
+- while (personasEnCola > 0 && aforoDisponible > 0) {
++ while (personasEnCola > 0 && aforoDisponible > 0 && !vetoJudicialDetectado) {
+      if (idUltimoFichaje == 1044) {
+          System.out.println(">> ALERTA: Credencial en lista de veto judicial.");
++         vetoJudicialDetectado = true; // Detención estructurada en cabecera
+      } else {
+          totalFichajesProcesados++;
+          // ... [Procesamiento ordinario del paso] ...
+      }
+  }
+
+  // =========================================================================
+  // MODO 4: Matriz perimetral con parada coordinada SESE (sin saltos)
+  // =========================================================================
++ boolean alarmaSabotajeDetectada = false;
+- for (int torno = 1; torno <= TOTAL_TORNOS_CAMPUS; torno++) {
++ for (int torno = 1; torno <= TOTAL_TORNOS_CAMPUS && !alarmaSabotajeDetectada; torno++) {
+      System.out.print(nombreAcceso);
+-     for (int canal = 1; canal <= CANALES_POR_TORNO; canal++) {
++     for (int canal = 1; canal <= CANALES_POR_TORNO && !alarmaSabotajeDetectada; canal++) {
++         if (torno == 2 && canal == 2) {
++             System.out.print("[REVISIÓN] "); // Filtrado estructurado sin continue
++         } else if (alarmaSabotajeDetectada) {
++             // Detección de incidencia crítica
++         } else {
+              System.out.print("[ONLINE]   ");
++         }
+      }
+      System.out.println();
+  }
+```
+
+##### B. Foco en la novedad: parada anticipada y filtrado sin saltos
+
+Observa cómo la bandera `alarmaSabotajeDetectada` se propaga a las cabeceras de ambos bucles para garantizar un escape limpio bajo el estándar SESE:
+
+```java
+// -------------------------------------------------------------------------
+// Operación 4: Matriz perimetral estructurada (SESE) sin sentencias de salto
+// -------------------------------------------------------------------------
+System.out.println("\n--- [INSPECCIÓN ESTRUCTURADA: MATRIZ PERIMETRAL SESE] ---");
+boolean alarmaSabotajeDetectada = false; // Bandera de estado coordinada
+
+// BUCLE EXTERIOR: Cabecera con comprobación de límite Y bandera de parada
+for (int torno = 1; torno <= TOTAL_TORNOS_CAMPUS && !alarmaSabotajeDetectada; torno++) {
+    System.out.printf("Torno #%d | ", torno);
+
+    // BUCLE INTERIOR: Cabecera con comprobación de canal Y bandera de parada
+    for (int canal = 1; canal <= CANALES_POR_TORNO && !alarmaSabotajeDetectada; canal++) {
+        
+        // 1. Filtrado estructurado con if-else (sin continue)
+        if (torno == 2 && canal == 2) {
+            System.out.print("[REVISIÓN] ");
+        } else if (alarmaSabotajeDetectada) {
+            // Si la alarma se hubiera activado, no se procesa la celda
+        } else {
+            // Simulación: detección de sabotaje en el canal 2 del torno 3
+            boolean falloCriticoEnCanal = (torno == 3 && canal == 2 && false); // Simulación inactiva
+
+            if (falloCriticoEnCanal) {
+                System.out.print("[SABOTAJE] ");
+                alarmaSabotajeDetectada = true; // Provoca la terminación limpia en ambas cabeceras
+            } else {
+                System.out.printf("[C%d: OK]   ", canal);
+            }
+        }
+    }
+    System.out.println(); // Fin de fila
+}
+
+if (alarmaSabotajeDetectada) {
+    System.out.println(">> [ALERTA DE SEGURIDAD]: Barrido perimetral detenido por fallo crítico.");
+}
+System.out.println("-------------------------------------------------------------------");
+```
+
+##### C. Código fuente completo integrado
+
+<details>
+<summary><b>🔍 Desplegar archivo completo ControlAccesoQR.java (v2.11)</b></summary>
+
+```java
+/**
+ * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ * 
+ * Versión 2.11:
+ * Cierre técnico de estructuras de repetición bajo el principio SESE (Sprint 3).
+ * Implementa control de bucles estructurado mediante banderas de estado:
+ * - Parada de ráfagas en cabecera de while mediante bandera de veto judicial.
+ * - Salida coordinada de matrices bidimensionales evaluando banderas en for.
+ * - Filtrado secuencial de canales en mantenimiento con if-else (sin saltos).
+ * Mantiene consola interactiva, tránsito bidireccional y blindaje try-catch.
+ * 
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 2.11 (Noviembre 2026)
+ * @since JDK 21 LTS
+ * 
+ */
+
+import java.util.Scanner;
+import java.util.Random;
+import java.time.LocalTime;
+import java.time.LocalDate;
+import java.time.Duration;
+import java.time.DateTimeException;
+
+public class ControlAccesoQR {
+
+    // -------------------------------------------------------------------------
+    // 1. CONSTANTES INMUTABLES DEL SISTEMA (configuración corporativa)
+    // -------------------------------------------------------------------------
+    final static String NOMBRE_CENTRO = "IES El Caminàs (Castellón)";
+    final static String PREFIJO_CENTRO = "CAMINAS";
+    final static String RUTA_LOGS = ".\\caminas\\terminal\\logs";
+
+    final static int MINUTOS_POR_HORA = 60;
+    final static int SEGUNDOS_POR_HORA = 3600;
+    final static int SEGUNDOS_POR_MINUTO = 60;
+    final static int JORNADA_BASE_MINUTOS = 480; // 8 horas
+    final static double FACTOR_PORCENTAJE = 100.0;
+
+    final static int ID_TERMINAL_PUERTA_NORTE = 102;
+    final static int BASE_TOKEN_SEGURIDAD = 1000;
+    final static int RANGO_TOKEN_SEGURIDAD = 9000;
+    final static long SEMILLA_CALIBRACION = 987654321L;
+
+    final static double TEMP_MIN_SEGURA = 15.0;
+    final static double TEMP_MAX_SEGURA = 35.0;
+    final static double MAX_VARIACION_TERMICA = 0.5;
+    final static int LONGITUD_DNI_ESTANDAR = 9;
+
+    // Umbrales biométricos y capacidad
+    final static double TEMP_CORPORAL_MAX_FIEBRE = 37.5;
+    final static double TEMP_CORPORAL_MIN_FALLO = 35.0;
+
+    // Control de puntualidad y hardware perimetral
+    final static LocalTime HORA_LIMITE_PUNTUALIDAD = LocalTime.of(8, 15);
+    final static int NUM_SENSORES_TORNO = 8;
+    final static int HORAS_TURNO_LECTIVO = 6;
+    final static int TOTAL_TORNOS_CAMPUS = 3;
+    final static int CANALES_POR_TORNO = 4;
+
+    // -------------------------------------------------------------------------
+    // 2. MÉTODOS ESTÁTICOS PROPIOS (modularización de la lógica del sistema)
+    // -------------------------------------------------------------------------
+
+    public static int calcularEstanciaMinutos(LocalTime entrada, LocalTime salida) {
+        return (int) Duration.between(entrada, salida).toMinutes();
+    }
+
+    public static double calcularPorcentajeOcupacion(int personas, int aforoTotal) {
+        return ((double) personas / aforoTotal) * FACTOR_PORCENTAJE;
+    }
+
+    public static String construirTokenQR(String prefijo, String dni, int terminalId, int codigoSec, int idFichaje) {
+        String token = prefijo + "-" + dni;
+        token += "-T" + terminalId;
+        token += "-SEC#" + codigoSec;
+        token += "-REG" + idFichaje;
+        return token;
+    }
+
+    public static double calcularDistanciaDiagonal(double x, double y) {
+        return Math.sqrt(Math.pow(x, 2.0) + Math.pow(y, 2.0));
+    }
+
+    public static String obtenerDescripcionPerfil(char perfil) {
+        String descripcion;
+        switch (perfil) {
+            case 'E':
+                descripcion = "Estudiante Oficial";
+                break;
+            case 'D':
+                descripcion = "Docente / Claustro";
+                break;
+            case 'V':
+                descripcion = "Visita Externa / Proveedor";
+                break;
+            case 'A':
+                descripcion = "Personal de Administración y Servicios (PAS)";
+                break;
+            default:
+                descripcion = "Perfil No Catalogado";
+                break;
+        }
+        return descripcion;
+    }
+
+    public static String determinarZonaAutorizada(char perfil) {
+        String zona;
+        switch (perfil) {
+            case 'E':
+                zona = "Aulas Docentes y Talleres de Informática";
+                break;
+            case 'D':
+                zona = "Departamentos Didácticos, Aulas y Sala de Profesores";
+                break;
+            case 'V':
+                zona = "Secretaría, Conserjería y Despachos de Dirección";
+                break;
+            case 'A':
+                zona = "Área de Gestión Administrativa y Archivo Central";
+                break;
+            default:
+                zona = "Acceso Denegado / Zona No Autorizada";
+                break;
+        }
+        return zona;
+    }
+
+    public static int obtenerEstanciaMaximaPorPerfil(char perfil) {
+        int estanciaMinutos;
+        switch (perfil) {
+            case 'E':
+                estanciaMinutos = 360;
+                break;
+            case 'D':
+                estanciaMinutos = 480;
+                break;
+            case 'V':
+                estanciaMinutos = 120;
+                break;
+            case 'A':
+                estanciaMinutos = 420;
+                break;
+            default:
+                estanciaMinutos = 0;
+                break;
+        }
+        return estanciaMinutos;
+    }
+
+    // -------------------------------------------------------------------------
+    // 3. MÉTODOS PREDICADO BOOLEANOS (reglas de negocio desacopladas)
+    // -------------------------------------------------------------------------
+
+    public static boolean esTemperaturaCorporalSegura(double temperatura) {
+        return (temperatura >= TEMP_CORPORAL_MIN_FALLO && temperatura <= TEMP_CORPORAL_MAX_FIEBRE);
+    }
+
+    public static boolean esDocumentoValido(String dni) {
+        return (dni != null && dni.length() == LONGITUD_DNI_ESTANDAR);
+    }
+
+    public static boolean esPerfilAutorizado(char perfil) {
+        boolean autorizado;
+        switch (perfil) {
+            case 'E':
+            case 'D':
+            case 'V':
+            case 'A':
+                autorizado = true;
+                break;
+            default:
+                autorizado = false;
+                break;
+        }
+        return autorizado;
+    }
+
+    // -------------------------------------------------------------------------
+    // 4. MÉTODO PRINCIPAL: CONSOLA DE SERVICIO ESTRUCTURADA SESE (DÍA 34)
+    // -------------------------------------------------------------------------
+    public static void main(String[] args) {
+        Scanner teclado = new Scanner(System.in);
+
+        Random generadorVestibulo = new Random();
+        Random generadorPuertaNorte = new Random();
+        Random generadorCalibracion = new Random(SEMILLA_CALIBRACION);
+
+        LocalDate fechaActual = LocalDate.now();
+
+        // Estado persistente del campus
+        int personasEnCentro = 1190;
+        int aforoDisponible = 10;
+        int idUltimoFichaje = 1042;
+
+        int totalFichajesProcesados = 0;
+        int totalFichajesAutorizados = 0;
+        int totalFichajesDenegados = 0;
+
+        double tempMaximaRegistrada = -1.0;
+        double tempMinimaRegistrada = 100.0;
+        int minutosEstanciaAcumulados = 0;
+
+        boolean sesionActiva = true;
+
+        System.out.println("======================================================================");
+        System.out.println("   AZAHARTECH · CONTROL ESTRUCTURADO SESE - IES EL CAMINÀS            ");
+        System.out.println("   Versión 2.11 Oficial (Sprint 3: Control por Banderas de Estado)    ");
+        System.out.println("======================================================================");
+
+        // BUCLE PRINCIPAL DE GESTIÓN (MENÚ DE OPERACIONES)
+        do {
+            System.out.println("\n----------------------------------------------------------------------");
+            System.out.println("                    PANEL DE OPERACIONES DEL TORNO                    ");
+            System.out.println("----------------------------------------------------------------------");
+            System.out.println("  [1] Registrar tránsito individual (Entrada / Salida)");
+            System.out.println("  [2] Procesar cola en ráfaga (con guardia de veto en cabecera)");
+            System.out.println("  [3] Consultar telemetría y métricas de ocupación en vivo");
+            System.out.println("  [4] Diagnóstico perimetral estructurado SESE (3 tornos x 4 canales)");
+            System.out.println("  [5] Activar protocolo de evacuación de emergencia");
+            System.out.println("  [6] Cerrar jornada y apagar terminal");
+            System.out.print("Seleccione una operación (1-6): ");
+
+            int opcionMenu = 0;
+            try {
+                opcionMenu = Integer.parseInt(teclado.nextLine().trim());
+            } catch (NumberFormatException e) {
+                opcionMenu = -1;
+            }
+
+            switch (opcionMenu) {
+                case 1:
+                    // TRÁNSITO INDIVIDUAL
+                    totalFichajesProcesados++;
+                    System.out.println("\n--- [MODO 1: TRÁNSITO INDIVIDUAL] ---");
+                    System.out.print("Sentido del tránsito (E = Entrada, S = Salida): ");
+                    String lineaSentido = teclado.nextLine().trim().toUpperCase();
+                    char sentidoTransito = lineaSentido.isEmpty() ? 'E' : lineaSentido.charAt(0);
+
+                    System.out.print("Nombre completo: ");
+                    String nombrePersonaLimpio = teclado.nextLine().trim().toUpperCase();
+
+                    if (sentidoTransito == 'S') {
+                        if (personasEnCentro > 0) {
+                            personasEnCentro--;
+                            aforoDisponible++;
+                            totalFichajesAutorizados++;
+                            idUltimoFichaje++;
+                            System.out.println(">> VEREDICTO: [SALIDA AUTORIZADA] Torno exterior abierto.");
+                        } else {
+                            totalFichajesDenegados++;
+                            System.err.println(">> ALERTA: Imposible autorizar salida; recinto vacío.");
+                        }
+                    } else {
+                        int terminalId = 0;
+                        double tempVestibulo = 0.0;
+                        String dniPersonaLimpio = "";
+                        char perfilNormalizado = ' ';
+                        boolean datosSintacticamenteCorrectos = true;
+                        String motivoDenegacion = "";
+
+                        try {
+                            System.out.print("ID Terminal: ");
+                            terminalId = Integer.parseInt(teclado.nextLine().trim());
+                            System.out.print("Temperatura (ºC): ");
+                            tempVestibulo = Double.parseDouble(teclado.nextLine().trim());
+                            System.out.print("DNI: ");
+                            dniPersonaLimpio = teclado.nextLine().trim().toUpperCase();
+                            System.out.print("Perfil (E/D/V/A): ");
+                            String lineaPerfil = teclado.nextLine().trim();
+                            perfilNormalizado = lineaPerfil.isEmpty() ? '?' : Character.toUpperCase(lineaPerfil.charAt(0));
+                        } catch (NumberFormatException e) {
+                            datosSintacticamenteCorrectos = false;
+                            motivoDenegacion = "Error de formato numérico.";
+                        }
+
+                        boolean accesoConcedido;
+                        if (!datosSintacticamenteCorrectos) {
+                            accesoConcedido = false;
+                            totalFichajesDenegados++;
+                        } else if (!esTemperaturaCorporalSegura(tempVestibulo)) {
+                            accesoConcedido = false;
+                            motivoDenegacion = "Temperatura anómala.";
+                            totalFichajesDenegados++;
+                        } else if (aforoDisponible <= 0) {
+                            accesoConcedido = false;
+                            motivoDenegacion = "Aforo completo.";
+                            totalFichajesDenegados++;
+                        } else if (!esDocumentoValido(dniPersonaLimpio)) {
+                            accesoConcedido = false;
+                            motivoDenegacion = "DNI no reglamentario.";
+                            totalFichajesDenegados++;
+                        } else if (!esPerfilAutorizado(perfilNormalizado)) {
+                            accesoConcedido = false;
+                            motivoDenegacion = "Perfil no catalogado.";
+                            totalFichajesDenegados++;
+                        } else {
+                            accesoConcedido = true;
+                            totalFichajesAutorizados++;
+                            personasEnCentro++;
+                            aforoDisponible--;
+                            idUltimoFichaje++;
+
+                            tempMaximaRegistrada = Math.max(tempMaximaRegistrada, tempVestibulo);
+                            tempMinimaRegistrada = Math.min(tempMinimaRegistrada, tempVestibulo);
+                            minutosEstanciaAcumulados += 360;
+                        }
+
+                        int codigoToken = BASE_TOKEN_SEGURIDAD + generadorVestibulo.nextInt(RANGO_TOKEN_SEGURIDAD);
+                        String token = construirTokenQR(PREFIJO_CENTRO, dniPersonaLimpio, terminalId, codigoToken, idUltimoFichaje);
+                        System.out.printf(">> VEREDICTO: %s [Token: %s]%n",
+                                accesoConcedido ? "[ENTRADA AUTORIZADA]" : "[ENTRADA DENEGADA - " + motivoDenegacion + "]", token);
+                    }
+                    break;
+
+                case 2:
+                    // RÁFAGA CON PARADA ESTRUCTURADA POR BANDERA EN CABECERA (SIN BREAK)
+                    System.out.println("\n--- [MODO 2: RÁFAGA CON PARADA ESTRUCTURADA EN CABECERA] ---");
+                    System.out.print("Personas en cola para esta ráfaga: ");
+                    int personasEnCola = 0;
+                    try {
+                        personasEnCola = Integer.parseInt(teclado.nextLine().trim());
+                    } catch (NumberFormatException e) {
+                        personasEnCola = 0;
+                    }
+
+                    boolean vetoJudicialDetectado = false; // Bandera de estado en cabecera
+
+                    // La condición de continuidad gobierna el ciclo de forma exclusiva
+                    while (personasEnCola > 0 && aforoDisponible > 0 && !vetoJudicialDetectado) {
+                        if (idUltimoFichaje == 1044) {
+                            System.out.println(">> [ALERTA JUDICIAL]: Credencial bloqueada. Suspendiendo cola en cabecera...");
+                            vetoJudicialDetectado = true; // Provoca la terminación limpia en la siguiente evaluación
+                        } else {
+                            totalFichajesProcesados++;
+                            totalFichajesAutorizados++;
+                            personasEnCentro++;
+                            aforoDisponible--;
+                            idUltimoFichaje++;
+                            personasEnCola--;
+
+                            double tempSimulada = 36.4 + (generadorVestibulo.nextDouble() * 0.5);
+                            tempMaximaRegistrada = Math.max(tempMaximaRegistrada, tempSimulada);
+                            tempMinimaRegistrada = Math.min(tempMinimaRegistrada, tempSimulada);
+                            minutosEstanciaAcumulados += 360;
+                        }
+                    }
+                    System.out.printf(">> Estado tras ráfaga. Plazas disponibles: %d | Restantes en cola: %d%n",
+                            aforoDisponible, personasEnCola);
+                    break;
+
+                case 3:
+                    // TELEMETRÍA EN VIVO
+                    System.out.println("\n--- [MODO 3: MONITOR DE TELEMETRÍA] ---");
+                    int aforoTotal = personasEnCentro + aforoDisponible;
+                    double porcentajeOcupacion = calcularPorcentajeOcupacion(personasEnCentro, aforoTotal);
+                    System.out.printf("OCUPACIÓN: %d/%d (%6.2f %%) | VACANTES: %d%n",
+                            personasEnCentro, aforoTotal, porcentajeOcupacion, aforoDisponible);
+                    System.out.printf("PICO MÁX: %.1f ºC | PICO MÍN: %.1f ºC%n",
+                            Math.max(0.0, tempMaximaRegistrada), tempMinimaRegistrada > 50.0 ? 0.0 : tempMinimaRegistrada);
+                    break;
+
+                case 4:
+                    // DIAGNÓSTICO PERIMETRAL SESE CON BANDERAS EN CABECERA (DÍA 34)
+                    System.out.println("\n--- [MODO 4: INSPECCIÓN PERIMETRAL ESTRUCTURADA (SESE)] ---");
+                    boolean alarmaSabotajeDetectada = false; // Bandera compartida en ambas cabeceras
+
+                    // BUCLE EXTERIOR: Evaluación de índice Y bandera de estado
+                    for (int torno = 1; torno <= TOTAL_TORNOS_CAMPUS && !alarmaSabotajeDetectada; torno++) {
+                        String nombreAcceso = switch (torno) {
+                            case 1 -> "Vestíbulo Central  | ";
+                            case 2 -> "Puerta Norte Ciclos| ";
+                            case 3 -> "Puerta Sur Talleres| ";
+                            default -> "Acceso Perimetral  | ";
+                        };
+                        System.out.print(nombreAcceso);
+
+                        // BUCLE INTERIOR: Evaluación de canal Y bandera de estado
+                        for (int canal = 1; canal <= CANALES_POR_TORNO && !alarmaSabotajeDetectada; canal++) {
+                            
+                            // Filtrado secuencial estructurado con if-else (sin continue)
+                            if (torno == 2 && canal == 2) {
+                                System.out.print("[REVISIÓN] ");
+                            } else {
+                                // Comprobación ordinaria de telemetría
+                                boolean falloCritico = (torno == 3 && canal == 2 && false); // Simulación inactiva
+
+                                if (falloCritico) {
+                                    System.out.print("[SABOTAJE] ");
+                                    alarmaSabotajeDetectada = true; // Finaliza limpiamente ambos bucles en cabecera
+                                } else {
+                                    System.out.printf("[C%d: OK]   ", canal);
+                                }
+                            }
+                        }
+                        System.out.println(); // Fin de fila
+                    }
+
+                    if (alarmaSabotajeDetectada) {
+                        System.out.println(">> [ALERTA DE SEGURIDAD]: Barrido perimetral detenido por fallo crítico.");
+                    }
+                    System.out.println("-------------------------------------------------------------------");
+                    break;
+
+                case 5:
+                    // EVACUACIÓN CON WHILE
+                    System.out.println("\n--- [MODO 5: EVACUACIÓN DE EMERGENCIA] ---");
+                    while (personasEnCentro > 0) {
+                        int evacuados = Math.min(personasEnCentro, 300);
+                        personasEnCentro -= evacuados;
+                        aforoDisponible += evacuados;
+                        System.out.printf("  -> Desalojadas %d personas. Restantes: %d%n", evacuados, personasEnCentro);
+                    }
+                    System.out.println(">> RECINTO EVACUADO AL 100%.");
+                    break;
+
+                case 6:
+                    // SALIDA
+                    System.out.println("\n>> Desconectando terminal...");
+                    sesionActiva = false;
+                    break;
+
+                default:
+                    System.err.println(">> Opción no válida (1-6).");
+                    break;
+            }
+
+        } while (sesionActiva);
+
+        // AUDITORÍA FINAL
+        System.out.println("\n======================================================================");
+        System.out.println("          AUDITORÍA FINAL DE LA JORNADA · IES EL CAMINÀS              ");
+        System.out.println("======================================================================");
+        System.out.printf("OPERACIONES TOTALES:        %d%n", totalFichajesProcesados);
+        System.out.printf("PASOS AUTORIZADOS:          %d%n", totalFichajesAutorizados);
+        System.out.printf("PASOS DENEGADOS:            %d%n", totalFichajesDenegados);
+        System.out.printf("OCUPACIÓN FINAL:            %d personas%n", personasEnCentro);
+        System.out.println("ESTADO:                     Terminal apagado con éxito.");
+        System.out.println("======================================================================");
+
+        teclado.close();
+    }
+}
+```
+
+</details>
+
+---
+
+#### 4. Segunda sesión: dojo de entrenamiento y katas de código
+
+En esta sesión práctica, cada estudiante aplicará el principio SESE para gobernar la parada y el filtrado de bucles exclusivamente a través de banderas booleanas en cabecera y bifurcaciones estructuradas.
+
+##### Kata 1 (Cinturón blanco / Nivel base). Parada en cabecera y filtrado en proyectos asignados
+
+Abre el archivo `pr/src/MiProyecto.java` de tu especialidad e implementa una rutina de bucle gobernada por una bandera booleana en su cabecera y filtrado con `if-else` directo, sin utilizar sentencias de salto:
+
+* **Aventura conversacional.** Modela una secuencia de combate automático o ráfaga de asaltos gobernada por la cabecera `while (vidaHeroe > 0 && vidaMonstruo > 0 && !huidaExitosa)`. Si el jugador activa un objeto de escape, muta la bandera `huidaExitosa = true` para finalizar el bucle por su propia condición; gestiona los turnos en los que el monstruo está aturdido mediante un bloque `if (!adversarioAturdido) { contraatacar(); } else { notificarAturdimiento(); }`.
+* **Motor de recomendación.** En la rutina de procesamiento por lotes de contenidos, define la cabecera del bucle evaluando `while (quedanItems && recomendacionesEmitidas < CUPO_MAXIMO)`. El bucle debe concluir naturalmente en cuanto se alcance la cuota sin forzar interrupciones; gestiona los productos descatalogados dentro del cuerpo mediante una bifurcación `if (itemEnStock) { analizarAfinidad(); } else { registrarDescatalogado(); }`.
+* **Simulador de físicas 2D.** Estructura el bucle de simulación cinemática condicionando su cabecera a `while (tiempoActual < TIEMPO_MAX && !impactoCritico)`. Si la posición del proyectil detecta un obstáculo indestructible, activa `impactoCritico = true` para concluir la simulación limpiamente; gestiona las pérdidas de aceleración menores con un bloque `if (aceleracionRelevante) { recalcularVectores(); }`.
+* **Bóveda de contraseñas.** Construye el algoritmo de auditoría de credenciales mediante un bucle `for` que incorpore en su cabecera `for (int i = 0; i < password.length() && !patronInseguroDetectado; i++)`. Si se detecta un carácter prohibido o secuencia maliciosa, activa la bandera booleana para salir por cabecera, procesando los caracteres válidos en la rama afirmativa del condicional.
+
+---
+
+##### Kata 2 (Cinturón marrón / Nivel avanzado). Búsqueda lineal estructurada con bandera en cabecera
+
+El algoritmo clásico de búsqueda lineal es el mejor ejemplo para contrastar la programación estructurada frente a los escapes incondicionales:
+
+1. **La cabecera compuesta:** Diseña un bucle `for` que busque un valor clave en un rango numérico sin usar `break`:
+   ```java
+   boolean elementoEncontrado = false;
+   int posicionHallada = -1;
+
+   // La cabecera garantiza la terminación por fin de rango O por éxito en la búsqueda
+   for (int i = 0; i < TAMANIO && !elementoEncontrado; i++) {
+       if (coincideCriterio(i)) {
+           elementoEncontrado = true;
+           posicionHallada = i;
+       }
+   }
+   ```
+2. **Ventaja SESE:** Tras el bucle, el flujo converge en un único punto predecible donde una simple comprobación (`if (elementoEncontrado)`) permite gestionar el resultado sin incertidumbres sobre el estado de la variable índice.
+3. **Refactorización en tu proyecto:** Aplica este patrón en la búsqueda de elementos de tu especialidad (localizar una celda libre en la aventura, un contenido afín en el recomendador, un punto de colisión en las físicas o una clave coincidente en la bóveda).
+
+---
+
+##### Kata 3 (Cinturón negro / «Hacker AzaharTech»). Auditoría de invariantes y verificación de flujo SESE
+
+La programación estructurada permite verificar formalmente el comportamiento de un bucle mediante sus invariantes matemáticas:
+
+1. **Definición de la invariante:**  
+   En un comentario al final de tu clase, formaliza la invariante de tu bucle principal: demuestra que antes de entrar, en cada paso y al salir, la expresión lógica de cabecera gobierna con precisión el ciclo de vida de los datos:
+   $$\text{Condición de parada} = \neg (\text{índice} < \text{LÍMITE} \land \neg \text{banderaParada})$$
+   Aplicando De Morgan:
+   $$\text{Condición de parada} = (\text{índice} \ge \text{LÍMITE}) \lor \text{banderaParada}$$
+2. **Prueba de caja blanca:**  
+   Rastrea el valor de la bandera booleana en una ejecución donde se fuerce la parada anticipada y demuestra que el bucle no realiza ninguna iteración adicional tras mutar la bandera a `true`.
+3. **Certificación:**  
+   Documenta en un comentario de tu clase cómo el respeto al principio SESE reduce la deuda técnica, elimina caminos muertos (*Dead Code*) y simplifica el análisis de cobertura de pruebas unitarias (*Branch Coverage*) de cara a la sesión de depuración final del sprint.
+
+---
+
+### Día 35 - 2 sesiones
+
+---
+
+#### 1. Caso guía en AzaharTech
+
+Son las 15:00 h del **jueves 12 de noviembre de 2026**. Los equipos de desarrollo de **AzaharTech** en Castellón de la Plana afrontan la última jornada lectiva del **Sprint 3: «El laberinto de la lógica»**. Tras 12 sesiones intensivas, el software de control de accesos para el **IES El Caminàs** ha dejado de ser un script lineal para convertirse en una aplicación corporativa robusta, interactiva y estructurada.
+
+En la pantalla central, **Laia Claramunt**, acompañada de **Alba Torres** y **Pau Ferrer**, proyecta el hito de entrega del sprint:
+
+> *«Equipo, hemos completado la travesía de este sprint. Si miramos atrás, el lunes 26 de octubre partíamos de un programa ciego que siempre abría el torno. Hoy entregamos la versión **`v3.0 Oficial`**:*
+> * Un sistema gobernado por estructuras de selección (`if-else`, `switch`) y predicados modulares.
+> * Blindado defensivamente ante fallos de formato con `try-catch`.
+> * Un demonio de servicio continuo estructurado con `do-while` y centinela de apagado.
+> * Procesamiento de colas por ráfaga con `while` y protocolos de evacuación de emergencia.
+> * Autodiagnóstico secuencial de sensores con `for` y supervisión perimetral matricial con bucles anidados.
+> * Y todo ello respetando escrupulosamente el principio **SESE (*Single Entry, Single Exit*)**, gobernando cada iteración exclusivamente a través de banderas booleanas en cabecera, sin un solo `break` ni `continue` descontrolado en los bucles.
+>
+> *Hoy dedicamos la sesión al paso más importante de cualquier entrega profesional: la **auditoría de integración, depuración guiada con puntos de ruptura (*breakpoints*) en IntelliJ** y la certificación de la versión final antes de etiquetar el commit definitivo en Git»*.
+
+---
+
+#### 2. Fundamento teórico: depuración formal, puntos de ruptura e inspección de memoria
+
+La **depuración (*Debugging*)** es el proceso metódico de ejecutar un programa paso a paso bajo la supervisión de un depurador para verificar que las variables en memoria mutan exactamente según lo previsto.
+
+```mermaid
+flowchart TD
+    Inicio([Lanzar aplicación en Modo Debug: Shift + F9]) --> BP["<b>Punto de ruptura (Breakpoint):</b><br/>La JVM congela el hilo de ejecución"]
+    
+    BP --> Inspeccion["<b>Inspección de memoria:</b><br/>• Pestaña Variables: valores en el Stack<br/>• Watch / Evaluate: evaluar expresiones al vuelo"]
+    
+    Inspeccion --> Accion{"Acción del desarrollador"}
+    
+    Accion -- "F8 (Step Over)" --> LineaSig["<b>Avanzar línea a línea</b><br/>Ejecuta la instrucción sin entrar en métodos"]
+    Accion -- "F7 (Step Into)" --> EntraMetodo["<b>Entrar al método</b><br/>Salta al interior de predicados modulares"]
+    Accion -- "F9 (Resume)" --> SiguienteBP["<b>Reanudar ejecución</b><br/>Avanza hasta el siguiente Breakpoint o fin"]
+    
+    LineaSig --> Inspeccion
+    EntraMetodo --> Inspeccion
+    SiguienteBP --> Fin([Certificación de calidad del software])
+```
+
+##### A. Tipos de puntos de ruptura (*Breakpoints*) en IntelliJ IDEA
+
+1. **Punto de ruptura de línea (*Line Breakpoint*):** Congela el programa justo antes de ejecutar la línea seleccionada. Permite examinar el estado de las variables locales en la memoria de pila (*Stack Frame*).
+2. **Punto de ruptura condicional (*Conditional Breakpoint*):** Solo detiene la ejecución si se cumple una expresión booleana (por ejemplo, `aforoDisponible == 0` o `idUltimoFichaje == 1044`). Evita tener que avanzar manualmente por cientos de vueltas irrelevantes de un bucle.
+
+##### B. Navegación en depuración
+
+| Atajo en IntelliJ | Comando | Función técnica |
+| :--- | :--- | :--- |
+| **`F8`** | *Step Over* | Ejecuta la línea actual y pasa a la siguiente sin entrar en el detalle de los métodos invocados. |
+| **`F7`** | *Step Into* | Salta al interior del método invocado (ideal para auditar la lógica de un método predicado). |
+| **`Shift + F8`** | *Step Out* | Completa la ejecución del método actual y regresa a la línea llamante. |
+| **`F9`** | *Resume Program* | Reanuda la ejecución continua hasta encontrar el siguiente *breakpoint*. |
+| **`Alt + F8`** | *Evaluate Expression* | Abre una consola interactiva para calcular expresiones lógicas en caliente sin modificar el código. |
+
+##### C. La tabla de auditoría de variables (*Trace Matrix*)
+
+Durante la depuración formal de un bucle, los ingenieros registran en una **tabla de traza** cómo mutan los acumuladores y banderas en cada ciclo, verificando que la condición de salida evalúa a `false` en el momento matemático exacto:
+
+| Iteración | Variable índice | `personasEnCentro` | `aforoDisponible` | Bandera de estado | Evaluación cabecera |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| **0 (Inicio)** | — | 1.195 | 5 | `parada = false` | — |
+| **1** | `lote = 1` | 1.196 | 4 | `parada = false` | `true` |
+| **2** | `lote = 2` | 1.197 | 3 | `parada = false` | `true` |
+| **...** | ... | ... | ... | ... | ... |
+| **5 (Límite)** | `lote = 5` | 1.200 | 0 | `parada = true` | `false` $\rightarrow$ **Salida limpia SESE** |
+
+---
+
+#### 3. Evolución del caso guía a `ControlAccesoQR v3.0` (Versión Final Sprint 3)
+
+Alcanzamos el hito **`v3.0 Oficial`**. Esta versión consolida toda la arquitectura del Sprint 3 en una única clase robusta, limpia y completamente operativa.
+
+##### A. Consolidación respecto a v2.11 (`diff`)
+
+```diff
+  /**
+   * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
+-  * Versión 2.11: Consolidación de estructuras de salto
++  * Versión 3.0 Oficial: Cierre y entrega final de Sprint 3 («El laberinto de la lógica»)
+   * 
+-  * @version 2.11 (Noviembre 2026)
++  * @version 3.0 Oficial (Noviembre 2026)
+   */
+
+  // =========================================================================
+  // ARQUITECTURA FINAL CONSOLIDADA (Sprint 3 Release)
+  // =========================================================================
+  // • Estructuras de selección múltiple (if-else jerárquico + switch clásico)
+  // • Blindaje defensivo ante excepciones tipográficas (try-catch)
+  // • Servicio continuo por menú interactivo (do-while + centinela de apagado)
+  // • Procesamiento por ráfaga y evacuación progresiva (while)
+  // • Diagnóstico secuencial y matriz perimetral (for simple y for anidado)
+  // • Principio SESE riguroso: parada exclusiva por banderas en cabecera
+```
+
+##### B. Foco en la consolidación: arquitectura modular integral
+
+Observa cómo el método `main` coordina limpiamente todas las operaciones del terminal delegando las reglas en métodos predicado, mientras los bucles gestionan la persistencia y la salida ordenada:
+
+```java
+// -------------------------------------------------------------------------
+// Orquestación del menú interactivo consolidado v3.0
+// -------------------------------------------------------------------------
+do {
+    // 1. Despliegue del panel de control multipropósito (opciones 1 a 6)
+    // 2. Captura vigilada de opción con try-catch
+    // 3. Despacho modular mediante sentencia switch:
+    //    - Opción 1: Tránsito individual bidireccional (Entrada/Salida con guardias)
+    //    - Opción 2: Ráfaga de cola en vestíbulo (bucle while con bandera judicial)
+    //    - Opción 3: Monitor de telemetría y extremos térmicos (Math.max / Math.min)
+    //    - Opción 4: Diagnóstico secuencial y matriz perimetral (bucles for anidados)
+    //    - Opción 5: Protocolo de evacuación de emergencia (bucle while de drenaje)
+    //    - Opción 6: Cierre ordenado de jornada (sesionActiva = false)
+} while (sesionActiva);
+
+// 4. Emisión de informe consolidado de auditoría final de sesión
+```
+
+##### C. Código fuente completo integrado
+
+<details>
+<summary><b>🔍 Desplegar archivo completo ControlAccesoQR.java (v3.0 Oficial - Release Sprint 3)</b></summary>
+
+```java
+/**
+ * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ * 
+ * Versión 3.0 Oficial:
+ * Cierre y consolidación final del Sprint 3 («El laberinto de la lógica»).
+ * Integra la totalidad de estructuras de control de flujo de la plataforma:
+ * - Selección condicional jerárquica if-else y múltiple con switch clásico.
+ * - Programación defensiva con captura de excepciones mediante try-catch.
+ * - Ciclo continuo de servicio desatendido mediante bucle post-test do-while.
+ * - Procesamiento de colas por ráfaga y vaciado de emergencia con bucle while.
+ * - Autodiagnóstico secuencial y matriz perimetral (3x4) con bucles for anidados.
+ * - Cumplimiento estricto del principio SESE (paradas mediante banderas en cabecera).
+ * - Algoritmos de agregación en tiempo real: picos térmicos, medias y aforo.
+ * 
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 3.0 Oficial (Noviembre 2026)
+ * @since JDK 21 LTS
+ * 
+ */
+
+import java.util.Scanner;
+import java.util.Random;
+import java.time.LocalTime;
+import java.time.LocalDate;
+import java.time.Duration;
+import java.time.DateTimeException;
+
+public class ControlAccesoQR {
+
+    // -------------------------------------------------------------------------
+    // 1. CONSTANTES INMUTABLES DEL SISTEMA (configuración corporativa)
+    // -------------------------------------------------------------------------
+    final static String NOMBRE_CENTRO = "IES El Caminàs (Castellón)";
+    final static String PREFIJO_CENTRO = "CAMINAS";
+    final static String RUTA_LOGS = ".\\caminas\\terminal\\logs";
+
+    final static int MINUTOS_POR_HORA = 60;
+    final static int SEGUNDOS_POR_HORA = 3600;
+    final static int SEGUNDOS_POR_MINUTO = 60;
+    final static int JORNADA_BASE_MINUTOS = 480; // 8 horas
+    final static double FACTOR_PORCENTAJE = 100.0;
+
+    final static int ID_TERMINAL_PUERTA_NORTE = 102;
+    final static int BASE_TOKEN_SEGURIDAD = 1000;
+    final static int RANGO_TOKEN_SEGURIDAD = 9000;
+    final static long SEMILLA_CALIBRACION = 987654321L;
+
+    final static double TEMP_MIN_SEGURA = 15.0;
+    final static double TEMP_MAX_SEGURA = 35.0;
+    final static double MAX_VARIACION_TERMICA = 0.5;
+    final static int LONGITUD_DNI_ESTANDAR = 9;
+
+    // Umbrales biométricos y capacidad
+    final static double TEMP_CORPORAL_MAX_FIEBRE = 37.5;
+    final static double TEMP_CORPORAL_MIN_FALLO = 35.0;
+
+    // Control de puntualidad y hardware perimetral
+    final static LocalTime HORA_LIMITE_PUNTUALIDAD = LocalTime.of(8, 15);
+    final static int NUM_SENSORES_TORNO = 8;
+    final static int HORAS_TURNO_LECTIVO = 6;
+    final static int TOTAL_TORNOS_CAMPUS = 3;
+    final static int CANALES_POR_TORNO = 4;
+
+    // -------------------------------------------------------------------------
+    // 2. MÉTODOS ESTÁTICOS PROPIOS (modularización de la lógica del sistema)
+    // -------------------------------------------------------------------------
+
+    public static int calcularEstanciaMinutos(LocalTime entrada, LocalTime salida) {
+        return (int) Duration.between(entrada, salida).toMinutes();
+    }
+
+    public static double calcularPorcentajeOcupacion(int personas, int aforoTotal) {
+        return ((double) personas / aforoTotal) * FACTOR_PORCENTAJE;
+    }
+
+    public static String construirTokenQR(String prefijo, String dni, int terminalId, int codigoSec, int idFichaje) {
+        String token = prefijo + "-" + dni;
+        token += "-T" + terminalId;
+        token += "-SEC#" + codigoSec;
+        token += "-REG" + idFichaje;
+        return token;
+    }
+
+    public static double calcularDistanciaDiagonal(double x, double y) {
+        return Math.sqrt(Math.pow(x, 2.0) + Math.pow(y, 2.0));
+    }
+
+    public static String obtenerDescripcionPerfil(char perfil) {
+        String descripcion;
+        switch (perfil) {
+            case 'E':
+                descripcion = "Estudiante Oficial";
+                break;
+            case 'D':
+                descripcion = "Docente / Claustro";
+                break;
+            case 'V':
+                descripcion = "Visita Externa / Proveedor";
+                break;
+            case 'A':
+                descripcion = "Personal de Administración y Servicios (PAS)";
+                break;
+            default:
+                descripcion = "Perfil No Catalogado";
+                break;
+        }
+        return descripcion;
+    }
+
+    public static String determinarZonaAutorizada(char perfil) {
+        String zona;
+        switch (perfil) {
+            case 'E':
+                zona = "Aulas Docentes y Talleres de Informática";
+                break;
+            case 'D':
+                zona = "Departamentos Didácticos, Aulas y Sala de Profesores";
+                break;
+            case 'V':
+                zona = "Secretaría, Conserjería y Despachos de Dirección";
+                break;
+            case 'A':
+                zona = "Área de Gestión Administrativa y Archivo Central";
+                break;
+            default:
+                zona = "Acceso Denegado / Zona No Autorizada";
+                break;
+        }
+        return zona;
+    }
+
+    public static int obtenerEstanciaMaximaPorPerfil(char perfil) {
+        int estanciaMinutos;
+        switch (perfil) {
+            case 'E':
+                estanciaMinutos = 360;
+                break;
+            case 'D':
+                estanciaMinutos = 480;
+                break;
+            case 'V':
+                estanciaMinutos = 120;
+                break;
+            case 'A':
+                estanciaMinutos = 420;
+                break;
+            default:
+                estanciaMinutos = 0;
+                break;
+        }
+        return estanciaMinutos;
+    }
+
+    // -------------------------------------------------------------------------
+    // 3. MÉTODOS PREDICADO BOOLEANOS (reglas de negocio desacopladas)
+    // -------------------------------------------------------------------------
+
+    public static boolean esTemperaturaCorporalSegura(double temperatura) {
+        return (temperatura >= TEMP_CORPORAL_MIN_FALLO && temperatura <= TEMP_CORPORAL_MAX_FIEBRE);
+    }
+
+    public static boolean esDocumentoValido(String dni) {
+        return (dni != null && dni.length() == LONGITUD_DNI_ESTANDAR);
+    }
+
+    public static boolean esPerfilAutorizado(char perfil) {
+        boolean autorizado;
+        switch (perfil) {
+            case 'E':
+            case 'D':
+            case 'V':
+            case 'A':
+                autorizado = true;
+                break;
+            default:
+                autorizado = false;
+                break;
+        }
+        return autorizado;
+    }
+
+    // -------------------------------------------------------------------------
+    // 4. MÉTODO PRINCIPAL: CONSOLA INTEGRAL v3.0 (RELEASE SPRINT 3)
+    // -------------------------------------------------------------------------
+    public static void main(String[] args) {
+        Scanner teclado = new Scanner(System.in);
+
+        Random generadorVestibulo = new Random();
+        Random generadorPuertaNorte = new Random();
+        Random generadorCalibracion = new Random(SEMILLA_CALIBRACION);
+
+        LocalDate fechaActual = LocalDate.now();
+
+        // Estado persistente del campus
+        int personasEnCentro = 1190;
+        int aforoDisponible = 10;
+        int idUltimoFichaje = 1042;
+
+        int totalFichajesProcesados = 0;
+        int totalFichajesAutorizados = 0;
+        int totalFichajesDenegados = 0;
+
+        // Acumuladores estadísticos
+        double tempMaximaRegistrada = -1.0;
+        double tempMinimaRegistrada = 100.0;
+        int minutosEstanciaAcumulados = 0;
+
+        boolean sesionActiva = true;
+
+        System.out.println("======================================================================");
+        System.out.println("   AZAHARTECH · CONTROL INTEGRAL DE ACCESOS - IES EL CAMINÀS          ");
+        System.out.println("   Versión 3.0 Oficial (Release Sprint 3: Arquitectura Consolidada)   ");
+        System.out.println("======================================================================");
+
+        // BUCLE PRINCIPAL DE GESTIÓN (MENÚ DE OPERACIONES)
+        do {
+            System.out.println("\n----------------------------------------------------------------------");
+            System.out.println("                    PANEL DE OPERACIONES DEL TORNO                    ");
+            System.out.println("----------------------------------------------------------------------");
+            System.out.println("  [1] Registrar tránsito individual (Entrada / Salida)");
+            System.out.println("  [2] Procesar cola en ráfaga (Modo Burst con parada en cabecera)");
+            System.out.println("  [3] Consultar telemetría y métricas de ocupación en vivo");
+            System.out.println("  [4] Diagnóstico perimetral estructurado SESE (3 tornos x 4 canales)");
+            System.out.println("  [5] Activar protocolo de evacuación de emergencia");
+            System.out.println("  [6] Cerrar jornada y apagar terminal");
+            System.out.print("Seleccione una operación (1-6): ");
+
+            int opcionMenu = 0;
+            try {
+                opcionMenu = Integer.parseInt(teclado.nextLine().trim());
+            } catch (NumberFormatException e) {
+                opcionMenu = -1;
+            }
+
+            switch (opcionMenu) {
+                case 1:
+                    // TRÁNSITO INDIVIDUAL BIDIRECCIONAL
+                    totalFichajesProcesados++;
+                    System.out.println("\n--- [MODO 1: TRÁNSITO INDIVIDUAL] ---");
+                    System.out.print("Sentido del tránsito (E = Entrada, S = Salida): ");
+                    String lineaSentido = teclado.nextLine().trim().toUpperCase();
+                    char sentidoTransito = lineaSentido.isEmpty() ? 'E' : lineaSentido.charAt(0);
+
+                    System.out.print("Nombre completo: ");
+                    String nombrePersonaLimpio = teclado.nextLine().trim().toUpperCase();
+
+                    if (sentidoTransito == 'S') {
+                        if (personasEnCentro > 0) {
+                            personasEnCentro--;
+                            aforoDisponible++;
+                            totalFichajesAutorizados++;
+                            idUltimoFichaje++;
+                            System.out.println(">> VEREDICTO: [SALIDA AUTORIZADA] Torno exterior abierto.");
+                        } else {
+                            totalFichajesDenegados++;
+                            System.err.println(">> ALERTA: Imposible autorizar salida; recinto vacío.");
+                        }
+                    } else {
+                        int terminalId = 0;
+                        double tempVestibulo = 0.0;
+                        String dniPersonaLimpio = "";
+                        char perfilNormalizado = ' ';
+                        boolean datosSintacticamenteCorrectos = true;
+                        String motivoDenegacion = "";
+
+                        try {
+                            System.out.print("ID Terminal: ");
+                            terminalId = Integer.parseInt(teclado.nextLine().trim());
+                            System.out.print("Temperatura (ºC): ");
+                            tempVestibulo = Double.parseDouble(teclado.nextLine().trim());
+                            System.out.print("DNI: ");
+                            dniPersonaLimpio = teclado.nextLine().trim().toUpperCase();
+                            System.out.print("Perfil (E/D/V/A): ");
+                            String lineaPerfil = teclado.nextLine().trim();
+                            perfilNormalizado = lineaPerfil.isEmpty() ? '?' : Character.toUpperCase(lineaPerfil.charAt(0));
+                        } catch (NumberFormatException e) {
+                            datosSintacticamenteCorrectos = false;
+                            motivoDenegacion = "Error de formato numérico.";
+                        }
+
+                        boolean accesoConcedido;
+                        if (!datosSintacticamenteCorrectos) {
+                            accesoConcedido = false;
+                            totalFichajesDenegados++;
+                        } else if (!esTemperaturaCorporalSegura(tempVestibulo)) {
+                            accesoConcedido = false;
+                            motivoDenegacion = "Temperatura anómala.";
+                            totalFichajesDenegados++;
+                        } else if (aforoDisponible <= 0) {
+                            accesoConcedido = false;
+                            motivoDenegacion = "Aforo completo.";
+                            totalFichajesDenegados++;
+                        } else if (!esDocumentoValido(dniPersonaLimpio)) {
+                            accesoConcedido = false;
+                            motivoDenegacion = "DNI no reglamentario.";
+                            totalFichajesDenegados++;
+                        } else if (!esPerfilAutorizado(perfilNormalizado)) {
+                            accesoConcedido = false;
+                            motivoDenegacion = "Perfil no catalogado.";
+                            totalFichajesDenegados++;
+                        } else {
+                            accesoConcedido = true;
+                            totalFichajesAutorizados++;
+                            personasEnCentro++;
+                            aforoDisponible--;
+                            idUltimoFichaje++;
+
+                            tempMaximaRegistrada = Math.max(tempMaximaRegistrada, tempVestibulo);
+                            tempMinimaRegistrada = Math.min(tempMinimaRegistrada, tempVestibulo);
+                            minutosEstanciaAcumulados += 360;
+                        }
+
+                        int codigoToken = BASE_TOKEN_SEGURIDAD + generadorVestibulo.nextInt(RANGO_TOKEN_SEGURIDAD);
+                        String token = construirTokenQR(PREFIJO_CENTRO, dniPersonaLimpio, terminalId, codigoToken, idUltimoFichaje);
+                        System.out.printf(">> VEREDICTO: %s [Token: %s]%n",
+                                accesoConcedido ? "[ENTRADA AUTORIZADA]" : "[ENTRADA DENEGADA - " + motivoDenegacion + "]", token);
+                    }
+                    break;
+
+                case 2:
+                    // RÁFAGA DE COLA CON GUARDIA EN CABECERA (PRINCIPIO SESE)
+                    System.out.println("\n--- [MODO 2: RÁFAGA CON PARADA ESTRUCTURADA EN CABECERA] ---");
+                    System.out.print("Personas en cola para esta ráfaga: ");
+                    int personasEnCola = 0;
+                    try {
+                        personasEnCola = Integer.parseInt(teclado.nextLine().trim());
+                    } catch (NumberFormatException e) {
+                        personasEnCola = 0;
+                    }
+
+                    boolean vetoJudicialDetectado = false;
+
+                    while (personasEnCola > 0 && aforoDisponible > 0 && !vetoJudicialDetectado) {
+                        if (idUltimoFichaje == 1044) {
+                            System.out.println(">> [ALERTA JUDICIAL]: Credencial bloqueada. Suspendiendo cola en cabecera...");
+                            vetoJudicialDetectado = true;
+                        } else {
+                            totalFichajesProcesados++;
+                            totalFichajesAutorizados++;
+                            personasEnCentro++;
+                            aforoDisponible--;
+                            idUltimoFichaje++;
+                            personasEnCola--;
+
+                            double tempSimulada = 36.4 + (generadorVestibulo.nextDouble() * 0.5);
+                            tempMaximaRegistrada = Math.max(tempMaximaRegistrada, tempSimulada);
+                            tempMinimaRegistrada = Math.min(tempMinimaRegistrada, tempSimulada);
+                            minutosEstanciaAcumulados += 360;
+                        }
+                    }
+                    System.out.printf(">> Estado tras ráfaga. Plazas disponibles: %d | Restantes en cola: %d%n",
+                            aforoDisponible, personasEnCola);
+                    break;
+
+                case 3:
+                    // MONITOR DE TELEMETRÍA EN VIVO
+                    System.out.println("\n--- [MODO 3: MONITOR DE TELEMETRÍA EN VIVO] ---");
+                    int aforoTotal = personasEnCentro + aforoDisponible;
+                    double porcentajeOcupacion = calcularPorcentajeOcupacion(personasEnCentro, aforoTotal);
+                    double estanciaMedia = totalFichajesAutorizados > 0 
+                            ? ((double) minutosEstanciaAcumulados / totalFichajesAutorizados) : 0.0;
+
+                    System.out.printf("OCUPACIÓN ACTUAL:         %d/%d personas (%6.2f %%)%n", personasEnCentro, aforoTotal, porcentajeOcupacion);
+                    System.out.printf("PLAZAS LIBRES:            %d vacantes disponibles%n", aforoDisponible);
+                    System.out.printf("TRANSACCIONES TOTALES:    %d registros (%d autorizados, %d denegados)%n",
+                            totalFichajesProcesados, totalFichajesAutorizados, totalFichajesDenegados);
+                    System.out.printf("PICO TÉRMICO MÁXIMO:      %.1f ºC%n", Math.max(0.0, tempMaximaRegistrada));
+                    System.out.printf("PICO TÉRMICO MÍNIMO:      %.1f ºC%n", tempMinimaRegistrada > 50.0 ? 0.0 : tempMinimaRegistrada);
+                    System.out.printf("ESTANCIA PROMEDIO:        %.1f minutos (Total acumulado: %d min)%n",
+                            estanciaMedia, minutosEstanciaAcumulados);
+                    break;
+
+                case 4:
+                    // DIAGNÓSTICO SECUENCIAL Y MATRIZ PERIMETRAL SESE
+                    System.out.println("\n--- [MODO 4: INSPECCIÓN PERIMETRAL ESTRUCTURADA (SESE)] ---");
+                    boolean alarmaSabotajeDetectada = false;
+
+                    for (int torno = 1; torno <= TOTAL_TORNOS_CAMPUS && !alarmaSabotajeDetectada; torno++) {
+                        String nombreAcceso = switch (torno) {
+                            case 1 -> "Vestíbulo Central  | ";
+                            case 2 -> "Puerta Norte Ciclos| ";
+                            case 3 -> "Puerta Sur Talleres| ";
+                            default -> "Acceso Perimetral  | ";
+                        };
+                        System.out.print(nombreAcceso);
+
+                        for (int canal = 1; canal <= CANALES_POR_TORNO && !alarmaSabotajeDetectada; canal++) {
+                            if (torno == 2 && canal == 2) {
+                                System.out.print("[REVISIÓN] ");
+                            } else {
+                                boolean falloCritico = (torno == 3 && canal == 2 && false);
+
+                                if (falloCritico) {
+                                    System.out.print("[SABOTAJE] ");
+                                    alarmaSabotajeDetectada = true;
+                                } else {
+                                    System.out.printf("[C%d: OK]   ", canal);
+                                }
+                            }
+                        }
+                        System.out.println();
+                    }
+
+                    if (alarmaSabotajeDetectada) {
+                        System.out.println(">> [ALERTA DE SEGURIDAD]: Barrido perimetral detenido por fallo crítico.");
+                    }
+                    System.out.println("-------------------------------------------------------------------");
+                    break;
+
+                case 5:
+                    // PROTOCOLO DE EVACUACIÓN CON WHILE DE DRENAJE
+                    System.out.println("\n--- [MODO 5: PROTOCOLO DE EVACUACIÓN DE EMERGENCIA] ---");
+                    if (personasEnCentro == 0) {
+                        System.out.println(">> El campus ya se encuentra completamente vacío.");
+                    } else {
+                        int loteSalidaSimultanea = 300;
+                        int oleada = 1;
+
+                        while (personasEnCentro > 0) {
+                            int evacuadosLote = Math.min(personasEnCentro, loteSalidaSimultanea);
+                            personasEnCentro -= evacuadosLote;
+                            aforoDisponible += evacuadosLote;
+
+                            System.out.printf("  -> Oleada #%d: Desalojadas %d personas por salidas de emergencia (Ocupantes restantes: %d)%n",
+                                    oleada, evacuadosLote, personasEnCentro);
+                            oleada++;
+                        }
+                        System.out.println(">> CERTIFICACIÓN DE SEGURIDAD: Recinto 100% desalojado. Aforo íntegro restaurado.");
+                    }
+                    break;
+
+                case 6:
+                    // APAGADO Y SALIDA
+                    System.out.println("\n>> Desconectando terminal de presencia de forma ordenada...");
+                    sesionActiva = false;
+                    break;
+
+                default:
+                    System.err.println(">> Error: Opción no válida. Seleccione una operación entre 1 y 6.");
+                    break;
+            }
+
+        } while (sesionActiva);
+
+        // AUDITORÍA FINAL AL APAGAR
+        System.out.println("\n======================================================================");
+        System.out.println("          AUDITORÍA FINAL DE LA JORNADA · IES EL CAMINÀS              ");
+        System.out.println("======================================================================");
+        System.out.printf("TOTAL OPERACIONES GESTIONADAS: %d%n", totalFichajesProcesados);
+        System.out.printf("ACCESOS AUTORIZADOS (TOTAL):   %d%n", totalFichajesAutorizados);
+        System.out.printf("ACCESOS DENEGADOS (BLOQUEO):   %d%n", totalFichajesDenegados);
+        System.out.printf("OCUPACIÓN FINAL REGISTRADA:    %d personas%n", personasEnCentro);
+        System.out.println("ESTADO DEL DISPOSITIVO:        Terminal desconectado de forma segura.");
+        System.out.println("======================================================================");
+
+        teclado.close();
+    }
+}
+```
+
+</details>
+
+---
+
+#### 4. Segunda sesión: dojo de entrenamiento y katas de código
+
+En esta sesión final de consolidación, cada estudiante auditará su proyecto técnico utilizando el depurador visual de IntelliJ y certificará la entrega formal de la versión `v3.0`.
+
+##### Kata 1 (Cinturón blanco / Nivel base). Consolidación y cierre v3.0 en proyectos asignados
+
+Abre el archivo `pr/src/MiProyecto.java` de tu especialidad y unifica todas las estructuras de control desarrolladas durante las semanas 7, 8 y 9 en una versión final consolidada `v3.0`:
+
+* **Aventura conversacional.** Integra el menú de combate interactivo (`do-while`), la gestión de turnos con ráfagas de daño continuado (`while`), el muestreo secuencial de impactos mágicos (`for`) y la parada limpia mediante banderas de vida o huida sin romper el principio SESE, emitiendo el cuadro de honor al término del duelo.
+* **Motor de recomendación.** Consolida el menú de administración del catálogo, la auditoría de afinidades cruzadas con matrices bidimensionales (`for` anidados), el procesamiento de colas de ítems pendientes (`while`) y los acumuladores de picos y promedios de compatibilidad, presentando el informe consolidado al salir.
+* **Simulador de físicas 2D.** Unifica el panel de control cinemático, la simulación temporal paso a paso (`while`), la cuadrícula espacial cartesiana para la representación del impacto (`for` anidados) y la amortiguación de energía con protección ante valores negativos de velocidad.
+* **Bóveda de contraseñas.** Integra la consola de seguridad de la bóveda, la tarjeta de coordenadas criptográfica en matriz bidimensional, la auditoría de lotes de claves con parada defensiva ante secuencias maliciosas y el registro dinámico de métricas de entropía media sin colecciones.
+
+---
+
+##### Kata 2 (Cinturón marrón / Nivel avanzado). Sesión práctica de depuración formal en IntelliJ IDEA
+
+Abre tu proyecto en IntelliJ IDEA y ejecuta una sesión de depuración visual para certificar el comportamiento de la memoria:
+
+1. **Colocación de puntos de ruptura (*Breakpoints*):**  
+   Coloca un punto de ruptura en la cabecera del bucle principal de tu menú interactivo y otro punto de ruptura condicional dentro de la rutina de procesamiento de cola o combate (haciendo clic derecho sobre el punto rojo e indicando una condición booleana, por ejemplo `contador == 3`).
+2. **Navegación paso a paso:**  
+   Inicia la aplicación en modo depuración (**`Shift + F9`**):
+   * Utiliza **`F8` (*Step Over*)** para avanzar línea a línea observando cómo cambian los valores de las variables en la pestaña *Variables* del depurador.
+   * Utiliza **`F7` (*Step Into*)** cuando el cursor se sitúe sobre una llamada a un método predicado booleano, comprobando cómo se crea un nuevo marco en la pila (*Call Stack*) y cómo se evalúa la regla de negocio.
+3. **Evaluación de expresiones al vuelo:**  
+   Durante la pausa en un breakpoint, pulsa **`Alt + F8` (*Evaluate Expression*)** y evalúa manualmente expresiones booleanas complejas (por ejemplo, comprobar si una condición compuesta evalúa a `true` o `false` antes de que la ejecute la CPU).
+
+---
+
+##### Kata 3 (Cinturón negro / «Hacker AzaharTech»). Certificación de entrega y auditoría DoD (*Definition of Done*)
+
+Como cierre formal del Sprint 3, audita la calidad técnica de tu código conforme a la lista de verificación corporativa de AzaharTech:
+
+1. **Lista de comprobación de calidad (*Definition of Done*):**
+   * [ ] **Compilación limpia:** Cero errores y cero advertencias (*warnings*) de variables sin usar o tipos incompatibles.
+   * [ ] **Principio SESE estricto:** Ningún bucle (`for`, `while`, `do-while`) contiene sentencias `break` o `continue` para forzar salidas irregulares.
+   * [ ] **Protección ante caídas:** Todas las entradas interactivas por teclado están protegidas mediante bloques `try-catch` ante datos no numéricos.
+   * [ ] **Complejidad contenida:** Los métodos auxiliares predicado descargan la lógica del método `main`, manteniendo la complejidad ciclomática controlada.
+2. **Etiquetado formal en Git:**  
+   Abre la terminal integrada de IntelliJ y realiza el commit y etiquetado final de cierre del sprint:
+   ```bash
+   git add pr/src/
+   git commit -m "feat(pr): entrega consolidada v3.0 - fin de sprint 3 (estructuras de control)"
+   git tag -a v3.0 -m "Release v3.0: Uso completo de estructuras de control y depuracion"
+   ```
+3. **Certificación:**  
+   Redacta un comentario técnico final en la cabecera de tu clase resumiendo los resultados de la auditoría de depuración y declarando el software listo para el pase al **Sprint 4 (Desarrollo y diseño de clases propias)**.
