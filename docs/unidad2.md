@@ -4818,9 +4818,11 @@ Sin embargo, **Alba Torres** señala el monitor con preocupación:
 
 ##### A. ¿Por qué creamos métodos estáticos dentro de la clase?
 Java permite modularizar cualquier programa estructurándolo en **métodos estáticos auxiliares (*funciones de clase*)** dentro del mismo archivo por los siguientes motivos:
-1. **Legibilidad y auto-documentación.** El código se lee como un texto estructurado donde el nombre del método explica *qué* hace, ocultando los detalles de *cómo* lo hace.
-2. **Reutilización (*DRY - Don't Repeat Yourself*).** Si necesitamos calcular la distancia o construir un token en dos sitios diferentes, invocamos al método sin duplicar fórmulas.
-3. **Mantenibilidad y aislamiento.** Si cambia la regla de cálculo de la estancia, solo modificamos el método responsable, sin tocar el resto de la aplicación.
+
+
+1. **Legibilidad y auto-documentación.** El código se lee como un texto estructurado donde el nombre del método explica *qué* hace, ocultando los detalles de *cómo* lo hace.  
+2. **Reutilización (*DRY - Don't Repeat Yourself*).** Si necesitamos calcular la distancia o construir un token en dos sitios diferentes, invocamos al método sin duplicar fórmulas.  
+3. **Mantenibilidad y aislamiento.** Si cambia la regla de cálculo de la estancia, solo modificamos el método responsable, sin tocar el resto de la aplicación.  
 
 ##### B. Parámetros formales y el paso de parámetros por valor
 * **Parámetros formales.** Son las variables declaradas entre los paréntesis de la cabecera del método que reciben los datos necesarios para operar (*por ejemplo, `LocalTime entrada, LocalTime salida`*).
