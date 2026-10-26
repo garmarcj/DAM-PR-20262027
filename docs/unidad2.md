@@ -4794,7 +4794,7 @@ Son las tres de la tarde del jueves 22 de octubre. Concluimos las 24 horas lecti
 En la sala de reuniones de **AzaharTech**, **Pau Ferrer** proyecta el archivo `ControlAccesoQR.java`. El programa compila sin errores, genera los tokens con `Random`, calcula distancias con `Math`, parsea datos con `Integer` y gestiona las horas reales con `LocalTime` y `Duration`.
 
 Sin embargo, **Alba Torres** señala el monitor con preocupación:
-> *«Pau, el software funciona, pero hemos creado un 'método Dios' (*God Method*): tenemos más de ciento veinte líneas de código acumuladas dentro del `main`. La captura por teclado, las conversiones de hora, la descomposición de segundos, las fórmulas matemáticas y la composición de los tokens están todas mezcladas en un único bloque monolítico.*
+> *«Pau, el software funciona, pero hemos creado un 'método Dios' (*God Method*): tenemos casi doscientas cincuenta líneas de código acumuladas dentro del `main`. La captura por teclado, las conversiones de hora, la descomposición de segundos, las fórmulas matemáticas y la composición de los tokens están todas mezcladas en un único bloque monolítico.*
 >
 > *Si mañana el IES El Caminàs nos pide reutilizar la fórmula del token QR para una aplicación web o para la puerta norte, tendríamos que copiar y pegar código duplicado.*
 >
