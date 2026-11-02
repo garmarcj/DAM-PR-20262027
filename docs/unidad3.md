@@ -1984,6 +1984,7 @@ if (!esFormatoDniCorrecto(dniLimpio)) { ... }
 La complejidad ciclomática de McCabe mide el número de caminos linealmente independientes a través del grafo de flujo de un programa:
 $$V(G) = P + 1$$
 Donde $P$ es el número de puntos de decisión (`if`, `else if`, `case`, operadores lógicos `&&`, `||`).
+
 * **Estándar AzaharTech.** Un método `main` no debe superar un valor de $V(G) \le 10$. La extracción de bifurcaciones hacia métodos predicado independientes fragmenta la complejidad total en unidades pequeñas y manejables.
 
 ---
