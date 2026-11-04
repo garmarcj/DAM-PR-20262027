@@ -3351,13 +3351,14 @@ while (personasEnCola > 0 && aforoDisponible > 0) { ... }
 
 ---
 
-#### 3. Evolución del caso guía a `ControlAccesoQR v2.6` (Java nativo)
+#### 3. Evolución del caso guía a `ControlAccesoQR v2.6`
 
 Evolucionamos la versión `v2.5` a la **`v2.6`**. Mantenemos intactas todas las constantes corporativas, los métodos modulares y la captura con `try-catch`, incorporando:
-1. Simulación de **cola de espera en vestíbulo** (`personasEnCola`).
-2. Un bucle interno **`while`** que procesa la ráfaga de accesos de forma continua mientras haya personas esperando y queden plazas libres en el campus.
-3. Detección automática de **parada anticipada por saturación de aforo** en plena ráfaga.
-4. Actualización en tiempo real del balance de la cola y emisión de alerta si quedan usuarios bloqueados fuera del centro.
+
+1. Simulación de **cola de espera en vestíbulo** (`personasEnCola`).  
+2. Un bucle interno **`while`** que procesa la ráfaga de accesos de forma continua mientras haya personas esperando y queden plazas libres en el campus.  
+3. Detección automática de **parada anticipada por saturación de aforo** en plena ráfaga.  
+4. Actualización en tiempo real del balance de la cola y emisión de alerta si quedan usuarios bloqueados fuera del centro.  
 
 ##### A. Comparativa de cambios respecto a v2.5 (`diff`)
 
@@ -3823,15 +3824,15 @@ public class ControlAccesoQR {
 
 #### 4. Segunda sesión: dojo de entrenamiento y katas de código
 
-En esta sesión, cada alumno implementará un bucle pre-test `while` de guardia con condiciones compuestas en su proyecto asignado.
+En esta sesión, cada estudiante implementará un bucle pre-test `while` de guardia con condiciones compuestas en su proyecto asignado.
 
 ##### Kata 1 (Cinturón blanco / Nivel base). Bucle `while` de guardia en proyectos asignados
 
-Abre el archivo `pr/src/MiProyecto.java` de tu especialidad e implementa una estructura `while` cuya cabecera evalúe al menos dos condiciones compuestas mediante el operador `&&`:
+Abre el archivo `pr/src/MiProyecto.java` de tu proyecto e implementa una estructura `while` cuya cabecera evalúe al menos dos condiciones compuestas mediante el operador `&&`:
 
 * **Aventura conversacional.** Diseña un bucle de combate automático o ráfaga de asaltos que se ejecute mientras el héroe conserve puntos de salud Y le queden pociones o puntos de energía táctica en su inventario. En cada iteración, consume un recurso, aplica el efecto cinemático y actualiza el estado de los contendientes, garantizando que si el inventario se vacía antes de vencer, el bucle se detiene inmediatamente.
 * **Motor de recomendación.** Implementa un bucle `while` que procese una cola de contenidos sugeridos mientras queden elementos pendientes de clasificar Y el saldo de créditos publicitarios asignado a la sesión sea superior a cero. Cada iteración evaluará la afinidad de un ítem y descontará su coste de procesamiento; si el presupuesto se agota, el bucle debe concluir dejando constancia de los contenidos restantes sin procesar.
-* **Simulador de físicas 2D.** Modela un bucle `while` de avance balístico que mantenga la simulación activa mientras la energía cinética del cuerpo supere un umbral mínimo de movimiento Y la posición no haya rebasado los límites físicos del escenario. En cada vuelta, aplica la pérdida de energía por rozamiento; cuando la velocidad caiga por debajo del umbral crítico, el bucle debe detener el móvil de forma natural.
+* **Simulador de físicas 2D.** Crea un bucle `while` de avance balístico que mantenga la simulación activa mientras la energía cinética del cuerpo supere un umbral mínimo de movimiento Y la posición no haya rebasado los límites físicos del escenario. En cada vuelta, aplica la pérdida de energía por rozamiento; cuando la velocidad caiga por debajo del umbral crítico, el bucle debe detener el móvil de forma natural.
 * **Bóveda de contraseñas.** Construye un bucle `while` que simule una auditoría de robustez o ataque de fuerza bruta controlado sobre una credencial, ejecutándose mientras no se descubra la combinación correcta Y el contador de intentos no sobrepase el umbral de bloqueo de seguridad. En cada ciclo, evalúa un patrón de prueba y descuenta los intentos restantes; si se alcanza el tope sin éxito, el bucle expira bloqueando el acceso.
 
 ---
@@ -3924,9 +3925,10 @@ flowchart TD
 ##### A. El patrón de menú interactivo (`do-while` + `switch`)
 
 La arquitectura estándar de una aplicación de consola interactiva combina tres piezas:
-1. **Bucle post-test `do-while`:** Garantiza que el menú se dibuje en pantalla al menos una vez y permanezca activo hasta que el usuario elija conscientemente la opción de salida.
-2. **Lectura protegida:** La selección de opción se lee como texto y se convierte a entero dentro de un bloque `try-catch`, evitando que el terminal colapse si el operador introduce una letra.
-3. **Despacho mediante `switch`:** Dirige el puntero de ejecución hacia la rutina solicitada mediante etiquetas `case` limpias y una rama `default` para capturar opciones fuera de rango.
+
+1. **Bucle post-test `do-while`:** Garantiza que el menú se dibuje en pantalla al menos una vez y permanezca activo hasta que el usuario elija conscientemente la opción de salida.  
+2. **Lectura protegida:** La selección de opción se lee como texto y se convierte a entero dentro de un bloque `try-catch`, evitando que el terminal colapse si el operador introduce una letra.  
+3. **Despacho mediante `switch`:** Dirige el puntero de ejecución hacia la rutina solicitada mediante etiquetas `case` limpias y una rama `default` para capturar opciones fuera de rango.  
 
 ##### B. Algoritmos de agregación estadística en tiempo real
 
