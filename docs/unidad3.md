@@ -1431,7 +1431,7 @@ if (!datosSintacticamenteCorrectos) {
  * Consultora: AzaharTech Software Consulting
  * 
  * Versión 2.3:
- * Incorpora gestión básica de excepciones con bloques try-catch (Sprint 3: «El laberinto de la lógica»).
+ * Incorpora gestión básica de excepciones con bloques try-catch (Sprint 3).
  * Protege el flujo ante NumberFormatException y DateTimeException en la captura interactiva.
  * Integra la bandera de integridad de datos en el árbol de decisión para evitar caídas del terminal.
  * Mantiene la lógica de perfiles modularizada mediante sentencias switch clásicas.
@@ -2591,7 +2591,7 @@ Donde $P$ representa el número de predicados decisionales (`if`, `case`, operad
 
 #### 1. Caso guía en AzaharTech
 
-Son las 15:00 h del **lunes 2 de noviembre de 2026**. Los equipos de desarrollo de **AzaharTech** inician la segunda semana del **Sprint 3: «El laberinto de la lógica»**. Tras la refactorización modular del pasado jueves, la versión `v2.4` del terminal dispone de un árbol de decisión limpio y blindado ante excepciones. Sin embargo, el software aún presenta una limitación operativa que impide su despliegue en el mundo real.
+Son las 15:00 h del **lunes 2 de noviembre de 2026**. Los equipos de desarrollo de **AzaharTech** inician la segunda semana del **Sprint 3**. Tras la refactorización modular del pasado jueves, la versión `v2.4` del terminal dispone de un árbol de decisión limpio y blindado ante excepciones. Sin embargo, el software aún presenta una limitación operativa que impide su despliegue en el mundo real.
 
 **Pau Ferrer** muestra la pantalla de la terminal a **Alba Torres** y **Laia Claramunt**:
 
@@ -4506,7 +4506,7 @@ En lugar de verificar la aplicación introduciendo datos al azar, diseña una **
 
 #### 1. Caso guía en AzaharTech
 
-Son las 15:00 h del **jueves 5 de noviembre de 2026**. Con la sesión de hoy, los equipos de desarrollo de **AzaharTech** culminan la segunda semana del **Sprint 3: «El laberinto de la lógica»**. El terminal `v2.7` dispone de un menú consolidado que atiende fichajes individuales, ráfagas con `while` y métricas estadísticas en tiempo real sin arrays.
+Son las 15:00 h del **jueves 5 de noviembre de 2026**. Con la sesión de hoy, los equipos de desarrollo de **AzaharTech** culminan la segunda semana del **Sprint 3**. El terminal `v2.7` dispone de un menú consolidado que atiende fichajes individuales, ráfagas con `while` y métricas estadísticas en tiempo real sin arrays.
 
 Sin embargo, durante la reunión de seguimiento con el equipo directivo del **IES El Caminàs**, el coordinador de seguridad del instituto plantea un escenario crítico:
 
@@ -4518,7 +4518,7 @@ Sin embargo, durante la reunión de seguimiento con el equipo directivo del **IE
 
 **Alba Torres** y **Laia Claramunt** recogen el guante y marcan el objetivo del día:
 
-> *«Hoy cerramos la Semana 8 dominando los **patrones avanzados de control por centinela y banderas de estado (*State Flags*)**.*
+> *«Hoy cerramos la Semana 8 dominando los **patrones avanzados de control por centinela y banderas de estado (*state flags*)**.*
 >
 > *Aprenderemos a diferenciar entre un **valor centinela de escape** y una **bandera lógica de control**, programaremos bucles de vaciado condicional con protección ante desbordamientos negativos y dotaremos al terminal de un control bidireccional seguro antes de abordar el bucle `for` la próxima semana»*.
 
@@ -4552,9 +4552,9 @@ Aunque ambos mecanismos controlan la continuidad de las estructuras de repetici�
 
 | Mecanismo | Definición técnica | Tipo de dato típico | Caso de uso en AzaharTech |
 | :--- | :--- | :--- | :--- |
-| **Valor Centinela (*Sentinel Value*)** | Dato especial fuera del rango de negocio que señala el fin de una secuencia | `String` (`"FIN"`), `int` (`-1`) | Teclear DNI `"SALIR"` para interrumpir una cola interactiva |
-| **Bandera de Estado (*State Flag*)** | Variable lógica que almacena si se ha producido una condición crítica | `boolean` (`emergenciaActiva`) | Bandera que detiene las entradas si salta la alarma de incendios |
-| **Invariante de Bucle** | Condición matemática que debe cumplirse antes, durante y después de iterar | Expresión booleana compuesta | Garantizar siempre que $0 \le \text{personasEnCentro} \le \text{AFORO\_MAXIMO}$ |
+| **Valor centinela (*Sentinel value*)** | Dato especial fuera del rango de negocio que señala el fin de una secuencia | `String` (`"FIN"`), `int` (`-1`) | Teclear DNI `"SALIR"` para interrumpir una cola interactiva |
+| **Bandera de estado (*State flag*)** | Variable lógica que almacena si se ha producido una condición crítica | `boolean` (`emergenciaActiva`) | Bandera que detiene las entradas si salta la alarma de incendios |
+| **Invariante de bucle** | Condición matemática que debe cumplirse antes, durante y después de iterar | Expresión booleana compuesta | Garantizar siempre que $0 \le \text{personasEnCentro} \le \text{AFORO\_MAXIMO}$ |
 
 ##### B. Protección ante subdesbordamiento (*Underflow Guard*)
 
@@ -5179,7 +5179,7 @@ En el desarrollo de software crítico, los invariantes de clase y de bucle garan
 
 #### 1. Caso guía en AzaharTech
 
-Son las 15:00 h del **lunes 9 de noviembre de 2026**. Los equipos de desarrollo de **AzaharTech** inician la tercera y última semana del **Sprint 3: «El laberinto de la lógica»**. Durante la Semana 8 se consolidaron los bucles iterativos orientados a eventos: el ciclo continuo de servicio (`do-while`), el procesamiento de colas inciertas (`while`) y los protocolos de drenaje por evacuación.
+Son las 15:00 h del **lunes 9 de noviembre de 2026**. Los equipos de desarrollo de **AzaharTech** inician la tercera y última semana del **Sprint 3**. Durante la Semana 8 se consolidaron los bucles iterativos orientados a eventos: el ciclo continuo de servicio (`do-while`), el procesamiento de colas inciertas (`while`) y los protocolos de drenaje por evacuación.
 
 Sin embargo, a primera hora de esta mañana, el equipo de mantenimiento de hardware del **IES El Caminàs** ha remitido una nueva necesidad técnica:
 
@@ -6460,7 +6460,7 @@ En el desarrollo de software corporativo, el anidamiento de bucles es una de las
 
 #### 1. Caso guía en AzaharTech
 
-Son las 15:00 h del **miércoles 11 de noviembre de 2026**. En la sala de ingeniería de **AzaharTech**, el equipo de desarrollo afronta la penúltima jornada del **Sprint 3: «El laberinto de la lógica»**. La matriz bidimensional de supervisión perimetral desplegada ayer en la versión `v2.10` permitió al **IES El Caminàs** visualizar el estado de los 3 tornos y sus 4 canales de paso.
+Son las 15:00 h del **miércoles 11 de noviembre de 2026**. En la sala de ingeniería de **AzaharTech**, el equipo de desarrollo afronta la penúltima jornada del **Sprint 3**. La matriz bidimensional de supervisión perimetral desplegada ayer en la versión `v2.10` permitió al **IES El Caminàs** visualizar el estado de los 3 tornos y sus 4 canales de paso.
 
 Sin embargo, durante las pruebas de integración en el campus surgen dos situaciones operativas que exigen ajustar el comportamiento de los bucles:
 
@@ -7160,7 +7160,7 @@ La programación estructurada permite verificar formalmente el comportamiento de
 
 #### 1. Caso guía en AzaharTech
 
-Son las 15:00 h del **jueves 12 de noviembre de 2026**. Los equipos de desarrollo de **AzaharTech** en Castellón de la Plana afrontan la última jornada lectiva del **Sprint 3: «El laberinto de la lógica»**. Tras 12 sesiones intensivas, el software de control de accesos para el **IES El Caminàs** ha dejado de ser un script lineal para convertirse en una aplicación corporativa robusta, interactiva y estructurada.
+Son las 15:00 h del **jueves 12 de noviembre de 2026**. Los equipos de desarrollo de **AzaharTech** en Castellón de la Plana afrontan la última jornada lectiva del **Sprint 3**. Tras 12 sesiones intensivas, el software de control de accesos para el **IES El Caminàs** ha dejado de ser un script lineal para convertirse en una aplicación corporativa robusta, interactiva y estructurada.
 
 En la pantalla central, **Laia Claramunt**, acompañada de **Alba Torres** y **Pau Ferrer**, proyecta el hito de entrega del sprint:
 
@@ -7236,7 +7236,7 @@ Alcanzamos el hito **`v3.0 Oficial`**. Esta versión consolida toda la arquitect
   /**
    * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
 -  * Versión 2.11: Consolidación de estructuras de salto
-+  * Versión 3.0 Oficial: Cierre y entrega final de Sprint 3 («El laberinto de la lógica»)
++  * Versión 3.0 Oficial: Cierre y entrega final de Sprint 3
    * 
 -  * @version 2.11 (Noviembre 2026)
 +  * @version 3.0 Oficial (Noviembre 2026)
@@ -7288,7 +7288,7 @@ do {
  * Consultora: AzaharTech Software Consulting
  * 
  * Versión 3.0 Oficial:
- * Cierre y consolidación final del Sprint 3 («El laberinto de la lógica»).
+ * Cierre y consolidación final del Sprint 3.
  * Integra la totalidad de estructuras de control de flujo de la plataforma:
  * - Selección condicional jerárquica if-else y múltiple con switch clásico.
  * - Programación defensiva con captura de excepciones mediante try-catch.
