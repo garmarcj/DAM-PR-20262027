@@ -5161,7 +5161,7 @@ A diferencia de las banderas booleanas, un **valor centinela** es un dato del mi
 
 En el desarrollo de software crítico, los invariantes de clase y de bucle garantizan la integridad matemática del estado en memoria:
 
-1. **Definición de la prueba de esfuerzo (*Stress Test*):**  
+1. **Definición de la prueba de esfuerzo (*stress test*):**  
    Diseña un caso de prueba en tu programa que intente ejecutar reiteradamente operaciones de decremento o salida cuando el contador ya haya alcanzado el valor cero (por ejemplo, solicitar 10 salidas consecutivas en un centro con 0 ocupantes, o drenar un recurso agotado).
 2. **Verificación de la condición invariante:**  
    Comprueba que tu guardia condicional intercepta el intento en el 100 % de los casos, impidiendo que la variable de estado decremente hacia valores negativos (*underflow*).
@@ -5224,11 +5224,11 @@ for (inicialización; condición; actualización) {
 }
 ```
 
-1. **Inicialización (`int i = 0`):** Se ejecuta **una única vez** al comenzar el bucle. Permite declarar e inicializar una o más variables de control.
-2. **Condición de continuidad (`i < limite`):** Expresión booleana evaluada antes de cada vuelta (*pre-test*). Si resulta `true`, se ejecuta el cuerpo; si es `false`, el bucle expira de inmediato.
-3. **Paso o actualización (`i++`):** Sentencia ejecutada automáticamente al término de cada iteración, justo antes de volver a evaluar la condición.
+1. **Inicialización (`int i = 0`).** Se ejecuta **una única vez** al comenzar el bucle. Permite declarar e inicializar una o más variables de control.
+2. **Condición de continuidad (`i < limite`).** Expresión booleana evaluada antes de cada vuelta (*pre-test*). Si resulta `true`, se ejecuta el cuerpo; si es `false`, el bucle expira de inmediato.
+3. **Paso o actualización (`i++`).** Sentencia ejecutada automáticamente al término de cada iteración, justo antes de volver a evaluar la condición.
 
-##### B. Ámbito léxico de la variable de control (*Loop-Scoped Variable*)
+##### B. Ámbito léxico de la variable de control (*Loop-scoped variable*)
 
 Una de las grandes ventajas de ingeniería del bucle `for` es el confinamiento de variables. Si la variable índice se declara dentro de la cabecera (`for (int i = 0; ...)`), **nace y muere dentro del bucle**. No contamina el espacio de nombres de la función ni puede ser modificada accidentalmente tras el ciclo:
 
@@ -5249,13 +5249,14 @@ for (int i = 1; i <= 5; i++) {
 
 ---
 
-#### 3. Evolución del caso guía a `ControlAccesoQR v2.9` (Java nativo)
+#### 3. Evolución del caso guía a `ControlAccesoQR v2.9`
 
 Evolucionamos la versión `v2.8` a la **`v2.9`**. Conservamos íntegras las constantes corporativas, los métodos modulares y la captura protegida, incorporando:
-1. Constantes para los sensores de paso (`NUM_SENSORES_TORNO = 8`) y el turno (`HORAS_TURNO_LECTIVO = 6`).
-2. Opción 4 del menú: **Autodiagnóstico de hardware** mediante un bucle `for` ascendente.
-3. **Proyección horaria de aforo** mediante un segundo bucle `for` que calcula la ocupación estimada hora a hora.
-4. Menú reestructurado con 6 operaciones ordenadas.
+
+1. Constantes para los sensores de paso (`NUM_SENSORES_TORNO = 8`) y el turno (`HORAS_TURNO_LECTIVO = 6`).  
+2. Opción 4 del menú: **Autodiagnóstico de hardware** mediante un bucle `for` ascendente.  
+3. **Proyección horaria de aforo** mediante un segundo bucle `for` que calcula la ocupación estimada hora a hora.  
+4. Menú reestructurado con 6 operaciones ordenadas.  
 
 ##### A. Comparativa de cambios respecto a v2.8 (`diff`)
 
@@ -5772,14 +5773,14 @@ Abre el archivo `pr/src/MiProyecto.java` de tu especialidad e implementa un bucl
 
 El diseño de bucles regresivos (hacia atrás) requiere prestar especial atención a los operadores relacionales para no omitir el valor frontera:
 
-1. **La cuenta atrás:** Diseña un bucle `for` que realice una cuenta regresiva desde 10 hasta 0 con decremento unitario (`i--`):
+1. **La cuenta atrás.** Diseña un bucle `for` que realice una cuenta regresiva desde 10 hasta 0 con decremento unitario (`i--`):
    ```java
    for (int i = 10; i >= 0; i--) {
        System.out.println("T-menos: " + i);
    }
    ```
-2. **El error de omisión del cero:** Analiza por qué cambiar la condición a `i > 0` excluye la iteración final del valor cero (*Off-by-one error*).
-3. **Refactorización en tu proyecto:** Aplica un bucle `for` regresivo en un proceso de tu aplicación (por ejemplo, una cuenta atrás de reactivación en la aventura, un decremento de peso en el recomendador, un retroceso de fotogramas en las físicas o una cuenta atrás de bloqueo en la bóveda).
+2. **El error de omisión del cero.** Analiza por qué cambiar la condición a `i > 0` excluye la iteración final del valor cero (*Off-by-one error*).
+3. **Refactorización en tu proyecto.** Aplica un bucle `for` regresivo en un proceso de tu aplicación (por ejemplo, una cuenta atrás de reactivación en la aventura, un decremento de peso en el recomendador, un retroceso de fotogramas en las físicas o una cuenta atrás de bloqueo en la bóveda).
 
 ---
 
@@ -5811,9 +5812,10 @@ Son las 15:00 h del **martes 10 de noviembre de 2026**. En la sede de **AzaharTe
 El coordinador TIC del instituto explica el despliegue físico del centro:
 
 > *«Nuestro campus no depende de un único torno aislado. Contamos con **3 accesos físicos perimetrales**:*
-> 1. *Acceso 1: Torno Vestíbulo Central (Edificio Principal).*
-> 2. *Acceso 2: Torno Puerta Norte (Ciclos Formativos de Informática).*
-> 3. *Acceso 3: Torno Puerta Sur (Talleres y Cafetería).*
+> 
+> 1. *Acceso 1: Torno Vestíbulo Central (Edificio Principal).*  
+> 2. *Acceso 2: Torno Puerta Norte (Ciclos Formativos de Informática).*  
+> 3. *Acceso 3: Torno Puerta Sur (Talleres y Cafetería).*  
 >
 > *Cada uno de estos 3 accesos dispone de **4 canales de paso bidireccionales** independientes con lectores ópticos. En conserjería necesitan visualizar en pantalla una **matriz de estado global del campus (3 accesos $\times$ 4 canales)** en forma de tabla visual bidimensional (filas y columnas) que represente el estado operativo de los 12 puntos de paso.*
 >
@@ -5821,7 +5823,7 @@ El coordinador TIC del instituto explica el despliegue físico del centro:
 
 **Alba Torres** toma el teclado y plantea el reto técnico a **Pau Ferrer**:
 
-> *«Pau, acabamos de entrar en el terreno de los **bucles anidados (*Nested Loops*)**.*
+> *«Pau, acabamos de entrar en el terreno de los **bucles anidados (*nested loops*)**.*
 >
 > *Hoy aprenderemos cómo interactúan dos bucles `for` coordinados como las manecillas de un reloj: el bucle interior gira a toda velocidad completando todas las columnas antes de que el bucle exterior avance un solo paso a la siguiente fila. Analizaremos su **complejidad temporal cuadrática $O(N \times M)$** y generaremos el mapa visual matricial de los accesos del instituto»*.
 
@@ -5854,8 +5856,9 @@ flowchart TD
 ##### A. La analogía del reloj mecánico
 
 Para comprender la ejecución de dos bucles anidados, el modelo mental más intuitivo es el segundero y el minutero de un reloj:
-* El **bucle exterior** ($i$) representa las horas o los minutos: avanza lentamente, un solo paso cada vez.
-* El **bucle interior** ($j$) representa los segundos: por cada unidad que avanza el exterior, el interior debe dar **una vuelta completa de principio a fin**.
+
+* El **bucle exterior** ($i$) representa las horas o los minutos: avanza lentamente, un solo paso cada vez.  
+* El **bucle interior** ($j$) representa los segundos: por cada unidad que avanza el exterior, el interior debe dar **una vuelta completa de principio a fin**.  
 
 ```java
 for (int i = 1; i <= 3; i++) {       // FILAS (Exterior)
@@ -5869,8 +5872,9 @@ for (int i = 1; i <= 3; i++) {       // FILAS (Exterior)
 ##### B. Impresión de cuadrículas: `print()` frente a `println()`
 
 La representación visual de matrices en consola exige coordinar dos métodos de salida:
-1. `System.out.print(...)` / `System.out.printf(...)`: se utiliza **dentro del bucle interior** para imprimir los elementos de la fila uno al lado del otro en horizontal, separados por espacios.
-2. `System.out.println()`: se invoca **en el bucle exterior, justo después de que el bucle interior termina**, para romper la línea y bajar el cursor a la siguiente fila.
+
+1. `System.out.print(...)` / `System.out.printf(...)`: se utiliza **dentro del bucle interior** para imprimir los elementos de la fila uno al lado del otro en horizontal, separados por espacios.  
+2. `System.out.println()`: se invoca **en el bucle exterior, justo después de que el bucle interior termina**, para romper la línea y bajar el cursor a la siguiente fila.  
 
 ##### C. Análisis de complejidad temporal cuadrática
 
@@ -5889,9 +5893,10 @@ $$\text{Total Iteraciones} = N \times M$$
 #### 3. Evolución del caso guía a `ControlAccesoQR v2.10` (Java nativo)
 
 Evolucionamos la versión `v2.9` a la **`v2.10`**. Conservamos intactas todas las constantes corporativas, los métodos modulares y la captura protegida, incorporando:
-1. Constantes para la arquitectura del campus: `TOTAL_TORNOS_CAMPUS = 3` y `CANALES_POR_TORNO = 4`.
-2. Actualización de la **Opción 4 del menú**: ampliación del diagnóstico para generar la **Matriz visual de supervisión del campus (3 $\times$ 4)** mediante bucles `for` anidados.
-3. Simulación de telemetría de canales cruzada con indicadores de paso en cuadrícula.
+
+1. Constantes para la arquitectura del campus: `TOTAL_TORNOS_CAMPUS = 3` y `CANALES_POR_TORNO = 4`.  
+2. Actualización de la **Opción 4 del menú**: ampliación del diagnóstico para generar la **Matriz visual de supervisión del campus (3 $\times$ 4)** mediante bucles `for` anidados.  
+3. Simulación de telemetría de canales cruzada con indicadores de paso en cuadrícula.  
 
 ##### A. Comparativa de cambios respecto a v2.9 (`diff`)
 
@@ -6424,7 +6429,7 @@ Abre el archivo `pr/src/MiProyecto.java` de tu especialidad e implementa una est
 
 Un **bucle anidado dependiente** ocurre cuando la cota o límite del bucle interior está condicionada por el valor actual del índice del bucle exterior:
 
-1. **El patrón triangular:** Analiza el siguiente fragmento donde el número de columnas impresas crece en cada fila:
+1. **El patrón triangular.** Analiza el siguiente fragmento donde el número de columnas impresas crece en cada fila:
    ```java
    for (int i = 1; i <= 5; i++) {
        for (int j = 1; j <= i; j++) {
@@ -6433,15 +6438,15 @@ Un **bucle anidado dependiente** ocurre cuando la cota o límite del bucle inter
        System.out.println();
    }
    ```
-2. **Cálculo de iteraciones acumuladas:** A diferencia de una matriz rectangular ($N \times M$), en un bucle triangular el número total de ejecuciones responde a la serie aritmética de Gauss:
+2. **Cálculo de iteraciones acumuladas.** A diferencia de una matriz rectangular ($N \times M$), en un bucle triangular el número total de ejecuciones responde a la serie aritmética de Gauss:
    $$\text{Total Iteraciones} = \frac{N \times (N + 1)}{2}$$
-3. **Refactorización en tu proyecto:** Aplica un bucle anidado dependiente en tu especialidad (por ejemplo, un escalado progresivo de daño por combos en la aventura, un árbol de pesos jerárquico en el recomendador o una pirámide de complejidad de contraseñas en la bóveda).
+3. **Refactorización en tu proyecto.** Aplica un bucle anidado dependiente en tu especialidad (por ejemplo, un escalado progresivo de daño por combos en la aventura, un árbol de pesos jerárquico en el recomendador o una pirámide de complejidad de contraseñas en la bóveda).
 
 ---
 
 ##### Kata 3 (Cinturón negro / «Hacker AzaharTech»). Auditoría de explosión combinatoria y análisis temporal $O(N \times M)$
 
-En el desarrollo de software corporativo, el anidamiento de bucles es una de las causas principales de degradación de rendimiento (*Performance Bottleneck*):
+En el desarrollo de software corporativo, el anidamiento de bucles es una de las causas principales de degradación de rendimiento (*performance bottleneck*):
 
 1. **Modelado formal de la complejidad:**  
    En un comentario al final de tu clase, calcula cuántas iteraciones se ejecutarían si la cuadrícula de tu programa escalara de las dimensiones de prueba ($3 \times 4 = 12$) a un entorno masivo de datos:
@@ -6466,8 +6471,9 @@ Son las 15:00 h del **miércoles 11 de noviembre de 2026**. En la sala de ingeni
 Sin embargo, durante las pruebas de integración en el campus surgen dos situaciones operativas que exigen ajustar el comportamiento de los bucles:
 
 > *«Equipo, nuestros bucles actuales recorren rígidamente todas las celdas hasta el final sin considerar incidencias intermedias:*
-> 1. * **Canal en mantenimiento:** Si el canal 2 de la Puerta Norte está desconectado por revisión técnica, no debemos ejecutar su telemetría ordinaria; debemos detectarlo y procesar directamente la rama alternativa, manteniendo el flujo lineal del código.*
-> 2. * **Parada anticipada por seguridad perimetral:** Si durante el barrido de los tornos se detecta una alerta crítica de intrusión o avería grave, el escaneo debe concluir de inmediato. No tiene sentido seguir comprobando el resto de canales ni de accesos.*
+> 
+> 1. * **Canal en mantenimiento:** Si el canal 2 de la Puerta Norte está desconectado por revisión técnica, no debemos ejecutar su telemetría ordinaria; debemos detectarlo y procesar directamente la rama alternativa, manteniendo el flujo lineal del código.*  
+> 2. * **Parada anticipada por seguridad perimetral:** Si durante el barrido de los tornos se detecta una alerta crítica de intrusión o avería grave, el escaneo debe concluir de inmediato. No tiene sentido seguir comprobando el resto de canales ni de accesos.*  
 >
 > *En muchos entornos de programación no reglada se recurre a sentencias de salto incondicional como `break` o `continue` para interrumpir los bucles a la fuerza. Sin embargo, en AzaharTech aplicamos los principios más sólidos de la **Programación Estructurada**: el principio **SESE (*Single Entry, Single Exit*)**.*
 >
@@ -6509,7 +6515,7 @@ flowchart TD
 
 En Java, la cabecera de un bucle `for` no está limitada a comparar un número: admite **expresiones booleanas compuestas** con la misma flexibilidad que un bucle `while`.
 
-Si deseamos que un bucle se detenga en cuanto se produzca un evento crítico (por ejemplo, una alerta de seguridad o haber encontrado un dato buscado), introducimos una **bandera booleana de estado (*State Flag*)** en la propia condición de corte:
+Si deseamos que un bucle se detenga en cuanto se produzca un evento crítico (por ejemplo, una alerta de seguridad o haber encontrado un dato buscado), introducimos una **bandera booleana de estado (*state flag*)** en la propia condición de corte:
 
 ```java
 boolean paradaRequerida = false;
@@ -6555,12 +6561,13 @@ Para omitir el procesamiento de elementos en revisión o no computables, no es n
 
 ---
 
-#### 3. Evolución del caso guía a `ControlAccesoQR v2.11` (Java nativo)
+#### 3. Evolución del caso guía a `ControlAccesoQR v2.11`
 
 Evolucionamos la versión `v2.10` a la **`v2.11`**. Mantenemos íntegras las constantes corporativas, los métodos modulares y la captura con `try-catch`, incorporando:
-1. **Control de ráfaga estructurado**: el bucle `while` de cola evalúa una bandera booleana `vetoJudicialDetectado` en su propia cabecera para suspender el paso de forma inmediata ante credenciales vetadas, sin emplear `break`.
-2. **Matriz perimetral gobernada por SESE**: los dos bucles `for` anidados evalúan la bandera `alarmaSabotajeDetectada` en sus respectivas cabeceras para detener el barrido perimetral ante emergencias.
-3. **Filtrado secuencial de canales**: el canal 2 de la Puerta Norte se gestiona mediante una bifurcación `if-else` afirmativa sin usar `continue`.
+
+1. **Control de ráfaga estructurado**: el bucle `while` de cola evalúa una bandera booleana `vetoJudicialDetectado` en su propia cabecera para suspender el paso de forma inmediata ante credenciales vetadas, sin emplear `break`.  
+2. **Matriz perimetral gobernada por SESE**: los dos bucles `for` anidados evalúan la bandera `alarmaSabotajeDetectada` en sus respectivas cabeceras para detener el barrido perimetral ante emergencias.  
+3. **Filtrado secuencial de canales**: el canal 2 de la Puerta Norte se gestiona mediante una bifurcación `if-else` afirmativa sin usar `continue`.  
 
 ##### A. Comparativa de cambios respecto a v2.10 (`diff`)
 
@@ -7166,12 +7173,13 @@ Son las 15:00 h del **jueves 12 de noviembre de 2026**. Los equipos de desarroll
 En la pantalla central, **Laia Claramunt**, acompañada de **Alba Torres** y **Pau Ferrer**, proyecta el hito de entrega del sprint:
 
 > *«Equipo, hemos completado la travesía de este sprint. Si miramos atrás, el lunes 26 de octubre partíamos de un programa ciego que siempre abría el torno. Hoy entregamos la versión **`v3.0 Oficial`**:*
-> * Un sistema gobernado por estructuras de selección (`if-else`, `switch`) y predicados modulares.
-> * Blindado defensivamente ante fallos de formato con `try-catch`.
-> * Un demonio de servicio continuo estructurado con `do-while` y centinela de apagado.
-> * Procesamiento de colas por ráfaga con `while` y protocolos de evacuación de emergencia.
-> * Autodiagnóstico secuencial de sensores con `for` y supervisión perimetral matricial con bucles anidados.
-> * Y todo ello respetando escrupulosamente el principio **SESE (*Single Entry, Single Exit*)**, gobernando cada iteración exclusivamente a través de banderas booleanas en cabecera, sin un solo `break` ni `continue` descontrolado en los bucles.
+> 
+> * Un sistema gobernado por estructuras de selección (`if-else`, `switch`) y predicados modulares.  
+> * Blindado defensivamente ante fallos de formato con `try-catch`.  
+> * Un demonio de servicio continuo estructurado con `do-while` y centinela de apagado.  
+> * Procesamiento de colas por ráfaga con `while` y protocolos de evacuación de emergencia.  
+> * Autodiagnóstico secuencial de sensores con `for` y supervisión perimetral matricial con bucles anidados.  
+> * Y todo ello respetando escrupulosamente el principio **SESE (*Single Entry, Single Exit*)**, gobernando cada iteración exclusivamente a través de banderas booleanas en cabecera, sin un solo `break` ni `continue` descontrolado en los bucles.  
 >
 > *Hoy dedicamos la sesión al paso más importante de cualquier entrega profesional: la **auditoría de integración, depuración guiada con puntos de ruptura (*breakpoints*) en IntelliJ** y la certificación de la versión final antes de etiquetar el commit definitivo en Git»*.
 
@@ -7179,7 +7187,7 @@ En la pantalla central, **Laia Claramunt**, acompañada de **Alba Torres** y **P
 
 #### 2. Fundamento teórico: depuración formal, puntos de ruptura e inspección de memoria
 
-La **depuración (*Debugging*)** es el proceso metódico de ejecutar un programa paso a paso bajo la supervisión de un depurador para verificar que las variables en memoria mutan exactamente según lo previsto.
+La **depuración (*debugging*)** es el proceso metódico de ejecutar un programa paso a paso bajo la supervisión de un depurador para verificar que las variables en memoria mutan exactamente según lo previsto.
 
 ```mermaid
 flowchart TD
@@ -7200,8 +7208,8 @@ flowchart TD
 
 ##### A. Tipos de puntos de ruptura (*Breakpoints*) en IntelliJ IDEA
 
-1. **Punto de ruptura de línea (*Line Breakpoint*):** Congela el programa justo antes de ejecutar la línea seleccionada. Permite examinar el estado de las variables locales en la memoria de pila (*Stack Frame*).
-2. **Punto de ruptura condicional (*Conditional Breakpoint*):** Solo detiene la ejecución si se cumple una expresión booleana (por ejemplo, `aforoDisponible == 0` o `idUltimoFichaje == 1044`). Evita tener que avanzar manualmente por cientos de vueltas irrelevantes de un bucle.
+1. **Punto de ruptura de línea (*line breakpoint*):** Congela el programa justo antes de ejecutar la línea seleccionada. Permite examinar el estado de las variables locales en la memoria de pila (*Stack Frame*).
+2. **Punto de ruptura condicional (*conditional breakpoint*):** Solo detiene la ejecución si se cumple una expresión booleana (por ejemplo, `aforoDisponible == 0` o `idUltimoFichaje == 1044`). Evita tener que avanzar manualmente por cientos de vueltas irrelevantes de un bucle.
 
 ##### B. Navegación en depuración
 
@@ -7227,7 +7235,7 @@ Durante la depuración formal de un bucle, los ingenieros registran en una **tab
 
 ---
 
-#### 3. Evolución del caso guía a `ControlAccesoQR v3.0` (Versión Final Sprint 3)
+#### 3. Evolución del caso guía a `ControlAccesoQR v3.0` (versión final Sprint 3)
 
 Alcanzamos el hito **`v3.0 Oficial`**. Esta versión consolida toda la arquitectura del Sprint 3 en una única clase robusta, limpia y completamente operativa.
 
