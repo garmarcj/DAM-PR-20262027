@@ -4578,10 +4578,11 @@ El uso de `Math.min` garantiza que en la última iteración no se resten más pe
 #### 3. Evolución del caso guía a `ControlAccesoQR v2.8` (Java nativo)
 
 Evolucionamos la versión `v2.7` a la **`v2.8`**, completando las operaciones de la Semana 8. Mantenemos todas las constantes inmutables, la captura con `try-catch` y los métodos predicado, incorporando:
-1. Control bidireccional en el fichaje individual: selector de sentido del paso (`'E'` = Entrada, `'S'` = Salida) con protección ante *underflow*.
-2. Opción 4 del menú: **Protocolo de evacuación de emergencia** gobernado por un bucle `while` de vaciado progresivo.
-3. Actualización de agregados en ambos sentidos: las salidas liberan aforo y computan en el histórico de tránsitos.
-4. Desconexión del terminal reubicada en la opción 5.
+
+1. Control bidireccional en el fichaje individual: selector de sentido del paso (`'E'` = Entrada, `'S'` = Salida) con protección ante *underflow*.  
+2. Opción 4 del menú: **Protocolo de evacuación de emergencia** gobernado por un bucle `while` de vaciado progresivo.  
+3. Actualización de agregados en ambos sentidos: las salidas liberan aforo y computan en el histórico de tránsitos.  
+4. Desconexión del terminal reubicada en la opción 5.  
 
 ##### A. Comparativa de cambios respecto a v2.7 (`diff`)
 
@@ -5127,7 +5128,7 @@ En esta sesión práctica de cierre de semana, cada alumno implementará patrone
 
 ##### Kata 1 (Cinturón blanco / Nivel base). Control bidireccional y vaciado en proyectos asignados
 
-Abre el archivo `pr/src/MiProyecto.java` de tu especialidad e implementa una rutina de drenaje progresivo con bucle `while` combinada con protección ante subdesbordamiento:
+Abre el archivo `pr/src/MiProyecto.java` de tu proyecto e implementa una rutina de drenaje progresivo con bucle `while` combinada con protección ante subdesbordamiento:
 
 * **Aventura conversacional.** Diseña una mecánica de combate con puntos de escudo defensivo. Permite al jugador regenerar o perder escudo según la acción; implementa una rutina de vaciado progresivo mediante un bucle `while (escudoActual > 0)` que simule un ataque de drenaje mágico masivo del enemigo, absorbiendo el escudo en paquetes mediante `Math.min` sin permitir que el valor caiga en cifras negativas.
 * **Motor de recomendación.** Modela un sistema de catálogo dinámico con gestión bidireccional (añadir nuevos productos recomendados y dar de baja contenidos obsoletos con guardia ante lista vacía). Implementa una opción de purga total mediante un bucle `while (itemsPendientes > 0)` que libere la cola de recomendaciones por lotes emitiendo el balance final.
