@@ -9,7 +9,7 @@
 
 #### 1. Caso guía en AzaharTech
 
-Son las 15:00 h del **lunes 16 de noviembre de 2026**. En la sede de **AzaharTech** en Castellón de la Plana, el equipo de desarrollo arranca formalmente el **Sprint 4: «Arquitectos de software»**. La versión `v3.0 Oficial` superó todas las pruebas del sprint anterior, pero durante la auditoría de despliegue el equipo directivo del **IES El Caminàs** detectó una limitación estructural evidente:
+Son las 15:00 h del **lunes 16 de noviembre de 2026**. En la sede de **AzaharTech** en Castellón de la Plana, el equipo de desarrollo arranca formalmente el **Sprint 4**. La versión `v3.0` superó todas las pruebas del sprint anterior, pero durante la auditoría de despliegue el equipo directivo del **IES El Caminàs** detectó una limitación:
 
 > *«Equipo: vuestro terminal funciona con solidez y gobierna los flujos con limpieza, pero cada fichaje se evapora en cuanto termina de procesarse. Solo conserváis contadores aislados (`totalFichajesAutorizados`, `idUltimoFichaje`...). Si en conserjería preguntan **quién fue la última persona que pasó, a qué hora exacta, con qué temperatura y por qué motivo se le denegó o autorizó el acceso**, el sistema no sabe responder.*
 >
@@ -17,25 +17,25 @@ Son las 15:00 h del **lunes 16 de noviembre de 2026**. En la sede de **AzaharTec
 
 **Laia Claramunt** reúne a **Alba Torres** y **Pau Ferrer** frente a la pizarra para marcar el cambio de paradigma:
 
-> *«Hasta ahora hemos sido **consumidores de clases ajenas** (`Scanner`, `Random`, `String`, `LocalTime`) organizando nuestro código mediante variables locales y métodos estáticos. A partir de hoy damos el salto a la **Programación Orientada a Objetos (POO) propia**.*
+> *«Hasta ahora hemos sido **consumidores de clases creadas por otras personas** (`Scanner`, `Random`, `String`, `LocalTime`) organizando nuestro código mediante variables locales y métodos estáticos. A partir de hoy damos el salto a la **Programación Orientada a Objetos (POO) propia**.*
 >
-> *Vamos a crear un segundo archivo Java para nuestra primera **clase entidad**: **`Fichaje.java`**. Dejaremos que `ControlAccesoQR.java` actúe como clase orquestadora, mientras `Fichaje` funciona como el plano arquitectónico de cada registro de acceso. Fabricaremos múltiples **objetos** independientes con `new`, consolidaremos la diferencia crítica entre miembros **`static` y de instancia**, y gestionaremos sus referencias en memoria aplicando guardias contra `null`»*.
+> *Vamos a crear un segundo archivo Java para nuestra primera **clase entidad**: **`Fichaje.java`**. Dejaremos que `ControlAccesoQR.java` actúe como el director de orquesta, mientras `Fichaje` funciona como el plano en cada registro de acceso. Crearemos múltiples **objetos** independientes con `new`, veremos la diferencia entre miembros **`static` y de instancia**, y controlaremos que se comporten correctamente en memoria utilizando barreras contra `null`»*.
 
 ---
 
 #### 2. Fundamento teórico: clases propias, atributos de instancia y objetos en memoria
 
-Una **clase** es un tipo de dato definido por el programador que agrupa en una sola unidad cohesiva los **datos** (atributos) y el **comportamiento** (métodos) de una entidad del dominio. Un **objeto** es cada instancia concreta fabricada a partir de ese plano, alojada de forma independiente en el montículo (*Heap*).
+Una **clase** es un tipo de dato definido por el programador que agrupa tanto los **datos** (atributos) como el **comportamiento** (métodos) de una entidad del dominio. Un **objeto** es cada instancia concreta fabricada a partir de ese plano, alojada de forma independiente en el montículo (*Heap*).
 
 ```mermaid
 classDiagram
     class ControlAccesoQR {
-        <<Clase Orquestadora>>
+        <<Clase orquestadora>>
         +NOMBRE_CENTRO : String$
         +main(args : String[]) void$
     }
     class Fichaje {
-        <<Clase Entidad>>
+        <<Clase entidad>>
         +id : int
         +dni : String
         +nombre : String
@@ -70,13 +70,15 @@ classDiagram
 
 ##### A. Clase orquestadora frente a clase entidad (arquitectura multi-archivo)
 
-En Java corporativo, cada clase pública reside en su propio archivo `.java`:
-* **Clase orquestadora (`ControlAccesoQR.java`):** Contiene el método `public static void main` y coordina la interacción con el usuario y el flujo del programa.
-* **Clase entidad (`Fichaje.java`):** **No contiene método `main`**, pues no está diseñada para arrancar sola, sino para ser instanciada tantas veces como tránsitos ocurran.
+En Java, cada clase pública reside en su propio archivo `.java`:
+
+* **Clase orquestadora (`ControlAccesoQR.java`):** Contiene el método `public static void main` y coordina la interacción con el usuario y el flujo del programa.  
+* **Clase entidad (`Fichaje.java`):** **No contiene método `main`**, pues no está diseñada para arrancar sola, sino para ser instanciada tantas veces como tránsitos ocurran.  
 
 Sus dos bloques internos fundamentales en este punto del curso son:
-1. **Atributos de instancia:** Variables declaradas directamente en la clase (fuera de cualquier método) **sin `static`**. Cada objeto fabricado con `new` posee su propia copia privada.
-2. **Métodos de instancia:** Funciones declaradas **sin `static`** que operan directamente sobre los atributos del objeto receptor concreto sobre el que se invocan.
+
+1. **Atributos de instancia:** Variables declaradas directamente en la clase (fuera de cualquier método) **sin `static`**. Cada objeto fabricado con `new` posee su propia copia privada.  
+2. **Métodos de instancia:** Funciones declaradas **sin `static`** que operan directamente sobre los atributos del objeto receptor concreto sobre el que se invocan.  
 
 ##### B. Contraste clave: `static` (Sprints 2–3) frente a instancia (Sprint 4)
 
@@ -85,8 +87,8 @@ El error más frecuente al dar el salto a la POO propia es arrastrar la palabra 
 ```mermaid
 flowchart TD
     Decision{"¿Cómo se declara el miembro en la clase?"}
-    Decision -- "Con static (Clase)" --> Estatico["<b>Miembro de Clase (Compartido)</b><br/>• Pertenece al plano único, no a los objetos<br/>• Se invoca como Clase.metodo()<br/>• Si un atributo es static, TODOS los objetos comparten el mismo valor"]
-    Decision -- "Sin static (Instancia)" --> Instancia["<b>Miembro de Instancia (Propio)</b><br/>• Cada objeto creado con new tiene su propia copia en el Heap<br/>• Se invoca como referencia.metodo()<br/>• Modificar un objeto no altera a los demás"]
+    Decision -- "Con static (clase)" --> Estatico["<b>Miembro de Clase (compartido)</b><br/>• Pertenece al plano único, no a los objetos<br/>• Se invoca como Clase.metodo()<br/>• Si un atributo es static, TODOS los objetos comparten el mismo valor"]
+    Decision -- "Sin static (instancia)" --> Instancia["<b>Miembro de Instancia (propio)</b><br/>• Cada objeto creado con new tiene su propia copia en el Heap<br/>• Se invoca como referencia.metodo()<br/>• Modificar un objeto no altera a los demás"]
 ```
 
 ##### C. Valores por defecto en el *Heap*
@@ -128,10 +130,11 @@ flowchart LR
     R3 -. "no apunta a ningún objeto" .-> Nulo(("null"))
 ```
 
-De este modelo se derivan tres consecuencias operativas en nuestros bucles:
-1. **Desplazamiento por copia de referencia:** Al hacer `penultimoFichaje = ultimoFichaje; ultimoFichaje = nuevoFichaje;`, no se duplican los datos en el *Heap*; simplemente se reorientan los punteros del *Stack* para mantener trazabilidad de los dos últimos tránsitos.
-2. **Guardia contra `null`:** Si intentamos invocar `ultimoFichaje.describir()` antes de que se haya registrado el primer acceso (`ultimoFichaje == null`), la JVM lanzará **`NullPointerException`**. Debemos proteger siempre la llamada con `if (ultimoFichaje != null)`.
-3. **Ciclo de vida automático:** Cuando ni `ultimoFichaje` ni `penultimoFichaje` apuntan ya a un `Fichaje` antiguo (al llegar un tercero), ese objeto queda huérfano y el *Garbage Collector* libera su memoria automáticamente.
+De este modelo se derivan tres consecuencias en nuestros bucles:
+
+1. **Desplazamiento por copia de referencia:** Al hacer `penultimoFichaje = ultimoFichaje; ultimoFichaje = nuevoFichaje;`, no se duplican los datos en el *Heap*; simplemente se reorientan los punteros del *Stack* para mantener trazabilidad de los dos últimos tránsitos.  
+2. **Seguridad contra `null`:** Si intentamos invocar `ultimoFichaje.describir()` antes de que se haya registrado el primer acceso (`ultimoFichaje == null`), la JVM lanzará **`NullPointerException`**. Debemos proteger siempre la llamada con `if (ultimoFichaje != null)`.  
+3. **Ciclo de vida automático:** Cuando ni `ultimoFichaje` ni `penultimoFichaje` apuntan ya a un `Fichaje` antiguo (al llegar un tercero), ese objeto queda huérfano y el *Garbage Collector* libera su memoria automáticamente.  
 
 ```mermaid
 stateDiagram-v2
@@ -148,8 +151,9 @@ stateDiagram-v2
 #### 3. Evolución del caso guía a `ControlAccesoQR v3.1` (Arquitectura multi-archivo)
 
 Evolucionamos la solución dividiendo el proyecto en **dos archivos independientes** dentro de `pr/src/`:
-1. **`Fichaje.java` (Nueva clase entidad desacoplada):** Modela de forma autónoma los 10 atributos de cada tránsito y dos métodos de instancia (`obtenerPerfilLegible` y `describir`), sin depender de `ControlAccesoQR`.
-2. **`ControlAccesoQR.java` (`v3.1`):** Instancia un nuevo objeto `Fichaje` en cada tránsito de la Opción 1, mantiene vivas las referencias `ultimoFichaje` y `penultimoFichaje` fuera del bucle e incorpora guardias contra `null` en el monitor de telemetría (Opción 3).
+
+1. **`Fichaje.java` (Nueva clase entidad desacoplada):** Modela de forma autónoma los 10 atributos de cada tránsito y dos métodos de instancia (`obtenerPerfilLegible` y `describir`), sin depender de `ControlAccesoQR`.  
+2. **`ControlAccesoQR.java` (`v3.1`):** Instancia un nuevo objeto `Fichaje` en cada tránsito de la Opción 1, mantiene vivas las referencias `ultimoFichaje` y `penultimoFichaje` fuera del bucle e incorpora guardias contra `null` en el monitor de telemetría (Opción 3).  
 
 ##### A. Comparativa de cambios respecto a v3.0 (`diff`)
 
@@ -840,7 +844,7 @@ En esta sesión práctica, cada estudiante diseñará su primera clase entidad e
 
 ##### Kata 1 (Cinturón blanco / Nivel base). Mi primera clase entidad en archivo propio
 
-Crea un nuevo archivo `.java` en `pr/src/` para modelar la entidad principal de tu proyecto elegido (sin método `main`), dotándola de al menos 4 atributos de instancia y 2 métodos propios (sin `static`). Instancia dos objetos independientes desde `MiProyecto.java`, puebla sus atributos con el operador punto e invoca sus métodos:
+Crea un nuevo archivo `.java` en `pr/src/` para modelar la entidad principal de tu proyecto (sin método `main`), creando al menos 4 atributos de instancia y 2 métodos propios (sin `static`). Instancia dos objetos independientes desde `MiProyecto.java`, puebla sus atributos con el operador punto e invoca sus métodos:
 
 * **Aventura conversacional.** Archivo `Personaje.java` con atributos de instancia para su nombre, salud actual, potencia de ataque y si es aliado; incluye un método que devuelva su ficha descriptiva y otro que indique si sigue con vida. Crea un héroe y un enemigo.
 * **Motor de recomendación.** Archivo `Item.java` con atributos de instancia para el título, categoría temática, valoración media y etiqueta de disponibilidad; incluye un método que devuelva su línea formateada de catálogo y otro booleano que verifique si supera el umbral de recomendación destacada. Crea dos ítems de categorías distintas.
@@ -857,7 +861,7 @@ Comprueba empíricamente en tu proyecto las tres trampas habituales al empezar a
    Añade temporalmente `static` al atributo de nombre o título de tu clase entidad. Comprueba que, tras crear dos objetos diferentes (`obj1` y `obj2`), cambiar el nombre en `obj2` sobrescribe automáticamente el nombre de `obj1` porque un miembro `static` pertenece al molde único y no a cada objeto. Retira el `static` tras verificar el fallo.
 2. **El bug del alias:**  
    Crea `MiEntidad a = new MiEntidad(); MiEntidad b = a;`, modifica un atributo a través de `b` y demuestra que `a` también refleja el cambio. Dibuja en un comentario o documento externo un diagrama `mermaid` (`flowchart LR`) ilustrando cómo ambas referencias de pila apuntan al mismo objeto en el montículo.
-3. **La guardia contra `null`:**  
+3. **La seguridad contra `null`:**  
    Declara una referencia `null` de tu nueva clase, intenta leer uno de sus atributos o invocar su método y protege esa llamada mediante una condición previa `if (referencia != null)` para impedir una `NullPointerException`.
 
 ---
