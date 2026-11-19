@@ -880,7 +880,7 @@ Dos objetos distintos pueden contener exactamente los mismos datos y, sin embarg
    Documenta en la cabecera Javadoc de tu nueva clase entidad la diferencia entre identidad de referencia e igualdad lógica de estado, declarando tu arquitectura lista para incorporar constructores propios en la siguiente sesión.
 
 ---
-EN LENGUAJE CLARO, DIRECTO Y PASO A PASO
+en lenguaje claro, directo y paso a paso
 ---
 
 ##### Kata 1 (Cinturón blanco). Tu primera clase y tus primeros objetos
@@ -1793,7 +1793,7 @@ Realiza una traza paso a paso del nacimiento de un objeto en memoria utilizando 
    Al regresar al `main` tras terminar el constructor, verifica que la variable receptora del *Stack* muestra exactamente **el mismo identificador `@id`** que tenía la referencia `this` dentro del constructor. Documenta esta comprobación técnica en la cabecera Javadoc de tu clase entidad.
 
 ---
-EN LENGUAJE CLARO, DIRECTO Y PASO A PASO
+en lenguaje claro, directo y paso a paso
 ---
 
 ##### Kata 1 (Cinturón blanco). Crear objetos en una sola línea con constructores
@@ -2762,7 +2762,7 @@ Demuestra empíricamente que tu clase entidad es ahora inmune a la corrupción d
    Imprime el estado del objeto tras el ataque comprobando mediante *getters* que todos los invariantes matemáticos y de seguridad permanecen intactos. Documenta los resultados de la prueba en la cabecera Javadoc de tu clase entidad.
 
 ---
-EN LENGUAJE CLARO, DIRECTO Y PASO A PASO
+en lenguaje claro, directo y paso a paso
 ---
 
 ##### Kata 1 (Cinturón blanco). Proteger los datos con `private`
@@ -3769,7 +3769,7 @@ Realiza una inspección crítica de acoplamiento sobre `MiProyecto.java` para el
    Documenta en la cabecera Javadoc de tu clase entidad la regla de negocio migrada bajo el principio *Tell, Don't Ask*, dejando la arquitectura preparada para abordar la composición entre múltiples clases propias y miembros `static` en la **Semana 11**.
 
 ---
-EN LENGUAJE CLARO, DIRECTO Y PASO A PASO
+en lenguaje claro, directo y paso a paso
 ---
 
 ##### Kata 1 (Cinturón blanco). Imprimir con `toString()` y relacionar dos objetos
