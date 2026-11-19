@@ -879,9 +879,7 @@ Dos objetos distintos pueden contener exactamente los mismos datos y, sin embarg
 3. **Certificación:**  
    Documenta en la cabecera Javadoc de tu nueva clase entidad la diferencia entre identidad de referencia e igualdad lógica de estado, declarando tu arquitectura lista para incorporar constructores propios en la siguiente sesión.
 
----
-en lenguaje claro, directo y paso a paso
----
+...en lenguaje claro, directo y paso a paso...
 
 ##### Kata 1 (Cinturón blanco). Tu primera clase y tus primeros objetos
 
@@ -1792,9 +1790,7 @@ Realiza una traza paso a paso del nacimiento de un objeto en memoria utilizando 
 3. **Certificación:**  
    Al regresar al `main` tras terminar el constructor, verifica que la variable receptora del *Stack* muestra exactamente **el mismo identificador `@id`** que tenía la referencia `this` dentro del constructor. Documenta esta comprobación técnica en la cabecera Javadoc de tu clase entidad.
 
----
-en lenguaje claro, directo y paso a paso
----
+...en lenguaje claro, directo y paso a paso...
 
 ##### Kata 1 (Cinturón blanco). Crear objetos en una sola línea con constructores
 
@@ -2761,9 +2757,7 @@ Demuestra empíricamente que tu clase entidad es ahora inmune a la corrupción d
 3. **Certificación:**  
    Imprime el estado del objeto tras el ataque comprobando mediante *getters* que todos los invariantes matemáticos y de seguridad permanecen intactos. Documenta los resultados de la prueba en la cabecera Javadoc de tu clase entidad.
 
----
-en lenguaje claro, directo y paso a paso
----
+...en lenguaje claro, directo y paso a paso...
 
 ##### Kata 1 (Cinturón blanco). Proteger los datos con `private`
 
@@ -3768,9 +3762,7 @@ Realiza una inspección crítica de acoplamiento sobre `MiProyecto.java` para el
 3. **Certificación:**  
    Documenta en la cabecera Javadoc de tu clase entidad la regla de negocio migrada bajo el principio *Tell, Don't Ask*, dejando la arquitectura preparada para abordar la composición entre múltiples clases propias y miembros `static` en la **Semana 11**.
 
----
-en lenguaje claro, directo y paso a paso
----
+...en lenguaje claro, directo y paso a paso...
 
 ##### Kata 1 (Cinturón blanco). Imprimir con `toString()` y relacionar dos objetos
 
@@ -3822,15 +3814,15 @@ Son las 15:00 h del **lunes 23 de noviembre de 2026**. En las oficinas de **Azah
 
 Sin embargo, al preparar el sistema del **IES El Caminàs** para operar con múltiples terminales y puntos de acceso, **Pau Ferrer** detecta dos responsabilidades que siguen mal ubicadas en `ControlAccesoQR.java`:
 
-> *«Fijaos en nuestra variable `int idUltimoFichaje = 1042;` dentro del `main`:*
-> 1. * **Dependencia del orquestador para numerar objetos:** Cada vez que el sistema crea un `Fichaje`, el `main` tiene que acordarse de incrementar manualmente `idUltimoFichaje++` y pasárselo al constructor. Peor aún: si un acceso es denegado en una salida, no incrementábamos el contador y dos objetos `Fichaje` terminaban compartiendo el **mismo número de registro `#1042`**. La clase `Fichaje` debería saber **autonumerar cada instancia de forma única y global** desde el mismo constructor, y llevar su propia cuenta de cuántos objetos se han fabricado.*
-> 2. * **Reglas de dominio dispersas:** Métodos como `esTemperaturaCorporalSegura`, `esDocumentoValido` o `esPerfilAutorizado` siguen viviendo en `ControlAccesoQR`, cuando en realidad validan reglas propias de un fichaje, útiles incluso **antes** de instanciar el objeto»*.
+> *«Fijaos en nuestra variable `int idUltimoFichaje = 1042;` dentro del `main`:*  
+> 1. * **Dependencia del orquestador para numerar objetos:** Cada vez que el sistema crea un `Fichaje`, el `main` tiene que acordarse de incrementar manualmente `idUltimoFichaje++` y pasárselo al constructor. Peor aún: si un acceso es denegado en una salida, no incrementábamos el contador y dos objetos `Fichaje` terminaban compartiendo el **mismo número de registro `#1042`**. La clase `Fichaje` debería saber **autonumerar cada instancia de forma única y global** desde el mismo constructor, y llevar su propia cuenta de cuántos objetos se han fabricado.*  
+> 2. * **Reglas de dominio dispersas:** Métodos como `esTemperaturaCorporalSegura`, `esDocumentoValido` o `esPerfilAutorizado` siguen viviendo en `ControlAccesoQR`, cuando en realidad validan reglas propias de un fichaje, útiles incluso **antes** de instanciar el objeto»*.  
 
 **Laia Claramunt** toma el rotulador y abre la pizarra para presentar el tema del día:
 
-> *«Hasta ahora en este sprint habíamos evitado `static` dentro de `Fichaje` para entender los atributos de instancia. Hoy recuperamos la palabra clave **`static`** con un propósito arquitectónico preciso: crear **miembros de clase compartidos** dentro de nuestras propias entidades.*
+> *«Hasta ahora en este sprint habíamos evitado `static` dentro de `Fichaje` para entender los atributos de instancia. Hoy recuperamos la palabra clave **`static`** con un propósito arquitectónico preciso: crear **miembros de clase compartidos** dentro de nuestras propias entidades.*  
 >
-> *Veremos cómo un **atributo `static`** vive en una única celda compartida por todos los objetos para generar secuencias autoincrementales, y cómo los **métodos `static`** nos permiten exponer utilidades de validación y consultas globales directamente a través del nombre de la clase (`Fichaje.esDniValido(...)` o `Fichaje.getTotalFichajesCreados()`)»*.
+> *Veremos cómo un **atributo `static`** vive en una única celda compartida por todos los objetos para generar secuencias autoincrementales, y cómo los **métodos `static`** nos permiten exponer utilidades de validación y consultas globales directamente a través del nombre de la clase (`Fichaje.esDniValido(...)` o `Fichaje.getTotalFichajesCreados()`)»*.  
 
 ---
 
@@ -3889,9 +3881,10 @@ flowchart LR
 ##### B. Constantes de clase (`public static final`)
 
 Las constantes propias de una entidad (como `TEMP_MIN_SEGURA = 35.0` o `LONGITUD_DNI = 9`) deben declararse como `public static final` en la propia entidad que las necesita, en lugar de quedar amontonadas en la clase del `main`:
-* `static`: porque el valor es idéntico para todos los objetos (no tiene sentido duplicar `37.5` en la memoria de cada fichaje).
-* `final`: porque es inmutable tras su inicialización.
-* `public`: para que cualquier otra clase pueda consultarla leyendo `Fichaje.TEMP_MAX_FIEBRE`.
+
+* `static`: porque el valor es idéntico para todos los objetos (no tiene sentido duplicar `37.5` en la memoria de cada fichaje).  
+* `final`: porque es inmutable tras su inicialización.  
+* `public`: para que cualquier otra clase pueda consultarla leyendo `Fichaje.TEMP_MAX_FIEBRE`.  
 
 ##### C. Métodos `static` en entidades y la regla de oro del contexto estático
 
@@ -3915,9 +3908,10 @@ Si intentas leer `this.nombre` o `id` dentro de un método `static`, el compilad
 #### 3. Evolución del caso guía a `ControlAccesoQR v3.5` (Java nativo)
 
 Evolucionamos la versión `v3.4` a la **`v3.5`**, iniciando la Semana 11:
-1. **`Fichaje.java` autonumera sus instancias:** Incorpora `ultimoIdAsignado` y `totalFichajesCreados` como atributos `private static`, eliminando el parámetro `id` manual de sus constructores. Cada `Fichaje` (autorizado o denegado) obtiene un identificador irrepetible al nacer.
-2. **Migración de constantes y validaciones estáticas a `Fichaje`:** Se trasladan a `Fichaje` sus constantes biométricas/documentales (`TEMP_MIN_SEGURA`, `TEMP_MAX_FIEBRE`, `LONGITUD_DNI`) y sus predicados estáticos (`esTemperaturaSegura`, `esDniValido`, `esPerfilValido`).
-3. **`ControlAccesoQR.java` liberado de contadores manuales:** Desaparece la variable suelta `idUltimoFichaje` del `main`. Tanto la Opción 1 como la Opción 2 (ráfagas) fabrican objetos `Fichaje` directamente, y el Monitor de Telemetría (Opción 3) consulta `Fichaje.getTotalFichajesCreados()`.
+
+1. **`Fichaje.java` autonumera sus instancias:** Incorpora `ultimoIdAsignado` y `totalFichajesCreados` como atributos `private static`, eliminando el parámetro `id` manual de sus constructores. Cada `Fichaje` (autorizado o denegado) obtiene un identificador irrepetible al nacer.  
+2. **Migración de constantes y validaciones estáticas a `Fichaje`:** Se trasladan a `Fichaje` sus constantes biométricas/documentales (`TEMP_MIN_SEGURA`, `TEMP_MAX_FIEBRE`, `LONGITUD_DNI`) y sus predicados estáticos (`esTemperaturaSegura`, `esDniValido`, `esPerfilValido`).  
+3. **`ControlAccesoQR.java` liberado de contadores manuales:** Desaparece la variable suelta `idUltimoFichaje` del `main`. Tanto la Opción 1 como la Opción 2 (ráfagas) fabrican objetos `Fichaje` directamente, y el Monitor de Telemetría (Opción 3) consulta `Fichaje.getTotalFichajesCreados()`.  
 
 ##### A. Comparativa de cambios respecto a v3.4 (`diff`)
 
