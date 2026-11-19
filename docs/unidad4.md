@@ -5723,3 +5723,44 @@ Verifica visualmente la reducción de acoplamiento y la estructura anidada en me
 3. **Métrica de adelgazamiento del orquestador:**  
    Anota en la cabecera Javadoc de tu clase contenedora cuántas líneas tenía tu método `main` antes de introducir la composición y a cuántas se ha reducido tras delegar la lógica de negocio en la nueva clase.
 
+...en lenguaje claro, directo y paso a paso...
+
+##### Kata 1 (Cinturón blanco). Numeración automática y reglas `static` en tu clase
+
+Abre tu clase entidad en `pr/src/` (`Personaje.java`, `Item.java`, `Bola.java` o `Credencial.java`) y añade lo siguiente para que los objetos se numeren solos y la clase tenga utilidades propias:
+1. Un atributo normal `private int id;` (cada objeto tendrá su propio número).
+2. Un atributo compartido `private static int contadorCreados = 0;` (solo hay uno para toda la clase).
+3. En tu constructor principal, suma 1 al contador (`contadorCreados++;`) y guárdalo en el objeto (`this.id = contadorCreados;`). Añade `getId()` (normal) y `public static int getTotalCreados()` (estático).
+4. Añade las constantes `public static final` y el método de validación `static` que correspondan a tu proyecto:
+
+* **Aventura conversacional (`Personaje.java`):** Numera automáticamente cada combatiente (`#1`, `#2`, `#3`...). Declara como `public static final` la salud máxima permitida (por ejemplo, `100`) y crea un método `static` llamado `esSaludValida(int salud)` que devuelva `true` si la salud está entre `0` y ese máximo. En `main`, crea 3 personajes e imprime `Personaje.getTotalCreados()`.
+* **Motor de recomendación (`Item.java`):** Genera un código numérico automático (`id`) para cada ítem del catálogo sin pedirlo por parámetro en el constructor. Declara como `public static final` las notas mínima (`0.0`) y máxima (`10.0`) y crea un método `static` `esValoracionValida(double nota)` para comprobar si una nota está en rango antes de crear el ítem. En `main`, crea varios ítems e imprime `Item.getTotalCreados()`.
+* **Simulador de físicas 2D (`Bola.java`):** Asigna automáticamente un número de serie (`id`) a cada bola creada. Declara como `public static final` la gravedad estándar (`9.8`) y crea un método `static` `esVelocidadSegura(double velocidad)` para comprobar si no supera un límite máximo antes de lanzarla. En `main`, crea varias bolas e imprime `Bola.getTotalCreados()`.
+* **Bóveda de contraseñas (`Credencial.java`):** Asigna automáticamente un número de registro (`id`) a cada credencial nueva. Declara como `public static final` la longitud mínima segura (`8`) y crea un método `static` `esClaveSegura(String clave)` que permita comprobar si una contraseña sirve *antes* incluso de hacer `new Credencial(...)`. En `main`, crea varias credenciales e imprime `Credencial.getTotalCreados()`.
+
+---
+
+##### Kata 2 (Cinturón marrón). Qué puede y qué NO puede hacer un método `static`
+
+Haz estas dos comprobaciones rápidas para entender dónde está la frontera entre lo `static` y lo normal:
+
+1. **Provocar el error de Java:**  
+   Dentro de uno de tus métodos `static` (por ejemplo, en `getTotalCreados()`), intenta escribir una línea que lea un atributo normal de un objeto (por ejemplo, `System.out.println(this.nombre);` o `System.out.println(id);`).
+   * Verás que IntelliJ lo subraya en rojo diciendo: `non-static variable ... cannot be referenced from a static context`.
+   * **¿Por qué pasa esto?** Porque un método `static` se puede llamar sin haber creado ningún objeto todavía (`Personaje.getTotalCreados()`), así que Java no sabe de qué objeto concreto le estás pidiendo el nombre. Borra esa línea roja y deja un comentario breve explicándolo.
+2. **Comprobar el caso contrario:**  
+   Ahora ve a tu método `toString()` (que **no** lleva `static`) y haz que muestre tanto su `id` como el total creado hasta ese momento (por ejemplo: `"#2 de 3 creados"`). Comprueba que un método normal de objeto **sí** puede leer las variables `static` sin problemas.
+
+---
+
+##### Kata 3 (Cinturón negro). Ver la carpeta `static` compartida en el Debug de IntelliJ
+
+Comprueba visualmente en la memoria de IntelliJ dónde se guarda una variable `static` frente a una variable normal:
+
+1. En `main`, crea **3 objetos seguidos** de tu clase (`obj1`, `obj2`, `obj3`), pon un punto rojo (*breakpoint*) justo después de crear el tercero y pulsa el icono de **Debug (`Shift + F9`)**.
+2. En la pestaña **Variables** de abajo, despliega `obj1` y despliega también `obj2`:
+   * Fíjate en que cada objeto tiene su propio `id` distinto (`1` en `obj1`, `2` en `obj2`, `3` en `obj3`).
+   * Ahora busca dentro de `obj1` la subcarpeta que pone **`static`** y ábrela: verás que `contadorCreados` vale **`3`**. Abre la subcarpeta **`static`** dentro de `obj2` y verás que también vale **`3`** (porque es una única variable compartida entre todos los objetos).
+3. **Comprueba que no se borra al soltar los objetos:**  
+   Añade después en `main` las líneas `obj1 = null; obj2 = null; obj3 = null;` y pasa por encima de ellas con **`F8`** en el Debug (o imprime después en consola `TuClase.getTotalCreados()`). Comprueba que aunque hayas puesto a `null` los 3 objetos, el contador `static` sigue valiendo **`3`** porque pertenece a la clase, no a los objetos individuales.
+
