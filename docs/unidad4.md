@@ -880,6 +880,43 @@ Dos objetos distintos pueden contener exactamente los mismos datos y, sin embarg
    Documenta en la cabecera Javadoc de tu nueva clase entidad la diferencia entre identidad de referencia e igualdad lógica de estado, declarando tu arquitectura lista para incorporar constructores propios en la siguiente sesión.
 
 ---
+EN LENGUAJE CLARO, DIRECTO Y PASO A PASO
+---
+
+##### Kata 1 (Cinturón blanco). Tu primera clase y tus primeros objetos
+
+Crea un archivo `.java` nuevo dentro de la carpeta `pr/src/` (sin método `main`) para la clase principal de tu proyecto. Ponle **4 atributos** (variables de clase sin `static`) y **2 métodos** propios (sin `static`). Después, ve a `MiProyecto.java` (`main`), crea **dos objetos distintos** con `new`, rellena sus datos usando el punto (`.`) y llama a sus métodos para comprobar que cada uno tiene sus propios datos:
+
+* **Aventura conversacional:** Crea `Personaje.java` con los atributos `nombre`, `salud`, `ataque` y `esAliado`. Añade un método `describir()` que devuelva una frase con sus datos y otro método `estaVivo()` que devuelva `true` si su salud es mayor que 0. En `main`, crea un héroe y un enemigo distintos e imprime sus fichas.
+* **Motor de recomendación:** Crea `Item.java` con los atributos `titulo`, `categoria`, `valoracionMedia` y `disponible`. Añade un método `describir()` que devuelva la línea del catálogo y otro método `esDestacado()` que devuelva `true` si la valoración es mayor o igual a 7.5. En `main`, crea dos ítems de categorías diferentes e imprime sus fichas.
+* **Simulador de físicas 2D:** Crea `Bola.java` con los atributos `nombre`, `x`, `y`, `velocidadX` y `velocidadY`. Añade un método `calcularRapidez()` que devuelva el módulo de la velocidad usando `Math.sqrt` y otro método `describir()` con sus coordenadas actuales. En `main`, crea una bola lenta y otra rápida y muestra la rapidez de ambas.
+* **Bóveda de contraseñas:** Crea `Credencial.java` con los atributos `servicio`, `usuario`, `clave` y `diasCaducidad`. Añade un método `obtenerLongitudClave()` que devuelva cuántos caracteres tiene la clave y otro método `describir()` que muestre el servicio y el usuario **sin** mostrar la contraseña real (por ejemplo, con asteriscos). En `main`, crea dos credenciales de servicios distintos.
+
+---
+
+##### Kata 2 (Cinturón marrón). Tres errores típicos al empezar con objetos
+
+Haz estas tres pequeñas pruebas en tu código para ver cómo funciona la memoria de Java:
+
+1. **¿Por qué NO debemos poner `static` en los atributos de un objeto?**  
+   Pon temporalmente la palabra `static` delante del atributo `nombre` (o `titulo` / `servicio`) en tu nueva clase. Ejecuta tu programa, cambia el nombre solo al **segundo objeto** y luego imprime los dos objetos. Verás que el primero también ha cambiado porque `static` hace que todos compartan la misma variable. Cuando lo hayas comprobado, **borra el `static`**.
+2. **El error de copiar un objeto con `=` (alias):**  
+   En `main`, crea un objeto `a` y después escribe `TuClase b = a;` (fíjate en que **no** usas `new`). Cambia un dato usando `b` (por ejemplo, `b.nombre = "OTRO"`) e imprime el dato de `a`. Verás que `a` también ha cambiado porque ambos apuntan al mismo objeto en memoria. Haz un dibujo sencillo en Mermaid (`flowchart LR`) explicándolo.
+3. **Evitar el fallo de `null`:**  
+   Crea una variable de tu clase igualada a `null` (por ejemplo, `Personaje p = null;`). Si intentas llamar a un método suyo, el programa explotará con un `NullPointerException`. Rodea esa llamada con un `if (p != null)` para protegerla y que no falle.
+
+---
+
+##### Kata 3 (Cinturón negro). Ver la memoria en IntelliJ y comparar dos objetos
+
+1. **Ver las direcciones de memoria reales (`@id`):**  
+   Pon un punto rojo (*breakpoint*) en `main` justo después de crear y rellenar tus dos objetos. Ejecuta en modo depuración (**`Shift + F9`**) y mira la pestaña **Variables** abajo:
+   * Fíjate en el número que sale al lado de cada objeto (por ejemplo, `Personaje@1042` y `Personaje@1089`). Aunque les pusieras los mismos datos por dentro, verás que sus números `@` son distintos porque ocupan sitios distintos en la memoria.
+2. **Comparar objetos por fuera (`==`) vs. compararlos por dentro:**  
+   Crea dos objetos con `new` que tengan exactamente los mismos datos por dentro e imprime el resultado de `objeto1 == objeto2`. Verás que da **`false`** (porque `==` compara los números `@` de la memoria, no los datos).  
+   Para compararlos por dentro, crea en tu clase un método `boolean mismosDatos(TuClase otro)` que primero compruebe que `otro != null` y luego compare atributo por atributo (usando `.equals(...)` en los `String` y `==` en los números y booleanos).
+
+---
 
 ### Día 37 - 2 sesiones
 
@@ -1754,6 +1791,38 @@ Realiza una traza paso a paso del nacimiento de un objeto en memoria utilizando 
    * Inspecciona la pestaña **Variables**: observa el objeto implícito **`this`** en la cima de la lista con su identificador hexadecimal único (`@id`), despliega sus atributos y comprueba cómo **antes** de ejecutarse las asignaciones contienen los valores por defecto (`0`, `0.0`, `null`), y cómo van mutando uno a uno al avanzar línea a línea con **`F8`**.
 3. **Certificación:**  
    Al regresar al `main` tras terminar el constructor, verifica que la variable receptora del *Stack* muestra exactamente **el mismo identificador `@id`** que tenía la referencia `this` dentro del constructor. Documenta esta comprobación técnica en la cabecera Javadoc de tu clase entidad.
+
+---
+EN LENGUAJE CLARO, DIRECTO Y PASO A PASO
+---
+
+##### Kata 1 (Cinturón blanco). Crear objetos en una sola línea con constructores
+
+Abre la clase que creaste ayer (`Personaje`, `Item`, `Bola` o `Credencial`) y añade **dos constructores** (recuerda que llevan exactamente el mismo nombre de la clase y **no** llevan `void`): uno largo con todos los datos y otro más corto que llame al largo usando `this(...)` para rellenar el resto automáticamente. Después, ve a `MiProyecto.java` y sustituye las líneas sueltas de ayer (`obj.dato = ...`) por una única llamada al `new` con parámetros:
+
+* **Aventura conversacional:** En `Personaje.java`, haz un constructor que reciba `nombre`, `salud`, `ataque` y `esAliado`. Haz un segundo constructor que solo reciba `nombre` y `esAliado`, y que llame al primero con `this(...)` poniéndole `100` de salud y `15` de ataque por defecto.
+* **Motor de recomendación:** En `Item.java`, haz un constructor que reciba `titulo`, `categoria`, `valoracionMedia` y `disponible`. Haz un segundo constructor para estrenos que solo reciba `titulo` y `categoria`, y que llame al primero con `this(...)` poniendo `0.0` de valoración y `true` en disponible.
+* **Simulador de físicas 2D:** En `Bola.java`, haz un constructor que reciba `nombre`, `x`, `y`, `velocidadX` y `velocidadY`. Haz un segundo constructor para bolas quietas que solo reciba `nombre`, `x` e `y`, y que llame al primero con `this(...)` poniendo `0.0` en ambas velocidades.
+* **Bóveda de contraseñas:** En `Credencial.java`, haz un constructor que reciba `servicio`, `usuario`, `clave` y `diasCaducidad`. Haz un segundo constructor para cuentas temporales que solo reciba `servicio`, `usuario` y `clave`, y que llame al primero con `this(...)` poniendo `30` días de caducidad por defecto.
+
+---
+
+##### Kata 2 (Cinturón marrón). Qué pasa si olvidas `this.` y por qué desaparece `new MiClase()`
+
+1. **El error de olvidar `this.`:**  
+   Si el parámetro del constructor se llama igual que el atributo (por ejemplo, `nombre`), prueba a quitar el `this.` en una línea para dejarlo así: `nombre = nombre;`. Ejecuta el programa y verás que el objeto se queda con el atributo vacío (`null` o `0`), porque Java copia la variable sobre sí misma sin tocar el objeto. Vuelve a poner `this.nombre = nombre;`.
+2. **¿Por qué ya no funciona `new MiClase()`?**  
+   Prueba a escribir `new Personaje()` (vacío, sin nada dentro de los paréntesis) en `main`. Verás que IntelliJ te lo marca en rojo. Esto pasa porque en el momento en que tú escribes tu propio constructor, Java borra el constructor vacío que te regalaba el primer día. Borra esa línea de prueba y deja un comentario explicando por qué dio error.
+
+---
+
+##### Kata 3 (Cinturón negro). Ver nacer un objeto paso a paso en el Debug (`F7`)
+
+1. Pon un punto rojo (*breakpoint*) en `main` justo en la línea donde llamas a tu **constructor corto** (por ejemplo, `new Personaje("Gimli", true)`).
+2. Lanza el depurador (**`Shift + F9`**). Cuando se pare ahí, pulsa **`F7`** (*Step Into*) para meterte dentro del constructor corto, y vuelve a pulsar **`F7`** para saltar al constructor largo (`this(...)`).
+3. Mira en la pestaña **Variables** la línea que pone **`this`**:
+   * Despliégala antes de avanzar y verás que todos tus atributos empiezan en `0`, `0.0`, `false` o `null`.
+   * Ve pulsando **`F8`** línea a línea y observa en vivo cómo se van rellenando los atributos del objeto uno por uno antes de volver al `main`.
 
 ---
 
@@ -2691,6 +2760,42 @@ Demuestra empíricamente que tu clase entidad es ahora inmune a la corrupción d
    Crea una pequeña batería de pruebas en `main` invocando tus *setters* con datos hostiles: cadenas `null`, textos con espacios en blanco, números negativos extremos o valores desbordados.
 3. **Certificación:**  
    Imprime el estado del objeto tras el ataque comprobando mediante *getters* que todos los invariantes matemáticos y de seguridad permanecen intactos. Documenta los resultados de la prueba en la cabecera Javadoc de tu clase entidad.
+
+---
+EN LENGUAJE CLARO, DIRECTO Y PASO A PASO
+---
+
+##### Kata 1 (Cinturón blanco). Proteger los datos con `private`
+
+Abre tu clase (`Personaje`, `Item`, `Bola` o `Credencial`) y pon la palabra **`private`** delante de todos sus atributos para que nadie pueda modificarlos directamente desde fuera. Después:
+1. Crea métodos **getters** públicos (`getNombre()`, `isAliado()`, etc.) para poder leerlos desde `main`.
+2. Crea métodos **setters** públicos **solo** para los atributos que sí deban poder cambiar después, poniendo un `if` dentro para bloquear valores absurdos. Los atributos fijos déjalos **sin setter**.
+3. En tu constructor largo, sustituye las asignaciones directas (`this.salud = salud;`) por llamadas a tus setters (`this.setSalud(salud);`) para validar también cuando nace el objeto.
+
+* **Aventura conversacional:** Pon `private` a todo. Crea *getters* para todo. Crea `setSalud(int)` comprobando que si pasan un número negativo, la salud se quede en `0` (nunca negativa). No hagas `setEsAliado` para que nadie pueda cambiar de bando por trampa.
+* **Motor de recomendación:** Pon `private` a todo. Crea *getters* para todo. Crea `setValoracionMedia(double)` asegurando que si pasan menos de `0.0` o más de `10.0`, se quede acotado entre `0` y `10`. No hagas `setTitulo` ni `setCategoria` para que no se altere el producto después de crearlo.
+* **Simulador de físicas 2D:** Pon `private` a todo. Crea *getters* para todo. Crea `setX(double)` y `setY(double)` comprobando que las coordenadas no sean negativas (si pasan negativo, poner `0.0`). Deja el `nombre` de la bola sin setter.
+* **Bóveda de contraseñas:** Pon `private` a todo. Crea *getters* para todo (pero en `getClave()`, devuelve una versión tapada con asteriscos o solo los dos últimos caracteres, nunca la clave entera). Crea `setClave(String)` para que solo cambie la contraseña si la nueva tiene al menos 8 caracteres, y `setDiasCaducidad(int)` para que no acepte días negativos. No hagas `setServicio`.
+
+---
+
+##### Kata 2 (Cinturón marrón). Generar *getters* y *setters* rápido con IntelliJ
+
+No hace falta que escribas todos los *getters* a mano letra por letra:
+
+1. Borra temporalmente un par de *getters* de tu clase, deja el cursor dentro de la clase y pulsa **`Alt + Insert`** (en Mac `Cmd + N`) $\rightarrow$ **Getter** (o haz clic derecho $\rightarrow$ *Generate...* $\rightarrow$ *Getter*).
+2. Marca los atributos que quieras y pulsa *OK*. Fíjate en que para los atributos `boolean`, IntelliJ crea automáticamente `is...()` en vez de `get...()`.
+3. Si generas *setters* con este atajo, recuerda añadir dentro tus `if` de protección para no aceptar datos malos.
+
+---
+
+##### Kata 3 (Cinturón negro). Intentar romper tus propias reglas de seguridad
+
+Haz la siguiente prueba rápida al principio de tu `main` para comprobar que tu clase es segura:
+
+1. **Bloqueo de acceso directo:** Escribe una línea en `main` intentando cambiar un atributo directamente (por ejemplo, `heroe.salud = -500;` o `item.valoracionMedia = 999;`). Comprueba que IntelliJ te da un error rojo diciendo que es `private`. **Comenta esa línea** (`// ...`) para que el programa vuelva a compilar.
+2. **Prueba con datos malos en los setters:** Llama a tus *setters* pasando valores trampa a propósito (una nota de `500.0`, una salud de `-200`, una clave de `"123"`, un texto vacío `""` o `null`).
+3. Imprime los datos del objeto después usando tus *getters* y comprueba en la consola que tu clase **ha bloqueado o corregido** todos los datos malos manteniendo el objeto sano.
 
 ---
 
@@ -3662,3 +3767,1965 @@ Realiza una inspección crítica de acoplamiento sobre `MiProyecto.java` para el
    Traslada al menos una de esas comprobaciones al interior de tu clase entidad como un **método de instancia booleano o calculado** (por ejemplo, `c.estaCaducada()` o `b.estaDentroDeLimites(...)`), sustituyendo las llamadas externas por la invocación directa al comportamiento del objeto.
 3. **Certificación:**  
    Documenta en la cabecera Javadoc de tu clase entidad la regla de negocio migrada bajo el principio *Tell, Don't Ask*, dejando la arquitectura preparada para abordar la composición entre múltiples clases propias y miembros `static` en la **Semana 11**.
+
+---
+EN LENGUAJE CLARO, DIRECTO Y PASO A PASO
+---
+
+##### Kata 1 (Cinturón blanco). Imprimir con `toString()` y relacionar dos objetos
+
+Abre tu clase entidad y haz dos mejoras importantes:
+1. Cambia tu antiguo método `describir()` por el método estándar de Java `@Override public String toString()`, devolviendo exactamente el mismo texto formateado. Comprueba en `main` que al escribir `System.out.println(miObjeto);` (sin llamar a ningún método) se imprime tu texto bonito en lugar de códigos raros como `Personaje@3f99bd52`.
+2. Añade un método nuevo que reciba **otro objeto de tu misma clase como parámetro** (comprobando antes con `if (otro != null)` que no sea nulo):
+
+* **Aventura conversacional:** Crea el método `public void atacar(Personaje enemigo)`. Si `enemigo != null` y el atacante está vivo, resta a la salud del enemigo el valor de ataque del atacante usando `enemigo.setSalud(...)`. Pruébalo en `main` haciendo que el héroe ataque al enemigo y mostrando luego la salud de ambos.
+* **Motor de recomendación:** Crea el método `public boolean esMejorQue(Item otro)`. Si `otro != null`, devuelve `true` si la `valoracionMedia` de este ítem es mayor que la de `otro`. Pruébalo comparando tus dos ítems en `main`.
+* **Simulador de físicas 2D:** Crea el método `public double distanciaHasta(Bola otra)`. Si `otra != null`, calcula y devuelve la distancia entre esta bola y `otra` usando `Math.sqrt` y `Math.pow` con las coordenadas `x` e `y` de ambas. Pruébalo en `main` con tus dos bolas.
+* **Bóveda de contraseñas:** Crea el método `public boolean mismoUsuarioQue(Credencial otra)`. Si `otra != null`, devuelve `true` si ambas credenciales tienen el mismo `usuario` (usando `.equalsIgnoreCase`). Úsalo en `main` para avisar si estás reutilizando el mismo usuario en dos servicios.
+
+---
+
+##### Kata 2 (Cinturón marrón). ¿Se cambia el objeto original si lo paso a un método?
+
+Haz este experimento para entender qué pasa cuando pasas un objeto como parámetro a un método en `MiProyecto.java`:
+
+1. Crea debajo de `main` un método auxiliar `public static void metodoDePrueba(TuClase obj)`.
+2. Dentro de ese método haz dos cosas en este orden:
+   * Cambia un dato del objeto usando un *setter* (por ejemplo, `obj.setMotivo(...)`, `obj.setEtiqueta(...)`, `obj.setSalud(50)` o `obj.setDiasCaducidad(99)`).
+   * Justo después, pon `obj = null;`.
+3. En `main`, llama a `metodoDePrueba(miObjeto);` y, en la línea siguiente, imprime `System.out.println(miObjeto);`.
+4. **Comprueba lo que pasa:** el cambio que hiciste con el *setter* **SÍ se ha quedado guardado**, pero tu variable `miObjeto` en `main` **NO se ha vuelto `null`** (ni ha dado error). Escribe un comentario de dos líneas explicando por qué: dentro del método recibiste una copia de la flecha hacia el mismo objeto, así que al modificar el objeto se ve desde fuera, pero borrar la flecha local (`obj = null`) no borra la flecha original de `main`.
+
+---
+
+##### Kata 3 (Cinturón negro). Que el objeto trabaje por sí mismo (limpiar el `main`)
+
+En programación orientada a objetos, el método `main` no debería estar sacando datos del objeto con muchos `get...()` para hacer cuentas o tomar decisiones fuera. Esas preguntas las debe responder el propio objeto:
+
+1. **Busca en `MiProyecto.java` (`main`)** algún `if` o cálculo que esté pidiendo datos a tu objeto con `get...()` para decidir algo (por ejemplo: comprobar fuera si `credencial.getDiasCaducidad() <= 0`, si `item.getValoracionMedia() >= 7.5`, si `bola.getX() > 800`, o si `personaje.getSalud() <= 0`).
+2. **Mueve esa pregunta dentro de tu clase:** crea un método de instancia limpio en tu clase (por ejemplo, `estaCaducada()`, `esRecomendable()`, `estaFueraDeLimites(double ancho)` o `estaHeridoCritico()`) que haga ese cálculo usando sus propios atributos.
+3. Sustituye el `if` largo de tu `main` por una llamada directa a tu nuevo método (por ejemplo, `if (credencial.estaCaducada())`) y comprueba que todo funciona igual pero con un `main` mucho más limpio.
+
+---
+
+## Semana 11. Miembros static y composición
+
+---
+
+### Día 40 - 2 sesiones
+
+---
+
+#### 1. Caso guía en AzaharTech
+
+Son las 15:00 h del **lunes 23 de noviembre de 2026**. En las oficinas de **AzaharTech** en Castellón de la Plana arranca la segunda semana del **Sprint 4: «Arquitectos de software»**. Con el cierre de la Semana 10, `Fichaje.java` se convirtió en una entidad encapsulada, con constructores propios, comportamiento rico y `toString()`.
+
+Sin embargo, al preparar el sistema del **IES El Caminàs** para operar con múltiples terminales y puntos de acceso, **Pau Ferrer** detecta dos responsabilidades que siguen mal ubicadas en `ControlAccesoQR.java`:
+
+> *«Fijaos en nuestra variable `int idUltimoFichaje = 1042;` dentro del `main`:*
+> 1. * **Dependencia del orquestador para numerar objetos:** Cada vez que el sistema crea un `Fichaje`, el `main` tiene que acordarse de incrementar manualmente `idUltimoFichaje++` y pasárselo al constructor. Peor aún: si un acceso es denegado en una salida, no incrementábamos el contador y dos objetos `Fichaje` terminaban compartiendo el **mismo número de registro `#1042`**. La clase `Fichaje` debería saber **autonumerar cada instancia de forma única y global** desde el mismo constructor, y llevar su propia cuenta de cuántos objetos se han fabricado.*
+> 2. * **Reglas de dominio dispersas:** Métodos como `esTemperaturaCorporalSegura`, `esDocumentoValido` o `esPerfilAutorizado` siguen viviendo en `ControlAccesoQR`, cuando en realidad validan reglas propias de un fichaje, útiles incluso **antes** de instanciar el objeto»*.
+
+**Laia Claramunt** toma el rotulador y abre la pizarra para presentar el tema del día:
+
+> *«Hasta ahora en este sprint habíamos evitado `static` dentro de `Fichaje` para entender los atributos de instancia. Hoy recuperamos la palabra clave **`static`** con un propósito arquitectónico preciso: crear **miembros de clase compartidos** dentro de nuestras propias entidades.*
+>
+> *Veremos cómo un **atributo `static`** vive en una única celda compartida por todos los objetos para generar secuencias autoincrementales, y cómo los **métodos `static`** nos permiten exponer utilidades de validación y consultas globales directamente a través del nombre de la clase (`Fichaje.esDniValido(...)` o `Fichaje.getTotalFichajesCreados()`)»*.
+
+---
+
+#### 2. Fundamento teórico: miembros `static` en clases propias
+
+Dentro de una clase Java pueden convivir miembros **de instancia** (sin `static`, propios de cada objeto en el *Heap*) y miembros **de clase** (con `static`, únicos y compartidos por toda la aplicación en el área de clases o *Metaspace* de la JVM).
+
+```mermaid
+classDiagram
+    class Fichaje {
+        <<Entidad con Miembros de Clase e Instancia>>
+        +TEMP_MIN_SEGURA : double$ = 35.0
+        +TEMP_MAX_FIEBRE : double$ = 37.5
+        +LONGITUD_DNI : int$ = 9
+        -ultimoIdAsignado : int$ = 1042
+        -totalFichajesCreados : int$ = 0
+        -id : int
+        -dni : String
+        -nombre : String
+        +Fichaje(...)
+        +getTotalFichajesCreados() int$
+        +getUltimoIdAsignado() int$
+        +getSiguienteId() int$
+        +esTemperaturaSegura(temp : double) boolean$
+        +esDniValido(dni : String) boolean$
+        +esPerfilValido(perfil : char) boolean$
+        +getId() int
+        +toString() String
+    }
+```
+
+*(En diagramas UML, los miembros subrayados —o anotados con `$` en Mermaid— representan miembros **`static`** pertenecientes a la clase).*
+
+##### A. Atributos `static`: memoria compartida y contadores autoincrementales
+
+Cuando declaramos un atributo como `private static int ultimoIdAsignado = 1042;`:
+* No existe una copia dentro de cada objeto `Fichaje`.
+* Existe **una sola copia compartida** en la memoria de clase desde que arranca el programa.
+* Si el constructor ejecuta `ultimoIdAsignado++; this.id = ultimoIdAsignado;`, cada nuevo objeto creado con `new` recibe automáticamente un identificador irrepetible y consecutivo (`1043`, `1044`, `1045`...), sin que `main` tenga que llevar la cuenta.
+
+```mermaid
+flowchart LR
+    subgraph AreaClases ["Área de Clases / Metaspace (Copia única compartida)"]
+        StaticVar["<b>Fichaje.ultimoIdAsignado</b> = 1044<br/><b>Fichaje.totalFichajesCreados</b> = 2"]
+    end
+
+    subgraph Monticulo ["Montículo / Heap (Copias independientes por objeto)"]
+        Obj1["<b>Fichaje @10a4</b><br/>this.id = 1043<br/>this.nombre = 'ANA'"]
+        Obj2["<b>Fichaje @28f9</b><br/>this.id = 1044<br/>this.nombre = 'LUIS'"]
+    end
+
+    StaticVar -. "Asigna 1043 al nacer" .-> Obj1
+    StaticVar -. "Asigna 1044 al nacer" .-> Obj2
+```
+
+##### B. Constantes de clase (`public static final`)
+
+Las constantes propias de una entidad (como `TEMP_MIN_SEGURA = 35.0` o `LONGITUD_DNI = 9`) deben declararse como `public static final` en la propia entidad que las necesita, en lugar de quedar amontonadas en la clase del `main`:
+* `static`: porque el valor es idéntico para todos los objetos (no tiene sentido duplicar `37.5` en la memoria de cada fichaje).
+* `final`: porque es inmutable tras su inicialización.
+* `public`: para que cualquier otra clase pueda consultarla leyendo `Fichaje.TEMP_MAX_FIEBRE`.
+
+##### C. Métodos `static` en entidades y la regla de oro del contexto estático
+
+Un método `static` dentro de `Fichaje` (como `Fichaje.esDniValido(dni)` o `Fichaje.getTotalFichajesCreados()`) se invoca usando **el nombre de la clase**, sin necesidad de haber creado ningún objeto previo.
+
+Esto impone una restricción fundamental en Java conocida como **la barrera del contexto estático**:
+
+```mermaid
+flowchart TD
+    Llamada{"¿Desde dónde accedemos?"}
+    
+    Llamada -- "Desde un método DE INSTANCIA<br/>(sin static)" --> Instancia["• Puede leer atributos de instancia (this.id)<br/>• Puede leer atributos static (ultimoIdAsignado)<br/>• Puede usar this"]
+    
+    Llamada -- "Desde un método DE CLASE<br/>(con static)" --> Estatico["• Puede leer atributos static (totalFichajesCreados)<br/>• <b>PROHIBIDO</b> leer atributos de instancia (this.id)<br/>• <b>PROHIBIDO</b> usar la palabra this<br/><i>Motivo: el método static puede ejecutarse cuando hay 0 objetos en el Heap</i>"]
+```
+
+Si intentas leer `this.nombre` o `id` dentro de un método `static`, el compilador detendrá el proceso inmediatamente con el clásico error: **`non-static variable cannot be referenced from a static context`**.
+
+---
+
+#### 3. Evolución del caso guía a `ControlAccesoQR v3.5` (Java nativo)
+
+Evolucionamos la versión `v3.4` a la **`v3.5`**, iniciando la Semana 11:
+1. **`Fichaje.java` autonumera sus instancias:** Incorpora `ultimoIdAsignado` y `totalFichajesCreados` como atributos `private static`, eliminando el parámetro `id` manual de sus constructores. Cada `Fichaje` (autorizado o denegado) obtiene un identificador irrepetible al nacer.
+2. **Migración de constantes y validaciones estáticas a `Fichaje`:** Se trasladan a `Fichaje` sus constantes biométricas/documentales (`TEMP_MIN_SEGURA`, `TEMP_MAX_FIEBRE`, `LONGITUD_DNI`) y sus predicados estáticos (`esTemperaturaSegura`, `esDniValido`, `esPerfilValido`).
+3. **`ControlAccesoQR.java` liberado de contadores manuales:** Desaparece la variable suelta `idUltimoFichaje` del `main`. Tanto la Opción 1 como la Opción 2 (ráfagas) fabrican objetos `Fichaje` directamente, y el Monitor de Telemetría (Opción 3) consulta `Fichaje.getTotalFichajesCreados()`.
+
+##### A. Comparativa de cambios respecto a v3.4 (`diff`)
+
+```diff
+  // =========================================================================
+  // ARCHIVO: pr/src/Fichaje.java
+  // =========================================================================
+  public class Fichaje {
++     // Constantes y contadores globales de clase (static)
++     public static final double TEMP_MIN_SEGURA = 35.0;
++     public static final double TEMP_MAX_FIEBRE = 37.5;
++     public static final int LONGITUD_DNI = 9;
++
++     private static int ultimoIdAsignado = 1042;
++     private static int totalFichajesCreados = 0;
+
+      // Constructores: ya NO reciben 'id' por parámetro; se autoasigna al nacer
+-     public Fichaje(int id, String dni, String nombre, ...) {
++     public Fichaje(String dni, String nombre, ...) {
++         ultimoIdAsignado++;
++         totalFichajesCreados++;
++         this.id = ultimoIdAsignado;
+          // ...
+      }
+-     public Fichaje(int id, String nombre, ...) {
++     public Fichaje(String nombre, ...) {
++         this("N/D", nombre, ...);
++     }
+
++     // Métodos estáticos de consulta global y validación de dominio
++     public static int getTotalFichajesCreados() { return totalFichajesCreados; }
++     public static int getUltimoIdAsignado() { return ultimoIdAsignado; }
++     public static int getSiguienteId() { return ultimoIdAsignado + 1; }
++     public static boolean esTemperaturaSegura(double temp) { ... }
++     public static boolean esDniValido(String dni) { ... }
++     public static boolean esPerfilValido(char perfil) { ... }
+  }
+
+  // =========================================================================
+  // ARCHIVO: pr/src/ControlAccesoQR.java (v3.5)
+  // =========================================================================
+- int idUltimoFichaje = 1042; // Eliminado de main: ahora lo gestiona Fichaje
+- public static boolean esTemperaturaCorporalSegura(...) { ... } // Movido a Fichaje
+
+  case 1:
+-     nuevoFichaje = new Fichaje(idUltimoFichaje, nombreLimpio, 'S', ...);
++     nuevoFichaje = new Fichaje(nombreLimpio, 'S', salidaAutorizada, motivoSalida);
+
+  case 2:
+-     if (idUltimoFichaje == 1044) { ... }
++     if (Fichaje.getUltimoIdAsignado() == 1044) { ... }
++     else {
++         Fichaje fRafaga = new Fichaje("N/D", "USUARIO RÁFAGA", 'E', 'E', ...);
++         penultimoFichaje = ultimoFichaje;
++         ultimoFichaje = fRafaga;
++     }
+
+  case 3:
++     System.out.printf("INSTANCIAS FICHAJE (RAM): %d creadas (Último ID: #%d)%n",
++             Fichaje.getTotalFichajesCreados(), Fichaje.getUltimoIdAsignado());
+```
+
+##### B. Foco en la novedad: secuencia autoincremental y métodos `static` en `Fichaje`
+
+Observa cómo el constructor maestro actualiza las variables estáticas para garantizar identificadores únicos y cómo los métodos estáticos validan reglas antes de instanciar:
+
+```java
+// -------------------------------------------------------------------------
+// Atributos static y autoasignación de ID en pr/src/Fichaje.java
+// -------------------------------------------------------------------------
+public static final double TEMP_MIN_SEGURA = 35.0;
+public static final double TEMP_MAX_FIEBRE = 37.5;
+public static final int LONGITUD_DNI = 9;
+
+private static int ultimoIdAsignado = 1042;
+private static int totalFichajesCreados = 0;
+
+public Fichaje(String dni, String nombre, char perfil, char sentido,
+               double temperatura, boolean autorizado, String motivo, String token) {
+    // Autoasignación única y compartida para todas las instancias
+    ultimoIdAsignado++;
+    totalFichajesCreados++;
+    this.id = ultimoIdAsignado;
+
+    this.dni = (dni == null || dni.isBlank()) ? "N/D" : dni.trim().toUpperCase();
+    this.setNombre(nombre);
+    // ... resto de atributos
+}
+
+// -------------------------------------------------------------------------
+// Métodos static propios de la entidad (se invocan con Fichaje.metodo())
+// -------------------------------------------------------------------------
+public static int getTotalFichajesCreados() {
+    return totalFichajesCreados;
+}
+
+public static int getSiguienteId() {
+    return ultimoIdAsignado + 1;
+}
+
+public static boolean esTemperaturaSegura(double temperatura) {
+    return (temperatura >= TEMP_MIN_SEGURA && temperatura <= TEMP_MAX_FIEBRE);
+}
+
+public static boolean esDniValido(String dni) {
+    return (dni != null && dni.length() == LONGITUD_DNI);
+}
+```
+
+##### C. Código fuente completo integrado
+
+<details>
+<summary><b>🔍 Desplegar archivos completos: Fichaje.java y ControlAccesoQR.java (v3.5)</b></summary>
+
+**Archivo 1: `pr/src/Fichaje.java`**
+```java
+/**
+ * ENTIDAD DE DOMINIO: REGISTRO DE FICHAJE EN TORNO
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ *
+ * Versión 3.5:
+ * Inicio de la Semana 11 (Miembros static y composición).
+ * Incorpora miembros de clase (static) en la propia entidad:
+ * - Constantes públicas inmutables del dominio (TEMP_MIN_SEGURA, TEMP_MAX_FIEBRE, LONGITUD_DNI).
+ * - Contadores estáticos privados (ultimoIdAsignado, totalFichajesCreados) para
+ *   autoasignación secuencial e irrepetible de identificadores desde el constructor.
+ * - Métodos estáticos de consulta global y validación de reglas de dominio.
+ *
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 3.5 (Noviembre 2026)
+ * @since JDK 21 LTS
+ */
+
+import java.time.LocalTime;
+
+public class Fichaje {
+
+    // -------------------------------------------------------------------------
+    // 1. MIEMBROS DE CLASE (STATIC): Únicos y compartidos por todos los objetos
+    // -------------------------------------------------------------------------
+    public static final double TEMP_MIN_SEGURA = 35.0;
+    public static final double TEMP_MAX_FIEBRE = 37.5;
+    public static final int LONGITUD_DNI = 9;
+
+    private static int ultimoIdAsignado = 1042;
+    private static int totalFichajesCreados = 0;
+
+    // -------------------------------------------------------------------------
+    // 2. ATRIBUTOS DE INSTANCIA (Estado independiente por objeto en el Heap)
+    // -------------------------------------------------------------------------
+    private int id;
+    private String dni;
+    private String nombre;
+    private char perfil;
+    private char sentido;
+    private double temperatura;
+    private boolean autorizado;
+    private String motivo;
+    private String token;
+    private LocalTime hora;
+
+    // -------------------------------------------------------------------------
+    // 3. CONSTRUCTORES SOBRECARGADOS (Con autoasignación de ID secuencial)
+    // -------------------------------------------------------------------------
+
+    /**
+     * Constructor maestro completo para registrar entradas detalladas.
+     * Genera automáticamente un ID único secuencial mediante el contador static.
+     */
+    public Fichaje(String dni, String nombre, char perfil, char sentido,
+                   double temperatura, boolean autorizado, String motivo, String token) {
+        ultimoIdAsignado++;
+        totalFichajesCreados++;
+        this.id = ultimoIdAsignado;
+
+        this.dni = (dni == null || dni.isBlank()) ? "N/D" : dni.trim().toUpperCase();
+        this.setNombre(nombre);
+        this.perfil = perfil;
+        this.sentido = (sentido == 'S') ? 'S' : 'E';
+        this.setTemperatura(temperatura);
+        this.autorizado = autorizado;
+        this.setMotivo(motivo);
+        this.token = (token == null || token.isBlank()) ? "N/D" : token;
+        this.hora = LocalTime.now();
+    }
+
+    /**
+     * Constructor sobrecargado simplificado para tránsitos de salida ('S').
+     */
+    public Fichaje(String nombre, char sentido, boolean autorizado, String motivo) {
+        this("N/D", nombre, '?', sentido, 0.0, autorizado, motivo, "N/D");
+    }
+
+    // -------------------------------------------------------------------------
+    // 4. MÉTODOS ESTÁTICOS DE CLASE (No acceden a atributos de instancia ni this)
+    // -------------------------------------------------------------------------
+
+    public static int getTotalFichajesCreados() {
+        return totalFichajesCreados;
+    }
+
+    public static int getUltimoIdAsignado() {
+        return ultimoIdAsignado;
+    }
+
+    public static int getSiguienteId() {
+        return ultimoIdAsignado + 1;
+    }
+
+    public static boolean esTemperaturaSegura(double temperatura) {
+        return (temperatura >= TEMP_MIN_SEGURA && temperatura <= TEMP_MAX_FIEBRE);
+    }
+
+    public static boolean esDniValido(String dni) {
+        return (dni != null && dni.length() == LONGITUD_DNI);
+    }
+
+    public static boolean esPerfilValido(char perfil) {
+        boolean autorizado;
+        switch (perfil) {
+            case 'E':
+            case 'D':
+            case 'V':
+            case 'A':
+                autorizado = true;
+                break;
+            default:
+                autorizado = false;
+                break;
+        }
+        return autorizado;
+    }
+
+    // -------------------------------------------------------------------------
+    // 5. MÉTODOS DE ACCESO: GETTERS Y SETTERS SELECTIVOS DEFENSIVOS
+    // -------------------------------------------------------------------------
+
+    public int getId() {
+        return this.id;
+    }
+
+    public String getDni() {
+        return this.dni;
+    }
+
+    public String getNombre() {
+        return this.nombre;
+    }
+
+    public char getPerfil() {
+        return this.perfil;
+    }
+
+    public char getSentido() {
+        return this.sentido;
+    }
+
+    public double getTemperatura() {
+        return this.temperatura;
+    }
+
+    public boolean isAutorizado() {
+        return this.autorizado;
+    }
+
+    public String getMotivo() {
+        return this.motivo;
+    }
+
+    public String getToken() {
+        return this.token;
+    }
+
+    public LocalTime getHora() {
+        return this.hora;
+    }
+
+    public void setNombre(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            this.nombre = "N/D";
+        } else {
+            this.nombre = nombre.trim().toUpperCase();
+        }
+    }
+
+    public void setTemperatura(double temperatura) {
+        if (temperatura >= 0.0 && temperatura <= 60.0) {
+            this.temperatura = temperatura;
+        } else {
+            this.temperatura = 0.0;
+        }
+    }
+
+    public void setMotivo(String motivo) {
+        if (motivo == null || motivo.trim().isEmpty()) {
+            this.motivo = "Sin evaluar";
+        } else {
+            this.motivo = motivo.trim();
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // 6. MÉTODOS DE COMPORTAMIENTO RICO DE INSTANCIA
+    // -------------------------------------------------------------------------
+
+    public String obtenerPerfilLegible() {
+        String descripcion;
+        switch (this.perfil) {
+            case 'E':
+                descripcion = "Estudiante Oficial";
+                break;
+            case 'D':
+                descripcion = "Docente / Claustro";
+                break;
+            case 'V':
+                descripcion = "Visita Externa / Proveedor";
+                break;
+            case 'A':
+                descripcion = "Personal de Administración y Servicios (PAS)";
+                break;
+            default:
+                descripcion = "No especificado";
+                break;
+        }
+        return descripcion;
+    }
+
+    public String obtenerZonaAutorizada() {
+        String zona;
+        switch (this.perfil) {
+            case 'E':
+                zona = "Aulas Docentes y Talleres de Informática";
+                break;
+            case 'D':
+                zona = "Departamentos Didácticos, Aulas y Sala de Profesores";
+                break;
+            case 'V':
+                zona = "Secretaría, Conserjería y Despachos de Dirección";
+                break;
+            case 'A':
+                zona = "Área de Gestión Administrativa y Archivo Central";
+                break;
+            default:
+                zona = "Acceso Denegado / Zona No Autorizada";
+                break;
+        }
+        return zona;
+    }
+
+    public int obtenerEstanciaMaximaMinutos() {
+        int estanciaMinutos;
+        switch (this.perfil) {
+            case 'E':
+                estanciaMinutos = 360;
+                break;
+            case 'D':
+                estanciaMinutos = 480;
+                break;
+            case 'V':
+                estanciaMinutos = 120;
+                break;
+            case 'A':
+                estanciaMinutos = 420;
+                break;
+            default:
+                estanciaMinutos = 0;
+                break;
+        }
+        return estanciaMinutos;
+    }
+
+    public boolean esMismoSolicitante(Fichaje otro) {
+        boolean mismo = false;
+        if (otro != null && !this.dni.equals("N/D")) {
+            mismo = this.dni.equals(otro.getDni());
+        }
+        return mismo;
+    }
+
+    @Override
+    public String toString() {
+        String detalleRol = (this.sentido == 'S') ? "Tránsito exterior" : obtenerPerfilLegible();
+        return String.format("#%d [%s] %s (%s) | %s | %s | %s",
+                this.id,
+                this.sentido == 'S' ? "SALIDA" : "ENTRADA",
+                this.nombre,
+                detalleRol,
+                this.autorizado ? "AUTORIZADO" : "DENEGADO",
+                this.motivo,
+                this.hora.withNano(0));
+    }
+}
+```
+
+**Archivo 2: `pr/src/ControlAccesoQR.java` (v3.5)**
+```java
+/**
+ * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ * 
+ * Versión 3.5:
+ * Semana 11 (Sprint 4: «Arquitectos de software»).
+ * Delega la secuencia de identificadores y validaciones estáticas en la clase Fichaje:
+ * - Elimina el contador manual idUltimoFichaje de main.
+ * - Invoca métodos estáticos de dominio (Fichaje.esTemperaturaSegura, Fichaje.esDniValido).
+ * - Materializa también los fichajes en ráfaga como objetos Fichaje reales.
+ * - Consulta las métricas globales de clase (Fichaje.getTotalFichajesCreados()).
+ * Mantiene el cumplimiento estricto del principio SESE y blindaje try-catch.
+ * 
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 3.5 (Noviembre 2026)
+ * @since JDK 21 LTS
+ * 
+ */
+
+import java.util.Scanner;
+import java.util.Random;
+import java.time.LocalTime;
+import java.time.LocalDate;
+import java.time.Duration;
+
+public class ControlAccesoQR {
+
+    // -------------------------------------------------------------------------
+    // 1. CONSTANTES CORPORATIVAS DE INFRAESTRUCTURA
+    // -------------------------------------------------------------------------
+    final static String NOMBRE_CENTRO = "IES El Caminàs (Castellón)";
+    final static String PREFIJO_CENTRO = "CAMINAS";
+    final static String RUTA_LOGS = ".\\caminas\\terminal\\logs";
+
+    final static double FACTOR_PORCENTAJE = 100.0;
+    final static int BASE_TOKEN_SEGURIDAD = 1000;
+    final static int RANGO_TOKEN_SEGURIDAD = 9000;
+
+    final static int TOTAL_TORNOS_CAMPUS = 3;
+    final static int CANALES_POR_TORNO = 4;
+
+    // -------------------------------------------------------------------------
+    // 2. MÉTODOS ESTÁTICOS AUXILIARES DEL ORQUESTADOR
+    // -------------------------------------------------------------------------
+
+    public static int calcularEstanciaMinutos(LocalTime entrada, LocalTime salida) {
+        return (int) Duration.between(entrada, salida).toMinutes();
+    }
+
+    public static double calcularPorcentajeOcupacion(int personas, int aforoTotal) {
+        return ((double) personas / aforoTotal) * FACTOR_PORCENTAJE;
+    }
+
+    public static String construirTokenQR(String prefijo, String dni, int terminalId, int codigoSec, int idFichaje) {
+        String token = prefijo + "-" + dni;
+        token += "-T" + terminalId;
+        token += "-SEC#" + codigoSec;
+        token += "-REG" + idFichaje;
+        return token;
+    }
+
+    public static double calcularDistanciaDiagonal(double x, double y) {
+        return Math.sqrt(Math.pow(x, 2.0) + Math.pow(y, 2.0));
+    }
+
+    public static void imprimirRegistroSiExiste(String etiqueta, Fichaje registro) {
+        if (registro != null) {
+            System.out.println(etiqueta + registro);
+        } else {
+            System.out.println(etiqueta + "(sin registros en esta sesión)");
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // 3. MÉTODO PRINCIPAL: CONSOLA INTEGRAL v3.5 (MIEMBROS STATIC EN ENTIDAD)
+    // -------------------------------------------------------------------------
+    public static void main(String[] args) {
+        Scanner teclado = new Scanner(System.in);
+        Random generadorVestibulo = new Random();
+        LocalDate fechaActual = LocalDate.now();
+
+        // Estado persistente del campus
+        int personasEnCentro = 1190;
+        int aforoDisponible = 10;
+
+        int totalFichajesProcesados = 0;
+        int totalFichajesAutorizados = 0;
+        int totalFichajesDenegados = 0;
+
+        // Referencias a objetos Fichaje: nacen a null
+        Fichaje ultimoFichaje = null;
+        Fichaje penultimoFichaje = null;
+
+        // Acumuladores estadísticos
+        double tempMaximaRegistrada = -1.0;
+        double tempMinimaRegistrada = 100.0;
+        int minutosEstanciaAcumulados = 0;
+
+        boolean sesionActiva = true;
+
+        System.out.println("======================================================================");
+        System.out.println("   AZAHARTECH · CONTROL INTEGRAL DE ACCESOS - IES EL CAMINÀS          ");
+        System.out.println("   Versión 3.5 (Sprint 4: Miembros static propios en Fichaje.java)    ");
+        System.out.println("   Fecha de sesión: " + fechaActual);
+        System.out.println("======================================================================");
+
+        do {
+            System.out.println("\n----------------------------------------------------------------------");
+            System.out.println("                    PANEL DE OPERACIONES DEL TORNO                    ");
+            System.out.println("----------------------------------------------------------------------");
+            System.out.println("  [1] Registrar tránsito individual (ID automático desde Fichaje)");
+            System.out.println("  [2] Procesar cola en ráfaga (creación masiva de objetos Fichaje)");
+            System.out.println("  [3] Consultar telemetría, contador static y últimos fichajes");
+            System.out.println("  [4] Diagnóstico perimetral estructurado SESE (3 tornos x 4 canales)");
+            System.out.println("  [5] Activar protocolo de evacuación de emergencia");
+            System.out.println("  [6] Cerrar jornada y apagar terminal");
+            System.out.print("Seleccione una operación (1-6): ");
+
+            int opcionMenu = 0;
+            try {
+                opcionMenu = Integer.parseInt(teclado.nextLine().trim());
+            } catch (NumberFormatException e) {
+                opcionMenu = -1;
+            }
+
+            switch (opcionMenu) {
+                case 1:
+                    // TRÁNSITO INDIVIDUAL CON ID AUTOINCREMENTAL DE CLASE
+                    totalFichajesProcesados++;
+                    System.out.println("\n--- [MODO 1: TRÁNSITO INDIVIDUAL] ---");
+                    System.out.print("Sentido del tránsito (E = Entrada, S = Salida): ");
+                    String lineaSentido = teclado.nextLine().trim().toUpperCase();
+                    char sentidoTransito = lineaSentido.isEmpty() ? 'E' : lineaSentido.charAt(0);
+
+                    System.out.print("Nombre completo: ");
+                    String nombreCapturado = teclado.nextLine().trim().toUpperCase();
+                    String nombreLimpio = nombreCapturado.isEmpty() ? "N/D" : nombreCapturado;
+
+                    Fichaje nuevoFichaje;
+
+                    if (sentidoTransito == 'S') {
+                        boolean salidaAutorizada;
+                        String motivoSalida;
+
+                        if (personasEnCentro > 0) {
+                            personasEnCentro--;
+                            aforoDisponible++;
+                            totalFichajesAutorizados++;
+                            salidaAutorizada = true;
+                            motivoSalida = "Salida registrada";
+                            System.out.println(">> VEREDICTO: [SALIDA AUTORIZADA] Torno exterior abierto.");
+                        } else {
+                            totalFichajesDenegados++;
+                            salidaAutorizada = false;
+                            motivoSalida = "Recinto vacío";
+                            System.err.println(">> ALERTA: Imposible autorizar salida; recinto vacío.");
+                        }
+
+                        // El constructor autonumera la instancia mediante atributo static
+                        nuevoFichaje = new Fichaje(nombreLimpio, 'S', salidaAutorizada, motivoSalida);
+                    } else {
+                        int terminalId = 0;
+                        double tempVestibulo = 0.0;
+                        String dniPersonaLimpio = "N/D";
+                        char perfilNormalizado = '?';
+                        boolean datosSintacticamenteCorrectos = true;
+                        String motivoDenegacion = "";
+
+                        try {
+                            System.out.print("ID Terminal: ");
+                            terminalId = Integer.parseInt(teclado.nextLine().trim());
+                            System.out.print("Temperatura (ºC): ");
+                            tempVestibulo = Double.parseDouble(teclado.nextLine().trim());
+                            System.out.print("DNI: ");
+                            dniPersonaLimpio = teclado.nextLine().trim().toUpperCase();
+                            System.out.print("Perfil (E/D/V/A): ");
+                            String lineaPerfil = teclado.nextLine().trim();
+                            perfilNormalizado = lineaPerfil.isEmpty() ? '?' : Character.toUpperCase(lineaPerfil.charAt(0));
+                        } catch (NumberFormatException e) {
+                            datosSintacticamenteCorrectos = false;
+                            motivoDenegacion = "Error de formato numérico.";
+                        }
+
+                        // Invocación directa a los métodos static de validación en Fichaje
+                        boolean accesoConcedido;
+                        if (!datosSintacticamenteCorrectos) {
+                            accesoConcedido = false;
+                            totalFichajesDenegados++;
+                        } else if (!Fichaje.esTemperaturaSegura(tempVestibulo)) {
+                            accesoConcedido = false;
+                            motivoDenegacion = "Temperatura anómala.";
+                            totalFichajesDenegados++;
+                        } else if (aforoDisponible <= 0) {
+                            accesoConcedido = false;
+                            motivoDenegacion = "Aforo completo.";
+                            totalFichajesDenegados++;
+                        } else if (!Fichaje.esDniValido(dniPersonaLimpio)) {
+                            accesoConcedido = false;
+                            motivoDenegacion = "DNI no reglamentario.";
+                            totalFichajesDenegados++;
+                        } else if (!Fichaje.esPerfilValido(perfilNormalizado)) {
+                            accesoConcedido = false;
+                            motivoDenegacion = "Perfil no catalogado.";
+                            totalFichajesDenegados++;
+                        } else {
+                            accesoConcedido = true;
+                            totalFichajesAutorizados++;
+                            personasEnCentro++;
+                            aforoDisponible--;
+
+                            tempMaximaRegistrada = Math.max(tempMaximaRegistrada, tempVestibulo);
+                            tempMinimaRegistrada = Math.min(tempMinimaRegistrada, tempVestibulo);
+                            minutosEstanciaAcumulados += 360;
+                        }
+
+                        int codigoToken = BASE_TOKEN_SEGURIDAD + generadorVestibulo.nextInt(RANGO_TOKEN_SEGURIDAD);
+                        // Consultamos el siguiente ID estático para generar el token antes de construir
+                        String token = construirTokenQR(PREFIJO_CENTRO, dniPersonaLimpio, terminalId,
+                                codigoToken, Fichaje.getSiguienteId());
+                        System.out.printf(">> VEREDICTO: %s [Token: %s]%n",
+                                accesoConcedido ? "[ENTRADA AUTORIZADA]" : "[ENTRADA DENEGADA - " + motivoDenegacion + "]", token);
+
+                        String motivoFinal = accesoConcedido ? "Acceso concedido" : motivoDenegacion;
+
+                        nuevoFichaje = new Fichaje(dniPersonaLimpio, nombreLimpio, perfilNormalizado,
+                                'E', tempVestibulo, accesoConcedido, motivoFinal, token);
+
+                        if (nuevoFichaje.isAutorizado()) {
+                            System.out.printf("   Zona asignada: %s (Estancia máx: %d min)%n",
+                                    nuevoFichaje.obtenerZonaAutorizada(), nuevoFichaje.obtenerEstanciaMaximaMinutos());
+                        }
+
+                        if (nuevoFichaje.esMismoSolicitante(ultimoFichaje)
+                                && nuevoFichaje.getSentido() == ultimoFichaje.getSentido()) {
+                            System.out.println(">> AVISO ANTI-REBOTE: El DNI " + nuevoFichaje.getDni()
+                                    + " coincide con el tránsito inmediatamente anterior.");
+                        }
+                    }
+
+                    penultimoFichaje = ultimoFichaje;
+                    ultimoFichaje = nuevoFichaje;
+                    System.out.println(">> Objeto Fichaje registrado: " + nuevoFichaje);
+                    break;
+
+                case 2:
+                    // RÁFAGA DE COLA CON INSTANCIAS REALES Y CONTROL STATIC
+                    System.out.println("\n--- [MODO 2: RÁFAGA CON INSTANCIACIÓN Y CONTROL STATIC] ---");
+                    System.out.print("Personas en cola para esta ráfaga: ");
+                    int personasEnCola = 0;
+                    try {
+                        personasEnCola = Integer.parseInt(teclado.nextLine().trim());
+                    } catch (NumberFormatException e) {
+                        personasEnCola = 0;
+                    }
+
+                    boolean vetoJudicialDetectado = false;
+
+                    while (personasEnCola > 0 && aforoDisponible > 0 && !vetoJudicialDetectado) {
+                        if (Fichaje.getUltimoIdAsignado() == 1044) {
+                            System.out.println(">> [ALERTA JUDICIAL]: Credencial #1044 bloqueada. Suspendiendo cola en cabecera...");
+                            vetoJudicialDetectado = true;
+                        } else {
+                            totalFichajesProcesados++;
+                            totalFichajesAutorizados++;
+                            personasEnCentro++;
+                            aforoDisponible--;
+                            personasEnCola--;
+
+                            double tempSimulada = 36.4 + (generadorVestibulo.nextDouble() * 0.5);
+                            tempMaximaRegistrada = Math.max(tempMaximaRegistrada, tempSimulada);
+                            tempMinimaRegistrada = Math.min(tempMinimaRegistrada, tempSimulada);
+                            minutosEstanciaAcumulados += 360;
+
+                            Fichaje fRafaga = new Fichaje("N/D", "USUARIO RÁFAGA", 'E', 'E',
+                                    tempSimulada, true, "Paso automático en ráfaga", "CAMINAS-BURST");
+                            penultimoFichaje = ultimoFichaje;
+                            ultimoFichaje = fRafaga;
+                        }
+                    }
+                    System.out.printf(">> Estado tras ráfaga. Plazas disponibles: %d | Restantes en cola: %d%n",
+                            aforoDisponible, personasEnCola);
+                    break;
+
+                case 3:
+                    // MONITOR DE TELEMETRÍA EN VIVO Y LECTURA GLOBAL STATIC
+                    System.out.println("\n--- [MODO 3: MONITOR DE TELEMETRÍA EN VIVO] ---");
+                    int aforoTotal = personasEnCentro + aforoDisponible;
+                    double porcentajeOcupacion = calcularPorcentajeOcupacion(personasEnCentro, aforoTotal);
+                    double estanciaMedia = totalFichajesAutorizados > 0 
+                            ? ((double) minutosEstanciaAcumulados / totalFichajesAutorizados) : 0.0;
+
+                    System.out.printf("OCUPACIÓN ACTUAL:         %d/%d personas (%6.2f %%)%n", personasEnCentro, aforoTotal, porcentajeOcupacion);
+                    System.out.printf("PLAZAS LIBRES:            %d vacantes disponibles%n", aforoDisponible);
+                    System.out.printf("INSTANCIAS FICHAJE (RAM): %d objetos fabricados (Último ID: #%d)%n",
+                            Fichaje.getTotalFichajesCreados(), Fichaje.getUltimoIdAsignado());
+                    System.out.printf("PICO TÉRMICO MÁXIMO:      %.1f ºC%n", Math.max(0.0, tempMaximaRegistrada));
+                    System.out.printf("PICO TÉRMICO MÍNIMO:      %.1f ºC%n", tempMinimaRegistrada > 50.0 ? 0.0 : tempMinimaRegistrada);
+                    System.out.printf("ESTANCIA PROMEDIO:        %.1f minutos (Total acumulado: %d min)%n",
+                            estanciaMedia, minutosEstanciaAcumulados);
+
+                    imprimirRegistroSiExiste("ÚLTIMO FICHAJE:           ", ultimoFichaje);
+                    imprimirRegistroSiExiste("PENÚLTIMO FICHAJE:        ", penultimoFichaje);
+                    break;
+
+                case 4:
+                    // DIAGNÓSTICO SECUENCIAL Y MATRIZ PERIMETRAL SESE
+                    System.out.println("\n--- [MODO 4: INSPECCIÓN PERIMETRAL ESTRUCTURADA (SESE)] ---");
+                    boolean alarmaSabotajeDetectada = false;
+
+                    for (int torno = 1; torno <= TOTAL_TORNOS_CAMPUS && !alarmaSabotajeDetectada; torno++) {
+                        String nombreAcceso = switch (torno) {
+                            case 1 -> "Vestíbulo Central  | ";
+                            case 2 -> "Puerta Norte Ciclos| ";
+                            case 3 -> "Puerta Sur Talleres| ";
+                            default -> "Acceso Perimetral  | ";
+                        };
+                        System.out.print(nombreAcceso);
+
+                        for (int canal = 1; canal <= CANALES_POR_TORNO && !alarmaSabotajeDetectada; canal++) {
+                            if (torno == 2 && canal == 2) {
+                                System.out.print("[REVISIÓN] ");
+                            } else {
+                                boolean falloCritico = (torno == 3 && canal == 2 && false);
+
+                                if (falloCritico) {
+                                    System.out.print("[SABOTAJE] ");
+                                    alarmaSabotajeDetectada = true;
+                                } else {
+                                    System.out.printf("[C%d: OK]   ", canal);
+                                }
+                            }
+                        }
+                        System.out.println();
+                    }
+
+                    if (alarmaSabotajeDetectada) {
+                        System.out.println(">> [ALERTA DE SEGURIDAD]: Barrido perimetral detenido por fallo crítico.");
+                    }
+                    System.out.println("-------------------------------------------------------------------");
+                    break;
+
+                case 5:
+                    // PROTOCOLO DE EVACUACIÓN CON WHILE DE DRENAJE
+                    System.out.println("\n--- [MODO 5: PROTOCOLO DE EVACUACIÓN DE EMERGENCIA] ---");
+                    if (personasEnCentro == 0) {
+                        System.out.println(">> El campus ya se encuentra completamente vacío.");
+                    } else {
+                        int loteSalidaSimultanea = 300;
+                        int oleada = 1;
+
+                        while (personasEnCentro > 0) {
+                            int evacuadosLote = Math.min(personasEnCentro, loteSalidaSimultanea);
+                            personasEnCentro -= evacuadosLote;
+                            aforoDisponible += evacuadosLote;
+
+                            System.out.printf("  -> Oleada #%d: Desalojadas %d personas por salidas de emergencia (Ocupantes restantes: %d)%n",
+                                    oleada, evacuadosLote, personasEnCentro);
+                            oleada++;
+                        }
+                        System.out.println(">> CERTIFICACIÓN DE SEGURIDAD: Recinto 100% desalojado. Aforo íntegro restaurado.");
+                    }
+                    break;
+
+                case 6:
+                    // APAGADO Y SALIDA
+                    System.out.println("\n>> Desconectando terminal de presencia de forma ordenada...");
+                    sesionActiva = false;
+                    break;
+
+                default:
+                    System.err.println(">> Error: Opción no válida. Seleccione una operación entre 1 y 6.");
+                    break;
+            }
+
+        } while (sesionActiva);
+
+        // AUDITORÍA FINAL AL APAGAR
+        System.out.println("\n======================================================================");
+        System.out.println("          AUDITORÍA FINAL DE LA JORNADA · IES EL CAMINÀS              ");
+        System.out.println("======================================================================");
+        System.out.printf("TOTAL OPERACIONES GESTIONADAS: %d%n", totalFichajesProcesados);
+        System.out.printf("OBJETOS FICHAJE CREADOS (RAM): %d%n", Fichaje.getTotalFichajesCreados());
+        System.out.printf("ACCESOS AUTORIZADOS (TOTAL):   %d%n", totalFichajesAutorizados);
+        System.out.printf("ACCESOS DENEGADOS (BLOQUEO):   %d%n", totalFichajesDenegados);
+        System.out.printf("OCUPACIÓN FINAL REGISTRADA:    %d personas%n", personasEnCentro);
+        System.out.println("ESTADO DEL DISPOSITIVO:        Terminal desconectado de forma segura.");
+        System.out.println("======================================================================");
+
+        teclado.close();
+    }
+}
+```
+
+</details>
+
+---
+
+#### 4. Segunda sesión: dojo de entrenamiento y katas de código
+
+En esta sesión práctica, cada estudiante dotará a su clase entidad de atributos compartidos (`static`), identificadores autoincrementales y utilidades de validación de clase.
+
+##### Kata 1 (Cinturón blanco / Nivel base). Contadores `static` y reglas de dominio en proyectos asignados
+
+Abre la clase entidad de tu especialidad en `pr/src/` y añade un contador privado `static` que asigne un identificador único a cada objeto creado y registre el total de instancias fabricadas, junto con constantes `public static final` y un método `static` de validación previa o consulta global:
+
+* **Aventura conversacional.** En `Personaje.java`, añade un contador `static` privado para asignar un código de registro único a cada combatiente que nazca en el constructor y contabilizar cuántos personajes han sido creados en la partida. Traslada los umbrales de salud máxima o ataque base a constantes `public static final` e implementa un método `static` para consultar el censo total de combatientes generados.
+* **Motor de recomendación.** En `Item.java`, incorpora un atributo `static` autoincremental que genere un SKU o código de catálogo irrepetible para cada contenido instanciado sin tener que pasarlo por parámetro. Declara las constantes de puntuación mínima y máxima como `public static final` en la propia clase y añade un método `static` que valide si una nota decimal está dentro de ese rango antes de instanciar el ítem.
+* **Simulador de físicas 2D.** En `Bola.java`, añade un contador `static` privado que asigne automáticamente un número de serie único a cada partícula creada y contabilice el total de cuerpos simulados. Traslada las constantes físicas del entorno (como la gravedad estándar o el radio mínimo permitido) a constantes `public static final` dentro de `Bola` y expón un método `static` para consultar el número total de cuerpos lanzados.
+* **Bóveda de contraseñas.** En `Credencial.java`, incorpora un contador `static` para asignar un ID de auditoría único a cada registro almacenado y llevar la cuenta global de credenciales procesadas. Mueve la constante de longitud mínima segura (`LONGITUD_MINIMA_SEGURA`) a `Credencial` como `public static final` e implementa un método `static` que evalúe la robustez de cualquier cadena de texto candidata sin necesidad de instanciar primero el objeto.
+
+---
+
+##### Kata 2 (Cinturón marrón / Nivel avanzado). La barrera del contexto estático
+
+Comprueba empíricamente por qué los miembros de instancia y los miembros estáticos viven en mundos separados:
+
+1. **Provocar el error de compilación:**  
+   Dentro de un método `static` de tu clase entidad, intenta leer directamente un atributo de instancia (como `nombre` o `id`) o escribir `this.`. Anota el mensaje exacto que arroja el compilador (`non-static variable ... cannot be referenced from a static context`) y razona en un comentario por qué Java impide compilarlo.
+2. **La relación asimétrica:**  
+   Demuestra el caso inverso: escribe un método de instancia (sin `static`) que consulte el contador global `static` (por ejemplo, que en `toString()` indique `"Objeto #3 de 5 creados"`), verificando que desde un objeto concreto sí es perfectamente válido leer los miembros compartidos de su clase.
+
+---
+
+##### Kata 3 (Cinturón negro / «Hacker AzaharTech»). Auditoría de *Metaspace* frente a *Heap* en el Depurador de IntelliJ
+
+Inspecciona en tiempo de ejecución cómo separa la JVM la memoria compartida de clase frente a la memoria individual de cada objeto:
+
+1. **Configuración de la observación:**  
+   Crea al menos tres instancias sucesivas de tu entidad desde `MiProyecto.java`, coloca un *breakpoint* justo después de crear la tercera y ejecuta en modo Debug (**`Shift + F9`**).
+2. **Inspección de la sección `static` en la pestaña *Variables*:**  
+   En la ventana de variables del depurador, despliega cualquiera de tus instancias (por ejemplo, `obj1`):
+   * Localiza la carpeta o nodo **`static`** que aparece dentro del objeto en IntelliJ y despliégala.
+   * Comprueba que los atributos `id` de `obj1`, `obj2` y `obj3` muestran valores distintos (`1`, `2`, `3` o `1043`, `1044`, `1045`), pero dentro del nodo **`static`** de los tres objetos aparece **exactamente el mismo contador global (`3`)**.
+3. **Verificación de persistencia tras limpieza:**  
+   Asigna `obj1 = null; obj2 = null;`, avanza un paso con **`F8`** e invoca en la consola de evaluación (`Alt + F8`) el *getter* estático de tu clase (`TuClase.getTotalCreados()`). Certifica en la cabecera Javadoc de tu clase que el contador estático sobrevive intacto en el área de clases aunque los objetos individuales hayan quedado huérfanos en el *Heap*.
+
+# Sprint 4. Desarrollo de clases
+## Semana 11. Miembros static y composición
+
+---
+
+### Día 41 - 2 sesiones
+
+---
+
+#### 1. Caso guía en AzaharTech
+
+Son las 15:00 h del **martes 24 de noviembre de 2026**. En las oficinas de **AzaharTech** en Castellón de la Plana, el equipo revisa el archivo `ControlAccesoQR.java` de la versión `v3.5`. Aunque `Fichaje.java` ya gestiona su propia secuencia autoincremental `static` y sus validaciones, **Alba Torres** señala un problema evidente en el archivo principal:
+
+> *«Equipo, mirad el tamaño que sigue teniendo el método `main` de `ControlAccesoQR.java`: supera las doscientas líneas. Aunque hemos extraído la entidad `Fichaje`, nuestro `main` sigue mezclando dos mundos completamente distintos:*
+> 1. *Por un lado, **la interfaz de consola** (dibujar el menú, leer texto con `Scanner` y capturar excepciones `try-catch`).*
+> 2. *Por otro, **el estado físico y la lógica operativa del torno del instituto**: controlar `personasEnCentro`, calcular el aforo disponible, acumular los picos térmicos, recordar `ultimoFichaje` y `penultimoFichaje`, procesar las ráfagas y ejecutar la evacuación.*
+>
+> *Si mañana el **IES El Caminàs** nos pide controlar dos tornos independientes con estados separados (el del Vestíbulo Principal y el de Puerta Norte), no podríamos hacerlo sin duplicar de nuevo todas las variables del `main`»*.
+
+**Laia Claramunt** y **Pau Ferrer** proponen la solución arquitectónica definitiva:
+
+> *«Ha llegado el momento de aplicar la **composición de clases**. Vamos a crear una nueva clase entidad llamada **`Torno.java`** que encapsule el estado físico y las operaciones de un torno real.*
+>
+> *Y lo más importante: **un objeto `Torno` contendrá en su interior referencias a objetos `Fichaje` (`ultimoFichaje` y `penultimoFichaje`)**. De este modo, `ControlAccesoQR` quedará limpio como una mera capa de presentación por consola que delega el trabajo real en una instancia de `Torno`, que a su vez fabrica y coordina instancias de `Fichaje`»*.
+
+---
+
+#### 2. Fundamento teórico: composición de objetos y separación de capas
+
+En Programación Orientada a Objetos, las clases no viven aisladas: colaboran entre sí. Cuando una clase contiene entre sus atributos una referencia a un objeto de otra clase, decimos que existe una relación de **composición** o relación **«tiene-un» (*has-a*)**.
+
+```mermaid
+classDiagram
+    class ControlAccesoQR {
+        <<Capa de Presentación / Consola>>
+        +main(args : String[]) void$
+    }
+    class Torno {
+        <<Capa de Negocio / Contenedora>>
+        -idTerminal : int
+        -ubicacion : String
+        -aforoMaximo : int
+        -personasEnCentro : int
+        -ultimoFichaje : Fichaje
+        -penultimoFichaje : Fichaje
+        -generadorTokens : Random
+        +Torno(idTerminal, ubicacion, aforoMax, personasInit)
+        +registrarEntrada(...) Fichaje
+        +registrarSalida(nombre) Fichaje
+        +procesarRafaga(cola) int
+        +activarEvacuacion() void
+        +mostrarTelemetria() void
+    }
+    class Fichaje {
+        <<Entidad de Dominio>>
+        -id : int
+        -nombre : String
+        -autorizado : boolean
+        +esMismoSolicitante(otro : Fichaje) boolean
+        +toString() String
+    }
+    ControlAccesoQR ..> Torno : instancia y delega operaciones
+    Torno o-- Fichaje : compone último y penúltimo (0..1)
+    Torno ..> Fichaje : fabrica y devuelve instancias
+```
+
+##### A. Objetos compuestos en la memoria dinámica (*Heap*)
+
+Cuando instanciamos `Torno tornoPrincipal = new Torno(...)`, dicho objeto ocupa una región en el *Heap*. A medida que los alumnos pasan por el lector, el objeto `Torno` fabrica objetos `Fichaje` independientes y guarda **las direcciones de memoria** hacia esos `Fichaje` dentro de sus propios atributos privados:
+
+```mermaid
+flowchart LR
+    subgraph Stack ["Stack de main"]
+        RefTorno["<b>tornoPrincipal</b><br/>(@10a4)"]
+    end
+
+    subgraph Heap ["Montículo (Heap): Cadena de Objetos Compuestos"]
+        ObjTorno["<b>Torno @10a4</b><br/>• idTerminal: 101<br/>• ubicacion: 'Vestíbulo'<br/>• personasEnCentro: 1191<br/>• ultimoFichaje ─────────►<br/>• penultimoFichaje ──────►"]
+        ObjF2["<b>Fichaje @28f9</b><br/>id = 1044<br/>nombre = 'CARLOS RUIZ'"]
+        ObjF1["<b>Fichaje @3c12</b><br/>id = 1043<br/>nombre = 'ANA PEREZ'"]
+    end
+
+    RefTorno --> ObjTorno
+    ObjTorno --> ObjF2
+    ObjTorno --> ObjF1
+```
+
+Observa cómo un `Torno` también compone una clase estándar del JDK: `private Random generadorTokens;`, instanciada dentro del propio constructor de `Torno` con `this.generadorTokens = new Random();`.
+
+##### B. Flujo de colaboración entre capas (*Presentación vs. Dominio*)
+
+Separar la entrada/salida de consola de la lógica de negocio permite que las clases entidades puedan reutilizarse mañana en una interfaz gráfica de escritorio o en una aplicación móvil sin reescribir las reglas del negocio:
+
+```mermaid
+sequenceDiagram
+    participant Op as Operador (Consola)
+    participant Main as ControlAccesoQR (Presentación)
+    participant Torno as Torno @10a4 (Negocio)
+    participant Fichaje as Fichaje (Entidad)
+
+    Op->>Main: Introduce DNI, perfil, temperatura
+    Main->>Torno: registrarEntrada(dni, nombre, perfil, temp, ...)
+    Torno->>Fichaje: Fichaje.esTemperaturaSegura(temp)
+    Torno->>Fichaje: new Fichaje(dni, nombre, ...)
+    Fichaje-->>Torno: Devuelve instancia @28f9
+    Torno->>Torno: Actualiza aforo, picos y ultimoFichaje
+    Torno-->>Main: Retorna objeto Fichaje @28f9
+    Main->>Op: Imprime veredicto y nuevoFichaje.toString()
+```
+
+##### C. Protección contra `NullPointerException` en cadena
+
+Al navegar por objetos compuestos (por ejemplo, preguntando al torno por su último fichaje y a este por su nombre: `torno.getUltimoFichaje().getNombre()`), se produce un **encadenamiento de llamadas**. Si el torno aún no ha registrado ningún acceso, `torno.getUltimoFichaje()` devolverá `null`, y encadenar `.getNombre()` sobre `null` provocará una caída inmediata.
+
+La regla defensiva exige comprobar cada eslabón susceptible de ser `null` antes de invocar el siguiente método:
+
+```java
+if (tornoPrincipal != null && tornoPrincipal.getUltimoFichaje() != null) {
+    System.out.println(tornoPrincipal.getUltimoFichaje().getNombre());
+}
+```
+
+---
+
+#### 3. Evolución del caso guía a `ControlAccesoQR v3.6` (Arquitectura en 3 clases)
+
+Evolucionamos el proyecto de la versión `v3.5` a la **`v3.6`**, distribuyendo el sistema en **tres archivos Java cooperantes**:
+1. **`Fichaje.java` (Sin cambios necesarios respecto a `v3.5`):** Prueba palpable del desacoplo modular: la entidad base sigue funcionando intacta sin saber que ahora es administrada por un `Torno`.
+2. **`Torno.java` (Nueva clase contenedora de negocio):** Encapsula el estado del campus (`personasEnCentro`, `aforoMaximo`), los acumuladores estadísticos, el generador de tokens `Random` y la composición con `ultimoFichaje` y `penultimoFichaje`. Sus métodos `registrarEntrada` y `registrarSalida` **fabrican y retornan objetos `Fichaje`**.
+3. **`ControlAccesoQR.java` (`v3.6` - Capa de presentación depurada):** Se reduce drásticamente. Su única misión es mostrar el panel de operaciones, capturar datos por `Scanner` con `try-catch` y delegar cada acción en `tornoPrincipal`.
+
+##### A. Comparativa de cambios respecto a v3.5 (`diff`)
+
+```diff
++ // =========================================================================
++ // NUEVO ARCHIVO: pr/src/Torno.java (Clase contenedora y lógica de negocio)
++ // =========================================================================
++ public class Torno {
++     private int idTerminal;
++     private String ubicacion;
++     private int aforoMaximo;
++     private int personasEnCentro;
++     private Fichaje ultimoFichaje;    // Composición: Torno tiene-un Fichaje
++     private Fichaje penultimoFichaje; // Composición: historial inmediato
++     private Random generadorTokens;   // Composición con API estándar JDK
++
++     public Torno(int idTerminal, String ubicacion, int aforoMaximo, int personasIniciales) { ... }
++     public Fichaje registrarEntrada(...) { ... }
++     public Fichaje registrarSalida(String nombre) { ... }
++     public int procesarRafaga(int personasEnCola) { ... }
++     public void activarEvacuacion() { ... }
++     public void mostrarTelemetria() { ... }
++     public void mostrarAuditoriaFinal() { ... }
++ }
+
+  // =========================================================================
+  // ARCHIVO: pr/src/ControlAccesoQR.java (v3.6 - Interfaz limpia)
+  // =========================================================================
+- int personasEnCentro = 1190;
+- int aforoDisponible = 10;
+- Fichaje ultimoFichaje = null;
+- Fichaje penultimoFichaje = null;
+- double tempMaximaRegistrada = -1.0; ...
++ Torno tornoPrincipal = new Torno(101, "Vestíbulo Principal", 1200, 1190);
+
+  case 1:
+-     // [Más de 80 líneas de lógica de validación, contadores y tokens en main]
++     Fichaje nuevoFichaje = tornoPrincipal.registrarEntrada(dni, nombre, perfil, temp, datosOk, motivoError);
++     if (nuevoFichaje.esMismoSolicitante(tornoPrincipal.getPenultimoFichaje()) ...) { ... }
+
+  case 2:
+-     // [Bucle while de ráfaga en main]
++     int pendientes = tornoPrincipal.procesarRafaga(personasEnCola);
+
+  case 3:
+-     // [Cálculos de ocupación y printf en main]
++     tornoPrincipal.mostrarTelemetria();
+
+  case 5:
+-     // [Bucle while de evacuación en main]
++     tornoPrincipal.activarEvacuacion();
+```
+
+##### B. Foco en la novedad: la clase `Torno` componiendo y retornando objetos `Fichaje`
+
+Observa cómo `Torno` oculta la complejidad de la gestión de memoria y el desplazamiento de referencias, exponiendo una API limpia para el orquestador:
+
+```java
+// -------------------------------------------------------------------------
+// Fragmento de composición y retorno de objetos en pr/src/Torno.java
+// -------------------------------------------------------------------------
+public class Torno {
+    private int idTerminal;
+    private String ubicacion;
+    private int aforoMaximo;
+    private int personasEnCentro;
+    // Composición: referencias a instancias de otra clase propia
+    private Fichaje ultimoFichaje;
+    private Fichaje penultimoFichaje;
+    private Random generadorTokens;
+
+    public Fichaje registrarEntrada(String dni, String nombre, char perfil,
+                                    double temperatura, boolean datosCorrectos, String motivoError) {
+        this.totalProcesados++;
+        boolean accesoConcedido = false;
+        String motivo = motivoError;
+
+        if (!datosCorrectos) {
+            this.totalDenegados++;
+        } else if (!Fichaje.esTemperaturaSegura(temperatura)) {
+            motivo = "Temperatura anómala.";
+            this.totalDenegados++;
+        } else if (this.getAforoDisponible() <= 0) {
+            motivo = "Aforo completo.";
+            this.totalDenegados++;
+        } else if (!Fichaje.esDniValido(dni)) {
+            motivo = "DNI no reglamentario.";
+            this.totalDenegados++;
+        } else if (!Fichaje.esPerfilValido(perfil)) {
+            motivo = "Perfil no catalogado.";
+            this.totalDenegados++;
+        } else {
+            accesoConcedido = true;
+            this.totalAutorizados++;
+            this.personasEnCentro++;
+            this.tempMaxima = Math.max(this.tempMaxima, temperatura);
+            this.tempMinima = Math.min(this.tempMinima, temperatura);
+            this.minutosEstanciaAcumulados += 360;
+            motivo = "Acceso concedido";
+        }
+
+        String token = construirTokenQR(dni, Fichaje.getSiguienteId());
+        Fichaje nuevoFichaje = new Fichaje(dni, nombre, perfil, 'E', temperatura, accesoConcedido, motivo, token);
+
+        // Desplazamiento interno encapsulado dentro de Torno
+        this.penultimoFichaje = this.ultimoFichaje;
+        this.ultimoFichaje = nuevoFichaje;
+
+        return nuevoFichaje;
+    }
+}
+```
+
+##### C. Código fuente completo integrado
+
+<details>
+<summary><b>🔍 Desplegar archivos completos: Fichaje.java, Torno.java y ControlAccesoQR.java (v3.6)</b></summary>
+
+**Archivo 1: `pr/src/Fichaje.java`** *(Se mantiene íntegro desde `v3.5` gracias al desacoplo modular)*
+```java
+/**
+ * ENTIDAD DE DOMINIO: REGISTRO DE FICHAJE EN TORNO
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ *
+ * Versión 3.5 (compatible sin cambios con v3.6):
+ * Modela de forma autónoma cada tránsito registrado por los tornos del centro.
+ *
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 3.5 (Noviembre 2026)
+ * @since JDK 21 LTS
+ */
+
+import java.time.LocalTime;
+
+public class Fichaje {
+
+    public static final double TEMP_MIN_SEGURA = 35.0;
+    public static final double TEMP_MAX_FIEBRE = 37.5;
+    public static final int LONGITUD_DNI = 9;
+
+    private static int ultimoIdAsignado = 1042;
+    private static int totalFichajesCreados = 0;
+
+    private int id;
+    private String dni;
+    private String nombre;
+    private char perfil;
+    private char sentido;
+    private double temperatura;
+    private boolean autorizado;
+    private String motivo;
+    private String token;
+    private LocalTime hora;
+
+    public Fichaje(String dni, String nombre, char perfil, char sentido,
+                   double temperatura, boolean autorizado, String motivo, String token) {
+        ultimoIdAsignado++;
+        totalFichajesCreados++;
+        this.id = ultimoIdAsignado;
+
+        this.dni = (dni == null || dni.isBlank()) ? "N/D" : dni.trim().toUpperCase();
+        this.setNombre(nombre);
+        this.perfil = perfil;
+        this.sentido = (sentido == 'S') ? 'S' : 'E';
+        this.setTemperatura(temperatura);
+        this.autorizado = autorizado;
+        this.setMotivo(motivo);
+        this.token = (token == null || token.isBlank()) ? "N/D" : token;
+        this.hora = LocalTime.now();
+    }
+
+    public Fichaje(String nombre, char sentido, boolean autorizado, String motivo) {
+        this("N/D", nombre, '?', sentido, 0.0, autorizado, motivo, "N/D");
+    }
+
+    public static int getTotalFichajesCreados() {
+        return totalFichajesCreados;
+    }
+
+    public static int getUltimoIdAsignado() {
+        return ultimoIdAsignado;
+    }
+
+    public static int getSiguienteId() {
+        return ultimoIdAsignado + 1;
+    }
+
+    public static boolean esTemperaturaSegura(double temperatura) {
+        return (temperatura >= TEMP_MIN_SEGURA && temperatura <= TEMP_MAX_FIEBRE);
+    }
+
+    public static boolean esDniValido(String dni) {
+        return (dni != null && dni.length() == LONGITUD_DNI);
+    }
+
+    public static boolean esPerfilValido(char perfil) {
+        boolean autorizado;
+        switch (perfil) {
+            case 'E':
+            case 'D':
+            case 'V':
+            case 'A':
+                autorizado = true;
+                break;
+            default:
+                autorizado = false;
+                break;
+        }
+        return autorizado;
+    }
+
+    public int getId() { return this.id; }
+    public String getDni() { return this.dni; }
+    public String getNombre() { return this.nombre; }
+    public char getPerfil() { return this.perfil; }
+    public char getSentido() { return this.sentido; }
+    public double getTemperatura() { return this.temperatura; }
+    public boolean isAutorizado() { return this.autorizado; }
+    public String getMotivo() { return this.motivo; }
+    public String getToken() { return this.token; }
+    public LocalTime getHora() { return this.hora; }
+
+    public void setNombre(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            this.nombre = "N/D";
+        } else {
+            this.nombre = nombre.trim().toUpperCase();
+        }
+    }
+
+    public void setTemperatura(double temperatura) {
+        if (temperatura >= 0.0 && temperatura <= 60.0) {
+            this.temperatura = temperatura;
+        } else {
+            this.temperatura = 0.0;
+        }
+    }
+
+    public void setMotivo(String motivo) {
+        if (motivo == null || motivo.trim().isEmpty()) {
+            this.motivo = "Sin evaluar";
+        } else {
+            this.motivo = motivo.trim();
+        }
+    }
+
+    public String obtenerPerfilLegible() {
+        String descripcion;
+        switch (this.perfil) {
+            case 'E': descripcion = "Estudiante Oficial"; break;
+            case 'D': descripcion = "Docente / Claustro"; break;
+            case 'V': descripcion = "Visita Externa / Proveedor"; break;
+            case 'A': descripcion = "Personal de Administración y Servicios (PAS)"; break;
+            default:  descripcion = "No especificado"; break;
+        }
+        return descripcion;
+    }
+
+    public String obtenerZonaAutorizada() {
+        String zona;
+        switch (this.perfil) {
+            case 'E': zona = "Aulas Docentes y Talleres de Informática"; break;
+            case 'D': zona = "Departamentos Didácticos, Aulas y Sala de Profesores"; break;
+            case 'V': zona = "Secretaría, Conserjería y Despachos de Dirección"; break;
+            case 'A': zona = "Área de Gestión Administrativa y Archivo Central"; break;
+            default:  zona = "Acceso Denegado / Zona No Autorizada"; break;
+        }
+        return zona;
+    }
+
+    public int obtenerEstanciaMaximaMinutos() {
+        int estanciaMinutos;
+        switch (this.perfil) {
+            case 'E': estanciaMinutos = 360; break;
+            case 'D': estanciaMinutos = 480; break;
+            case 'V': estanciaMinutos = 120; break;
+            case 'A': estanciaMinutos = 420; break;
+            default:  estanciaMinutos = 0; break;
+        }
+        return estanciaMinutos;
+    }
+
+    public boolean esMismoSolicitante(Fichaje otro) {
+        boolean mismo = false;
+        if (otro != null && !this.dni.equals("N/D")) {
+            mismo = this.dni.equals(otro.getDni());
+        }
+        return mismo;
+    }
+
+    @Override
+    public String toString() {
+        String detalleRol = (this.sentido == 'S') ? "Tránsito exterior" : obtenerPerfilLegible();
+        return String.format("#%d [%s] %s (%s) | %s | %s | %s",
+                this.id,
+                this.sentido == 'S' ? "SALIDA" : "ENTRADA",
+                this.nombre,
+                detalleRol,
+                this.autorizado ? "AUTORIZADO" : "DENEGADO",
+                this.motivo,
+                this.hora.withNano(0));
+    }
+}
+```
+
+**Archivo 2: `pr/src/Torno.java`** *(Nueva clase contenedora y lógica de negocio)*
+```java
+/**
+ * ENTIDAD DE NEGOCIO: TORNO DE CONTROL DE ACCESO
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ *
+ * Versión 3.6:
+ * Modela un torno físico del campus aplicando composición de clases:
+ * - Compone referencias a los últimos objetos Fichaje registrados (has-a).
+ * - Compone una instancia privada de Random para la emisión de tokens.
+ * - Encapsula la gestión de aforo, validación de accesos, ráfagas y evacuación.
+ * Mantiene cumplimiento estricto del principio SESE.
+ *
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 3.6 (Noviembre 2026)
+ * @since JDK 21 LTS
+ */
+
+import java.util.Random;
+
+public class Torno {
+
+    // -------------------------------------------------------------------------
+    // 1. CONSTANTES DE CONFIGURACIÓN DEL DISPOSITIVO
+    // -------------------------------------------------------------------------
+    private static final String PREFIJO_CENTRO = "CAMINAS";
+    private static final int BASE_TOKEN_SEGURIDAD = 1000;
+    private static final int RANGO_TOKEN_SEGURIDAD = 9000;
+    private static final double FACTOR_PORCENTAJE = 100.0;
+
+    // -------------------------------------------------------------------------
+    // 2. ATRIBUTOS PRIVADOS Y COMPOSICIÓN DE OBJETOS (has-a)
+    // -------------------------------------------------------------------------
+    private int idTerminal;
+    private String ubicacion;
+    private int aforoMaximo;
+    private int personasEnCentro;
+
+    private int totalProcesados;
+    private int totalAutorizados;
+    private int totalDenegados;
+
+    private double tempMaxima;
+    private double tempMinima;
+    private int minutosEstanciaAcumulados;
+
+    private Fichaje ultimoFichaje;
+    private Fichaje penultimoFichaje;
+    private Random generadorTokens;
+
+    // -------------------------------------------------------------------------
+    // 3. CONSTRUCTOR
+    // -------------------------------------------------------------------------
+
+    public Torno(int idTerminal, String ubicacion, int aforoMaximo, int personasIniciales) {
+        this.idTerminal = Math.max(1, idTerminal);
+        this.ubicacion = (ubicacion == null || ubicacion.isBlank()) ? "Acceso General" : ubicacion.trim();
+        this.aforoMaximo = Math.max(1, aforoMaximo);
+        this.personasEnCentro = Math.max(0, Math.min(personasIniciales, this.aforoMaximo));
+
+        this.totalProcesados = 0;
+        this.totalAutorizados = 0;
+        this.totalDenegados = 0;
+
+        this.tempMaxima = -1.0;
+        this.tempMinima = 100.0;
+        this.minutosEstanciaAcumulados = 0;
+
+        this.ultimoFichaje = null;
+        this.penultimoFichaje = null;
+        this.generadorTokens = new Random();
+    }
+
+    // -------------------------------------------------------------------------
+    // 4. GETTERS Y MÉTODOS PRIVADOS AUXILIARES
+    // -------------------------------------------------------------------------
+
+    public int getIdTerminal() {
+        return this.idTerminal;
+    }
+
+    public String getUbicacion() {
+        return this.ubicacion;
+    }
+
+    public int getAforoDisponible() {
+        return this.aforoMaximo - this.personasEnCentro;
+    }
+
+    public Fichaje getUltimoFichaje() {
+        return this.ultimoFichaje;
+    }
+
+    public Fichaje getPenultimoFichaje() {
+        return this.penultimoFichaje;
+    }
+
+    private String construirTokenQR(String dni, int idFichaje) {
+        int codigoSec = BASE_TOKEN_SEGURIDAD + this.generadorTokens.nextInt(RANGO_TOKEN_SEGURIDAD);
+        String token = PREFIJO_CENTRO + "-" + dni;
+        token += "-T" + this.idTerminal;
+        token += "-SEC#" + codigoSec;
+        token += "-REG" + idFichaje;
+        return token;
+    }
+
+    private void registrarFichajeEnHistorial(Fichaje nuevo) {
+        this.penultimoFichaje = this.ultimoFichaje;
+        this.ultimoFichaje = nuevo;
+    }
+
+    // -------------------------------------------------------------------------
+    // 5. OPERACIONES DE NEGOCIO DEL TORNO
+    // -------------------------------------------------------------------------
+
+    /**
+     * Procesa un tránsito de salida validando la guardia de subdesbordamiento.
+     * Fabrica, almacena en historial y devuelve el objeto Fichaje resultante.
+     */
+    public Fichaje registrarSalida(String nombre) {
+        this.totalProcesados++;
+        boolean salidaAutorizada;
+        String motivoSalida;
+
+        if (this.personasEnCentro > 0) {
+            this.personasEnCentro--;
+            this.totalAutorizados++;
+            salidaAutorizada = true;
+            motivoSalida = "Salida registrada";
+        } else {
+            this.totalDenegados++;
+            salidaAutorizada = false;
+            motivoSalida = "Recinto vacío";
+        }
+
+        Fichaje nuevoFichaje = new Fichaje(nombre, 'S', salidaAutorizada, motivoSalida);
+        this.registrarFichajeEnHistorial(nuevoFichaje);
+        return nuevoFichaje;
+    }
+
+    /**
+     * Evalúa todas las reglas de acceso de una entrada, actualiza estadísticas y
+     * devuelve el objeto Fichaje creado.
+     */
+    public Fichaje registrarEntrada(String dni, String nombre, char perfil,
+                                    double temperatura, boolean datosSintacticamenteOk, String motivoError) {
+        this.totalProcesados++;
+        boolean accesoConcedido = false;
+        String motivoFinal = motivoError;
+
+        if (!datosSintacticamenteOk) {
+            this.totalDenegados++;
+        } else if (!Fichaje.esTemperaturaSegura(temperatura)) {
+            motivoFinal = "Temperatura anómala.";
+            this.totalDenegados++;
+        } else if (this.getAforoDisponible() <= 0) {
+            motivoFinal = "Aforo completo.";
+            this.totalDenegados++;
+        } else if (!Fichaje.esDniValido(dni)) {
+            motivoFinal = "DNI no reglamentario.";
+            this.totalDenegados++;
+        } else if (!Fichaje.esPerfilValido(perfil)) {
+            motivoFinal = "Perfil no catalogado.";
+            this.totalDenegados++;
+        } else {
+            accesoConcedido = true;
+            this.totalAutorizados++;
+            this.personasEnCentro++;
+            this.tempMaxima = Math.max(this.tempMaxima, temperatura);
+            this.tempMinima = Math.min(this.tempMinima, temperatura);
+            this.minutosEstanciaAcumulados += 360;
+            motivoFinal = "Acceso concedido";
+        }
+
+        String token = this.construirTokenQR(dni, Fichaje.getSiguienteId());
+        Fichaje nuevoFichaje = new Fichaje(dni, nombre, perfil, 'E', temperatura,
+                accesoConcedido, motivoFinal, token);
+
+        this.registrarFichajeEnHistorial(nuevoFichaje);
+        return nuevoFichaje;
+    }
+
+    /**
+     * Procesa una ráfaga de personas en espera bajo el principio SESE.
+     * Devuelve el número de personas que quedaron en cola si se interrumpió el paso.
+     */
+    public int procesarRafaga(int personasEnCola) {
+        boolean vetoJudicialDetectado = false;
+
+        while (personasEnCola > 0 && this.getAforoDisponible() > 0 && !vetoJudicialDetectado) {
+            if (Fichaje.getUltimoIdAsignado() == 1044) {
+                System.out.println(">> [ALERTA JUDICIAL]: Credencial #1044 bloqueada. Suspendiendo cola en cabecera...");
+                vetoJudicialDetectado = true;
+            } else {
+                this.totalProcesados++;
+                this.totalAutorizados++;
+                this.personasEnCentro++;
+                personasEnCola--;
+
+                double tempSimulada = 36.4 + (this.generadorTokens.nextDouble() * 0.5);
+                this.tempMaxima = Math.max(this.tempMaxima, tempSimulada);
+                this.tempMinima = Math.min(this.tempMinima, tempSimulada);
+                this.minutosEstanciaAcumulados += 360;
+
+                Fichaje fRafaga = new Fichaje("N/D", "USUARIO RÁFAGA", 'E', 'E',
+                        tempSimulada, true, "Paso automático en ráfaga", "CAMINAS-BURST");
+                this.registrarFichajeEnHistorial(fRafaga);
+            }
+        }
+        return personasEnCola;
+    }
+
+    /**
+     * Ejecuta el protocolo de vaciado de emergencia en oleadas controladas (SESE).
+     */
+    public void activarEvacuacion() {
+        if (this.personasEnCentro == 0) {
+            System.out.println(">> El campus ya se encuentra completamente vacío.");
+        } else {
+            int loteSalidaSimultanea = 300;
+            int oleada = 1;
+
+            while (this.personasEnCentro > 0) {
+                int evacuadosLote = Math.min(this.personasEnCentro, loteSalidaSimultanea);
+                this.personasEnCentro -= evacuadosLote;
+                System.out.printf("  -> Oleada #%d: Desalojadas %d personas por salidas de emergencia (Ocupantes restantes: %d)%n",
+                        oleada, evacuadosLote, this.personasEnCentro);
+                oleada++;
+            }
+            System.out.println(">> CERTIFICACIÓN DE SEGURIDAD: Recinto 100% desalojado. Aforo íntegro restaurado.");
+        }
+    }
+
+    /**
+     * Imprime las métricas en tiempo real y el historial reciente con guardia contra null.
+     */
+    public void mostrarTelemetria() {
+        double porcentajeOcupacion = ((double) this.personasEnCentro / this.aforoMaximo) * FACTOR_PORCENTAJE;
+        double estanciaMedia = this.totalAutorizados > 0
+                ? ((double) this.minutosEstanciaAcumulados / this.totalAutorizados) : 0.0;
+
+        System.out.printf("TORNO ACTIVO:             #%d (%s)%n", this.idTerminal, this.ubicacion);
+        System.out.printf("OCUPACIÓN ACTUAL:         %d/%d personas (%6.2f %%)%n",
+                this.personasEnCentro, this.aforoMaximo, porcentajeOcupacion);
+        System.out.printf("PLAZAS LIBRES:            %d vacantes disponibles%n", this.getAforoDisponible());
+        System.out.printf("INSTANCIAS FICHAJE (RAM): %d objetos fabricados (Último ID: #%d)%n",
+                Fichaje.getTotalFichajesCreados(), Fichaje.getUltimoIdAsignado());
+        System.out.printf("PICO TÉRMICO MÁXIMO:      %.1f ºC%n", Math.max(0.0, this.tempMaxima));
+        System.out.printf("PICO TÉRMICO MÍNIMO:      %.1f ºC%n", this.tempMinima > 50.0 ? 0.0 : this.tempMinima);
+        System.out.printf("ESTANCIA PROMEDIO:        %.1f minutos (Total acumulado: %d min)%n",
+                estanciaMedia, this.minutosEstanciaAcumulados);
+
+        if (this.ultimoFichaje != null) {
+            System.out.println("ÚLTIMO FICHAJE:           " + this.ultimoFichaje);
+        } else {
+            System.out.println("ÚLTIMO FICHAJE:           (sin registros en esta sesión)");
+        }
+
+        if (this.penultimoFichaje != null) {
+            System.out.println("PENÚLTIMO FICHAJE:        " + this.penultimoFichaje);
+        } else {
+            System.out.println("PENÚLTIMO FICHAJE:        (sin registros en esta sesión)");
+        }
+    }
+
+    /**
+     * Emite la auditoría final consolidada al cerrar la jornada del torno.
+     */
+    public void mostrarAuditoriaFinal() {
+        System.out.println("\n======================================================================");
+        System.out.printf("   AUDITORÍA FINAL · TORNO #%d (%s)%n", this.idTerminal, this.ubicacion);
+        System.out.println("======================================================================");
+        System.out.printf("TOTAL OPERACIONES GESTIONADAS: %d%n", this.totalProcesados);
+        System.out.printf("OBJETOS FICHAJE CREADOS (RAM): %d%n", Fichaje.getTotalFichajesCreados());
+        System.out.printf("ACCESOS AUTORIZADOS (TOTAL):   %d%n", this.totalAutorizados);
+        System.out.printf("ACCESOS DENEGADOS (BLOQUEO):   %d%n", this.totalDenegados);
+        System.out.printf("OCUPACIÓN FINAL REGISTRADA:    %d personas%n", this.personasEnCentro);
+        System.out.println("ESTADO DEL DISPOSITIVO:        Terminal desconectado de forma segura.");
+        System.out.println("======================================================================");
+    }
+}
+```
+
+**Archivo 3: `pr/src/ControlAccesoQR.java` (v3.6 - Capa de presentación depurada)**
+```java
+/**
+ * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ * 
+ * Versión 3.6:
+ * Semana 11 (Sprint 4: «Arquitectos de software»).
+ * Arquitectura separada en tres clases cooperantes (ControlAccesoQR, Torno, Fichaje):
+ * - ControlAccesoQR actúa únicamente como capa de interfaz de consola (UI).
+ * - Delega la gestión del campus, las reglas de negocio y el historial de Fichajes
+ *   en una instancia compuesta de la clase Torno.
+ * Mantiene el cumplimiento estricto del principio SESE y blindaje try-catch.
+ * 
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 3.6 (Noviembre 2026)
+ * @since JDK 21 LTS
+ * 
+ */
+
+import java.util.Scanner;
+import java.time.LocalDate;
+
+public class ControlAccesoQR {
+
+    final static String NOMBRE_CENTRO = "IES El Caminàs (Castellón)";
+    final static int TOTAL_TORNOS_CAMPUS = 3;
+    final static int CANALES_POR_TORNO = 4;
+
+    public static void main(String[] args) {
+        Scanner teclado = new Scanner(System.in);
+        LocalDate fechaActual = LocalDate.now();
+
+        // Instanciación de nuestra clase contenedora de negocio (Composición con Fichaje)
+        Torno tornoPrincipal = new Torno(101, "Vestíbulo Principal", 1200, 1190);
+        boolean sesionActiva = true;
+
+        System.out.println("======================================================================");
+        System.out.println("   AZAHARTECH · CONTROL INTEGRAL DE ACCESOS - IES EL CAMINÀS          ");
+        System.out.println("   Versión 3.6 (Sprint 4: Composición Torno -> Fichaje)               ");
+        System.out.println("   Fecha de sesión: " + fechaActual + " | Centro: " + NOMBRE_CENTRO);
+        System.out.println("======================================================================");
+
+        do {
+            System.out.println("\n----------------------------------------------------------------------");
+            System.out.printf("   PANEL DE OPERACIONES · TORNO #%d (%s)%n",
+                    tornoPrincipal.getIdTerminal(), tornoPrincipal.getUbicacion());
+            System.out.println("----------------------------------------------------------------------");
+            System.out.println("  [1] Registrar tránsito individual (Entrada / Salida)");
+            System.out.println("  [2] Procesar cola en ráfaga (delegado en Torno)");
+            System.out.println("  [3] Consultar telemetría y últimos fichajes del torno");
+            System.out.println("  [4] Diagnóstico perimetral estructurado SESE (3 tornos x 4 canales)");
+            System.out.println("  [5] Activar protocolo de evacuación de emergencia");
+            System.out.println("  [6] Cerrar jornada y apagar terminal");
+            System.out.print("Seleccione una operación (1-6): ");
+
+            int opcionMenu = 0;
+            try {
+                opcionMenu = Integer.parseInt(teclado.nextLine().trim());
+            } catch (NumberFormatException e) {
+                opcionMenu = -1;
+            }
+
+            switch (opcionMenu) {
+                case 1:
+                    System.out.println("\n--- [MODO 1: TRÁNSITO INDIVIDUAL] ---");
+                    System.out.print("Sentido del tránsito (E = Entrada, S = Salida): ");
+                    String lineaSentido = teclado.nextLine().trim().toUpperCase();
+                    char sentidoTransito = lineaSentido.isEmpty() ? 'E' : lineaSentido.charAt(0);
+
+                    System.out.print("Nombre completo: ");
+                    String nombreLimpio = teclado.nextLine().trim().toUpperCase();
+                    if (nombreLimpio.isEmpty()) {
+                        nombreLimpio = "N/D";
+                    }
+
+                    Fichaje nuevoFichaje;
+
+                    if (sentidoTransito == 'S') {
+                        nuevoFichaje = tornoPrincipal.registrarSalida(nombreLimpio);
+                        if (nuevoFichaje.isAutorizado()) {
+                            System.out.println(">> VEREDICTO: [SALIDA AUTORIZADA] Torno exterior abierto.");
+                        } else {
+                            System.err.println(">> ALERTA: Imposible autorizar salida; recinto vacío.");
+                        }
+                    } else {
+                        double tempVestibulo = 0.0;
+                        String dniPersonaLimpio = "N/D";
+                        char perfilNormalizado = '?';
+                        boolean datosSintacticamenteCorrectos = true;
+                        String motivoError = "";
+
+                        try {
+                            System.out.print("Temperatura (ºC): ");
+                            tempVestibulo = Double.parseDouble(teclado.nextLine().trim());
+                            System.out.print("DNI: ");
+                            dniPersonaLimpio = teclado.nextLine().trim().toUpperCase();
+                            System.out.print("Perfil (E/D/V/A): ");
+                            String lineaPerfil = teclado.nextLine().trim();
+                            perfilNormalizado = lineaPerfil.isEmpty() ? '?' : Character.toUpperCase(lineaPerfil.charAt(0));
+                        } catch (NumberFormatException e) {
+                            datosSintacticamenteCorrectos = false;
+                            motivoError = "Error de formato numérico.";
+                        }
+
+                        // Delegamos la validación y creación del Fichaje en el objeto Torno
+                        nuevoFichaje = tornoPrincipal.registrarEntrada(dniPersonaLimpio, nombreLimpio,
+                                perfilNormalizado, tempVestibulo, datosSintacticamenteCorrectos, motivoError);
+
+                        System.out.printf(">> VEREDICTO: %s [Token: %s]%n",
+                                nuevoFichaje.isAutorizado()
+                                        ? "[ENTRADA AUTORIZADA]"
+                                        : "[ENTRADA DENEGADA - " + nuevoFichaje.getMotivo() + "]",
+                                nuevoFichaje.getToken());
+
+                        if (nuevoFichaje.isAutorizado()) {
+                            System.out.printf("   Zona asignada: %s (Estancia máx: %d min)%n",
+                                    nuevoFichaje.obtenerZonaAutorizada(), nuevoFichaje.obtenerEstanciaMaximaMinutos());
+                        }
+
+                        // Comparación anti-rebote frente al penúltimo registro almacenado en Torno
+                        Fichaje previo = tornoPrincipal.getPenultimoFichaje();
+                        if (nuevoFichaje.esMismoSolicitante(previo)
+                                && nuevoFichaje.getSentido() == previo.getSentido()) {
+                            System.out.println(">> AVISO ANTI-REBOTE: El DNI " + nuevoFichaje.getDni()
+                                    + " coincide con el tránsito inmediatamente anterior.");
+                        }
+                    }
+
+                    System.out.println(">> Objeto Fichaje registrado: " + nuevoFichaje);
+                    break;
+
+                case 2:
+                    System.out.println("\n--- [MODO 2: RÁFAGA CON PARADA ESTRUCTURADA] ---");
+                    System.out.print("Personas en cola para esta ráfaga: ");
+                    int personasEnCola = 0;
+                    try {
+                        personasEnCola = Integer.parseInt(teclado.nextLine().trim());
+                    } catch (NumberFormatException e) {
+                        personasEnCola = 0;
+                    }
+
+                    int restantes = tornoPrincipal.procesarRafaga(personasEnCola);
+                    System.out.printf(">> Estado tras ráfaga. Plazas disponibles: %d | Restantes en cola: %d%n",
+                            tornoPrincipal.getAforoDisponible(), restantes);
+                    break;
+
+                case 3:
+                    System.out.println("\n--- [MODO 3: MONITOR DE TELEMETRÍA EN VIVO] ---");
+                    tornoPrincipal.mostrarTelemetria();
+                    break;
+
+                case 4:
+                    System.out.println("\n--- [MODO 4: INSPECCIÓN PERIMETRAL ESTRUCTURADA (SESE)] ---");
+                    boolean alarmaSabotajeDetectada = false;
+
+                    for (int torno = 1; torno <= TOTAL_TORNOS_CAMPUS && !alarmaSabotajeDetectada; torno++) {
+                        String nombreAcceso = switch (torno) {
+                            case 1 -> "Vestíbulo Central  | ";
+                            case 2 -> "Puerta Norte Ciclos| ";
+                            case 3 -> "Puerta Sur Talleres| ";
+                            default -> "Acceso Perimetral  | ";
+                        };
+                        System.out.print(nombreAcceso);
+
+                        for (int canal = 1; canal <= CANALES_POR_TORNO && !alarmaSabotajeDetectada; canal++) {
+                            if (torno == 2 && canal == 2) {
+                                System.out.print("[REVISIÓN] ");
+                            } else {
+                                boolean falloCritico = (torno == 3 && canal == 2 && false);
+                                if (falloCritico) {
+                                    System.out.print("[SABOTAJE] ");
+                                    alarmaSabotajeDetectada = true;
+                                } else {
+                                    System.out.printf("[C%d: OK]   ", canal);
+                                }
+                            }
+                        }
+                        System.out.println();
+                    }
+                    System.out.println("-------------------------------------------------------------------");
+                    break;
+
+                case 5:
+                    System.out.println("\n--- [MODO 5: PROTOCOLO DE EVACUACIÓN DE EMERGENCIA] ---");
+                    tornoPrincipal.activarEvacuacion();
+                    break;
+
+                case 6:
+                    System.out.println("\n>> Desconectando terminal de presencia de forma ordenada...");
+                    sesionActiva = false;
+                    break;
+
+                default:
+                    System.err.println(">> Error: Opción no válida. Seleccione una operación entre 1 y 6.");
+                    break;
+            }
+
+        } while (sesionActiva);
+
+        tornoPrincipal.mostrarAuditoriaFinal();
+        teclado.close();
+    }
+}
+```
+
+</details>
+
+---
+
+#### 4. Segunda sesión: dojo de entrenamiento y katas de código
+
+En esta sesión práctica, cada estudiante creará una segunda clase entidad o contenedora que colabore mediante **composición** con la entidad diseñada en la Semana 10, reduciendo el tamaño de su archivo principal.
+
+##### Kata 1 (Cinturón blanco / Nivel base). Composición de clases en proyectos asignados
+
+Crea un segundo archivo Java en `pr/src/` para modelar la clase contenedora o colaboradora de tu proyecto, haciendo que componga al menos una referencia hacia tu primera clase entidad y delegando las operaciones desde `MiProyecto.java`:
+
+* **Aventura conversacional.** Crea la clase `Escena.java` (con nombre de sala y nivel de dificultad) que componga dos referencias de tipo `Personaje`: el protagonista y el adversario actual de la sala. Implementa en `Escena` un método para resolver un asalto completo entre ambos y muestra la escena usando `toString()`, dejando `MiProyecto.java` únicamente como menú de turnos.
+* **Motor de recomendación.** Crea la clase `Usuario.java` (con identificador de perfil y categoría favorita) que componga referencias al último `Item` evaluado y al `Item` con mejor afinidad detectado hasta el momento. Implementa un método en `Usuario` que reciba un nuevo `Item`, actualice cuál es el mejor recomendado y muestre el resumen del perfil.
+* **Simulador de físicas 2D.** Crea la clase `Escenario.java` (con ancho máximo y altura límite del recinto) que componga una o dos instancias de `Bola`. Traslada al interior de `Escenario` el método que hace avanzar la simulación paso a paso y detecta el rebote de la bola compuesta contra las fronteras del propio escenario.
+* **Bóveda de contraseñas.** Crea la clase `PoliticaSeguridad.java` (con requisitos de longitud mínima y caducidad máxima permitida) que colabore con `Credencial` componiendo la última credencial auditada y la última rechazada. Añade un método en `PoliticaSeguridad` que reciba los datos de entrada, valide, fabrique y devuelva el objeto `Credencial` resultante.
+
+---
+
+##### Kata 2 (Cinturón marrón / Nivel avanzado). Nulidad en cascada y encadenamiento seguro
+
+Cuando una clase contiene a otra, acceder a la información del objeto interno suele hacerse encadenando llamadas (`contenedor.getContenido().getDato()`), lo que multiplica el riesgo de caída en ejecución:
+
+1. **Provocar el fallo encadenado:**  
+   Justo después de instanciar tu nueva clase contenedora (antes de añadir o procesar ningún elemento interno), intenta imprimir un dato del objeto contenido encadenando dos *getters* (por ejemplo, `escena.getEnemigo().getNombre()` o `usuario.getMejorItem().getTitulo()`). Observa la `NullPointerException` exacta y la línea que señala la traza.
+2. **Guardia en cascada (*Short-Circuit Guard*):**  
+   Envuelve la llamada en una condición compuesta ordenada de izquierda a derecha que aproveche el cortocircuito del operador `&&`:
+   ```java
+   if (contenedor != null && contenedor.getContenido() != null) {
+       System.out.println(contenedor.getContenido().toString());
+   }
+   ```
+3. **Encapsular el acceso seguro:**  
+   Razona en un comentario por qué suele ser mejor que la propia clase contenedora disponga de un método seguro (como `mostrarTelemetria()` en `Torno`) en lugar de obligar al `main` a encadenar *getters* constantemente.
+
+---
+
+##### Kata 3 (Cinturón negro / «Hacker AzaharTech»). Auditoría de capas y árbol de objetos en el Depurador
+
+Verifica visualmente la reducción de acoplamiento y la estructura anidada en memoria:
+
+1. **Diagrama de arquitectura en Mermaid:**  
+   Redacta en un comentario o en el `README` de tu carpeta un diagrama `classDiagram` en Mermaid que documente las relaciones reales entre tus tres clases (`MiProyecto`, tu clase contenedora y tu clase entidad), anotando qué clase actúa como capa de presentación y cuáles como capa de negocio.
+2. **Inspección de composición en el *Heap*:**  
+   Coloca un *breakpoint* en `MiProyecto.java` tras ejecutar una operación que haya poblado los objetos compuestos y lanza el depurador (**`Shift + F9`**):
+   * En la pestaña **Variables**, localiza tu objeto contenedor (`Torno@id`, `Escena@id`, `Usuario@id`, `Escenario@id` o `PoliticaSeguridad@id`).
+   * **Despliega el nodo** del objeto contenedor y comprueba cómo en su interior aparecen los atributos que apuntan a las instancias de tu primera entidad con sus propios `@id` independientes en el *Heap*.
+3. **Métrica de adelgazamiento del orquestador:**  
+   Anota en la cabecera Javadoc de tu clase contenedora cuántas líneas tenía tu método `main` antes de introducir la composición y a cuántas se ha reducido tras delegar la lógica de negocio en la nueva clase.
+
