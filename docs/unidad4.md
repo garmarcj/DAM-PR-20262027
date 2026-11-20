@@ -7687,3 +7687,3985 @@ Hasta hoy, como todos tus archivos estaban en la misma carpeta, si olvidabas pon
 3. **¿Qué pasa si dos paquetes tienen una clase con el mismo nombre?**  
    Responde brevemente en un comentario de `MiProyecto.java` cómo los paquetes permiten tener clases con el mismo nombre sin que choquen (por ejemplo, `java.util.Date` frente a `java.sql.Date`) usando la ruta completa delante cuando haga falta.
 
+---
+
+### Día 44 - 2 sesiones
+
+---
+
+#### 1. Caso guía en AzaharTech
+
+Son las 15:00 h del **lunes 30 de noviembre de 2026**. En la sede de **AzaharTech** en Castellón de la Plana arranca la tercera y última semana del **Sprint 4: «Arquitectos de software»**. Con la versión `v3.8`, las clases del **IES El Caminàs** están limpiamente organizadas en paquetes (`modelo`, `dispositivos`, `app`).
+
+Sin embargo, durante las pruebas de auditoría administrativa en conserjería, **Alba Torres** plantea una nueva necesidad operativa a **Pau Ferrer** y **Laia Claramunt**:
+
+> *«Equipo, el conserje necesita poder emitir una **copia de respaldo rectificada** de un fichaje (por ejemplo, añadir una observación en el `motivo` cuando un alumno olvidó traer un justificante), pero **sin alterar ni sobrescribir el registro original** que quedó guardado en el torno.*
+>
+> *Si intentamos hacerlo como hasta ahora con `Fichaje copia = tornoActivo.getUltimoFichaje();`, volvemos a caer en el problema del alias: al llamar a `copia.setMotivo("Justificado")`, ¡estamos mutando el objeto original dentro del torno!*
+>
+> *Además, cuando logremos fabricar una copia real independiente y preguntemos `copia == original`, Java responderá `false` porque viven en direcciones distintas del Heap. Necesitamos que `Fichaje` sepa **clonarse a sí mismo de forma segura** y sepa **comparar si su contenido es igual al de otro objeto** siguiendo el estándar oficial de Java»*.
+
+**Laia Claramunt** concreta los dos mecanismos que resolverán el problema hoy:
+
+> *«Para crear copias reales sin alias utilizaremos un **constructor copia**, y para comparar objetos por sus datos internos sobrescribiremos el método estándar **`equals(Object)`** heredado de `Object`, aplicando además el concepto de **copia defensiva** para proteger el estado interno de nuestro `Torno`»*.
+
+---
+
+#### 2. Fundamento teórico: constructor copia y método estándar `@Override equals`
+
+##### A. El constructor copia (*Copy Constructor*)
+
+Un **constructor copia** es un constructor sobrecargado que recibe como parámetro otro objeto de su misma clase (`public Fichaje(Fichaje original)`) y crea un **ejemplar completamente nuevo e independiente en el *Heap*** copiando todos sus atributos uno a uno.
+
+```mermaid
+flowchart LR
+    subgraph Alias ["Copia por asignación (Fichaje b = a) -> PELIGRO"]
+        direction LR
+        A1["a"] --> ObjUnico["<b>Fichaje @10a4</b><br/>motivo = 'Original'"]
+        B1["b"] --> ObjUnico
+    end
+
+    subgraph Clon ["Constructor Copia (Fichaje b = new Fichaje(a)) -> SEGURO"]
+        direction LR
+        A2["a"] --> ObjOrig["<b>Fichaje @10a4</b><br/>motivo = 'Original'"]
+        B2["b"] --> ObjCopia["<b>Fichaje @4b20</b><br/>motivo = 'Rectificado'"]
+    end
+```
+
+* Si `original == null`, el constructor copia debe protegerse inicializando valores seguros por defecto para evitar una `NullPointerException`.
+* Gracias al constructor copia, una clase contenedora como `Torno` puede ofrecer una **copia defensiva** (`return new Fichaje(this.ultimoFichaje);`): quien recibe esa copia puede leerla o anotarla libremente sin poner en riesgo el registro real guardado dentro del torno.
+
+##### B. Igualdad lógica estándar: `@Override public boolean equals(Object obj)`
+
+En el Sprint 2 vimos que las cadenas `String` nunca deben compararse con `==`, sino con `.equals(...)`. El motivo es que `==` compara **identidad** (si son exactamente el mismo objeto `@id` en el *Heap*), mientras que `.equals(...)` compara **igualdad de contenido**.
+
+Todas las clases de Java heredan de `Object` un método `equals(Object)` que, por defecto, usa `==`. Para que nuestra clase `Fichaje` compare sus datos internos, debemos **sobrescribirlo** respetando su firma exacta (`Object obj`, no `Fichaje otro`) y añadiendo `@Override`:
+
+```mermaid
+flowchart TD
+    Inicio(["llamada: fichajeA.equals(obj)"]) --> Paso1{"1. ¿Son el MISMO objeto en memoria?<br/>(this == obj)"}
+    
+    Paso1 -- true --> True1(["Devuelve <b>true</b> (Atajo inmediato)"])
+    Paso1 -- false --> Paso2{"2. ¿Es obj un Fichaje no nulo?<br/>(obj instanceof Fichaje otro)"}
+    
+    Paso2 -- false --> False1(["Devuelve <b>false</b> (Es null o es otro tipo)"])
+    Paso2 -- true --> Paso3{"3. ¿Coinciden sus atributos clave?<br/>(id, sentido, autorizado, dni, nombre)"}
+    
+    Paso3 -- true --> True2(["Devuelve <b>true</b> (Mismo contenido lógico)"])
+    Paso3 -- false --> False2(["Devuelve <b>false</b> (Datos distintos)"])
+```
+
+##### C. *Pattern Matching* con `instanceof` en Java 21
+
+Observa la limpieza de la comprobación `else if (obj instanceof Fichaje otro)`:
+1. Si `obj` es `null`, la expresión `obj instanceof Fichaje` evalúa directamente a **`false`** sin lanzar excepciones.
+2. Si `obj` es de otro tipo (por ejemplo, un `String` o un `Torno`), también devuelve **`false`** con total seguridad.
+3. Si realmente es un `Fichaje`, Java realiza la conversión automáticamente y crea la variable `otro` de tipo `Fichaje` lista para leer sus atributos (`otro.id`, `otro.dni`...).
+
+```mermaid
+classDiagram
+    class Object {
+        <<Clase Raíz de Java>>
+        +toString() String
+        +equals(obj : Object) boolean
+    }
+    class Fichaje {
+        +Fichaje(original : Fichaje)
+        +toString() String
+        +equals(obj : Object) boolean
+    }
+    Object <|-- Fichaje : hereda y sobrescribe (@Override)
+```
+
+---
+
+#### 3. Evolución del caso guía a `ControlAccesoQR v3.9` (Copia e Igualdad)
+
+Evolucionamos la versión `v3.8` a la **`v3.9`**, manteniendo intacta la estructura de paquetes:
+1. **`Fichaje.java`:** Añade el **constructor copia** `public Fichaje(Fichaje original)` y sobrescribe **`@Override public boolean equals(Object obj)`**.
+2. **`Torno.java`:** Añade el método **`crearCopiaDefensivaUltimo()`**, que fabrica y devuelve un clon independiente del último fichaje guardado sin exponer el original.
+3. **`ControlAccesoQR.java` (`v3.9`):** Añade la **Opción `[6]`** para emitir y rectificar una copia de respaldo demostrando en pantalla que `copia == original` es `false`, `copia.equals(original)` es `true` antes de rectificar, y que modificar la copia mantiene intacto el original guardado en el torno (desplazando el apagado a la Opción `[7]`).
+
+##### A. Comparativa de cambios respecto a v3.8 (`diff`)
+
+```diff
+  // =========================================================================
+  // ARCHIVO: es/azahartech/caminas/modelo/Fichaje.java
+  // =========================================================================
++ // CONSTRUCTOR COPIA: clona todos los atributos sin incrementar contador static
++ public Fichaje(Fichaje original) { ... }
++
++ // IGUALDAD LÓGICA ESTÁNDAR (Java 21 pattern matching instanceof)
++ @Override
++ public boolean equals(Object obj) { ... }
+
+  // =========================================================================
+  // ARCHIVO: es/azahartech/caminas/dispositivos/Torno.java
+  // =========================================================================
++ public Fichaje crearCopiaDefensivaUltimo() {
++     Fichaje copia = null;
++     if (this.ultimoFichaje != null) {
++         copia = new Fichaje(this.ultimoFichaje);
++     }
++     return copia;
++ }
+
+  // =========================================================================
+  // ARCHIVO: es/azahartech/caminas/app/ControlAccesoQR.java (v3.9)
+  // =========================================================================
++ System.out.println("  [6] Emitir copia de respaldo rectificada (Constructor Copia)");
+- System.out.println("  [6] Cerrar jornada y apagar sistema");
++ System.out.println("  [7] Cerrar jornada y apagar sistema");
+```
+
+##### B. Foco en la novedad: constructor copia, `equals` y prueba de independencia
+
+Observa cómo el constructor copia y `equals` trabajan juntos para garantizar la inmutabilidad del registro almacenado en `Torno`:
+
+```java
+// -------------------------------------------------------------------------
+// En Fichaje.java: Constructor copia e igualdad estándar
+// -------------------------------------------------------------------------
+public Fichaje(Fichaje original) {
+    if (original != null) {
+        this.id = original.id;
+        this.dni = original.dni;
+        this.nombre = original.nombre;
+        this.perfil = original.perfil;
+        this.sentido = original.sentido;
+        this.temperatura = original.temperatura;
+        this.autorizado = original.autorizado;
+        this.motivo = original.motivo;
+        this.token = original.token;
+        this.hora = original.hora;
+    } else {
+        ultimoIdAsignado++;
+        totalFichajesCreados++;
+        this.id = ultimoIdAsignado;
+        this.dni = "N/D";
+        this.nombre = "N/D";
+        this.perfil = '?';
+        this.sentido = 'E';
+        this.temperatura = 0.0;
+        this.autorizado = false;
+        this.motivo = "Copia de origen nulo";
+        this.token = "N/D";
+        this.hora = LocalTime.now();
+    }
+}
+
+@Override
+public boolean equals(Object obj) {
+    boolean iguales = false;
+    if (this == obj) {
+        iguales = true;
+    } else if (obj instanceof Fichaje otro) {
+        iguales = (this.id == otro.id)
+                && (this.sentido == otro.sentido)
+                && (this.autorizado == otro.autorizado)
+                && this.dni.equals(otro.dni)
+                && this.nombre.equals(otro.nombre)
+                && this.motivo.equals(otro.motivo);
+    }
+    return iguales;
+}
+
+// -------------------------------------------------------------------------
+// En ControlAccesoQR.java (Opción 6): Comprobación en vivo
+// -------------------------------------------------------------------------
+Fichaje original = tornoActivo.getUltimoFichaje();
+Fichaje copia = tornoActivo.crearCopiaDefensivaUltimo();
+
+System.out.println("¿Misma dirección en Heap (==)?      " + (copia == original));       // false
+System.out.println("¿Mismo contenido inicial (equals)? " + copia.equals(original));    // true
+
+copia.setMotivo("Rectificado en conserjería");
+System.out.println("¿Siguen siendo equals tras editar? " + copia.equals(original));    // false
+System.out.println("Original en torno intacto:         " + original.getMotivo());      // Sin cambios
+```
+
+##### C. Código fuente completo integrado
+
+<details>
+<summary><b>🔍 Desplegar archivos completos: Fichaje.java, Campus.java, Torno.java y ControlAccesoQR.java (v3.9)</b></summary>
+
+**Archivo 1: `pr/src/es/azahartech/caminas/modelo/Fichaje.java`**
+```java
+package es.azahartech.caminas.modelo;
+
+/**
+ * ENTIDAD DE DOMINIO: REGISTRO DE FICHAJE EN TORNO
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ *
+ * Versión 3.9:
+ * Semana 12 (Igualdad, Javadoc y consolidación).
+ * Incorpora:
+ * - Constructor copia para fabricar copias independientes sin riesgo de alias.
+ * - Sobrescritura estándar de @Override equals(Object) usando pattern matching de Java 21.
+ *
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 3.9 (Noviembre 2026)
+ * @since JDK 21 LTS
+ */
+
+import java.time.LocalTime;
+
+public class Fichaje {
+
+    public static final double TEMP_MIN_SEGURA = 35.0;
+    public static final double TEMP_MAX_FIEBRE = 37.5;
+    public static final int LONGITUD_DNI = 9;
+
+    private static int ultimoIdAsignado = 1042;
+    private static int totalFichajesCreados = 0;
+
+    private int id;
+    private String dni;
+    private String nombre;
+    private char perfil;
+    private char sentido;
+    private double temperatura;
+    private boolean autorizado;
+    private String motivo;
+    private String token;
+    private LocalTime hora;
+
+    public Fichaje(String dni, String nombre, char perfil, char sentido,
+                   double temperatura, boolean autorizado, String motivo, String token) {
+        ultimoIdAsignado++;
+        totalFichajesCreados++;
+        this.id = ultimoIdAsignado;
+
+        this.dni = (dni == null || dni.isBlank()) ? "N/D" : dni.trim().toUpperCase();
+        this.setNombre(nombre);
+        this.perfil = perfil;
+        this.sentido = (sentido == 'S') ? 'S' : 'E';
+        this.setTemperatura(temperatura);
+        this.autorizado = autorizado;
+        this.setMotivo(motivo);
+        this.token = (token == null || token.isBlank()) ? "N/D" : token;
+        this.hora = LocalTime.now();
+    }
+
+    public Fichaje(String nombre, char sentido, boolean autorizado, String motivo) {
+        this("N/D", nombre, '?', sentido, 0.0, autorizado, motivo, "N/D");
+    }
+
+    /**
+     * Constructor copia: fabrica un clon independiente en el Heap con los mismos datos
+     * que el fichaje original recibido por parámetro.
+     */
+    public Fichaje(Fichaje original) {
+        if (original != null) {
+            this.id = original.id;
+            this.dni = original.dni;
+            this.nombre = original.nombre;
+            this.perfil = original.perfil;
+            this.sentido = original.sentido;
+            this.temperatura = original.temperatura;
+            this.autorizado = original.autorizado;
+            this.motivo = original.motivo;
+            this.token = original.token;
+            this.hora = original.hora;
+        } else {
+            ultimoIdAsignado++;
+            totalFichajesCreados++;
+            this.id = ultimoIdAsignado;
+            this.dni = "N/D";
+            this.nombre = "N/D";
+            this.perfil = '?';
+            this.sentido = 'E';
+            this.temperatura = 0.0;
+            this.autorizado = false;
+            this.motivo = "Copia de origen nulo";
+            this.token = "N/D";
+            this.hora = LocalTime.now();
+        }
+    }
+
+    public static int getTotalFichajesCreados() { return totalFichajesCreados; }
+    public static int getUltimoIdAsignado() { return ultimoIdAsignado; }
+    public static int getSiguienteId() { return ultimoIdAsignado + 1; }
+
+    public static boolean esTemperaturaSegura(double temperatura) {
+        return (temperatura >= TEMP_MIN_SEGURA && temperatura <= TEMP_MAX_FIEBRE);
+    }
+
+    public static boolean esDniValido(String dni) {
+        return (dni != null && dni.length() == LONGITUD_DNI);
+    }
+
+    public static boolean esPerfilValido(char perfil) {
+        boolean autorizado;
+        switch (perfil) {
+            case 'E':
+            case 'D':
+            case 'V':
+            case 'A':
+                autorizado = true;
+                break;
+            default:
+                autorizado = false;
+                break;
+        }
+        return autorizado;
+    }
+
+    public int getId() { return this.id; }
+    public String getDni() { return this.dni; }
+    public String getNombre() { return this.nombre; }
+    public char getPerfil() { return this.perfil; }
+    public char getSentido() { return this.sentido; }
+    public double getTemperatura() { return this.temperatura; }
+    public boolean isAutorizado() { return this.autorizado; }
+    public String getMotivo() { return this.motivo; }
+    public String getToken() { return this.token; }
+    public LocalTime getHora() { return this.hora; }
+
+    public void setNombre(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            this.nombre = "N/D";
+        } else {
+            this.nombre = nombre.trim().toUpperCase();
+        }
+    }
+
+    public void setTemperatura(double temperatura) {
+        if (temperatura >= 0.0 && temperatura <= 60.0) {
+            this.temperatura = temperatura;
+        } else {
+            this.temperatura = 0.0;
+        }
+    }
+
+    public void setMotivo(String motivo) {
+        if (motivo == null || motivo.trim().isEmpty()) {
+            this.motivo = "Sin evaluar";
+        } else {
+            this.motivo = motivo.trim();
+        }
+    }
+
+    public String obtenerPerfilLegible() {
+        String descripcion;
+        switch (this.perfil) {
+            case 'E': descripcion = "Estudiante Oficial"; break;
+            case 'D': descripcion = "Docente / Claustro"; break;
+            case 'V': descripcion = "Visita Externa / Proveedor"; break;
+            case 'A': descripcion = "Personal de Administración y Servicios (PAS)"; break;
+            default:  descripcion = "No especificado"; break;
+        }
+        return descripcion;
+    }
+
+    public String obtenerZonaAutorizada() {
+        String zona;
+        switch (this.perfil) {
+            case 'E': zona = "Aulas Docentes y Talleres de Informática"; break;
+            case 'D': zona = "Departamentos Didácticos, Aulas y Sala de Profesores"; break;
+            case 'V': zona = "Secretaría, Conserjería y Despachos de Dirección"; break;
+            case 'A': zona = "Área de Gestión Administrativa y Archivo Central"; break;
+            default:  zona = "Acceso Denegado / Zona No Autorizada"; break;
+        }
+        return zona;
+    }
+
+    public int obtenerEstanciaMaximaMinutos() {
+        int estanciaMinutos;
+        switch (this.perfil) {
+            case 'E': estanciaMinutos = 360; break;
+            case 'D': estanciaMinutos = 480; break;
+            case 'V': estanciaMinutos = 120; break;
+            case 'A': estanciaMinutos = 420; break;
+            default:  estanciaMinutos = 0; break;
+        }
+        return estanciaMinutos;
+    }
+
+    public boolean esMismoSolicitante(Fichaje otro) {
+        boolean mismo = false;
+        if (otro != null && !this.dni.equals("N/D")) {
+            mismo = this.dni.equals(otro.getDni());
+        }
+        return mismo;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean iguales = false;
+        if (this == obj) {
+            iguales = true;
+        } else if (obj instanceof Fichaje otro) {
+            iguales = (this.id == otro.id)
+                    && (this.sentido == otro.sentido)
+                    && (this.autorizado == otro.autorizado)
+                    && this.dni.equals(otro.dni)
+                    && this.nombre.equals(otro.nombre)
+                    && this.motivo.equals(otro.motivo);
+        }
+        return iguales;
+    }
+
+    @Override
+    public String toString() {
+        String detalleRol = (this.sentido == 'S') ? "Tránsito exterior" : obtenerPerfilLegible();
+        return String.format("#%d [%s] %s (%s) | %s | %s | %s",
+                this.id,
+                this.sentido == 'S' ? "SALIDA" : "ENTRADA",
+                this.nombre,
+                detalleRol,
+                this.autorizado ? "AUTORIZADO" : "DENEGADO",
+                this.motivo,
+                this.hora.withNano(0));
+    }
+}
+```
+
+**Archivo 2: `pr/src/es/azahartech/caminas/modelo/Campus.java`** *(Intacto desde `v3.8`)*
+```java
+package es.azahartech.caminas.modelo;
+
+/**
+ * ENTIDAD DE DOMINIO: ESTADO GLOBAL DEL CAMPUS
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ *
+ * Versión 3.8 (compatible con v3.9):
+ * Centraliza el estado único compartido por todos los tornos físicos del recinto.
+ *
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 3.8 (Noviembre 2026)
+ * @since JDK 21 LTS
+ */
+public class Campus {
+
+    private static final double FACTOR_PORCENTAJE = 100.0;
+
+    private String nombre;
+    private int aforoMaximo;
+    private int personasEnCentro;
+
+    private int totalProcesados;
+    private int totalAutorizados;
+    private int totalDenegados;
+
+    private double tempMaxima;
+    private double tempMinima;
+    private int minutosEstanciaAcumulados;
+
+    public Campus(String nombre, int aforoMaximo, int personasIniciales) {
+        this.nombre = (nombre == null || nombre.isBlank()) ? "Campus Central" : nombre.trim();
+        this.aforoMaximo = Math.max(1, aforoMaximo);
+        this.personasEnCentro = Math.max(0, Math.min(personasIniciales, this.aforoMaximo));
+
+        this.totalProcesados = 0;
+        this.totalAutorizados = 0;
+        this.totalDenegados = 0;
+
+        this.tempMaxima = -1.0;
+        this.tempMinima = 100.0;
+        this.minutosEstanciaAcumulados = 0;
+    }
+
+    public String getNombre() { return this.nombre; }
+    public int getAforoMaximo() { return this.aforoMaximo; }
+    public int getPersonasEnCentro() { return this.personasEnCentro; }
+    public int getAforoDisponible() { return this.aforoMaximo - this.personasEnCentro; }
+    public boolean hayAforoDisponible() { return this.getAforoDisponible() > 0; }
+
+    public void registrarIntentoDenegado() {
+        this.totalProcesados++;
+        this.totalDenegados++;
+    }
+
+    public void registrarEntradaExitosa(double temperatura, int minutosEstancia) {
+        this.totalProcesados++;
+        this.totalAutorizados++;
+        if (this.personasEnCentro < this.aforoMaximo) {
+            this.personasEnCentro++;
+        }
+        this.tempMaxima = Math.max(this.tempMaxima, temperatura);
+        this.tempMinima = Math.min(this.tempMinima, temperatura);
+        this.minutosEstanciaAcumulados += Math.max(0, minutosEstancia);
+    }
+
+    public boolean intentarRegistrarSalida() {
+        this.totalProcesados++;
+        boolean exito;
+        if (this.personasEnCentro > 0) {
+            this.personasEnCentro--;
+            this.totalAutorizados++;
+            exito = true;
+        } else {
+            this.totalDenegados++;
+            exito = false;
+        }
+        return exito;
+    }
+
+    public void activarEvacuacion() {
+        if (this.personasEnCentro == 0) {
+            System.out.println(">> El campus ya se encuentra completamente vacío.");
+        } else {
+            int loteSalidaSimultanea = 300;
+            int oleada = 1;
+
+            while (this.personasEnCentro > 0) {
+                int evacuadosLote = Math.min(this.personasEnCentro, loteSalidaSimultanea);
+                this.personasEnCentro -= evacuadosLote;
+                System.out.printf("  -> Oleada #%d: Desalojadas %d personas por salidas de emergencia (Ocupantes restantes: %d)%n",
+                        oleada, evacuadosLote, this.personasEnCentro);
+                oleada++;
+            }
+            System.out.println(">> CERTIFICACIÓN DE SEGURIDAD: Recinto 100% desalojado. Aforo íntegro restaurado.");
+        }
+    }
+
+    public void mostrarEstadoGlobal() {
+        double porcentajeOcupacion = ((double) this.personasEnCentro / this.aforoMaximo) * FACTOR_PORCENTAJE;
+        double estanciaMedia = this.totalAutorizados > 0
+                ? ((double) this.minutosEstanciaAcumulados / this.totalAutorizados) : 0.0;
+
+        System.out.printf("CAMPUS COMPARTIDO:        %s%n", this.nombre);
+        System.out.printf("OCUPACIÓN GLOBAL:         %d/%d personas (%6.2f %%)%n",
+                this.personasEnCentro, this.aforoMaximo, porcentajeOcupacion);
+        System.out.printf("PLAZAS LIBRES:            %d vacantes disponibles%n", this.getAforoDisponible());
+        System.out.printf("INSTANCIAS FICHAJE (RAM): %d objetos fabricados (Último ID: #%d)%n",
+                Fichaje.getTotalFichajesCreados(), Fichaje.getUltimoIdAsignado());
+        System.out.printf("PICO TÉRMICO MÁXIMO:      %.1f ºC%n", Math.max(0.0, this.tempMaxima));
+        System.out.printf("PICO TÉRMICO MÍNIMO:      %.1f ºC%n", this.tempMinima > 50.0 ? 0.0 : this.tempMinima);
+        System.out.printf("ESTANCIA PROMEDIO:        %.1f minutos (Total acumulado: %d min)%n",
+                estanciaMedia, this.minutosEstanciaAcumulados);
+    }
+
+    public void mostrarAuditoriaFinal() {
+        System.out.println("\n======================================================================");
+        System.out.printf("   AUDITORÍA FINAL GLOBAL · %s%n", this.nombre);
+        System.out.println("======================================================================");
+        System.out.printf("TOTAL OPERACIONES EN CAMPUS:   %d%n", this.totalProcesados);
+        System.out.printf("OBJETOS FICHAJE CREADOS (RAM): %d%n", Fichaje.getTotalFichajesCreados());
+        System.out.printf("ACCESOS AUTORIZADOS (TOTAL):   %d%n", this.totalAutorizados);
+        System.out.printf("ACCESOS DENEGADOS (BLOQUEO):   %d%n", this.totalDenegados);
+        System.out.printf("OCUPACIÓN FINAL REGISTRADA:    %d personas%n", this.personasEnCentro);
+    }
+}
+```
+
+**Archivo 3: `pr/src/es/azahartech/caminas/dispositivos/Torno.java`**
+```java
+package es.azahartech.caminas.dispositivos;
+
+/**
+ * ENTIDAD DE NEGOCIO: TORNO DE CONTROL DE ACCESO
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ *
+ * Versión 3.9:
+ * Incorpora creación de copia defensiva del último fichaje mediante el constructor
+ * copia de Fichaje, protegiendo el registro histórico frente a ediciones externas.
+ *
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 3.9 (Noviembre 2026)
+ * @since JDK 21 LTS
+ */
+
+import es.azahartech.caminas.modelo.Campus;
+import es.azahartech.caminas.modelo.Fichaje;
+import java.util.Random;
+
+public class Torno {
+
+    private static final String PREFIJO_CENTRO = "CAMINAS";
+    private static final int BASE_TOKEN_SEGURIDAD = 1000;
+    private static final int RANGO_TOKEN_SEGURIDAD = 9000;
+
+    private int idTerminal;
+    private String ubicacion;
+    private int operacionesLocales;
+
+    private Campus campus;
+
+    private Fichaje ultimoFichaje;
+    private Fichaje penultimoFichaje;
+    private Random generadorTokens;
+
+    public Torno(int idTerminal, String ubicacion, Campus campus) {
+        this.idTerminal = Math.max(1, idTerminal);
+        this.ubicacion = (ubicacion == null || ubicacion.isBlank()) ? "Acceso General" : ubicacion.trim();
+        this.campus = (campus != null) ? campus : new Campus("Recinto de Respaldo", 1000, 0);
+        this.operacionesLocales = 0;
+
+        this.ultimoFichaje = null;
+        this.penultimoFichaje = null;
+        this.generadorTokens = new Random();
+    }
+
+    public int getIdTerminal() { return this.idTerminal; }
+    public String getUbicacion() { return this.ubicacion; }
+    public int getOperacionesLocales() { return this.operacionesLocales; }
+    public int getAforoDisponibleCampus() { return this.campus.getAforoDisponible(); }
+    public Fichaje getUltimoFichaje() { return this.ultimoFichaje; }
+    public Fichaje getPenultimoFichaje() { return this.penultimoFichaje; }
+
+    /**
+     * Devuelve un clon independiente (copia defensiva) del último fichaje registrado
+     * para poder rectificar o imprimir comprobantes sin mutar el original del torno.
+     */
+    public Fichaje crearCopiaDefensivaUltimo() {
+        Fichaje copia = null;
+        if (this.ultimoFichaje != null) {
+            copia = new Fichaje(this.ultimoFichaje);
+        }
+        return copia;
+    }
+
+    private String construirTokenQR(String dni, int idFichaje) {
+        int codigoSec = BASE_TOKEN_SEGURIDAD + this.generadorTokens.nextInt(RANGO_TOKEN_SEGURIDAD);
+        String token = PREFIJO_CENTRO + "-" + dni;
+        token += "-T" + this.idTerminal;
+        token += "-SEC#" + codigoSec;
+        token += "-REG" + idFichaje;
+        return token;
+    }
+
+    private void registrarFichajeEnHistorial(Fichaje nuevo) {
+        this.penultimoFichaje = this.ultimoFichaje;
+        this.ultimoFichaje = nuevo;
+    }
+
+    public Fichaje registrarSalida(String nombre) {
+        this.operacionesLocales++;
+        boolean salidaAutorizada = this.campus.intentarRegistrarSalida();
+        String motivoSalida = salidaAutorizada ? "Salida registrada" : "Recinto vacío";
+
+        Fichaje nuevoFichaje = new Fichaje(nombre, 'S', salidaAutorizada, motivoSalida);
+        this.registrarFichajeEnHistorial(nuevoFichaje);
+        return nuevoFichaje;
+    }
+
+    public Fichaje registrarEntrada(String dni, String nombre, char perfil,
+                                    double temperatura, boolean datosSintacticamenteOk, String motivoError) {
+        this.operacionesLocales++;
+        boolean accesoConcedido = false;
+        String motivoFinal = motivoError;
+
+        if (!datosSintacticamenteOk) {
+            this.campus.registrarIntentoDenegado();
+        } else if (!Fichaje.esTemperaturaSegura(temperatura)) {
+            motivoFinal = "Temperatura anómala.";
+            this.campus.registrarIntentoDenegado();
+        } else if (!this.campus.hayAforoDisponible()) {
+            motivoFinal = "Aforo completo.";
+            this.campus.registrarIntentoDenegado();
+        } else if (!Fichaje.esDniValido(dni)) {
+            motivoFinal = "DNI no reglamentario.";
+            this.campus.registrarIntentoDenegado();
+        } else if (!Fichaje.esPerfilValido(perfil)) {
+            motivoFinal = "Perfil no catalogado.";
+            this.campus.registrarIntentoDenegado();
+        } else {
+            accesoConcedido = true;
+            this.campus.registrarEntradaExitosa(temperatura, 360);
+            motivoFinal = "Acceso concedido";
+        }
+
+        String token = this.construirTokenQR(dni, Fichaje.getSiguienteId());
+        Fichaje nuevoFichaje = new Fichaje(dni, nombre, perfil, 'E', temperatura,
+                accesoConcedido, motivoFinal, token);
+
+        this.registrarFichajeEnHistorial(nuevoFichaje);
+        return nuevoFichaje;
+    }
+
+    public int procesarRafaga(int personasEnCola) {
+        boolean vetoJudicialDetectado = false;
+
+        while (personasEnCola > 0 && this.campus.hayAforoDisponible() && !vetoJudicialDetectado) {
+            if (Fichaje.getUltimoIdAsignado() == 1044) {
+                System.out.println(">> [ALERTA JUDICIAL]: Credencial #1044 bloqueada. Suspendiendo cola en cabecera...");
+                vetoJudicialDetectado = true;
+            } else {
+                this.operacionesLocales++;
+                personasEnCola--;
+
+                double tempSimulada = 36.4 + (this.generadorTokens.nextDouble() * 0.5);
+                this.campus.registrarEntradaExitosa(tempSimulada, 360);
+
+                Fichaje fRafaga = new Fichaje("N/D", "USUARIO RÁFAGA", 'E', 'E',
+                        tempSimulada, true, "Paso automático en ráfaga", "CAMINAS-BURST");
+                this.registrarFichajeEnHistorial(fRafaga);
+            }
+        }
+        return personasEnCola;
+    }
+
+    public void activarEvacuacion() {
+        this.campus.activarEvacuacion();
+    }
+
+    public void mostrarTelemetria() {
+        System.out.printf("TORNO ACTIVO:             #%d (%s) | Operaciones locales: %d%n",
+                this.idTerminal, this.ubicacion, this.operacionesLocales);
+        this.campus.mostrarEstadoGlobal();
+
+        if (this.ultimoFichaje != null) {
+            System.out.println("ÚLTIMO EN ESTE TORNO:     " + this.ultimoFichaje);
+        } else {
+            System.out.println("ÚLTIMO EN ESTE TORNO:     (sin registros en este terminal)");
+        }
+
+        if (this.penultimoFichaje != null) {
+            System.out.println("PENÚLTIMO EN ESTE TORNO:  " + this.penultimoFichaje);
+        } else {
+            System.out.println("PENÚLTIMO EN ESTE TORNO:  (sin registros en este terminal)");
+        }
+    }
+}
+```
+
+**Archivo 4: `pr/src/es/azahartech/caminas/app/ControlAccesoQR.java`**
+```java
+package es.azahartech.caminas.app;
+
+/**
+ * SISTEMA DE CONTROL DE ASISTENCIA POR CÓDIGO QR
+ * Cliente: IES El Caminàs (Castellón de la Plana)
+ * Consultora: AzaharTech Software Consulting
+ * 
+ * Versión 3.9:
+ * Semana 12 (Igualdad, Javadoc y consolidación).
+ * Incorpora la Opción [6] para emitir copias de respaldo rectificadas mediante el
+ * constructor copia y verificar la diferencia entre == y @Override equals(Object).
+ * Mantiene cumplimiento estricto del principio SESE y blindaje try-catch.
+ * 
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 3.9 (Noviembre 2026)
+ * @since JDK 21 LTS
+ * 
+ */
+
+import es.azahartech.caminas.dispositivos.Torno;
+import es.azahartech.caminas.modelo.Campus;
+import es.azahartech.caminas.modelo.Fichaje;
+import java.util.Scanner;
+import java.time.LocalDate;
+
+public class ControlAccesoQR {
+
+    private static final String NOMBRE_CENTRO = "IES El Caminàs (Castellón)";
+    private static final int TOTAL_TORNOS_CAMPUS = 3;
+    private static final int CANALES_POR_TORNO = 4;
+
+    public static void main(String[] args) {
+        Scanner teclado = new Scanner(System.in);
+        LocalDate fechaActual = LocalDate.now();
+
+        Campus iesElCaminas = new Campus(NOMBRE_CENTRO, 1200, 1190);
+        Torno tornoVestibulo = new Torno(101, "Vestíbulo Principal", iesElCaminas);
+        Torno tornoNorte = new Torno(102, "Puerta Norte Ciclos", iesElCaminas);
+
+        Torno tornoActivo = tornoVestibulo;
+        boolean sesionActiva = true;
+
+        System.out.println("======================================================================");
+        System.out.println("   AZAHARTECH · CONTROL MULTI-TORNO EMPAQUETADO - IES EL CAMINÀS      ");
+        System.out.println("   Versión 3.9 (Sprint 4: Constructor Copia e Igualdad equals)        ");
+        System.out.println("   Fecha de sesión: " + fechaActual);
+        System.out.println("======================================================================");
+
+        do {
+            System.out.println("\n----------------------------------------------------------------------");
+            System.out.printf("   PANEL DE OPERACIONES · TORNO ACTIVO: #%d (%s)%n",
+                    tornoActivo.getIdTerminal(), tornoActivo.getUbicacion());
+            System.out.println("----------------------------------------------------------------------");
+            System.out.println("  [0] Conmutar de torno activo (#101 Vestíbulo <-> #102 Puerta Norte)");
+            System.out.println("  [1] Registrar tránsito individual (Entrada / Salida)");
+            System.out.println("  [2] Procesar cola en ráfaga en el torno activo");
+            System.out.println("  [3] Consultar telemetría del torno y ocupación sincronizada del campus");
+            System.out.println("  [4] Diagnóstico perimetral estructurado SESE (3 tornos x 4 canales)");
+            System.out.println("  [5] Activar protocolo de evacuación de emergencia");
+            System.out.println("  [6] Emitir copia de respaldo rectificada del último fichaje");
+            System.out.println("  [7] Cerrar jornada y apagar sistema");
+            System.out.print("Seleccione una operación (0-7): ");
+
+            int opcionMenu = -1;
+            try {
+                opcionMenu = Integer.parseInt(teclado.nextLine().trim());
+            } catch (NumberFormatException e) {
+                opcionMenu = -1;
+            }
+
+            switch (opcionMenu) {
+                case 0:
+                    tornoActivo = (tornoActivo == tornoVestibulo) ? tornoNorte : tornoVestibulo;
+                    System.out.printf(">> TERMINAL CONMUTADO: Operando ahora desde Torno #%d (%s)%n",
+                            tornoActivo.getIdTerminal(), tornoActivo.getUbicacion());
+                    break;
+
+                case 1:
+                    System.out.printf("%n--- [MODO 1: TRÁNSITO INDIVIDUAL EN TORNO #%d] ---%n", tornoActivo.getIdTerminal());
+                    System.out.print("Sentido del tránsito (E = Entrada, S = Salida): ");
+                    String lineaSentido = teclado.nextLine().trim().toUpperCase();
+                    char sentidoTransito = lineaSentido.isEmpty() ? 'E' : lineaSentido.charAt(0);
+
+                    System.out.print("Nombre completo: ");
+                    String nombreLimpio = teclado.nextLine().trim().toUpperCase();
+                    if (nombreLimpio.isEmpty()) {
+                        nombreLimpio = "N/D";
+                    }
+
+                    Fichaje nuevoFichaje;
+
+                    if (sentidoTransito == 'S') {
+                        nuevoFichaje = tornoActivo.registrarSalida(nombreLimpio);
+                        if (nuevoFichaje.isAutorizado()) {
+                            System.out.println(">> VEREDICTO: [SALIDA AUTORIZADA] Torno exterior abierto.");
+                        } else {
+                            System.err.println(">> ALERTA: Imposible autorizar salida; recinto vacío.");
+                        }
+                    } else {
+                        double tempVestibulo = 0.0;
+                        String dniPersonaLimpio = "N/D";
+                        char perfilNormalizado = '?';
+                        boolean datosSintacticamenteCorrectos = true;
+                        String motivoError = "";
+
+                        try {
+                            System.out.print("Temperatura (ºC): ");
+                            tempVestibulo = Double.parseDouble(teclado.nextLine().trim());
+                            System.out.print("DNI: ");
+                            dniPersonaLimpio = teclado.nextLine().trim().toUpperCase();
+                            System.out.print("Perfil (E/D/V/A): ");
+                            String lineaPerfil = teclado.nextLine().trim();
+                            perfilNormalizado = lineaPerfil.isEmpty() ? '?' : Character.toUpperCase(lineaPerfil.charAt(0));
+                        } catch (NumberFormatException e) {
+                            datosSintacticamenteCorrectos = false;
+                            motivoError = "Error de formato numérico.";
+                        }
+
+                        nuevoFichaje = tornoActivo.registrarEntrada(dniPersonaLimpio, nombreLimpio,
+                                perfilNormalizado, tempVestibulo, datosSintacticamenteCorrectos, motivoError);
+
+                        System.out.printf(">> VEREDICTO: %s [Token: %s]%n",
+                                nuevoFichaje.isAutorizado()
+                                        ? "[ENTRADA AUTORIZADA]"
+                                        : "[ENTRADA DENEGADA - " + nuevoFichaje.getMotivo() + "]",
+                                nuevoFichaje.getToken());
+
+                        if (nuevoFichaje.isAutorizado()) {
+                            System.out.printf("   Zona asignada: %s (Estancia máx: %d min)%n",
+                                    nuevoFichaje.obtenerZonaAutorizada(), nuevoFichaje.obtenerEstanciaMaximaMinutos());
+                        }
+
+                        Fichaje previo = tornoActivo.getPenultimoFichaje();
+                        if (nuevoFichaje.esMismoSolicitante(previo)
+                                && nuevoFichaje.getSentido() == previo.getSentido()) {
+                            System.out.println(">> AVISO ANTI-REBOTE: El DNI " + nuevoFichaje.getDni()
+                                    + " coincide con el tránsito anterior de este mismo torno.");
+                        }
+                    }
+
+                    System.out.println(">> Objeto Fichaje registrado: " + nuevoFichaje);
+                    break;
+
+                case 2:
+                    System.out.printf("%n--- [MODO 2: RÁFAGA EN TORNO #%d] ---%n", tornoActivo.getIdTerminal());
+                    System.out.print("Personas en cola para esta ráfaga: ");
+                    int personasEnCola = 0;
+                    try {
+                        personasEnCola = Integer.parseInt(teclado.nextLine().trim());
+                    } catch (NumberFormatException e) {
+                        personasEnCola = 0;
+                    }
+
+                    int restantes = tornoActivo.procesarRafaga(personasEnCola);
+                    System.out.printf(">> Estado tras ráfaga. Plazas disponibles en campus: %d | Restantes en cola: %d%n",
+                            tornoActivo.getAforoDisponibleCampus(), restantes);
+                    break;
+
+                case 3:
+                    System.out.println("\n--- [MODO 3: MONITOR DE TELEMETRÍA SINCRONIZADA] ---");
+                    tornoActivo.mostrarTelemetria();
+                    break;
+
+                case 4:
+                    System.out.println("\n--- [MODO 4: INSPECCIÓN PERIMETRAL ESTRUCTURADA (SESE)] ---");
+                    boolean alarmaSabotajeDetectada = false;
+
+                    for (int torno = 1; torno <= TOTAL_TORNOS_CAMPUS && !alarmaSabotajeDetectada; torno++) {
+                        String nombreAcceso = switch (torno) {
+                            case 1 -> "Vestíbulo Central  | ";
+                            case 2 -> "Puerta Norte Ciclos| ";
+                            case 3 -> "Puerta Sur Talleres| ";
+                            default -> "Acceso Perimetral  | ";
+                        };
+                        System.out.print(nombreAcceso);
+
+                        for (int canal = 1; canal <= CANALES_POR_TORNO && !alarmaSabotajeDetectada; canal++) {
+                            if (torno == 2 && canal == 2) {
+                                System.out.print("[REVISIÓN] ");
+                            } else {
+                                boolean falloCritico = (torno == 3 && canal == 2 && false);
+                                if (falloCritico) {
+                                    System.out.print("[SABOTAJE] ");
+                                    alarmaSabotajeDetectada = true;
+                                } else {
+                                    System.out.printf("[C%d: OK]   ", canal);
+                                }
+                            }
+                        }
+                        System.out.println();
+                    }
+                    System.out.println("-------------------------------------------------------------------");
+                    break;
+
+                case 5:
+                    System.out.println("\n--- [MODO 5: PROTOCOLO DE EVACUACIÓN DE EMERGENCIA] ---");
+                    tornoActivo.activarEvacuacion();
+                    break;
+
+                case 6:
+                    System.out.println("\n--- [MODO 6: COPIA DEFENSIVA E IGUALDAD (CONSTRUCTOR COPIA)] ---");
+                    Fichaje original = tornoActivo.getUltimoFichaje();
+                    Fichaje copiaRespaldo = tornoActivo.crearCopiaDefensivaUltimo();
+
+                    if (copiaRespaldo == null) {
+                        System.out.println(">> No existe ningún fichaje previo en este torno para clonar.");
+                    } else {
+                        System.out.println("Original en torno:                   " + original);
+                        System.out.println("Copia fabricada con new(original):   " + copiaRespaldo);
+                        System.out.println("¿Misma dirección en memoria (==)?    " + (copiaRespaldo == original));
+                        System.out.println("¿Mismo contenido inicial (equals)?   " + copiaRespaldo.equals(original));
+
+                        System.out.print("Introduce nueva observación para la copia rectificada: ");
+                        String nuevoMotivo = teclado.nextLine().trim();
+                        copiaRespaldo.setMotivo(nuevoMotivo);
+
+                        System.out.println("Copia tras editar motivo:            " + copiaRespaldo);
+                        System.out.println("Original tras editar la copia:       " + original);
+                        System.out.println("¿Siguen siendo equals tras editar?   " + copiaRespaldo.equals(original));
+                    }
+                    break;
+
+                case 7:
+                    System.out.println("\n>> Desconectando terminales de presencia de forma ordenada...");
+                    sesionActiva = false;
+                    break;
+
+                default:
+                    System.err.println(">> Error: Opción no válida. Seleccione una operación entre 0 y 7.");
+                    break;
+            }
+
+        } while (sesionActiva);
+
+        iesElCaminas.mostrarAuditoriaFinal();
+        System.out.printf("DESGLOSE TORNO #101 (Vestíbulo): %d operaciones procesadas%n", tornoVestibulo.getOperacionesLocales());
+        System.out.printf("DESGLOSE TORNO #102 (Norte):     %d operaciones procesadas%n", tornoNorte.getOperacionesLocales());
+        System.out.println("ESTADO DEL DISPOSITIVO:          Sistema multi-torno desconectado.");
+        System.out.println("======================================================================");
+
+        teclado.close();
+    }
+}
+```
+
+</details>
+
+---
+
+#### 4. Segunda sesión: dojo de entrenamiento y katas de código
+
+*(Redactadas con instrucciones claras, directas y paso a paso).*
+
+##### Kata 1 (Cinturón blanco). Clona un objeto de verdad y compáralo con `equals`
+
+Abre tu clase entidad dentro del paquete `.modelo` (`Personaje`, `Item`, `Bola` o `Credencial`) y haz dos mejoras:
+1. Escribe un **constructor copia** que reciba otro objeto de su misma clase (`public TuClase(TuClase original)`). Comprueba con `if (original != null)` que no sea nulo y copia todos sus datos en `this`.
+2. Escribe el método estándar `@Override public boolean equals(Object obj)` comprobando `this == obj` y `else if (obj instanceof TuClase otro)` para comparar sus atributos reales.
+
+Después, ve a `MiProyecto.java` (en `.app`) y haz esta comprobación según tu proyecto:
+
+* **Aventura conversacional (`Personaje.java`):** Crea un héroe, fabrícale un clon exacto con `new Personaje(heroe)`, y comprueba por pantalla que `heroe == clon` da **`false`** mientras que `heroe.equals(clon)` da **`true`**. Después quítale 20 puntos de vida solo al `clon` usando su *setter*, y comprueba que el `heroe` original sigue intacto (y ahora `equals` da `false`).
+* **Motor de recomendación (`Item.java`):** Crea un ítem, fabrícale una copia exacta con `new Item(item1)`, comprueba por pantalla que `item1 == copia` da **`false`** y `item1.equals(copia)` da **`true`**. Cambia la valoración solo en `copia` y verifica que `item1` conserva su nota original.
+* **Simulador de físicas 2D (`Bola.java`):** Crea una bola, clónala con `new Bola(bola1)`, comprueba que `bola1 == clon` da **`false`** y `bola1.equals(clon)` da **`true`**. Mueve de posición únicamente al `clon` usando sus *setters* y verifica que `bola1` sigue en su coordenada inicial.
+* **Bóveda de contraseñas (`Credencial.java`):** Crea una credencial, fabrícale una copia de respaldo con `new Credencial(cred1)`, comprueba que `cred1 == copia` da **`false`** y `cred1.equals(copia)` da **`true`**. Cambia los días de caducidad solo de la copia y verifica que `cred1` no se ha modificado.
+
+---
+
+##### Kata 2 (Cinturón marrón). ¿Por qué `equals` debe recibir `Object` y aguantar `null`?
+
+Haz estas dos comprobaciones rápidas en `MiProyecto.java` para asegurarte de que tu `equals` está a prueba de fallos:
+
+1. **Prueba contra `null` y otro tipo distinto:**  
+   Imprime por consola el resultado de `miObjeto.equals(null)` y el resultado de `miObjeto.equals("Un texto cualquiera")`. Comprueba que **no explota** con ningún error rojo (`NullPointerException` ni `ClassCastException`) sino que devuelve limpiamente **`false`**.
+2. **La trampa de olvidarse `Object`:**  
+   Prueba a quitar temporalmente `@Override` y a cambiar el parámetro de `equals(Object obj)` por `equals(TuClase obj)`. Verás que IntelliJ ya no reconoce que estás redefiniendo el método oficial de Java. Vuelve a dejar **`@Override public boolean equals(Object obj)`** para asegurar que funciona en cualquier parte de Java.
+
+---
+
+##### Kata 3 (Cinturón negro). Protege tu clase contenedora devolviendo una copia segura
+
+Cuando tu clase contenedora (`Escena`, `Usuario`, `Escenario` o `PoliticaSeguridad`) tiene un *getter* que devuelve un objeto guardado dentro (como `getUltimoItem()` o `getBola()`), si devuelve la flecha directa del objeto original, cualquiera desde `main` puede modificar ese objeto a espaldas del contenedor:
+
+1. En tu clase contenedora, crea un método nuevo llamado **`obtenerCopiaSegura()`** (por ejemplo, `obtenerCopiaUltimoItem()` o `obtenerCopiaHeroe()`).
+2. Dentro de ese método, comprueba con `if` que el objeto guardado no sea `null` y devuelve **`new TuEntidad(this.tuObjeto)`** usando tu constructor copia.
+3. En `MiProyecto.java`, pide esa copia segura, cámbiale un dato con un *setter* y muestra después el objeto que sigue guardado dentro de tu contenedor. Comprueba que el original interno **no se ha modificado**.
+
+---
+
+### Día 45 - 2 sesiones
+
+---
+
+#### 1. Caso guía en AzaharTech
+
+Son las 15:00 h del **martes 1 de diciembre de 2026**. En las oficinas de **AzaharTech** en Castellón de la Plana, el equipo encara la recta final del **Sprint 4: «Arquitectos de software»**. Con la versión `v3.9`, el sistema multi-torno del **IES El Caminàs** cuenta con arquitectura empaquetada, agregación en `Campus`, constructor copia defensivo e igualdad estándar con `equals`.
+
+Sin embargo, durante la reunión de coordinación previa al Sprint 5 (cuando empezarán a trabajar en equipo), **Laia Claramunt** plantea un problema de comunicación técnica a **Alba Torres** y **Pau Ferrer**:
+
+> *«Equipo: en enero pasaréis a trabajar en equipos de consultoría compartiendo código entre varios desarrolladores. Si un compañero de otro paquete importa vuestra clase `Torno` o `Fichaje` y coloca el cursor sobre `torno.registrarEntrada(...)` en IntelliJ, ¿cómo sabe qué valores espera cada parámetro, qué rango de temperatura es válido o qué devuelve exactamente el método si no está leyendo el código interno?*
+>
+> *Hasta ahora hemos puesto breves comentarios sueltos en algunos métodos, pero la mayoría de constructores, getters, setters y métodos de negocio carecen de etiquetas formales **`@param`** y **`@return`**. Tampoco hemos generado nunca la documentación web navegable del proyecto.*
+>
+> *Un profesional de Java no obliga a los demás a leer sus líneas privadas para saber cómo usar su clase: **documenta la interfaz pública mediante Javadoc estándar** para que tanto el IDE como el navegador web muestren un manual técnico oficial con cero advertencias»*.
+
+---
+
+#### 2. Fundamento teórico: documentación técnica de API con Javadoc
+
+Java incluye de serie en el JDK la herramienta **`javadoc`**, capaz de analizar nuestros archivos `.java` y generar automáticamente un portal web HTML oficial (idéntico al de la API estándar de Oracle que consultamos para `String`, `Math` o `LocalTime`).
+
+```mermaid
+flowchart TD
+    Tipo{"Tipos de comentarios en Java"}
+    
+    Tipo -- "// Comentario de línea" --> Notas["<b>Notas internas de implementación</b><br/>• Solo visibles al abrir el archivo .java<br/>• Explican el 'por qué' de una línea concreta<br/>• Ignorados por compilador y Javadoc"]
+    Tipo -- "/* Bloque tradicional */" --> Bloque["<b>Comentarios multilínea internos</b><br/>• Útiles para notas largas internas<br/>• Ignorados por compilador y Javadoc"]
+    Tipo -- "/** Comentario Javadoc */" --> Doc["<b>Documentación oficial de API</b><br/>• Empieza SIEMPRE por doble asterisco (/**)<br/>• Se coloca justo encima de clase, constructor o método<br/>• Procesado por IntelliJ (Ctrl + Q) y la herramienta javadoc"]
+```
+
+##### A. Anatomía y etiquetas principales de Javadoc
+
+Un comentario Javadoc válido comienza con `/**`, continúa con un asterisco alineado al inicio de cada línea y termina con `*/`. Se estructura en dos partes: **descripción inicial** (cuya primera frase, terminada en punto, aparece en las tablas resumen del HTML) y **etiquetas** (*tags*).
+
+```mermaid
+flowchart LR
+    subgraph BloqueJavadoc ["Anatomía de un Bloque Javadoc Profesional"]
+        direction TB
+        Desc["<b>1. Resumen y descripción:</b><br/>Primera frase clara terminada en punto."]
+        TagsMetodo["<b>2. Etiquetas de método/constructor:</b><br/>• @param nombre : qué espera recibir<br/>• @return : qué valor o estado devuelve"]
+        TagsClase["<b>3. Etiquetas de cabecera de clase:</b><br/>• @author : autoría del módulo<br/>• @version : versión actual del incremento<br/>• @since : versión mínima de JDK o sprint"]
+        Inline["<b>4. Etiquetas en línea (dentro del texto):</b><br/>• {@link Clase} : crea un enlace clicable<br/>• {@code texto} : formatea código o literales"]
+    end
+```
+
+##### B. Flujo de trabajo en IntelliJ IDEA
+
+```mermaid
+flowchart LR
+    Codigo["Archivos .java documentados<br/>(/** ... @param ... @return */)"] --> IDE["<b>Ayuda instantánea en IntelliJ</b><br/>Al pulsar Ctrl + Q sobre cualquier<br/>llamada aparece la ficha formateada"]
+    Codigo --> Herramienta["<b>Herramienta javadoc (JDK)</b><br/>Tools -> Generate JavaDoc..."]
+    Herramienta --> Web["<b>Portal Web HTML estático</b><br/>index.html navegable por paquetes,<br/>clases, constructores y enlaces {@link}"]
+```
+
+##### C. Reglas de oro de estilo Javadoc en AzaharTech
+
+1. **Documentar el contrato, no el detalle interno:** Explica *qué* hace el método, qué rangos acepta y qué efectos tiene (por ejemplo, *"Acota la temperatura al rango físico [0.0, 60.0]; si está fuera de rango asigna 0.0"*), sin transcribir línea a línea el `if` interno.
+2. **Coherencia estricta con los parámetros:** El nombre tras `@param` debe coincidir **exactamente letra por letra** con el parámetro de la firma del método. Todo método que no sea `void` debe llevar su etiqueta `@return`.
+3. **Política de cero advertencias (*Zero Warnings*):** Al generar el Javadoc desde IntelliJ, la consola no debe mostrar ningún `warning` de etiquetas faltantes o parámetros mal nombrados.
+4. **No ensuciar el repositorio Git:** El portal HTML generado por Javadoc es un producto derivado autogenerado (como los `.class`). Se consulta localmente en el navegador y **no** se sube al repositorio de código fuente.
+
+---
+
+#### 3. Evolución del caso guía a `ControlAccesoQR v3.10` (API Documentada)
+
+Evolucionamos el proyecto de la versión `v3.9` a la **`v3.10`**. La lógica funcional permanece intacta y estable, mientras blindamos documentalmente toda la interfaz pública de las cuatro clases (`Fichaje`, `Campus`, `Torno` y `ControlAccesoQR`) con bloques Javadoc completos, etiquetas `@param`, `@return`, `{@code}` y enlaces cruzados `{@link}` listos para generar HTML sin ninguna advertencia.
+
+##### A. Comparativa de cambios respecto a v3.9 (`diff`)
+
+```diff
+  // =========================================================================
+  // ARCHIVO: es/azahartech/caminas/dispositivos/Torno.java (Ejemplo Javadoc)
+  // =========================================================================
++ /**
++  * Evalúa todas las reglas de acceso de una entrada mediante {@link Fichaje},
++  * actualiza la ocupación del {@link Campus} compartido y registra la instancia
++  * resultante en el historial reciente del torno.
++  *
++  * @param dni                    Documento identificativo del solicitante.
++  * @param nombre                 Nombre completo normalizado de la persona.
++  * @param perfil                 Código de rol ({@code 'E'}, {@code 'D'}, {@code 'V'} o {@code 'A'}).
++  * @param temperatura            Lectura biométrica del sensor térmico en grados Celsius.
++  * @param datosSintacticamenteOk {@code true} si la captura no arrojó errores de formato.
++  * @param motivoError            Descripción del error previo si la captura falló.
++  * @return Nueva instancia {@link Fichaje} con el veredicto y marca horaria asignada.
++  */
+  public Fichaje registrarEntrada(String dni, String nombre, char perfil,
+                                  double temperatura, boolean datosSintacticamenteOk, String motivoError)
+```
+
+##### B. Foco en la novedad: contrato Javadoc completo y enlaces `{@link}`
+
+Observa cómo al documentar con `{@link ...}` y `{@code ...}` se construye una documentación navegable entre los paquetes `.modelo` y `.dispositivos`:
+
+```java
+/**
+ * Devuelve un clon independiente (copia defensiva) del último {@link Fichaje}
+ * registrado en este torno, utilizando el constructor copia {@link Fichaje#Fichaje(Fichaje)}.
+ * Permite rectificar observaciones sin alterar el registro histórico original.
+ *
+ * @return Copia independiente del último fichaje, o {@code null} si el torno
+ *         todavía no ha procesado ningún tránsito en la sesión actual.
+ */
+public Fichaje crearCopiaDefensivaUltimo() {
+    Fichaje copia = null;
+    if (this.ultimoFichaje != null) {
+        copia = new Fichaje(this.ultimoFichaje);
+    }
+    return copia;
+}
+```
+
+##### C. Código fuente completo integrado
+
+<details>
+<summary><b>🔍 Desplegar archivos documentados: Fichaje.java, Campus.java, Torno.java y ControlAccesoQR.java (v3.10)</b></summary>
+
+**Archivo 1: `pr/src/es/azahartech/caminas/modelo/Fichaje.java`**
+```java
+package es.azahartech.caminas.modelo;
+
+import java.time.LocalTime;
+
+/**
+ * Entidad de dominio que representa un registro de tránsito (entrada o salida)
+ * en los tornos del IES El Caminàs.
+ * <p>
+ * Gestiona de forma autónoma su numeración secuencial única mediante contadores
+ * {@code static}, encapsula sus atributos privados con validación defensiva,
+ * ofrece soporte para copia independiente e implementa igualdad lógica estándar.
+ * </p>
+ *
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 3.10 (Diciembre 2026)
+ * @since JDK 21 LTS
+ */
+public class Fichaje {
+
+    /** Temperatura corporal mínima válida de lectura de sensor (en ºC). */
+    public static final double TEMP_MIN_SEGURA = 35.0;
+    /** Temperatura corporal máxima admitida sin fiebre (en ºC). */
+    public static final double TEMP_MAX_FIEBRE = 37.5;
+    /** Longitud reglamentaria exacta de un DNI español estándar. */
+    public static final int LONGITUD_DNI = 9;
+
+    private static int ultimoIdAsignado = 1042;
+    private static int totalFichajesCreados = 0;
+
+    private int id;
+    private String dni;
+    private String nombre;
+    private char perfil;
+    private char sentido;
+    private double temperatura;
+    private boolean autorizado;
+    private String motivo;
+    private String token;
+    private LocalTime hora;
+
+    /**
+     * Constructor maestro para registrar tránsitos detallados (habitualmente entradas).
+     * Asigna automáticamente un identificador único autoincremental y la hora actual.
+     *
+     * @param dni         Documento de identidad del solicitante (se normaliza en mayúsculas).
+     * @param nombre      Nombre completo de la persona (si está vacío se asigna {@code "N/D"}).
+     * @param perfil      Carácter de perfil ({@code 'E'}, {@code 'D'}, {@code 'V'} o {@code 'A'}).
+     * @param sentido     Sentido del tránsito ({@code 'E'} entrada o {@code 'S'} salida).
+     * @param temperatura Lectura térmica corporal en ºC (acotada al rango {@code [0.0, 60.0]}).
+     * @param autorizado  {@code true} si el paso fue concedido; {@code false} si fue denegado.
+     * @param motivo      Justificación o resultado descriptivo de la validación.
+     * @param token       Código QR generado para el tránsito.
+     */
+    public Fichaje(String dni, String nombre, char perfil, char sentido,
+                   double temperatura, boolean autorizado, String motivo, String token) {
+        ultimoIdAsignado++;
+        totalFichajesCreados++;
+        this.id = ultimoIdAsignado;
+
+        this.dni = (dni == null || dni.isBlank()) ? "N/D" : dni.trim().toUpperCase();
+        this.setNombre(nombre);
+        this.perfil = perfil;
+        this.sentido = (sentido == 'S') ? 'S' : 'E';
+        this.setTemperatura(temperatura);
+        this.autorizado = autorizado;
+        this.setMotivo(motivo);
+        this.token = (token == null || token.isBlank()) ? "N/D" : token;
+        this.hora = LocalTime.now();
+    }
+
+    /**
+     * Constructor sobrecargado simplificado para tránsitos de salida ({@code 'S'}).
+     * Delega en el constructor maestro asignando valores neutros a los campos no requeridos.
+     *
+     * @param nombre     Nombre completo de la persona que abandona el campus.
+     * @param sentido    Sentido del tránsito (generalmente {@code 'S'}).
+     * @param autorizado {@code true} si la salida pudo efectuarse; {@code false} en caso contrario.
+     * @param motivo     Observación resultante de la operación de salida.
+     */
+    public Fichaje(String nombre, char sentido, boolean autorizado, String motivo) {
+        this("N/D", nombre, '?', sentido, 0.0, autorizado, motivo, "N/D");
+    }
+
+    /**
+     * Constructor copia que fabrica una nueva instancia independiente en el Heap
+     * replicando exactamente los atributos de un fichaje existente.
+     *
+     * @param original Instancia {@link Fichaje} origen cuyos datos se desean clonar.
+     *                 Si es {@code null}, genera un registro vacío seguro con nuevo ID.
+     */
+    public Fichaje(Fichaje original) {
+        if (original != null) {
+            this.id = original.id;
+            this.dni = original.dni;
+            this.nombre = original.nombre;
+            this.perfil = original.perfil;
+            this.sentido = original.sentido;
+            this.temperatura = original.temperatura;
+            this.autorizado = original.autorizado;
+            this.motivo = original.motivo;
+            this.token = original.token;
+            this.hora = original.hora;
+        } else {
+            ultimoIdAsignado++;
+            totalFichajesCreados++;
+            this.id = ultimoIdAsignado;
+            this.dni = "N/D";
+            this.nombre = "N/D";
+            this.perfil = '?';
+            this.sentido = 'E';
+            this.temperatura = 0.0;
+            this.autorizado = false;
+            this.motivo = "Copia de origen nulo";
+            this.token = "N/D";
+            this.hora = LocalTime.now();
+        }
+    }
+
+    /**
+     * Consulta la cantidad total de objetos {@link Fichaje} fabricados en memoria durante la sesión.
+     *
+     * @return Número acumulado de instancias creadas mediante los constructores principales.
+     */
+    public static int getTotalFichajesCreados() {
+        return totalFichajesCreados;
+    }
+
+    /**
+     * Obtiene el último identificador numérico asignado por el contador estático de la clase.
+     *
+     * @return Último ID secuencial asignado.
+     */
+    public static int getUltimoIdAsignado() {
+        return ultimoIdAsignado;
+    }
+
+    /**
+     * Calcula el siguiente identificador disponible que recibirá la próxima instancia.
+     *
+     * @return Siguiente número de registro consecutivo.
+     */
+    public static int getSiguienteId() {
+        return ultimoIdAsignado + 1;
+    }
+
+    /**
+     * Valida si una temperatura corporal se encuentra dentro del rango biométrico admitido.
+     *
+     * @param temperatura Valor de temperatura medido en grados Celsius.
+     * @return {@code true} si está entre {@link #TEMP_MIN_SEGURA} y {@link #TEMP_MAX_FIEBRE};
+     *         {@code false} en caso contrario.
+     */
+    public static boolean esTemperaturaSegura(double temperatura) {
+        return (temperatura >= TEMP_MIN_SEGURA && temperatura <= TEMP_MAX_FIEBRE);
+    }
+
+    /**
+     * Comprueba si una cadena cumple con la longitud reglamentaria de un DNI.
+     *
+     * @param dni Cadena del documento a evaluar.
+     * @return {@code true} si no es nula y tiene exactamente {@link #LONGITUD_DNI} caracteres.
+     */
+    public static boolean esDniValido(String dni) {
+        return (dni != null && dni.length() == LONGITUD_DNI);
+    }
+
+    /**
+     * Verifica si el carácter de perfil corresponde a un colectivo autorizado del centro.
+     *
+     * @param perfil Carácter identificador del rol.
+     * @return {@code true} para {@code 'E'}, {@code 'D'}, {@code 'V'} o {@code 'A'};
+     *         {@code false} para cualquier otro carácter.
+     */
+    public static boolean esPerfilValido(char perfil) {
+        boolean autorizado;
+        switch (perfil) {
+            case 'E':
+            case 'D':
+            case 'V':
+            case 'A':
+                autorizado = true;
+                break;
+            default:
+                autorizado = false;
+                break;
+        }
+        return autorizado;
+    }
+
+    /**
+     * Devuelve el identificador único de este registro de fichaje.
+     *
+     * @return Número entero identificador.
+     */
+    public int getId() { return this.id; }
+
+    /**
+     * Devuelve el DNI normalizado asociado al fichaje.
+     *
+     * @return Cadena con el DNI o {@code "N/D"} si no aplica.
+     */
+    public String getDni() { return this.dni; }
+
+    /**
+     * Devuelve el nombre completo del solicitante.
+     *
+     * @return Nombre normalizado en mayúsculas.
+     */
+    public String getNombre() { return this.nombre; }
+
+    /**
+     * Devuelve el carácter representativo del rol asignado.
+     *
+     * @return Código de perfil ({@code 'E'}, {@code 'D'}, {@code 'V'}, {@code 'A'} o {@code '?'}).
+     */
+    public char getPerfil() { return this.perfil; }
+
+    /**
+     * Devuelve el sentido del tránsito registrado.
+     *
+     * @return {@code 'E'} para entrada o {@code 'S'} para salida.
+     */
+    public char getSentido() { return this.sentido; }
+
+    /**
+     * Devuelve la temperatura corporal registrada para este acceso.
+     *
+     * @return Lectura en grados Celsius.
+     */
+    public double getTemperatura() { return this.temperatura; }
+
+    /**
+     * Indica si el acceso o salida fue autorizado por las reglas de control.
+     *
+     * @return {@code true} si fue concedido; {@code false} si fue denegado.
+     */
+    public boolean isAutorizado() { return this.autorizado; }
+
+    /**
+     * Devuelve el motivo o anotación administrativa asociada al fichaje.
+     *
+     * @return Texto descriptivo del motivo.
+     */
+    public String getMotivo() { return this.motivo; }
+
+    /**
+     * Devuelve el código de token QR emitido para este registro.
+     *
+     * @return Cadena con el token generado o {@code "N/D"}.
+     */
+    public String getToken() { return this.token; }
+
+    /**
+     * Devuelve la hora exacta en la que se instanció el registro.
+     *
+     * @return Marca temporal {@link LocalTime}.
+     */
+    public LocalTime getHora() { return this.hora; }
+
+    /**
+     * Modifica el nombre del solicitante normalizándolo a mayúsculas sin espacios externos.
+     *
+     * @param nombre Nuevo nombre a asignar. Si es {@code null} o está vacío, asigna {@code "N/D"}.
+     */
+    public void setNombre(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            this.nombre = "N/D";
+        } else {
+            this.nombre = nombre.trim().toUpperCase();
+        }
+    }
+
+    /**
+     * Actualiza la lectura térmica validando que pertenezca al rango físico {@code [0.0, 60.0]}.
+     *
+     * @param temperatura Nueva lectura térmica en ºC. Valores fuera de rango se ajustan a {@code 0.0}.
+     */
+    public void setTemperatura(double temperatura) {
+        if (temperatura >= 0.0 && temperatura <= 60.0) {
+            this.temperatura = temperatura;
+        } else {
+            this.temperatura = 0.0;
+        }
+    }
+
+    /**
+     * Actualiza o rectifica el motivo descriptivo del registro de fichaje.
+     *
+     * @param motivo Nueva observación administrativa. Si está en blanco se asigna {@code "Sin evaluar"}.
+     */
+    public void setMotivo(String motivo) {
+        if (motivo == null || motivo.trim().isEmpty()) {
+            this.motivo = "Sin evaluar";
+        } else {
+            this.motivo = motivo.trim();
+        }
+    }
+
+    /**
+     * Traduce el código de carácter del perfil a su denominación institucional legible.
+     *
+     * @return Descripción textual del colectivo.
+     */
+    public String obtenerPerfilLegible() {
+        String descripcion;
+        switch (this.perfil) {
+            case 'E': descripcion = "Estudiante Oficial"; break;
+            case 'D': descripcion = "Docente / Claustro"; break;
+            case 'V': descripcion = "Visita Externa / Proveedor"; break;
+            case 'A': descripcion = "Personal de Administración y Servicios (PAS)"; break;
+            default:  descripcion = "No especificado"; break;
+        }
+        return descripcion;
+    }
+
+    /**
+     * Determina la zona del campus autorizada para el perfil de este fichaje.
+     *
+     * @return Nombre de la zona física habilitada para el acceso.
+     */
+    public String obtenerZonaAutorizada() {
+        String zona;
+        switch (this.perfil) {
+            case 'E': zona = "Aulas Docentes y Talleres de Informática"; break;
+            case 'D': zona = "Departamentos Didácticos, Aulas y Sala de Profesores"; break;
+            case 'V': zona = "Secretaría, Conserjería y Despachos de Dirección"; break;
+            case 'A': zona = "Área de Gestión Administrativa y Archivo Central"; break;
+            default:  zona = "Acceso Denegado / Zona No Autorizada"; break;
+        }
+        return zona;
+    }
+
+    /**
+     * Calcula el límite máximo de permanencia permitido en el recinto según el perfil.
+     *
+     * @return Tiempo máximo de estancia expresado en minutos.
+     */
+    public int obtenerEstanciaMaximaMinutos() {
+        int estanciaMinutos;
+        switch (this.perfil) {
+            case 'E': estanciaMinutos = 360; break;
+            case 'D': estanciaMinutos = 480; break;
+            case 'V': estanciaMinutos = 120; break;
+            case 'A': estanciaMinutos = 420; break;
+            default:  estanciaMinutos = 0; break;
+        }
+        return estanciaMinutos;
+    }
+
+    /**
+     * Compara si este fichaje comparte exactamente el mismo DNI válido con otro registro,
+     * útil para prevenir lecturas dobles accidentales (anti-rebote).
+     *
+     * @param otro Otro objeto {@link Fichaje} contra el que comparar el DNI.
+     * @return {@code true} si {@code otro} no es nulo y ambos poseen idéntico DNI válido;
+     *         {@code false} en caso contrario.
+     */
+    public boolean esMismoSolicitante(Fichaje otro) {
+        boolean mismo = false;
+        if (otro != null && !this.dni.equals("N/D")) {
+            mismo = this.dni.equals(otro.getDni());
+        }
+        return mismo;
+    }
+
+    /**
+     * Evalúa la igualdad lógica de contenido frente a otro objeto.
+     *
+     * @param obj Objeto de referencia a comparar contra esta instancia.
+     * @return {@code true} si {@code obj} es un {@link Fichaje} con igual ID, sentido,
+     *         autorización, DNI, nombre y motivo; {@code false} si es nulo o difiere.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        boolean iguales = false;
+        if (this == obj) {
+            iguales = true;
+        } else if (obj instanceof Fichaje otro) {
+            iguales = (this.id == otro.id)
+                    && (this.sentido == otro.sentido)
+                    && (this.autorizado == otro.autorizado)
+                    && this.dni.equals(otro.dni)
+                    && this.nombre.equals(otro.nombre)
+                    && this.motivo.equals(otro.motivo);
+        }
+        return iguales;
+    }
+
+    /**
+     * Devuelve la representación textual formateada del registro de fichaje.
+     *
+     * @return Cadena resumen legible con ID, sentido, nombre, rol, veredicto, motivo y hora.
+     */
+    @Override
+    public String toString() {
+        String detalleRol = (this.sentido == 'S') ? "Tránsito exterior" : obtenerPerfilLegible();
+        return String.format("#%d [%s] %s (%s) | %s | %s | %s",
+                this.id,
+                this.sentido == 'S' ? "SALIDA" : "ENTRADA",
+                this.nombre,
+                detalleRol,
+                this.autorizado ? "AUTORIZADO" : "DENEGADO",
+                this.motivo,
+                this.hora.withNano(0));
+    }
+}
+```
+
+**Archivo 2: `pr/src/es/azahartech/caminas/modelo/Campus.java`**
+```java
+package es.azahartech.caminas.modelo;
+
+/**
+ * Entidad de dominio que centraliza el estado global compartido del campus educativo.
+ * <p>
+ * Diseñada para ser compartida por agregación entre múltiples instancias de
+ * {@code Torno}, garantizando un control sincronizado de aforo, picos térmicos
+ * y evacuación de emergencia.
+ * </p>
+ *
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 3.10 (Diciembre 2026)
+ * @since JDK 21 LTS
+ */
+public class Campus {
+
+    private static final double FACTOR_PORCENTAJE = 100.0;
+
+    private String nombre;
+    private int aforoMaximo;
+    private int personasEnCentro;
+
+    private int totalProcesados;
+    private int totalAutorizados;
+    private int totalDenegados;
+
+    private double tempMaxima;
+    private double tempMinima;
+    private int minutosEstanciaAcumulados;
+
+    /**
+     * Inicializa el estado global del campus con una capacidad y ocupación inicial dadas.
+     *
+     * @param nombre            Denominación oficial del recinto educativo.
+     * @param aforoMaximo       Capacidad máxima legal de personas admitidas simultáneamente.
+     * @param personasIniciales Ocupación de partida al arrancar la jornada (acotada al aforo).
+     */
+    public Campus(String nombre, int aforoMaximo, int personasIniciales) {
+        this.nombre = (nombre == null || nombre.isBlank()) ? "Campus Central" : nombre.trim();
+        this.aforoMaximo = Math.max(1, aforoMaximo);
+        this.personasEnCentro = Math.max(0, Math.min(personasIniciales, this.aforoMaximo));
+
+        this.totalProcesados = 0;
+        this.totalAutorizados = 0;
+        this.totalDenegados = 0;
+
+        this.tempMaxima = -1.0;
+        this.tempMinima = 100.0;
+        this.minutosEstanciaAcumulados = 0;
+    }
+
+    /**
+     * Obtiene el nombre oficial del campus.
+     *
+     * @return Nombre del centro educativo.
+     */
+    public String getNombre() { return this.nombre; }
+
+    /**
+     * Obtiene el límite máximo de aforo del recinto.
+     *
+     * @return Plazas totales disponibles.
+     */
+    public int getAforoMaximo() { return this.aforoMaximo; }
+
+    /**
+     * Consulta cuántas personas se encuentran actualmente dentro del recinto.
+     *
+     * @return Número actual de ocupantes.
+     */
+    public int getPersonasEnCentro() { return this.personasEnCentro; }
+
+    /**
+     * Calcula las plazas libres disponibles en este instante.
+     *
+     * @return Diferencia entre {@link #getAforoMaximo()} y {@link #getPersonasEnCentro()}.
+     */
+    public int getAforoDisponible() { return this.aforoMaximo - this.personasEnCentro; }
+
+    /**
+     * Comprueba si queda al menos una plaza libre para autorizar una nueva entrada.
+     *
+     * @return {@code true} si hay aforo disponible; {@code false} si el recinto está completo.
+     */
+    public boolean hayAforoDisponible() { return this.getAforoDisponible() > 0; }
+
+    /**
+     * Incrementa los contadores globales contabilizando un intento de tránsito denegado.
+     */
+    public void registrarIntentoDenegado() {
+        this.totalProcesados++;
+        this.totalDenegados++;
+    }
+
+    /**
+     * Registra una entrada autorizada, incrementando la ocupación global y actualizando
+     * los extremos térmicos y los minutos de estancia acumulados.
+     *
+     * @param temperatura     Temperatura registrada en el acceso (en ºC).
+     * @param minutosEstancia Duración prevista de la estancia para cálculo de promedios.
+     */
+    public void registrarEntradaExitosa(double temperatura, int minutosEstancia) {
+        this.totalProcesados++;
+        this.totalAutorizados++;
+        if (this.personasEnCentro < this.aforoMaximo) {
+            this.personasEnCentro++;
+        }
+        this.tempMaxima = Math.max(this.tempMaxima, temperatura);
+        this.tempMinima = Math.min(this.tempMinima, temperatura);
+        this.minutosEstanciaAcumulados += Math.max(0, minutosEstancia);
+    }
+
+    /**
+     * Intenta registrar la salida de una persona aplicando protección contra subdesbordamiento.
+     *
+     * @return {@code true} si había ocupantes y se decrementó el aforo;
+     *         {@code false} si el recinto ya figuraba vacío.
+     */
+    public boolean intentarRegistrarSalida() {
+        this.totalProcesados++;
+        boolean exito;
+        if (this.personasEnCentro > 0) {
+            this.personasEnCentro--;
+            this.totalAutorizados++;
+            exito = true;
+        } else {
+            this.totalDenegados++;
+            exito = false;
+        }
+        return exito;
+    }
+
+    /**
+     * Ejecuta el protocolo de vaciado progresivo de emergencia hasta llevar el aforo ocupado a cero.
+     */
+    public void activarEvacuacion() {
+        if (this.personasEnCentro == 0) {
+            System.out.println(">> El campus ya se encuentra completamente vacío.");
+        } else {
+            int loteSalidaSimultanea = 300;
+            int oleada = 1;
+
+            while (this.personasEnCentro > 0) {
+                int evacuadosLote = Math.min(this.personasEnCentro, loteSalidaSimultanea);
+                this.personasEnCentro -= evacuadosLote;
+                System.out.printf("  -> Oleada #%d: Desalojadas %d personas por salidas de emergencia (Ocupantes restantes: %d)%n",
+                        oleada, evacuadosLote, this.personasEnCentro);
+                oleada++;
+            }
+            System.out.println(">> CERTIFICACIÓN DE SEGURIDAD: Recinto 100% desalojado. Aforo íntegro restaurado.");
+        }
+    }
+
+    /**
+     * Imprime por consola el informe de telemetría global en vivo del campus,
+     * incluyendo la cuenta global de instancias {@link Fichaje} en memoria.
+     */
+    public void mostrarEstadoGlobal() {
+        double porcentajeOcupacion = ((double) this.personasEnCentro / this.aforoMaximo) * FACTOR_PORCENTAJE;
+        double estanciaMedia = this.totalAutorizados > 0
+                ? ((double) this.minutosEstanciaAcumulados / this.totalAutorizados) : 0.0;
+
+        System.out.printf("CAMPUS COMPARTIDO:        %s%n", this.nombre);
+        System.out.printf("OCUPACIÓN GLOBAL:         %d/%d personas (%6.2f %%)%n",
+                this.personasEnCentro, this.aforoMaximo, porcentajeOcupacion);
+        System.out.printf("PLAZAS LIBRES:            %d vacantes disponibles%n", this.getAforoDisponible());
+        System.out.printf("INSTANCIAS FICHAJE (RAM): %d objetos fabricados (Último ID: #%d)%n",
+                Fichaje.getTotalFichajesCreados(), Fichaje.getUltimoIdAsignado());
+        System.out.printf("PICO TÉRMICO MÁXIMO:      %.1f ºC%n", Math.max(0.0, this.tempMaxima));
+        System.out.printf("PICO TÉRMICO MÍNIMO:      %.1f ºC%n", this.tempMinima > 50.0 ? 0.0 : this.tempMinima);
+        System.out.printf("ESTANCIA PROMEDIO:        %.1f minutos (Total acumulado: %d min)%n",
+                estanciaMedia, this.minutosEstanciaAcumulados);
+    }
+
+    /**
+     * Emite el informe consolidado de auditoría al término de la jornada del campus.
+     */
+    public void mostrarAuditoriaFinal() {
+        System.out.println("\n======================================================================");
+        System.out.printf("   AUDITORÍA FINAL GLOBAL · %s%n", this.nombre);
+        System.out.println("======================================================================");
+        System.out.printf("TOTAL OPERACIONES EN CAMPUS:   %d%n", this.totalProcesados);
+        System.out.printf("OBJETOS FICHAJE CREADOS (RAM): %d%n", Fichaje.getTotalFichajesCreados());
+        System.out.printf("ACCESOS AUTORIZADOS (TOTAL):   %d%n", this.totalAutorizados);
+        System.out.printf("ACCESOS DENEGADOS (BLOQUEO):   %d%n", this.totalDenegados);
+        System.out.printf("OCUPACIÓN FINAL REGISTRADA:    %d personas%n", this.personasEnCentro);
+    }
+}
+```
+
+**Archivo 3: `pr/src/es/azahartech/caminas/dispositivos/Torno.java`**
+```java
+package es.azahartech.caminas.dispositivos;
+
+import es.azahartech.caminas.modelo.Campus;
+import es.azahartech.caminas.modelo.Fichaje;
+import java.util.Random;
+
+/**
+ * Entidad de dispositivo que modela un torno físico de control de paso.
+ * <p>
+ * Comparte por agregación una instancia única de {@link Campus} para mantener el aforo
+ * sincronizado con el resto de puertas, mientras conserva por composición su propio
+ * historial reciente de objetos {@link Fichaje} y su generador {@link Random}.
+ * </p>
+ *
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 3.10 (Diciembre 2026)
+ * @since JDK 21 LTS
+ */
+public class Torno {
+
+    private static final String PREFIJO_CENTRO = "CAMINAS";
+    private static final int BASE_TOKEN_SEGURIDAD = 1000;
+    private static final int RANGO_TOKEN_SEGURIDAD = 9000;
+
+    private int idTerminal;
+    private String ubicacion;
+    private int operacionesLocales;
+
+    private Campus campus;
+
+    private Fichaje ultimoFichaje;
+    private Fichaje penultimoFichaje;
+    private Random generadorTokens;
+
+    /**
+     * Construye un nuevo torno físico conectado al campus indicado.
+     *
+     * @param idTerminal Identificador numérico del dispositivo (mínimo {@code 1}).
+     * @param ubicacion  Descripción de la puerta física donde está instalado.
+     * @param campus     Instancia compartida de {@link Campus}. Si es {@code null}, crea un respaldo seguro.
+     */
+    public Torno(int idTerminal, String ubicacion, Campus campus) {
+        this.idTerminal = Math.max(1, idTerminal);
+        this.ubicacion = (ubicacion == null || ubicacion.isBlank()) ? "Acceso General" : ubicacion.trim();
+        this.campus = (campus != null) ? campus : new Campus("Recinto de Respaldo", 1000, 0);
+        this.operacionesLocales = 0;
+
+        this.ultimoFichaje = null;
+        this.penultimoFichaje = null;
+        this.generadorTokens = new Random();
+    }
+
+    /**
+     * Obtiene el identificador numérico de este torno.
+     *
+     * @return Número de terminal.
+     */
+    public int getIdTerminal() { return this.idTerminal; }
+
+    /**
+     * Obtiene el nombre descriptivo de la ubicación del torno.
+     *
+     * @return Ubicación física asignada.
+     */
+    public String getUbicacion() { return this.ubicacion; }
+
+    /**
+     * Devuelve el número de operaciones gestionadas localmente por este torno concreto.
+     *
+     * @return Contador local de operaciones.
+     */
+    public int getOperacionesLocales() { return this.operacionesLocales; }
+
+    /**
+     * Consulta las plazas libres disponibles en el {@link Campus} compartido asociado.
+     *
+     * @return Número de vacantes libres en el centro.
+     */
+    public int getAforoDisponibleCampus() { return this.campus.getAforoDisponible(); }
+
+    /**
+     * Obtiene la referencia al último {@link Fichaje} procesado por este torno.
+     *
+     * @return Último objeto fichaje, o {@code null} si no hay registros locales aún.
+     */
+    public Fichaje getUltimoFichaje() { return this.ultimoFichaje; }
+
+    /**
+     * Obtiene la referencia al penúltimo {@link Fichaje} procesado por este torno.
+     *
+     * @return Penúltimo objeto fichaje, o {@code null} si hay menos de dos registros.
+     */
+    public Fichaje getPenultimoFichaje() { return this.penultimoFichaje; }
+
+    /**
+     * Devuelve un clon independiente (copia defensiva) del último {@link Fichaje}
+     * registrado en este torno, utilizando el constructor copia {@link Fichaje#Fichaje(Fichaje)}.
+     *
+     * @return Copia independiente del último fichaje, o {@code null} si no existen registros.
+     */
+    public Fichaje crearCopiaDefensivaUltimo() {
+        Fichaje copia = null;
+        if (this.ultimoFichaje != null) {
+            copia = new Fichaje(this.ultimoFichaje);
+        }
+        return copia;
+    }
+
+    private String construirTokenQR(String dni, int idFichaje) {
+        int codigoSec = BASE_TOKEN_SEGURIDAD + this.generadorTokens.nextInt(RANGO_TOKEN_SEGURIDAD);
+        String token = PREFIJO_CENTRO + "-" + dni;
+        token += "-T" + this.idTerminal;
+        token += "-SEC#" + codigoSec;
+        token += "-REG" + idFichaje;
+        return token;
+    }
+
+    private void registrarFichajeEnHistorial(Fichaje nuevo) {
+        this.penultimoFichaje = this.ultimoFichaje;
+        this.ultimoFichaje = nuevo;
+    }
+
+    /**
+     * Procesa una solicitud de salida por este torno, validando en el {@link Campus} que el
+     * recinto no esté vacío, y registra el {@link Fichaje} resultante.
+     *
+     * @param nombre Nombre completo de la persona que abandona las instalaciones.
+     * @return Instancia {@link Fichaje} de tipo salida con el resultado de la operación.
+     */
+    public Fichaje registrarSalida(String nombre) {
+        this.operacionesLocales++;
+        boolean salidaAutorizada = this.campus.intentarRegistrarSalida();
+        String motivoSalida = salidaAutorizada ? "Salida registrada" : "Recinto vacío";
+
+        Fichaje nuevoFichaje = new Fichaje(nombre, 'S', salidaAutorizada, motivoSalida);
+        this.registrarFichajeEnHistorial(nuevoFichaje);
+        return nuevoFichaje;
+    }
+
+    /**
+     * Evalúa todas las reglas de seguridad de una entrada mediante {@link Fichaje},
+     * actualiza el aforo del {@link Campus} si procede y almacena el registro generado.
+     *
+     * @param dni                    Documento identificativo del solicitante.
+     * @param nombre                 Nombre completo del solicitante.
+     * @param perfil                 Código de rol ({@code 'E'}, {@code 'D'}, {@code 'V'} o {@code 'A'}).
+     * @param temperatura            Lectura térmica en grados Celsius.
+     * @param datosSintacticamenteOk {@code true} si la lectura por teclado no arrojó errores de formato.
+     * @param motivoError            Texto del error previo en caso de fallo sintáctico.
+     * @return Nueva instancia {@link Fichaje} con el veredicto, token y marca horaria asignada.
+     */
+    public Fichaje registrarEntrada(String dni, String nombre, char perfil,
+                                    double temperatura, boolean datosSintacticamenteOk, String motivoError) {
+        this.operacionesLocales++;
+        boolean accesoConcedido = false;
+        String motivoFinal = motivoError;
+
+        if (!datosSintacticamenteOk) {
+            this.campus.registrarIntentoDenegado();
+        } else if (!Fichaje.esTemperaturaSegura(temperatura)) {
+            motivoFinal = "Temperatura anómala.";
+            this.campus.registrarIntentoDenegado();
+        } else if (!this.campus.hayAforoDisponible()) {
+            motivoFinal = "Aforo completo.";
+            this.campus.registrarIntentoDenegado();
+        } else if (!Fichaje.esDniValido(dni)) {
+            motivoFinal = "DNI no reglamentario.";
+            this.campus.registrarIntentoDenegado();
+        } else if (!Fichaje.esPerfilValido(perfil)) {
+            motivoFinal = "Perfil no catalogado.";
+            this.campus.registrarIntentoDenegado();
+        } else {
+            accesoConcedido = true;
+            this.campus.registrarEntradaExitosa(temperatura, 360);
+            motivoFinal = "Acceso concedido";
+        }
+
+        String token = this.construirTokenQR(dni, Fichaje.getSiguienteId());
+        Fichaje nuevoFichaje = new Fichaje(dni, nombre, perfil, 'E', temperatura,
+                accesoConcedido, motivoFinal, token);
+
+        this.registrarFichajeEnHistorial(nuevoFichaje);
+        return nuevoFichaje;
+    }
+
+    /**
+     * Procesa secuencialmente una cola de personas en modo ráfaga mientras exista aforo
+     * libre en el {@link Campus} y no salte un veto judicial de seguridad.
+     *
+     * @param personasEnCola Cantidad inicial de personas esperando en la fila del torno.
+     * @return Cantidad de personas que quedaron en espera si la cola se detuvo antes de vaciarse.
+     */
+    public int procesarRafaga(int personasEnCola) {
+        boolean vetoJudicialDetectado = false;
+
+        while (personasEnCola > 0 && this.campus.hayAforoDisponible() && !vetoJudicialDetectado) {
+            if (Fichaje.getUltimoIdAsignado() == 1044) {
+                System.out.println(">> [ALERTA JUDICIAL]: Credencial #1044 bloqueada. Suspendiendo cola en cabecera...");
+                vetoJudicialDetectado = true;
+            } else {
+                this.operacionesLocales++;
+                personasEnCola--;
+
+                double tempSimulada = 36.4 + (this.generadorTokens.nextDouble() * 0.5);
+                this.campus.registrarEntradaExitosa(tempSimulada, 360);
+
+                Fichaje fRafaga = new Fichaje("N/D", "USUARIO RÁFAGA", 'E', 'E',
+                        tempSimulada, true, "Paso automático en ráfaga", "CAMINAS-BURST");
+                this.registrarFichajeEnHistorial(fRafaga);
+            }
+        }
+        return personasEnCola;
+    }
+
+    /**
+     * Delega en el {@link Campus} compartido la activación del protocolo de evacuación de emergencia.
+     */
+    public void activarEvacuacion() {
+        this.campus.activarEvacuacion();
+    }
+
+    /**
+     * Imprime por consola la telemetría local de este torno, el estado global sincronizado
+     * del {@link Campus} y los dos últimos fichajes locales registrados.
+     */
+    public void mostrarTelemetria() {
+        System.out.printf("TORNO ACTIVO:             #%d (%s) | Operaciones locales: %d%n",
+                this.idTerminal, this.ubicacion, this.operacionesLocales);
+        this.campus.mostrarEstadoGlobal();
+
+        if (this.ultimoFichaje != null) {
+            System.out.println("ÚLTIMO EN ESTE TORNO:     " + this.ultimoFichaje);
+        } else {
+            System.out.println("ÚLTIMO EN ESTE TORNO:     (sin registros en este terminal)");
+        }
+
+        if (this.penultimoFichaje != null) {
+            System.out.println("PENÚLTIMO EN ESTE TORNO:  " + this.penultimoFichaje);
+        } else {
+            System.out.println("PENÚLTIMO EN ESTE TORNO:  (sin registros en este terminal)");
+        }
+    }
+}
+```
+
+**Archivo 4: `pr/src/es/azahartech/caminas/app/ControlAccesoQR.java`**
+```java
+package es.azahartech.caminas.app;
+
+import es.azahartech.caminas.dispositivos.Torno;
+import es.azahartech.caminas.modelo.Campus;
+import es.azahartech.caminas.modelo.Fichaje;
+import java.util.Scanner;
+import java.time.LocalDate;
+
+/**
+ * Aplicación principal de consola para la gestión multi-torno del IES El Caminàs.
+ * <p>
+ * Actúa como capa de presentación interactiva, instanciando un {@link Campus}
+ * compartido y múltiples dispositivos {@link Torno}, delegando las reglas de acceso
+ * y registro en las entidades de negocio del dominio.
+ * </p>
+ *
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 3.10 (Diciembre 2026)
+ * @since JDK 21 LTS
+ */
+public class ControlAccesoQR {
+
+    private static final String NOMBRE_CENTRO = "IES El Caminàs (Castellón)";
+    private static final int TOTAL_TORNOS_CAMPUS = 3;
+    private static final int CANALES_POR_TORNO = 4;
+
+    /**
+     * Punto de entrada principal de la consola de control de accesos.
+     *
+     * @param args Argumentos de línea de comandos (no utilizados en esta versión).
+     */
+    public static void main(String[] args) {
+        Scanner teclado = new Scanner(System.in);
+        LocalDate fechaActual = LocalDate.now();
+
+        Campus iesElCaminas = new Campus(NOMBRE_CENTRO, 1200, 1190);
+        Torno tornoVestibulo = new Torno(101, "Vestíbulo Principal", iesElCaminas);
+        Torno tornoNorte = new Torno(102, "Puerta Norte Ciclos", iesElCaminas);
+
+        Torno tornoActivo = tornoVestibulo;
+        boolean sesionActiva = true;
+
+        System.out.println("======================================================================");
+        System.out.println("   AZAHARTECH · CONTROL MULTI-TORNO DOCUMENTADO - IES EL CAMINÀS      ");
+        System.out.println("   Versión 3.10 (Sprint 4: Documentación Javadoc Oficial)             ");
+        System.out.println("   Fecha de sesión: " + fechaActual);
+        System.out.println("======================================================================");
+
+        do {
+            System.out.println("\n----------------------------------------------------------------------");
+            System.out.printf("   PANEL DE OPERACIONES · TORNO ACTIVO: #%d (%s)%n",
+                    tornoActivo.getIdTerminal(), tornoActivo.getUbicacion());
+            System.out.println("----------------------------------------------------------------------");
+            System.out.println("  [0] Conmutar de torno activo (#101 Vestíbulo <-> #102 Puerta Norte)");
+            System.out.println("  [1] Registrar tránsito individual (Entrada / Salida)");
+            System.out.println("  [2] Procesar cola en ráfaga en el torno activo");
+            System.out.println("  [3] Consultar telemetría del torno y ocupación sincronizada del campus");
+            System.out.println("  [4] Diagnóstico perimetral estructurado SESE (3 tornos x 4 canales)");
+            System.out.println("  [5] Activar protocolo de evacuación de emergencia");
+            System.out.println("  [6] Emitir copia de respaldo rectificada del último fichaje");
+            System.out.println("  [7] Cerrar jornada y apagar sistema");
+            System.out.print("Seleccione una operación (0-7): ");
+
+            int opcionMenu = -1;
+            try {
+                opcionMenu = Integer.parseInt(teclado.nextLine().trim());
+            } catch (NumberFormatException e) {
+                opcionMenu = -1;
+            }
+
+            switch (opcionMenu) {
+                case 0:
+                    tornoActivo = (tornoActivo == tornoVestibulo) ? tornoNorte : tornoVestibulo;
+                    System.out.printf(">> TERMINAL CONMUTADO: Operando ahora desde Torno #%d (%s)%n",
+                            tornoActivo.getIdTerminal(), tornoActivo.getUbicacion());
+                    break;
+
+                case 1:
+                    System.out.printf("%n--- [MODO 1: TRÁNSITO INDIVIDUAL EN TORNO #%d] ---%n", tornoActivo.getIdTerminal());
+                    System.out.print("Sentido del tránsito (E = Entrada, S = Salida): ");
+                    String lineaSentido = teclado.nextLine().trim().toUpperCase();
+                    char sentidoTransito = lineaSentido.isEmpty() ? 'E' : lineaSentido.charAt(0);
+
+                    System.out.print("Nombre completo: ");
+                    String nombreLimpio = teclado.nextLine().trim().toUpperCase();
+                    if (nombreLimpio.isEmpty()) {
+                        nombreLimpio = "N/D";
+                    }
+
+                    Fichaje nuevoFichaje;
+
+                    if (sentidoTransito == 'S') {
+                        nuevoFichaje = tornoActivo.registrarSalida(nombreLimpio);
+                        if (nuevoFichaje.isAutorizado()) {
+                            System.out.println(">> VEREDICTO: [SALIDA AUTORIZADA] Torno exterior abierto.");
+                        } else {
+                            System.err.println(">> ALERTA: Imposible autorizar salida; recinto vacío.");
+                        }
+                    } else {
+                        double tempVestibulo = 0.0;
+                        String dniPersonaLimpio = "N/D";
+                        char perfilNormalizado = '?';
+                        boolean datosSintacticamenteCorrectos = true;
+                        String motivoError = "";
+
+                        try {
+                            System.out.print("Temperatura (ºC): ");
+                            tempVestibulo = Double.parseDouble(teclado.nextLine().trim());
+                            System.out.print("DNI: ");
+                            dniPersonaLimpio = teclado.nextLine().trim().toUpperCase();
+                            System.out.print("Perfil (E/D/V/A): ");
+                            String lineaPerfil = teclado.nextLine().trim();
+                            perfilNormalizado = lineaPerfil.isEmpty() ? '?' : Character.toUpperCase(lineaPerfil.charAt(0));
+                        } catch (NumberFormatException e) {
+                            datosSintacticamenteCorrectos = false;
+                            motivoError = "Error de formato numérico.";
+                        }
+
+                        nuevoFichaje = tornoActivo.registrarEntrada(dniPersonaLimpio, nombreLimpio,
+                                perfilNormalizado, tempVestibulo, datosSintacticamenteCorrectos, motivoError);
+
+                        System.out.printf(">> VEREDICTO: %s [Token: %s]%n",
+                                nuevoFichaje.isAutorizado()
+                                        ? "[ENTRADA AUTORIZADA]"
+                                        : "[ENTRADA DENEGADA - " + nuevoFichaje.getMotivo() + "]",
+                                nuevoFichaje.getToken());
+
+                        if (nuevoFichaje.isAutorizado()) {
+                            System.out.printf("   Zona asignada: %s (Estancia máx: %d min)%n",
+                                    nuevoFichaje.obtenerZonaAutorizada(), nuevoFichaje.obtenerEstanciaMaximaMinutos());
+                        }
+
+                        Fichaje previo = tornoActivo.getPenultimoFichaje();
+                        if (nuevoFichaje.esMismoSolicitante(previo)
+                                && nuevoFichaje.getSentido() == previo.getSentido()) {
+                            System.out.println(">> AVISO ANTI-REBOTE: El DNI " + nuevoFichaje.getDni()
+                                    + " coincide con el tránsito anterior de este mismo torno.");
+                        }
+                    }
+
+                    System.out.println(">> Objeto Fichaje registrado: " + nuevoFichaje);
+                    break;
+
+                case 2:
+                    System.out.printf("%n--- [MODO 2: RÁFAGA EN TORNO #%d] ---%n", tornoActivo.getIdTerminal());
+                    System.out.print("Personas en cola para esta ráfaga: ");
+                    int personasEnCola = 0;
+                    try {
+                        personasEnCola = Integer.parseInt(teclado.nextLine().trim());
+                    } catch (NumberFormatException e) {
+                        personasEnCola = 0;
+                    }
+
+                    int restantes = tornoActivo.procesarRafaga(personasEnCola);
+                    System.out.printf(">> Estado tras ráfaga. Plazas disponibles en campus: %d | Restantes en cola: %d%n",
+                            tornoActivo.getAforoDisponibleCampus(), restantes);
+                    break;
+
+                case 3:
+                    System.out.println("\n--- [MODO 3: MONITOR DE TELEMETRÍA SINCRONIZADA] ---");
+                    tornoActivo.mostrarTelemetria();
+                    break;
+
+                case 4:
+                    System.out.println("\n--- [MODO 4: INSPECCIÓN PERIMETRAL ESTRUCTURADA (SESE)] ---");
+                    boolean alarmaSabotajeDetectada = false;
+
+                    for (int torno = 1; torno <= TOTAL_TORNOS_CAMPUS && !alarmaSabotajeDetectada; torno++) {
+                        String nombreAcceso = switch (torno) {
+                            case 1 -> "Vestíbulo Central  | ";
+                            case 2 -> "Puerta Norte Ciclos| ";
+                            case 3 -> "Puerta Sur Talleres| ";
+                            default -> "Acceso Perimetral  | ";
+                        };
+                        System.out.print(nombreAcceso);
+
+                        for (int canal = 1; canal <= CANALES_POR_TORNO && !alarmaSabotajeDetectada; canal++) {
+                            if (torno == 2 && canal == 2) {
+                                System.out.print("[REVISIÓN] ");
+                            } else {
+                                boolean falloCritico = (torno == 3 && canal == 2 && false);
+                                if (falloCritico) {
+                                    System.out.print("[SABOTAJE] ");
+                                    alarmaSabotajeDetectada = true;
+                                } else {
+                                    System.out.printf("[C%d: OK]   ", canal);
+                                }
+                            }
+                        }
+                        System.out.println();
+                    }
+                    System.out.println("-------------------------------------------------------------------");
+                    break;
+
+                case 5:
+                    System.out.println("\n--- [MODO 5: PROTOCOLO DE EVACUACIÓN DE EMERGENCIA] ---");
+                    tornoActivo.activarEvacuacion();
+                    break;
+
+                case 6:
+                    System.out.println("\n--- [MODO 6: COPIA DEFENSIVA E IGUALDAD (CONSTRUCTOR COPIA)] ---");
+                    Fichaje original = tornoActivo.getUltimoFichaje();
+                    Fichaje copiaRespaldo = tornoActivo.crearCopiaDefensivaUltimo();
+
+                    if (copiaRespaldo == null) {
+                        System.out.println(">> No existe ningún fichaje previo en este torno para clonar.");
+                    } else {
+                        System.out.println("Original en torno:                   " + original);
+                        System.out.println("Copia fabricada con new(original):   " + copiaRespaldo);
+                        System.out.println("¿Misma dirección en memoria (==)?    " + (copiaRespaldo == original));
+                        System.out.println("¿Mismo contenido inicial (equals)?   " + copiaRespaldo.equals(original));
+
+                        System.out.print("Introduce nueva observación para la copia rectificada: ");
+                        String nuevoMotivo = teclado.nextLine().trim();
+                        copiaRespaldo.setMotivo(nuevoMotivo);
+
+                        System.out.println("Copia tras editar motivo:            " + copiaRespaldo);
+                        System.out.println("Original tras editar la copia:       " + original);
+                        System.out.println("¿Siguen siendo equals tras editar?   " + copiaRespaldo.equals(original));
+                    }
+                    break;
+
+                case 7:
+                    System.out.println("\n>> Desconectando terminales de presencia de forma ordenada...");
+                    sesionActiva = false;
+                    break;
+
+                default:
+                    System.err.println(">> Error: Opción no válida. Seleccione una operación entre 0 y 7.");
+                    break;
+            }
+
+        } while (sesionActiva);
+
+        iesElCaminas.mostrarAuditoriaFinal();
+        System.out.printf("DESGLOSE TORNO #101 (Vestíbulo): %d operaciones procesadas%n", tornoVestibulo.getOperacionesLocales());
+        System.out.printf("DESGLOSE TORNO #102 (Norte):     %d operaciones procesadas%n", tornoNorte.getOperacionesLocales());
+        System.out.println("ESTADO DEL DISPOSITIVO:          Sistema multi-torno desconectado.");
+        System.out.println("======================================================================");
+
+        teclado.close();
+    }
+}
+```
+
+</details>
+
+---
+
+#### 4. Segunda sesión: dojo de entrenamiento y katas de código
+
+*(Redactadas con instrucciones claras, directas y paso a paso).*
+
+##### Kata 1 (Cinturón blanco). Documenta tus clases propias con Javadoc
+
+Abre todas tus clases de negocio (las que creaste en `.modelo`, `.dispositivos` o equivalente) y añade comentarios Javadoc oficiales (`/** ... */`) justo encima de la clase, de cada constructor y de cada método `public`:
+* Pon una primera frase clara terminada en punto explicando qué hace.
+* Añade una línea `@param nombreParametro` explicando cada dato que recibe (si tiene parámetros).
+* Añade una línea `@return` explicando qué devuelve (si no es `void`).
+
+Revisa estos puntos clave según tu proyecto:
+
+* **Aventura conversacional:** Documenta `Personaje`, `Objeto` y `Escena`. Explica claramente qué resta `atacar(...)`, cuándo devuelve `true` el método `estaVivo()` y qué inicializa por defecto tu constructor corto.
+* **Motor de recomendación:** Documenta `Item`, `Etiqueta` y `Usuario`. Indica el rango válido `[0.0, 10.0]` en `setValoracionMedia(...)`, qué compara `esMejorQue(...)` y cómo afecta el multiplicador de la etiqueta compartida.
+* **Simulador de físicas 2D:** Documenta `Bola`, `EntornoFisico` y `Escenario`. Indica en qué unidades van las coordenadas y velocidades, qué calcula `distanciaHasta(...)` y qué ocurre cuando una bola choca contra los límites.
+* **Bóveda de contraseñas:** Documenta `Credencial` y `PoliticaSeguridad`. Explica el mínimo de caracteres exigido en `setClave(...)`, avisa en el Javadoc de `getClave()` de que devuelve asteriscos en lugar de la clave real y documenta qué valida la política compartida.
+
+Después, abre `MiProyecto.java` en `.app`, coloca el cursor sobre una llamada a cualquiera de tus métodos y pulsa **`Ctrl + Q`** (en Mac `F1` o `Ctrl + J`). Comprueba que IntelliJ te muestra una ventana emergente con tu propia documentación profesional.
+
+---
+
+##### Kata 2 (Cinturón marrón). El truco rápido (`/**` + Intro) y generar la web HTML
+
+No hace falta que escribas los `@param` a mano uno por uno:
+
+1. **Atajo automático en IntelliJ:** Sitúate en la línea en blanco justo encima de un método que tenga varios parámetros, escribe **`/**`** y pulsa **Intro**. Verás que IntelliJ escribe automáticamente la plantilla con todos los `@param` y el `@return` listos para que tú solo rellenes la descripción.
+2. **Generar tu propia web de documentación:** En el menú superior de IntelliJ haz clic en **`Tools` $\rightarrow$ `Generate JavaDoc...`**. Elige una carpeta temporal de salida fuera de `src` (por ejemplo, `docs_javadoc`) y pulsa **Generate**.
+3. Abre el archivo `index.html` de esa carpeta en tu navegador web y navega por las clases y paquetes de tu proyecto como si fuera la documentación oficial de Java. *(Cuando termines de revisarla, recuerda borrar esa carpeta o añadirla al `.gitignore` para no subir archivos HTML autogenerados a GitHub).*
+
+---
+
+##### Kata 3 (Cinturón negro). Cero advertencias y enlaces clicables entre clases (`{@link}`)
+
+1. **Limpieza total (*0 Warnings*):** Mira la pestaña inferior de consola en IntelliJ justo después de ejecutar `Generate JavaDoc...`. Si aparece algún mensaje en amarillo avisando de que falta un `@param`, que un nombre no coincide o que falta un `@return`, corrígelo en tu código y vuelve a generar hasta lograr **0 advertencias**.
+2. **Enlaces internos clicables:** Añade la etiqueta **`{@link TuClase}`** dentro del Javadoc de tu clase contenedora para enlazarla con tu entidad base (por ejemplo, dentro de `Escena` enlaza `{@link Personaje}`, o dentro de `Usuario` enlaza `{@link Item}`).
+3. Vuelve a ejecutar `Generate JavaDoc...`, abre `index.html` y comprueba que puedes hacer clic directamente en el nombre de la clase enlazada para saltar a su página de documentación.
+
+---
+
+### Día 46 - 2 sesiones
+
+---
+
+#### 1. Caso guía en AzaharTech
+
+Son las 15:00 h del **miércoles 2 de diciembre de 2026**. En la sede de **AzaharTech** en Castellón de la Plana, el equipo afronta el penúltimo día del **Sprint 4: «Arquitectos de software»**. Con la versión `v3.10`, el proyecto del **IES El Caminàs** está organizado en paquetes, documentado con Javadoc y protegido con constructores copia y `equals`.
+
+Sin embargo, **Pau Ferrer** señala un cuello de botella evidente al intentar comprobar que todas esas reglas siguen funcionando tras cada modificación:
+
+> *«Alba, Laia: cada vez que cambiamos una línea en `Fichaje` o en `Torno`, para comprobar que nada se ha roto tenemos que arrancar `ControlAccesoQR`, escribir a mano en el teclado la opción `1`, luego la temperatura, el DNI, el perfil, luego cambiar al torno `#102` con la opción `0`, luego probar la opción `6` de copia... Tardamos tres minutos en probar manualmente cada cambio y siempre se nos olvida comprobar algún caso extremo (como un `null` o un aforo lleno).*
+>
+> *Si nuestra capa de dominio (`Campus`, `Torno`, `Fichaje`) está bien separada de la consola (`Scanner`), ¿por qué no creamos un **segundo programa lanzador dedicado exclusivamente a probar nuestras clases de forma automática en milisegundos**?»*
+
+**Alba Torres** y **Laia Claramunt** celebran la iniciativa:
+
+> *«Exacto, Pau. Un proyecto Java puede contener **más de una clase con método `main`**. Hoy construiremos nuestra primera batería de **pruebas automatizadas de integración en Java puro** (`PruebasSistemaAcceso.java`) dentro de un paquete independiente de pruebas.*
+>
+> *Aplicaremos el patrón profesional **AAA (*Arrange – Act – Assert*)** para verificar en menos de un segundo todas las validaciones estáticas, la encapsulación, la sincronización entre tornos, las copias defensivas y los casos límite con `null`, sentando las bases de lo que en el Sprint 6 automatizaremos con JUnit 5»*.
+
+---
+
+#### 2. Fundamento teórico: pruebas automatizadas de clases sin interacción manual
+
+Cuando la lógica de negocio vive encapsulada dentro de clases propias (y no atada a `Scanner` en el `main`), podemos probarla automáticamente escribiendo un **programa verificador** (*Test Driver*).
+
+```mermaid
+flowchart TD
+    Tipo{"¿Cómo verificamos los cambios en nuestro software?"}
+    
+    Tipo -- "Prueba Manual (Scanner)" --> Manual["• Lenta: requiere teclear todos los datos cada vez<br/>• Propensa a errores: fácil olvidar casos límite<br/>• No repetible de forma sistemática"]
+    
+    Tipo -- "Prueba Automatizada (Test Driver)" --> Auto["• Instantánea: valida 15 escenarios en milisegundos<br/>• Repetible tras cualquier cambio (Prueba de Regresión)<br/>• Detecta fallos ocultos en bordes y nulos al instante"]
+```
+
+##### A. El paquete de pruebas y múltiples puntos de entrada (`main`)
+
+En Java, cualquier clase `public` puede tener su propio `public static void main(String[] args)`. IntelliJ nos permite ejecutar cualquiera de ellas de forma independiente pulsando el botón verde de **Run** junto a su `main`:
+* **`es.azahartech.caminas.app.ControlAccesoQR`:** El programa real pensado para el usuario final (con menú y `Scanner`).
+* **`es.azahartech.caminas.pruebas.PruebasSistemaAcceso`:** El programa verificador automático pensado para los desarrolladores (sin `Scanner`).
+
+```mermaid
+flowchart LR
+    subgraph PkgPruebas ["Paquete: ...caminas.pruebas"]
+        Test["PruebasSistemaAcceso.java<br/>(main de verificación automática)"]
+    end
+
+    subgraph PkgDisp ["Paquete: ...caminas.dispositivos"]
+        Torno["Torno.java"]
+    end
+
+    subgraph PkgMod ["Paquete: ...caminas.modelo"]
+        Campus["Campus.java"]
+        Fichaje["Fichaje.java"]
+    end
+
+    Test -- "Prueba sin Scanner" --> Torno
+    Test -- "Prueba sin Scanner" --> Campus
+    Test -- "Prueba sin Scanner" --> Fichaje
+```
+
+##### B. El patrón profesional AAA (*Arrange – Act – Assert*)
+
+Cada prueba automatizada se estructura siempre en tres pasos sencillos:
+
+```mermaid
+flowchart LR
+    Arrange["<b>1. ARRANGE (Preparar)</b><br/>Crear los objetos necesarios<br/>con un estado inicial conocido"] --> Act["<b>2. ACT (Actuar)</b><br/>Llamar al método o setter<br/>que queremos poner a prueba"]
+    Act --> Assert["<b>3. ASSERT (Comprobar)</b><br/>Verificar con nuestro método<br/>si el resultado coincide con lo esperado"]
+```
+
+Para automatizar el paso 3 creamos un método estático verificador sencillo (`verificar(String nombrePrueba, boolean condicion)`), que contabiliza cuántas pruebas se ejecutan y cuántas pasan mostrando `[OK]` o `[FALLO]`.
+
+##### C. Pruebas de regresión y casos frontera (*Edge Cases*)
+
+1. **Prueba de regresión:** Consiste en volver a lanzar toda la batería automática después de modificar una clase para asegurarse de que lo que ayer funcionaba bien **no se ha roto hoy** (*regresión*).
+2. **Casos frontera (*Boundary Cases*):** Los errores casi nunca están en los valores normales (`temp = 36.5`), sino en los límites exactos (`35.0`, `37.5`, `37.6`), en un aforo a `0` o al pasar `null`.
+
+---
+
+#### 3. Evolución del caso guía: incorporación de `PruebasSistemaAcceso.java` (`v3.11`)
+
+Evolucionamos el proyecto a la versión **`v3.11`**. Las clases de producción (`Fichaje`, `Campus`, `Torno` y `ControlAccesoQR`) **permanecen intactas desde `v3.10`** sin necesidad de tocar ni una sola línea —demostrando la estabilidad del diseño encapsulado—, e incorporamos un nuevo paquete dedicado a verificación:
+1. Nuevo paquete **`es.azahartech.caminas.pruebas`** dentro de `pr/src/`.
+2. Nueva clase **`PruebasSistemaAcceso.java`** con 15 comprobaciones automatizadas que validan:
+   * Reglas estáticas de `Fichaje` (límites exactos de temperatura, DNI y perfil).
+   * Encapsulación y *setters* defensivos (temperaturas imposibles, nombres vacíos).
+   * Constructor copia, igualdad (`equals` frente a `==`), modificación independiente y resistencia frente a `null`.
+   * Agregación sincronizada entre dos instancias de `Torno` compartiendo un `Campus`, bloqueo por aforo agotado, copia defensiva de `Torno` y guardia *underflow* tras evacuación.
+
+##### A. Comparativa de cambios respecto a v3.10 (`diff`)
+
+```diff
+  // =========================================================================
+  // ARCHIVOS DE PRODUCCIÓN (es.azahartech.caminas.modelo / dispositivos / app)
+  // =========================================================================
+  // Fichaje.java, Campus.java, Torno.java y ControlAccesoQR.java NO cambian.
+  // Se reutilizan directamente desde el nuevo paquete de pruebas.
+
++ // =========================================================================
++ // NUEVO PAQUETE Y ARCHIVO: pr/src/es/azahartech/caminas/pruebas/PruebasSistemaAcceso.java
++ // =========================================================================
++ package es.azahartech.caminas.pruebas;
++
++ import es.azahartech.caminas.dispositivos.Torno;
++ import es.azahartech.caminas.modelo.Campus;
++ import es.azahartech.caminas.modelo.Fichaje;
++
++ public class PruebasSistemaAcceso {
++     private static int totalPruebas = 0;
++     private static int pruebasSuperadas = 0;
++
++     public static void verificar(String nombrePrueba, boolean condicion) { ... }
++     public static void main(String[] args) { ... }
++ }
+```
+
+##### B. Foco en la novedad: método `verificar` y pruebas siguiendo el patrón AAA
+
+Observa lo claro y rápido que resulta validar el comportamiento de nuestras clases aplicando el patrón AAA sin intervención humana:
+
+```java
+// -------------------------------------------------------------------------
+// Método auxiliar de aserción en PruebasSistemaAcceso.java
+// -------------------------------------------------------------------------
+public static void verificar(String nombrePrueba, boolean condicion) {
+    totalPruebas++;
+    if (condicion) {
+        pruebasSuperadas++;
+        System.out.println("  [OK]    " + nombrePrueba);
+    } else {
+        System.err.println("  [FALLO] " + nombrePrueba);
+    }
+}
+
+// -------------------------------------------------------------------------
+// Ejemplo de prueba AAA (Arrange - Act - Assert) sobre sincronización de tornos
+// -------------------------------------------------------------------------
+// 1. ARRANGE: Creamos un campus casi lleno (98 de 100) y dos tornos compartiéndolo
+Campus campusPrueba = new Campus("IES Prueba", 100, 98);
+Torno t1 = new Torno(101, "Vestíbulo", campusPrueba);
+Torno t2 = new Torno(102, "Norte", campusPrueba);
+
+// 2. ACT: Entra una persona por t1 y otra por t2
+Fichaje f1 = t1.registrarEntrada("11111111A", "ANA", 'E', 36.5, true, "");
+Fichaje f2 = t2.registrarEntrada("22222222B", "LUIS", 'D', 36.4, true, "");
+
+// 3. ASSERT: Comprobamos que ambos entraron y el aforo restante es 0 en ambos tornos
+verificar("Entrada por t1 autorizada", f1.isAutorizado());
+verificar("Entrada por t2 autorizada y sincronizada", f2.isAutorizado());
+verificar("Aforo agotado visible desde t1", t1.getAforoDisponibleCampus() == 0);
+```
+
+##### C. Código fuente completo integrado
+
+<details>
+<summary><b>🔍 Desplegar archivo completo: PruebasSistemaAcceso.java (v3.11)</b></summary>
+
+*(Nota: Las clases `Fichaje.java`, `Campus.java`, `Torno.java` y `ControlAccesoQR.java` mantienen exactamente el mismo código completo de la versión `v3.10`).*
+
+**Nuevo Archivo: `pr/src/es/azahartech/caminas/pruebas/PruebasSistemaAcceso.java`**
+```java
+package es.azahartech.caminas.pruebas;
+
+import es.azahartech.caminas.dispositivos.Torno;
+import es.azahartech.caminas.modelo.Campus;
+import es.azahartech.caminas.modelo.Fichaje;
+
+/**
+ * Banco de pruebas automatizadas de integración y regresión para el sistema
+ * de control de accesos del IES El Caminàs.
+ * <p>
+ * Permite verificar en milisegundos, sin interacción manual por consola, todas
+ * las reglas de negocio, invariantes de encapsulación, copia defensiva, igualdad
+ * lógica y sincronización multi-torno de las clases del proyecto.
+ * </p>
+ *
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 3.11 (Diciembre 2026)
+ * @since JDK 21 LTS
+ */
+public class PruebasSistemaAcceso {
+
+    private static int totalPruebas = 0;
+    private static int pruebasSuperadas = 0;
+
+    /**
+     * Evalúa el resultado booleano de un caso de prueba, actualiza los contadores
+     * globales de la batería e imprime el veredicto en consola.
+     *
+     * @param nombrePrueba Descripción legible del comportamiento verificado.
+     * @param condicion    Resultado booleano de la comprobación ({@code true} si pasa).
+     */
+    public static void verificar(String nombrePrueba, boolean condicion) {
+        totalPruebas++;
+        if (condicion) {
+            pruebasSuperadas++;
+            System.out.println("  [OK]    " + nombrePrueba);
+        } else {
+            System.err.println("  [FALLO] " + nombrePrueba);
+        }
+    }
+
+    /**
+     * Ejecuta secuencialmente la batería completa de pruebas automatizadas.
+     *
+     * @param args Argumentos de línea de comandos (no utilizados).
+     */
+    public static void main(String[] args) {
+        System.out.println("======================================================================");
+        System.out.println("   AZAHARTECH · SUITE DE PRUEBAS AUTOMATIZADAS (v3.11)                ");
+        System.out.println("======================================================================");
+
+        // ---------------------------------------------------------------------
+        // BLOQUE 1: Validaciones estáticas y casos frontera de Fichaje
+        // ---------------------------------------------------------------------
+        System.out.println("\n--- [1. Validaciones estáticas y fronteras en Fichaje] ---");
+        verificar("Temperatura exacta en límite inferior (35.0) válida", Fichaje.esTemperaturaSegura(35.0));
+        verificar("Temperatura exacta en límite superior (37.5) válida", Fichaje.esTemperaturaSegura(37.5));
+        verificar("Temperatura con fiebre (37.6) rechazada", !Fichaje.esTemperaturaSegura(37.6));
+        verificar("DNI nulo rechazado sin lanzar NullPointerException", !Fichaje.esDniValido(null));
+        verificar("Perfil inválido ('X') rechazado", !Fichaje.esPerfilValido('X'));
+
+        // ---------------------------------------------------------------------
+        // BLOQUE 2: Encapsulación, Setters defensivos y numeración static
+        // ---------------------------------------------------------------------
+        System.out.println("\n--- [2. Encapsulación y Setters defensivos] ---");
+        Fichaje fPrueba = new Fichaje("12345678z", "  ana garcía ", 'E', 'E', 36.5, true, "OK", "TKN1");
+        Fichaje fSegundo = new Fichaje("87654321x", "luis", 'D', 'E', 36.2, true, "OK", "TKN2");
+
+        verificar("Normalización de DNI y nombre en constructor",
+                fPrueba.getDni().equals("12345678Z") && fPrueba.getNombre().equals("ANA GARCÍA"));
+        verificar("Autonumeración secuencial única entre instancias",
+                fSegundo.getId() == fPrueba.getId() + 1);
+
+        fPrueba.setTemperatura(-500.0);
+        verificar("Setter de temperatura bloquea valor imposible (-500.0 -> 0.0)",
+                fPrueba.getTemperatura() == 0.0);
+
+        fPrueba.setNombre("   ");
+        verificar("Setter de nombre protege contra cadena en blanco (-> N/D)",
+                fPrueba.getNombre().equals("N/D"));
+
+        // ---------------------------------------------------------------------
+        // BLOQUE 3: Constructor copia, igualdad equals y resistencia a null
+        // ---------------------------------------------------------------------
+        System.out.println("\n--- [3. Constructor copia, igualdad equals y nulos] ---");
+        Fichaje clon = new Fichaje(fSegundo);
+
+        verificar("El clon ocupa distinta dirección en memoria (== es false)", clon != fSegundo);
+        verificar("El clon tiene idéntico contenido lógico (equals es true)", clon.equals(fSegundo));
+
+        clon.setMotivo("Rectificado en prueba");
+        verificar("Modificar el clon NO altera el original",
+                fSegundo.getMotivo().equals("OK") && !clon.equals(fSegundo));
+        verificar("equals(null) devuelve false sin lanzar excepción", !fSegundo.equals(null));
+        verificar("equals(\"Texto\") devuelve false ante otro tipo de objeto", !fSegundo.equals("Texto"));
+
+        // ---------------------------------------------------------------------
+        // BLOQUE 4: Integración multi-torno, copia defensiva y guardia underflow
+        // ---------------------------------------------------------------------
+        System.out.println("\n--- [4. Integración Campus + Multi-Torno + Underflow] ---");
+        Campus campusTest = new Campus("IES Test", 100, 98);
+        Torno tVestibulo = new Torno(101, "Vestíbulo", campusTest);
+        Torno tNorte = new Torno(102, "Norte", campusTest);
+
+        Fichaje paso1 = tVestibulo.registrarEntrada("11111111A", "MARTA", 'E', 36.5, true, "");
+        Fichaje paso2 = tNorte.registrarEntrada("22222222B", "JORGE", 'D', 36.4, true, "");
+        Fichaje paso3Bloqueado = tVestibulo.registrarEntrada("33333333C", "ELENA", 'E', 36.3, true, "");
+
+        verificar("Entradas en distintos tornos sincronizan el aforo compartido",
+                paso1.isAutorizado() && paso2.isAutorizado() && campusTest.getPersonasEnCentro() == 100);
+        verificar("Tercer acceso rechazado automáticamente al llenarse el aforo",
+                !paso3Bloqueado.isAutorizado() && tNorte.getAforoDisponibleCampus() == 0);
+
+        Fichaje copiaSeguraTorno = tNorte.crearCopiaDefensivaUltimo();
+        copiaSeguraTorno.setMotivo("Intento de alteración externa");
+        verificar("Copia defensiva de Torno protege su historial interno",
+                tNorte.getUltimoFichaje().getMotivo().equals("Acceso concedido"));
+
+        campusTest.activarEvacuacion();
+        Fichaje salidaEnVacio = tNorte.registrarSalida("FANTASMA");
+        verificar("Evacuación vacía el campus y la guardia underflow bloquea salidas en 0",
+                campusTest.getPersonasEnCentro() == 0 && !salidaEnVacio.isAutorizado());
+
+        // ---------------------------------------------------------------------
+        // RESUMEN FINAL DE LA SUITE DE PRUEBAS
+        // ---------------------------------------------------------------------
+        System.out.println("\n======================================================================");
+        System.out.printf("   RESULTADO DE LA BATERÍA: %d / %d PRUEBAS SUPERADAS%n",
+                pruebasSuperadas, totalPruebas);
+        if (pruebasSuperadas == totalPruebas) {
+            System.out.println("   ESTADO: [CERTIFICADO EN VERDE - TODAS LAS PRUEBAS SUPERADAS]");
+        } else {
+            System.err.println("   ESTADO: [ALERTA - EXISTEN PRUEBAS FALLIDAS]");
+        }
+        System.out.println("======================================================================");
+    }
+}
+```
+
+</details>
+
+---
+
+#### 4. Segunda sesión: dojo de entrenamiento y katas de código
+
+*(Redactadas con instrucciones claras, directas y paso a paso).*
+
+##### Kata 1 (Cinturón blanco). Crea tu propio banco de pruebas automáticas sin `Scanner`
+
+En lugar de probar tu proyecto tecleando datos a mano en el menú cada vez que tocas algo, vas a crear un programa probador automático:
+
+1. Crea un paquete nuevo llamado `es.azahartech.tuproyecto.pruebas` dentro de `src` y crea dentro una clase llamada **`PruebasProyecto.java`** con su método `main`.
+2. Añade arriba dos contadores estáticos (`totalPruebas` y `pruebasSuperadas`) y un método `public static void comprobar(String nombrePrueba, boolean condicion)` que imprima `[OK]` si `condicion` es `true` o `[FALLO]` si es `false`.
+3. Escribe dentro de `main` **al menos 5 comprobaciones automáticas** (sin usar `Scanner`) según tu proyecto:
+
+* **Aventura conversacional:** (1) Crea un `Personaje` y comprueba que nace vivo con su salud inicial; (2) intenta ponerle salud negativa con `setSalud(-50)` y comprueba que se queda en `0` (`estaVivo()` da `false`); (3) haz que el héroe ataque a un enemigo y comprueba que la vida del enemigo baja exactamente lo esperado; (4) haz un clon con el constructor copia y comprueba que `==` es `false` y `equals` es `true`; (5) comprueba que al compartir al mismo héroe entre dos `Escena`, el daño de la primera se mantiene en la segunda.
+* **Motor de recomendación:** (1) Crea un `Item` con el constructor corto y comprueba sus valores iniciales; (2) prueba `setValoracionMedia(15.0)` y `(-2.0)` comprobando que no se sale del rango `[0, 10]`; (3) comprueba `esMejorQue(...)` entre un ítem con `9.0` y otro con `5.0`; (4) comprueba constructor copia y `equals`; (5) comprueba que cambiar el multiplicador de una `Etiqueta` compartida afecta a dos `Usuario` distintos.
+* **Simulador de físicas 2D:** (1) Crea una `Bola` quieta y comprueba que su rapidez es `0.0`; (2) intenta poner coordenadas negativas con `setX(-20)` y comprueba que se corrige a `0.0`; (3) calcula `distanciaHasta` entre una bola en `(0, 0)` y otra en `(3, 4)` comprobando que da `5.0`; (4) clona una bola y verifica que mover solo el clon no mueve la original; (5) comprueba que cambiar la gravedad en `EntornoFisico` compartido afecta a dos escenarios/bolas.
+* **Bóveda de contraseñas:** (1) Comprueba que `Credencial.esClaveSegura("123")` da `false` y con 8 o más caracteres da `true`; (2) intenta cambiar la contraseña a `"abc"` con `setClave` y verifica que no deja cambiarla; (3) comprueba que `getClave()` devuelve asteriscos y no la clave real; (4) comprueba constructor copia y `equals`; (5) comprueba que endurecer `PoliticaSeguridad` compartida afecta a dos bóvedas distintas.
+
+4. Pulsa el botón verde de **Run** sobre `PruebasProyecto.java` y comprueba que todas las pruebas imprimen `[OK]` en menos de un segundo.
+
+---
+
+##### Kata 2 (Cinturón marrón). Prueba de regresión: rompe tu código a propósito para ver si tu test te avisa
+
+Un buen banco de pruebas sirve para detectar errores en cuanto alguien rompe algo sin querer:
+
+1. Abre una de tus clases en `.modelo` y **estropea a propósito** una regla durante unos segundos (por ejemplo, quita la protección `Math.max(0, ...)` de un *setter* o cambia el signo de una condición en `equals`).
+2. Sin tocar `PruebasProyecto.java`, vuelve a ejecutarlo con **Run**. Verás que tu batería de pruebas detecta inmediatamente el fallo e imprime **`[FALLO]`** señalando exactamente qué ha dejado de funcionar.
+3. Vuelve a arreglar la clase en `.modelo`, ejecuta de nuevo `PruebasProyecto.java` y confirma que vuelve a dar el **100 % en verde (`[OK]`)**.
+
+---
+
+##### Kata 3 (Cinturón negro). Pon a prueba los casos límite y los `null`
+
+Los errores reales suelen ocurrir cuando llegan datos inesperados al límite o vacíos:
+
+1. Añade a tu `PruebasProyecto.java` **3 pruebas límite** nuevas:
+   * Pasar **`null`** a tu método `equals(null)` y pasar otro tipo de dato (como `"hola"`) para verificar que devuelve `false` sin lanzar excepciones.
+   * Pasar **`null`** al constructor copia (`new TuClase(null)`) y a tu método de interacción entre dos objetos (por ejemplo, `atacar(null)`, `esMejorQue(null)`, `distanciaHasta(null)` o `mismoUsuarioQue(null)`).
+   * Pasar una cadena vacía `""` o llena de espacios `"   "` a tus *setters* de texto.
+2. Ejecuta `PruebasProyecto.java` y certifica que ninguna de las nuevas pruebas lanza un error rojo (`NullPointerException`), logrando el **100 % de `[OK]`** en toda la batería.
+
+---
+
+### Día 47 - 2 sesiones
+
+---
+
+#### 1. Caso guía en AzaharTech
+
+Son las 15:00 h del **jueves 3 de diciembre de 2026**. En la sede de **AzaharTech** en Castellón de la Plana, el equipo afronta la última jornada lectiva del **Sprint 4: «Arquitectos de software»**. Mañana concluye oficialmente el sprint y la semana próxima arrancará el **Hito de Consolidación del 1.er Trimestre**.
+
+En la pantalla principal, **Laia Claramunt** proyecta el árbol completo de paquetes del proyecto del **IES El Caminàs** junto a **Alba Torres** y **Pau Ferrer**:
+
+> *«Equipo: mirad el camino recorrido desde aquel primer `ControlAccesoQR v1.0` de septiembre. Hemos pasado de un único archivo con variables sueltas a una **arquitectura orientada a objetos distribuida en cuatro paquetes** (`modelo`, `dispositivos`, `app`, `pruebas`), con entidades encapsuladas, constructores sobrecargados, contadores `static`, agregación compartida, copia defensiva, `equals`, documentación Javadoc y batería de pruebas automatizadas.*
+>
+> *Antes de emitir la versión definitiva **`v4.0 Oficial`**, debemos pasar nuestra última auditoría de calidad en IntelliJ. Al revisar el archivo `ControlAccesoQR.java`, el inspector del IDE todavía nos marca un pequeño aviso amarillo (*warning*) en la Opción 4:*
+> ```java
+> boolean falloCritico = (torno == 3 && canal == 2 && false);
+> ```
+> *Esa condición `&& false` escrita a mano para simular un fallo provoca un aviso de código muerto, y además esa lógica de diagnóstico del campus pertenece a `Campus.java`, no al menú de consola.*
+>
+> *Hoy realizaremos la limpieza final para conseguir **cero advertencias en el código**, completaremos las pruebas automatizadas sobre ese diagnóstico, certificaremos el Javadoc y etiquetaremos visualmente la entrega `v4.0` desde IntelliJ»*.
+
+---
+
+#### 2. Fundamento teórico: evolución arquitectónica, inspección estática y cierre de *Release*
+
+##### A. Retrospectiva de la evolución arquitectónica del 1.er Trimestre
+
+El software del **IES El Caminàs** ha evolucionado de forma incremental a través de cuatro sprints estructurados:
+
+```mermaid
+flowchart TD
+    S1["<b>Sprint 1 (v1.0):</b><br/>Variables primitivas, operadores,<br/>constantes y salida con printf"] --> S2["<b>Sprint 2 (v2.0):</b><br/>Clases del JDK (Random, Math, String, LocalTime)<br/>y primeros métodos static propios"]
+    S2 --> S3["<b>Sprint 3 (v3.0):</b><br/>Estructuras de control (if-else, switch, try-catch)<br/>y bucles SESE sin saltos abruptos"]
+    S3 --> S4["<b>Sprint 4 (v4.0 Oficial):</b><br/>POO propia multi-archivo, encapsulación, constructores,<br/>static, composición, equals, Javadoc y pruebas"]
+```
+
+##### B. Mapa definitivo de arquitectura en `v4.0 Oficial`
+
+```mermaid
+flowchart LR
+    subgraph App ["📦 es.azahartech.caminas.app"]
+        Main["<b>ControlAccesoQR.java</b><br/>Capa de consola (UI)"]
+    end
+
+    subgraph Pruebas ["📦 es.azahartech.caminas.pruebas"]
+        Test["<b>PruebasSistemaAcceso.java</b><br/>Suite automática (AAA)"]
+    end
+
+    subgraph Disp ["📦 es.azahartech.caminas.dispositivos"]
+        Torno["<b>Torno.java</b><br/>Dispositivo físico"]
+    end
+
+    subgraph Mod ["📦 es.azahartech.caminas.modelo"]
+        Campus["<b>Campus.java</b><br/>Estado compartido"]
+        Fichaje["<b>Fichaje.java</b><br/>Entidad de registro"]
+    end
+
+    Main --> Torno
+    Main --> Campus
+    Main --> Fichaje
+    Test --> Torno
+    Test --> Campus
+    Test --> Fichaje
+    Torno o-- Campus
+    Torno *-- Fichaje
+```
+
+##### C. Lista de verificación de calidad (*Definition of Done* de AzaharTech)
+
+Antes de dar por cerrada una versión oficial (*Release*), todo equipo de AzaharTech ejecuta cinco comprobaciones obligatorias:
+
+```mermaid
+flowchart LR
+    P1["<b>1. Formato e Imports</b><br/>Ctrl+Alt+L y Ctrl+Alt+O<br/>en todos los archivos"] --> P2["<b>2. Inspección IDE</b><br/>Code -> Inspect Code<br/>(0 advertencias amarillas)"]
+    P2 --> P3["<b>3. Javadoc Limpio</b><br/>Generate JavaDoc<br/>(0 warnings)"]
+    P3 --> P4["<b>4. Pruebas Verdes</b><br/>PruebasSistemaAcceso<br/>(100% [OK])"]
+    P4 --> P5["<b>5. Entrega Visual Git</b><br/>Commit, Push y Tag<br/>desde IntelliJ IDEA"]
+```
+
+---
+
+#### 3. Evolución del caso guía a `ControlAccesoQR v4.0 Oficial`
+
+Cerramos el Sprint 4 liberando la versión **`v4.0 Oficial`**:
+1. **Refactorización final en `Campus.java`:** Se traslada la inspección matricial perimetral (3 tornos $\times$ 4 canales) al método `ejecutarDiagnosticoPerimetral(boolean simularSabotaje)`, eliminando el literal muerto `&& false` que generaba advertencias en IntelliJ y permitiendo probar ambos escenarios (sano y sabotaje).
+2. **Adelgazamiento final de `ControlAccesoQR.java`:** La Opción `[4]` del menú queda reducida a una única llamada limpia a `iesElCaminas.ejecutarDiagnosticoPerimetral(false);`.
+3. **Ampliación de `PruebasSistemaAcceso.java`:** Se añaden 2 pruebas automáticas para certificar el diagnóstico perimetral tanto en estado normal como en simulación de sabotaje (**17 / 17 pruebas superadas**).
+4. **Cero advertencias:** Todos los archivos cumplen con autoformateo, optimización de `import`, Javadoc completo y principio SESE estricto.
+
+##### A. Comparativa de cambios respecto a v3.11 (`diff`)
+
+```diff
+  // =========================================================================
+  // ARCHIVO: es/azahartech/caminas/modelo/Campus.java
+  // =========================================================================
++ private static final int TOTAL_TORNOS_CAMPUS = 3;
++ private static final int CANALES_POR_TORNO = 4;
++
++ /**
++  * Ejecuta el barrido matricial SESE de los 3 tornos y sus 4 canales.
++  * @param simularSabotaje {@code true} para simular alarma crítica; {@code false} en uso normal.
++  * @return {@code true} si la inspección finaliza sin incidencias; {@code false} si hubo sabotaje.
++  */
++ public boolean ejecutarDiagnosticoPerimetral(boolean simularSabotaje) { ... }
+
+  // =========================================================================
+  // ARCHIVO: es/azahartech/caminas/app/ControlAccesoQR.java (v4.0 Oficial)
+  // =========================================================================
+- private static final int TOTAL_TORNOS_CAMPUS = 3;
+- private static final int CANALES_POR_TORNO = 4;
+
+  case 4:
+-     // [Bucle doble de 25 líneas con condición muerta && false en main]
++     iesElCaminas.ejecutarDiagnosticoPerimetral(false);
+      break;
+
+  // =========================================================================
+  // ARCHIVO: es/azahartech/caminas/pruebas/PruebasSistemaAcceso.java
+  // =========================================================================
++ verificar("Barrido perimetral sano devuelve true", campusTest.ejecutarDiagnosticoPerimetral(false));
++ verificar("Simulación de sabotaje perimetral detiene barrido y devuelve false",
++         !campusTest.ejecutarDiagnosticoPerimetral(true));
+```
+
+##### B. Foco en la consolidación: diagnóstico parametrizado sin advertencias en `Campus`
+
+Observa cómo al mover el método a `Campus` y parametrizar la simulación, desaparece el código muerto y el `main` queda completamente limpio:
+
+```java
+// -------------------------------------------------------------------------
+// En Campus.java (v4.0 Oficial): Diagnóstico matricial SESE sin advertencias
+// -------------------------------------------------------------------------
+public boolean ejecutarDiagnosticoPerimetral(boolean simularSabotaje) {
+    boolean alarmaSabotajeDetectada = false;
+
+    for (int torno = 1; torno <= TOTAL_TORNOS_CAMPUS && !alarmaSabotajeDetectada; torno++) {
+        String nombreAcceso = switch (torno) {
+            case 1 -> "Vestíbulo Central  | ";
+            case 2 -> "Puerta Norte Ciclos| ";
+            case 3 -> "Puerta Sur Talleres| ";
+            default -> "Acceso Perimetral  | ";
+        };
+        System.out.print(nombreAcceso);
+
+        for (int canal = 1; canal <= CANALES_POR_TORNO && !alarmaSabotajeDetectada; canal++) {
+            if (torno == 2 && canal == 2) {
+                System.out.print("[REVISIÓN] ");
+            } else if (simularSabotaje && torno == 3 && canal == 2) {
+                System.out.print("[SABOTAJE] ");
+                alarmaSabotajeDetectada = true;
+            } else {
+                System.out.printf("[C%d: OK]   ", canal);
+            }
+        }
+        System.out.println();
+    }
+
+    if (alarmaSabotajeDetectada) {
+        System.out.println(">> [ALERTA DE SEGURIDAD]: Barrido perimetral detenido por fallo crítico.");
+    }
+    return !alarmaSabotajeDetectada;
+}
+```
+
+##### C. Código fuente completo integrado (`Release v4.0 Oficial`)
+
+<details>
+<summary><b>🔍 Desplegar release final v4.0 Oficial (5 archivos en 4 paquetes)</b></summary>
+
+**Archivo 1: `pr/src/es/azahartech/caminas/modelo/Fichaje.java`**
+```java
+package es.azahartech.caminas.modelo;
+
+import java.time.LocalTime;
+
+/**
+ * Entidad de dominio que representa un registro de tránsito (entrada o salida)
+ * en los tornos del IES El Caminàs.
+ * <p>
+ * Gestiona de forma autónoma su numeración secuencial única mediante contadores
+ * {@code static}, encapsula sus atributos privados con validación defensiva,
+ * ofrece soporte para copia independiente e implementa igualdad lógica estándar.
+ * </p>
+ *
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 4.0 Oficial (Diciembre 2026)
+ * @since JDK 21 LTS
+ */
+public class Fichaje {
+
+    /** Temperatura corporal mínima válida de lectura de sensor (en ºC). */
+    public static final double TEMP_MIN_SEGURA = 35.0;
+    /** Temperatura corporal máxima admitida sin fiebre (en ºC). */
+    public static final double TEMP_MAX_FIEBRE = 37.5;
+    /** Longitud reglamentaria exacta de un DNI español estándar. */
+    public static final int LONGITUD_DNI = 9;
+
+    private static int ultimoIdAsignado = 1042;
+    private static int totalFichajesCreados = 0;
+
+    private int id;
+    private String dni;
+    private String nombre;
+    private char perfil;
+    private char sentido;
+    private double temperatura;
+    private boolean autorizado;
+    private String motivo;
+    private String token;
+    private LocalTime hora;
+
+    /**
+     * Constructor maestro para registrar tránsitos detallados (habitualmente entradas).
+     * Asigna automáticamente un identificador único autoincremental y la hora actual.
+     *
+     * @param dni         Documento de identidad del solicitante (se normaliza en mayúsculas).
+     * @param nombre      Nombre completo de la persona (si está vacío se asigna {@code "N/D"}).
+     * @param perfil      Carácter de perfil ({@code 'E'}, {@code 'D'}, {@code 'V'} o {@code 'A'}).
+     * @param sentido     Sentido del tránsito ({@code 'E'} entrada o {@code 'S'} salida).
+     * @param temperatura Lectura térmica corporal en ºC (acotada al rango {@code [0.0, 60.0]}).
+     * @param autorizado  {@code true} si el paso fue concedido; {@code false} si fue denegado.
+     * @param motivo      Justificación o resultado descriptivo de la validación.
+     * @param token       Código QR generado para el tránsito.
+     */
+    public Fichaje(String dni, String nombre, char perfil, char sentido,
+                   double temperatura, boolean autorizado, String motivo, String token) {
+        ultimoIdAsignado++;
+        totalFichajesCreados++;
+        this.id = ultimoIdAsignado;
+
+        this.dni = (dni == null || dni.isBlank()) ? "N/D" : dni.trim().toUpperCase();
+        this.setNombre(nombre);
+        this.perfil = perfil;
+        this.sentido = (sentido == 'S') ? 'S' : 'E';
+        this.setTemperatura(temperatura);
+        this.autorizado = autorizado;
+        this.setMotivo(motivo);
+        this.token = (token == null || token.isBlank()) ? "N/D" : token;
+        this.hora = LocalTime.now();
+    }
+
+    /**
+     * Constructor sobrecargado simplificado para tránsitos de salida ({@code 'S'}).
+     * Delega en el constructor maestro asignando valores neutros a los campos no requeridos.
+     *
+     * @param nombre     Nombre completo de la persona que abandona el campus.
+     * @param sentido    Sentido del tránsito (generalmente {@code 'S'}).
+     * @param autorizado {@code true} si la salida pudo efectuarse; {@code false} en caso contrario.
+     * @param motivo     Observación resultante de la operación de salida.
+     */
+    public Fichaje(String nombre, char sentido, boolean autorizado, String motivo) {
+        this("N/D", nombre, '?', sentido, 0.0, autorizado, motivo, "N/D");
+    }
+
+    /**
+     * Constructor copia que fabrica una nueva instancia independiente en el Heap
+     * replicando exactamente los atributos de un fichaje existente.
+     *
+     * @param original Instancia {@link Fichaje} origen cuyos datos se desean clonar.
+     *                 Si es {@code null}, genera un registro vacío seguro con nuevo ID.
+     */
+    public Fichaje(Fichaje original) {
+        if (original != null) {
+            this.id = original.id;
+            this.dni = original.dni;
+            this.nombre = original.nombre;
+            this.perfil = original.perfil;
+            this.sentido = original.sentido;
+            this.temperatura = original.temperatura;
+            this.autorizado = original.autorizado;
+            this.motivo = original.motivo;
+            this.token = original.token;
+            this.hora = original.hora;
+        } else {
+            ultimoIdAsignado++;
+            totalFichajesCreados++;
+            this.id = ultimoIdAsignado;
+            this.dni = "N/D";
+            this.nombre = "N/D";
+            this.perfil = '?';
+            this.sentido = 'E';
+            this.temperatura = 0.0;
+            this.autorizado = false;
+            this.motivo = "Copia de origen nulo";
+            this.token = "N/D";
+            this.hora = LocalTime.now();
+        }
+    }
+
+    /**
+     * Consulta la cantidad total de objetos {@link Fichaje} fabricados en memoria durante la sesión.
+     *
+     * @return Número acumulado de instancias creadas mediante los constructores principales.
+     */
+    public static int getTotalFichajesCreados() {
+        return totalFichajesCreados;
+    }
+
+    /**
+     * Obtiene el último identificador numérico asignado por el contador estático de la clase.
+     *
+     * @return Último ID secuencial asignado.
+     */
+    public static int getUltimoIdAsignado() {
+        return ultimoIdAsignado;
+    }
+
+    /**
+     * Calcula el siguiente identificador disponible que recibirá la próxima instancia.
+     *
+     * @return Siguiente número de registro consecutivo.
+     */
+    public static int getSiguienteId() {
+        return ultimoIdAsignado + 1;
+    }
+
+    /**
+     * Valida si una temperatura corporal se encuentra dentro del rango biométrico admitido.
+     *
+     * @param temperatura Valor de temperatura medido en grados Celsius.
+     * @return {@code true} si está entre {@link #TEMP_MIN_SEGURA} y {@link #TEMP_MAX_FIEBRE};
+     *         {@code false} en caso contrario.
+     */
+    public static boolean esTemperaturaSegura(double temperatura) {
+        return (temperatura >= TEMP_MIN_SEGURA && temperatura <= TEMP_MAX_FIEBRE);
+    }
+
+    /**
+     * Comprueba si una cadena cumple con la longitud reglamentaria de un DNI.
+     *
+     * @param dni Cadena del documento a evaluar.
+     * @return {@code true} si no es nula y tiene exactamente {@link #LONGITUD_DNI} caracteres.
+     */
+    public static boolean esDniValido(String dni) {
+        return (dni != null && dni.length() == LONGITUD_DNI);
+    }
+
+    /**
+     * Verifica si el carácter de perfil corresponde a un colectivo autorizado del centro.
+     *
+     * @param perfil Carácter identificador del rol.
+     * @return {@code true} para {@code 'E'}, {@code 'D'}, {@code 'V'} o {@code 'A'};
+     *         {@code false} para cualquier otro carácter.
+     */
+    public static boolean esPerfilValido(char perfil) {
+        boolean autorizado;
+        switch (perfil) {
+            case 'E':
+            case 'D':
+            case 'V':
+            case 'A':
+                autorizado = true;
+                break;
+            default:
+                autorizado = false;
+                break;
+        }
+        return autorizado;
+    }
+
+    /** @return Número entero identificador único del fichaje. */
+    public int getId() { return this.id; }
+    /** @return Cadena con el DNI normalizado o {@code "N/D"} si no aplica. */
+    public String getDni() { return this.dni; }
+    /** @return Nombre completo normalizado en mayúsculas. */
+    public String getNombre() { return this.nombre; }
+    /** @return Código de perfil ({@code 'E'}, {@code 'D'}, {@code 'V'}, {@code 'A'} o {@code '?'}). */
+    public char getPerfil() { return this.perfil; }
+    /** @return {@code 'E'} para entrada o {@code 'S'} para salida. */
+    public char getSentido() { return this.sentido; }
+    /** @return Lectura térmica corporal en grados Celsius. */
+    public double getTemperatura() { return this.temperatura; }
+    /** @return {@code true} si el paso fue concedido; {@code false} si fue denegado. */
+    public boolean isAutorizado() { return this.autorizado; }
+    /** @return Texto descriptivo del motivo o resultado de la validación. */
+    public String getMotivo() { return this.motivo; }
+    /** @return Cadena con el token QR generado o {@code "N/D"}. */
+    public String getToken() { return this.token; }
+    /** @return Marca temporal {@link LocalTime} del instante de creación. */
+    public LocalTime getHora() { return this.hora; }
+
+    /**
+     * Modifica el nombre del solicitante normalizándolo a mayúsculas sin espacios externos.
+     *
+     * @param nombre Nuevo nombre a asignar. Si es {@code null} o está vacío, asigna {@code "N/D"}.
+     */
+    public void setNombre(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            this.nombre = "N/D";
+        } else {
+            this.nombre = nombre.trim().toUpperCase();
+        }
+    }
+
+    /**
+     * Actualiza la lectura térmica validando que pertenezca al rango físico {@code [0.0, 60.0]}.
+     *
+     * @param temperatura Nueva lectura térmica en ºC. Valores fuera de rango se ajustan a {@code 0.0}.
+     */
+    public void setTemperatura(double temperatura) {
+        if (temperatura >= 0.0 && temperatura <= 60.0) {
+            this.temperatura = temperatura;
+        } else {
+            this.temperatura = 0.0;
+        }
+    }
+
+    /**
+     * Actualiza o rectifica el motivo descriptivo del registro de fichaje.
+     *
+     * @param motivo Nueva observación administrativa. Si está en blanco se asigna {@code "Sin evaluar"}.
+     */
+    public void setMotivo(String motivo) {
+        if (motivo == null || motivo.trim().isEmpty()) {
+            this.motivo = "Sin evaluar";
+        } else {
+            this.motivo = motivo.trim();
+        }
+    }
+
+    /**
+     * Traduce el código de carácter del perfil a su denominación institucional legible.
+     *
+     * @return Descripción textual del colectivo.
+     */
+    public String obtenerPerfilLegible() {
+        String descripcion;
+        switch (this.perfil) {
+            case 'E': descripcion = "Estudiante Oficial"; break;
+            case 'D': descripcion = "Docente / Claustro"; break;
+            case 'V': descripcion = "Visita Externa / Proveedor"; break;
+            case 'A': descripcion = "Personal de Administración y Servicios (PAS)"; break;
+            default:  descripcion = "No especificado"; break;
+        }
+        return descripcion;
+    }
+
+    /**
+     * Determina la zona del campus autorizada para el perfil de este fichaje.
+     *
+     * @return Nombre de la zona física habilitada para el acceso.
+     */
+    public String obtenerZonaAutorizada() {
+        String zona;
+        switch (this.perfil) {
+            case 'E': zona = "Aulas Docentes y Talleres de Informática"; break;
+            case 'D': zona = "Departamentos Didácticos, Aulas y Sala de Profesores"; break;
+            case 'V': zona = "Secretaría, Conserjería y Despachos de Dirección"; break;
+            case 'A': zona = "Área de Gestión Administrativa y Archivo Central"; break;
+            default:  zona = "Acceso Denegado / Zona No Autorizada"; break;
+        }
+        return zona;
+    }
+
+    /**
+     * Calcula el límite máximo de permanencia permitido en el recinto según el perfil.
+     *
+     * @return Tiempo máximo de estancia expresado en minutos.
+     */
+    public int obtenerEstanciaMaximaMinutos() {
+        int estanciaMinutos;
+        switch (this.perfil) {
+            case 'E': estanciaMinutos = 360; break;
+            case 'D': estanciaMinutos = 480; break;
+            case 'V': estanciaMinutos = 120; break;
+            case 'A': estanciaMinutos = 420; break;
+            default:  estanciaMinutos = 0; break;
+        }
+        return estanciaMinutos;
+    }
+
+    /**
+     * Compara si este fichaje comparte exactamente el mismo DNI válido con otro registro,
+     * útil para prevenir lecturas dobles accidentales (anti-rebote).
+     *
+     * @param otro Otro objeto {@link Fichaje} contra el que comparar el DNI.
+     * @return {@code true} si {@code otro} no es nulo y ambos poseen idéntico DNI válido;
+     *         {@code false} en caso contrario.
+     */
+    public boolean esMismoSolicitante(Fichaje otro) {
+        boolean mismo = false;
+        if (otro != null && !this.dni.equals("N/D")) {
+            mismo = this.dni.equals(otro.getDni());
+        }
+        return mismo;
+    }
+
+    /**
+     * Evalúa la igualdad lógica de contenido frente a otro objeto.
+     *
+     * @param obj Objeto de referencia a comparar contra esta instancia.
+     * @return {@code true} si {@code obj} es un {@link Fichaje} con igual ID, sentido,
+     *         autorización, DNI, nombre y motivo; {@code false} si es nulo o difiere.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        boolean iguales = false;
+        if (this == obj) {
+            iguales = true;
+        } else if (obj instanceof Fichaje otro) {
+            iguales = (this.id == otro.id)
+                    && (this.sentido == otro.sentido)
+                    && (this.autorizado == otro.autorizado)
+                    && this.dni.equals(otro.dni)
+                    && this.nombre.equals(otro.nombre)
+                    && this.motivo.equals(otro.motivo);
+        }
+        return iguales;
+    }
+
+    /**
+     * Devuelve la representación textual formateada del registro de fichaje.
+     *
+     * @return Cadena resumen legible con ID, sentido, nombre, rol, veredicto, motivo y hora.
+     */
+    @Override
+    public String toString() {
+        String detalleRol = (this.sentido == 'S') ? "Tránsito exterior" : obtenerPerfilLegible();
+        return String.format("#%d [%s] %s (%s) | %s | %s | %s",
+                this.id,
+                this.sentido == 'S' ? "SALIDA" : "ENTRADA",
+                this.nombre,
+                detalleRol,
+                this.autorizado ? "AUTORIZADO" : "DENEGADO",
+                this.motivo,
+                this.hora.withNano(0));
+    }
+}
+```
+
+**Archivo 2: `pr/src/es/azahartech/caminas/modelo/Campus.java`**
+```java
+package es.azahartech.caminas.modelo;
+
+/**
+ * Entidad de dominio que centraliza el estado global compartido del campus educativo.
+ * <p>
+ * Diseñada para ser compartida por agregación entre múltiples instancias de
+ * {@code Torno}, garantizando un control sincronizado de aforo, picos térmicos,
+ * diagnóstico perimetral SESE y evacuación de emergencia.
+ * </p>
+ *
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 4.0 Oficial (Diciembre 2026)
+ * @since JDK 21 LTS
+ */
+public class Campus {
+
+    private static final double FACTOR_PORCENTAJE = 100.0;
+    private static final int TOTAL_TORNOS_CAMPUS = 3;
+    private static final int CANALES_POR_TORNO = 4;
+
+    private String nombre;
+    private int aforoMaximo;
+    private int personasEnCentro;
+
+    private int totalProcesados;
+    private int totalAutorizados;
+    private int totalDenegados;
+
+    private double tempMaxima;
+    private double tempMinima;
+    private int minutosEstanciaAcumulados;
+
+    /**
+     * Inicializa el estado global del campus con una capacidad y ocupación inicial dadas.
+     *
+     * @param nombre            Denominación oficial del recinto educativo.
+     * @param aforoMaximo       Capacidad máxima legal de personas admitidas simultáneamente.
+     * @param personasIniciales Ocupación de partida al arrancar la jornada (acotada al aforo).
+     */
+    public Campus(String nombre, int aforoMaximo, int personasIniciales) {
+        this.nombre = (nombre == null || nombre.isBlank()) ? "Campus Central" : nombre.trim();
+        this.aforoMaximo = Math.max(1, aforoMaximo);
+        this.personasEnCentro = Math.max(0, Math.min(personasIniciales, this.aforoMaximo));
+
+        this.totalProcesados = 0;
+        this.totalAutorizados = 0;
+        this.totalDenegados = 0;
+
+        this.tempMaxima = -1.0;
+        this.tempMinima = 100.0;
+        this.minutosEstanciaAcumulados = 0;
+    }
+
+    /** @return Nombre oficial del centro educativo. */
+    public String getNombre() { return this.nombre; }
+    /** @return Plazas totales máximas admitidas en el recinto. */
+    public int getAforoMaximo() { return this.aforoMaximo; }
+    /** @return Número actual de ocupantes dentro del campus. */
+    public int getPersonasEnCentro() { return this.personasEnCentro; }
+    /** @return Diferencia entre {@link #getAforoMaximo()} y {@link #getPersonasEnCentro()}. */
+    public int getAforoDisponible() { return this.aforoMaximo - this.personasEnCentro; }
+    /** @return {@code true} si hay al menos una plaza libre; {@code false} si el recinto está completo. */
+    public boolean hayAforoDisponible() { return this.getAforoDisponible() > 0; }
+
+    /**
+     * Incrementa los contadores globales contabilizando un intento de tránsito denegado.
+     */
+    public void registrarIntentoDenegado() {
+        this.totalProcesados++;
+        this.totalDenegados++;
+    }
+
+    /**
+     * Registra una entrada autorizada, incrementando la ocupación global y actualizando
+     * los extremos térmicos y los minutos de estancia acumulados.
+     *
+     * @param temperatura     Temperatura registrada en el acceso (en ºC).
+     * @param minutosEstancia Duración prevista de la estancia para cálculo de promedios.
+     */
+    public void registrarEntradaExitosa(double temperatura, int minutosEstancia) {
+        this.totalProcesados++;
+        this.totalAutorizados++;
+        if (this.personasEnCentro < this.aforoMaximo) {
+            this.personasEnCentro++;
+        }
+        this.tempMaxima = Math.max(this.tempMaxima, temperatura);
+        this.tempMinima = Math.min(this.tempMinima, temperatura);
+        this.minutosEstanciaAcumulados += Math.max(0, minutosEstancia);
+    }
+
+    /**
+     * Intenta registrar la salida de una persona aplicando protección contra subdesbordamiento.
+     *
+     * @return {@code true} si había ocupantes y se decrementó el aforo;
+     *         {@code false} si el recinto ya figuraba vacío.
+     */
+    public boolean intentarRegistrarSalida() {
+        this.totalProcesados++;
+        boolean exito;
+        if (this.personasEnCentro > 0) {
+            this.personasEnCentro--;
+            this.totalAutorizados++;
+            exito = true;
+        } else {
+            this.totalDenegados++;
+            exito = false;
+        }
+        return exito;
+    }
+
+    /**
+     * Ejecuta el barrido matricial SESE de los 3 tornos del campus y sus 4 canales de paso.
+     *
+     * @param simularSabotaje {@code true} para simular una alarma crítica en el torno 3;
+     *                        {@code false} para ejecución operativa ordinaria.
+     * @return {@code true} si la inspección completa finaliza sin incidencias críticas;
+     *         {@code false} si se detuvo anticipadamente por alarma de sabotaje.
+     */
+    public boolean ejecutarDiagnosticoPerimetral(boolean simularSabotaje) {
+        boolean alarmaSabotajeDetectada = false;
+
+        for (int torno = 1; torno <= TOTAL_TORNOS_CAMPUS && !alarmaSabotajeDetectada; torno++) {
+            String nombreAcceso = switch (torno) {
+                case 1 -> "Vestíbulo Central  | ";
+                case 2 -> "Puerta Norte Ciclos| ";
+                case 3 -> "Puerta Sur Talleres| ";
+                default -> "Acceso Perimetral  | ";
+            };
+            System.out.print(nombreAcceso);
+
+            for (int canal = 1; canal <= CANALES_POR_TORNO && !alarmaSabotajeDetectada; canal++) {
+                if (torno == 2 && canal == 2) {
+                    System.out.print("[REVISIÓN] ");
+                } else if (simularSabotaje && torno == 3 && canal == 2) {
+                    System.out.print("[SABOTAJE] ");
+                    alarmaSabotajeDetectada = true;
+                } else {
+                    System.out.printf("[C%d: OK]   ", canal);
+                }
+            }
+            System.out.println();
+        }
+
+        if (alarmaSabotajeDetectada) {
+            System.out.println(">> [ALERTA DE SEGURIDAD]: Barrido perimetral detenido por fallo crítico.");
+        }
+        return !alarmaSabotajeDetectada;
+    }
+
+    /**
+     * Ejecuta el protocolo de vaciado progresivo de emergencia hasta llevar el aforo ocupado a cero.
+     */
+    public void activarEvacuacion() {
+        if (this.personasEnCentro == 0) {
+            System.out.println(">> El campus ya se encuentra completamente vacío.");
+        } else {
+            int loteSalidaSimultanea = 300;
+            int oleada = 1;
+
+            while (this.personasEnCentro > 0) {
+                int evacuadosLote = Math.min(this.personasEnCentro, loteSalidaSimultanea);
+                this.personasEnCentro -= evacuadosLote;
+                System.out.printf("  -> Oleada #%d: Desalojadas %d personas por salidas de emergencia (Ocupantes restantes: %d)%n",
+                        oleada, evacuadosLote, this.personasEnCentro);
+                oleada++;
+            }
+            System.out.println(">> CERTIFICACIÓN DE SEGURIDAD: Recinto 100% desalojado. Aforo íntegro restaurado.");
+        }
+    }
+
+    /**
+     * Imprime por consola el informe de telemetría global en vivo del campus,
+     * incluyendo la cuenta global de instancias {@link Fichaje} en memoria.
+     */
+    public void mostrarEstadoGlobal() {
+        double porcentajeOcupacion = ((double) this.personasEnCentro / this.aforoMaximo) * FACTOR_PORCENTAJE;
+        double estanciaMedia = this.totalAutorizados > 0
+                ? ((double) this.minutosEstanciaAcumulados / this.totalAutorizados) : 0.0;
+
+        System.out.printf("CAMPUS COMPARTIDO:        %s%n", this.nombre);
+        System.out.printf("OCUPACIÓN GLOBAL:         %d/%d personas (%6.2f %%)%n",
+                this.personasEnCentro, this.aforoMaximo, porcentajeOcupacion);
+        System.out.printf("PLAZAS LIBRES:            %d vacantes disponibles%n", this.getAforoDisponible());
+        System.out.printf("INSTANCIAS FICHAJE (RAM): %d objetos fabricados (Último ID: #%d)%n",
+                Fichaje.getTotalFichajesCreados(), Fichaje.getUltimoIdAsignado());
+        System.out.printf("PICO TÉRMICO MÁXIMO:      %.1f ºC%n", Math.max(0.0, this.tempMaxima));
+        System.out.printf("PICO TÉRMICO MÍNIMO:      %.1f ºC%n", this.tempMinima > 50.0 ? 0.0 : this.tempMinima);
+        System.out.printf("ESTANCIA PROMEDIO:        %.1f minutos (Total acumulado: %d min)%n",
+                estanciaMedia, this.minutosEstanciaAcumulados);
+    }
+
+    /**
+     * Emite el informe consolidado de auditoría al término de la jornada del campus.
+     */
+    public void mostrarAuditoriaFinal() {
+        System.out.println("\n======================================================================");
+        System.out.printf("   AUDITORÍA FINAL GLOBAL · %s%n", this.nombre);
+        System.out.println("======================================================================");
+        System.out.printf("TOTAL OPERACIONES EN CAMPUS:   %d%n", this.totalProcesados);
+        System.out.printf("OBJETOS FICHAJE CREADOS (RAM): %d%n", Fichaje.getTotalFichajesCreados());
+        System.out.printf("ACCESOS AUTORIZADOS (TOTAL):   %d%n", this.totalAutorizados);
+        System.out.printf("ACCESOS DENEGADOS (BLOQUEO):   %d%n", this.totalDenegados);
+        System.out.printf("OCUPACIÓN FINAL REGISTRADA:    %d personas%n", this.personasEnCentro);
+    }
+}
+```
+
+**Archivo 3: `pr/src/es/azahartech/caminas/dispositivos/Torno.java`**
+```java
+package es.azahartech.caminas.dispositivos;
+
+import es.azahartech.caminas.modelo.Campus;
+import es.azahartech.caminas.modelo.Fichaje;
+import java.util.Random;
+
+/**
+ * Entidad de dispositivo que modela un torno físico de control de paso.
+ * <p>
+ * Comparte por agregación una instancia única de {@link Campus} para mantener el aforo
+ * sincronizado con el resto de puertas, mientras conserva por composición su propio
+ * historial reciente de objetos {@link Fichaje} y su generador {@link Random}.
+ * </p>
+ *
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 4.0 Oficial (Diciembre 2026)
+ * @since JDK 21 LTS
+ */
+public class Torno {
+
+    private static final String PREFIJO_CENTRO = "CAMINAS";
+    private static final int BASE_TOKEN_SEGURIDAD = 1000;
+    private static final int RANGO_TOKEN_SEGURIDAD = 9000;
+
+    private int idTerminal;
+    private String ubicacion;
+    private int operacionesLocales;
+
+    private Campus campus;
+
+    private Fichaje ultimoFichaje;
+    private Fichaje penultimoFichaje;
+    private Random generadorTokens;
+
+    /**
+     * Construye un nuevo torno físico conectado al campus indicado.
+     *
+     * @param idTerminal Identificador numérico del dispositivo (mínimo {@code 1}).
+     * @param ubicacion  Descripción de la puerta física donde está instalado.
+     * @param campus     Instancia compartida de {@link Campus}. Si es {@code null}, crea un respaldo seguro.
+     */
+    public Torno(int idTerminal, String ubicacion, Campus campus) {
+        this.idTerminal = Math.max(1, idTerminal);
+        this.ubicacion = (ubicacion == null || ubicacion.isBlank()) ? "Acceso General" : ubicacion.trim();
+        this.campus = (campus != null) ? campus : new Campus("Recinto de Respaldo", 1000, 0);
+        this.operacionesLocales = 0;
+
+        this.ultimoFichaje = null;
+        this.penultimoFichaje = null;
+        this.generadorTokens = new Random();
+    }
+
+    /** @return Identificador numérico del terminal. */
+    public int getIdTerminal() { return this.idTerminal; }
+    /** @return Nombre descriptivo de la ubicación física del torno. */
+    public String getUbicacion() { return this.ubicacion; }
+    /** @return Contador de operaciones gestionadas localmente por este torno. */
+    public int getOperacionesLocales() { return this.operacionesLocales; }
+    /** @return Número de vacantes libres actuales en el {@link Campus} asociado. */
+    public int getAforoDisponibleCampus() { return this.campus.getAforoDisponible(); }
+    /** @return Último objeto {@link Fichaje} registrado, o {@code null} si no hay registros. */
+    public Fichaje getUltimoFichaje() { return this.ultimoFichaje; }
+    /** @return Penúltimo objeto {@link Fichaje} registrado, o {@code null} si hay menos de dos. */
+    public Fichaje getPenultimoFichaje() { return this.penultimoFichaje; }
+
+    /**
+     * Devuelve un clon independiente (copia defensiva) del último {@link Fichaje}
+     * registrado en este torno, utilizando el constructor copia {@link Fichaje#Fichaje(Fichaje)}.
+     *
+     * @return Copia independiente del último fichaje, o {@code null} si no existen registros.
+     */
+    public Fichaje crearCopiaDefensivaUltimo() {
+        Fichaje copia = null;
+        if (this.ultimoFichaje != null) {
+            copia = new Fichaje(this.ultimoFichaje);
+        }
+        return copia;
+    }
+
+    private String construirTokenQR(String dni, int idFichaje) {
+        int codigoSec = BASE_TOKEN_SEGURIDAD + this.generadorTokens.nextInt(RANGO_TOKEN_SEGURIDAD);
+        String token = PREFIJO_CENTRO + "-" + dni;
+        token += "-T" + this.idTerminal;
+        token += "-SEC#" + codigoSec;
+        token += "-REG" + idFichaje;
+        return token;
+    }
+
+    private void registrarFichajeEnHistorial(Fichaje nuevo) {
+        this.penultimoFichaje = this.ultimoFichaje;
+        this.ultimoFichaje = nuevo;
+    }
+
+    /**
+     * Procesa una solicitud de salida por este torno, validando en el {@link Campus} que el
+     * recinto no esté vacío, y registra el {@link Fichaje} resultante.
+     *
+     * @param nombre Nombre completo de la persona que abandona las instalaciones.
+     * @return Instancia {@link Fichaje} de tipo salida con el resultado de la operación.
+     */
+    public Fichaje registrarSalida(String nombre) {
+        this.operacionesLocales++;
+        boolean salidaAutorizada = this.campus.intentarRegistrarSalida();
+        String motivoSalida = salidaAutorizada ? "Salida registrada" : "Recinto vacío";
+
+        Fichaje nuevoFichaje = new Fichaje(nombre, 'S', salidaAutorizada, motivoSalida);
+        this.registrarFichajeEnHistorial(nuevoFichaje);
+        return nuevoFichaje;
+    }
+
+    /**
+     * Evalúa todas las reglas de seguridad de una entrada mediante {@link Fichaje},
+     * actualiza el aforo del {@link Campus} si procede y almacena el registro generado.
+     *
+     * @param dni                    Documento identificativo del solicitante.
+     * @param nombre                 Nombre completo del solicitante.
+     * @param perfil                 Código de rol ({@code 'E'}, {@code 'D'}, {@code 'V'} o {@code 'A'}).
+     * @param temperatura            Lectura térmica en grados Celsius.
+     * @param datosSintacticamenteOk {@code true} si la lectura por teclado no arrojó errores de formato.
+     * @param motivoError            Texto del error previo en caso de fallo sintáctico.
+     * @return Nueva instancia {@link Fichaje} con el veredicto, token y marca horaria asignada.
+     */
+    public Fichaje registrarEntrada(String dni, String nombre, char perfil,
+                                    double temperatura, boolean datosSintacticamenteOk, String motivoError) {
+        this.operacionesLocales++;
+        boolean accesoConcedido = false;
+        String motivoFinal = motivoError;
+
+        if (!datosSintacticamenteOk) {
+            this.campus.registrarIntentoDenegado();
+        } else if (!Fichaje.esTemperaturaSegura(temperatura)) {
+            motivoFinal = "Temperatura anómala.";
+            this.campus.registrarIntentoDenegado();
+        } else if (!this.campus.hayAforoDisponible()) {
+            motivoFinal = "Aforo completo.";
+            this.campus.registrarIntentoDenegado();
+        } else if (!Fichaje.esDniValido(dni)) {
+            motivoFinal = "DNI no reglamentario.";
+            this.campus.registrarIntentoDenegado();
+        } else if (!Fichaje.esPerfilValido(perfil)) {
+            motivoFinal = "Perfil no catalogado.";
+            this.campus.registrarIntentoDenegado();
+        } else {
+            accesoConcedido = true;
+            this.campus.registrarEntradaExitosa(temperatura, 360);
+            motivoFinal = "Acceso concedido";
+        }
+
+        String token = this.construirTokenQR(dni, Fichaje.getSiguienteId());
+        Fichaje nuevoFichaje = new Fichaje(dni, nombre, perfil, 'E', temperatura,
+                accesoConcedido, motivoFinal, token);
+
+        this.registrarFichajeEnHistorial(nuevoFichaje);
+        return nuevoFichaje;
+    }
+
+    /**
+     * Procesa secuencialmente una cola de personas en modo ráfaga mientras exista aforo
+     * libre en el {@link Campus} y no salte un veto judicial de seguridad.
+     *
+     * @param personasEnCola Cantidad inicial de personas esperando en la fila del torno.
+     * @return Cantidad de personas que quedaron en espera si la cola se detuvo antes de vaciarse.
+     */
+    public int procesarRafaga(int personasEnCola) {
+        boolean vetoJudicialDetectado = false;
+
+        while (personasEnCola > 0 && this.campus.hayAforoDisponible() && !vetoJudicialDetectado) {
+            if (Fichaje.getUltimoIdAsignado() == 1044) {
+                System.out.println(">> [ALERTA JUDICIAL]: Credencial #1044 bloqueada. Suspendiendo cola en cabecera...");
+                vetoJudicialDetectado = true;
+            } else {
+                this.operacionesLocales++;
+                personasEnCola--;
+
+                double tempSimulada = 36.4 + (this.generadorTokens.nextDouble() * 0.5);
+                this.campus.registrarEntradaExitosa(tempSimulada, 360);
+
+                Fichaje fRafaga = new Fichaje("N/D", "USUARIO RÁFAGA", 'E', 'E',
+                        tempSimulada, true, "Paso automático en ráfaga", "CAMINAS-BURST");
+                this.registrarFichajeEnHistorial(fRafaga);
+            }
+        }
+        return personasEnCola;
+    }
+
+    /**
+     * Delega en el {@link Campus} compartido la activación del protocolo de evacuación de emergencia.
+     */
+    public void activarEvacuacion() {
+        this.campus.activarEvacuacion();
+    }
+
+    /**
+     * Imprime por consola la telemetría local de este torno, el estado global sincronizado
+     * del {@link Campus} y los dos últimos fichajes locales registrados.
+     */
+    public void mostrarTelemetria() {
+        System.out.printf("TORNO ACTIVO:             #%d (%s) | Operaciones locales: %d%n",
+                this.idTerminal, this.ubicacion, this.operacionesLocales);
+        this.campus.mostrarEstadoGlobal();
+
+        if (this.ultimoFichaje != null) {
+            System.out.println("ÚLTIMO EN ESTE TORNO:     " + this.ultimoFichaje);
+        } else {
+            System.out.println("ÚLTIMO EN ESTE TORNO:     (sin registros en este terminal)");
+        }
+
+        if (this.penultimoFichaje != null) {
+            System.out.println("PENÚLTIMO EN ESTE TORNO:  " + this.penultimoFichaje);
+        } else {
+            System.out.println("PENÚLTIMO EN ESTE TORNO:  (sin registros en este terminal)");
+        }
+    }
+}
+```
+
+**Archivo 4: `pr/src/es/azahartech/caminas/app/ControlAccesoQR.java`**
+```java
+package es.azahartech.caminas.app;
+
+import es.azahartech.caminas.dispositivos.Torno;
+import es.azahartech.caminas.modelo.Campus;
+import es.azahartech.caminas.modelo.Fichaje;
+import java.util.Scanner;
+import java.time.LocalDate;
+
+/**
+ * Aplicación principal de consola para la gestión multi-torno del IES El Caminàs.
+ * <p>
+ * Versión definitiva de cierre del Sprint 4 ({@code v4.0 Oficial}). Actúa exclusivamente
+ * como interfaz interactiva, delegando todas las operaciones de negocio, diagnóstico
+ * perimetral, ráfagas y evacuación en las entidades encapsuladas del dominio.
+ * </p>
+ *
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 4.0 Oficial (Diciembre 2026)
+ * @since JDK 21 LTS
+ */
+public class ControlAccesoQR {
+
+    private static final String NOMBRE_CENTRO = "IES El Caminàs (Castellón)";
+
+    /**
+     * Punto de entrada principal de la consola de control de accesos.
+     *
+     * @param args Argumentos de línea de comandos (no utilizados en esta versión).
+     */
+    public static void main(String[] args) {
+        Scanner teclado = new Scanner(System.in);
+        LocalDate fechaActual = LocalDate.now();
+
+        Campus iesElCaminas = new Campus(NOMBRE_CENTRO, 1200, 1190);
+        Torno tornoVestibulo = new Torno(101, "Vestíbulo Principal", iesElCaminas);
+        Torno tornoNorte = new Torno(102, "Puerta Norte Ciclos", iesElCaminas);
+
+        Torno tornoActivo = tornoVestibulo;
+        boolean sesionActiva = true;
+
+        System.out.println("======================================================================");
+        System.out.println("   AZAHARTECH · CONTROL MULTI-TORNO OFICIAL - IES EL CAMINÀS          ");
+        System.out.println("   Versión 4.0 Oficial (Release Sprint 4: Arquitectura POO Completa)  ");
+        System.out.println("   Fecha de sesión: " + fechaActual);
+        System.out.println("======================================================================");
+
+        do {
+            System.out.println("\n----------------------------------------------------------------------");
+            System.out.printf("   PANEL DE OPERACIONES · TORNO ACTIVO: #%d (%s)%n",
+                    tornoActivo.getIdTerminal(), tornoActivo.getUbicacion());
+            System.out.println("----------------------------------------------------------------------");
+            System.out.println("  [0] Conmutar de torno activo (#101 Vestíbulo <-> #102 Puerta Norte)");
+            System.out.println("  [1] Registrar tránsito individual (Entrada / Salida)");
+            System.out.println("  [2] Procesar cola en ráfaga en el torno activo");
+            System.out.println("  [3] Consultar telemetría del torno y ocupación sincronizada del campus");
+            System.out.println("  [4] Diagnóstico perimetral estructurado SESE (3 tornos x 4 canales)");
+            System.out.println("  [5] Activar protocolo de evacuación de emergencia");
+            System.out.println("  [6] Emitir copia de respaldo rectificada del último fichaje");
+            System.out.println("  [7] Cerrar jornada y apagar sistema");
+            System.out.print("Seleccione una operación (0-7): ");
+
+            int opcionMenu = -1;
+            try {
+                opcionMenu = Integer.parseInt(teclado.nextLine().trim());
+            } catch (NumberFormatException e) {
+                opcionMenu = -1;
+            }
+
+            switch (opcionMenu) {
+                case 0:
+                    tornoActivo = (tornoActivo == tornoVestibulo) ? tornoNorte : tornoVestibulo;
+                    System.out.printf(">> TERMINAL CONMUTADO: Operando ahora desde Torno #%d (%s)%n",
+                            tornoActivo.getIdTerminal(), tornoActivo.getUbicacion());
+                    break;
+
+                case 1:
+                    System.out.printf("%n--- [MODO 1: TRÁNSITO INDIVIDUAL EN TORNO #%d] ---%n", tornoActivo.getIdTerminal());
+                    System.out.print("Sentido del tránsito (E = Entrada, S = Salida): ");
+                    String lineaSentido = teclado.nextLine().trim().toUpperCase();
+                    char sentidoTransito = lineaSentido.isEmpty() ? 'E' : lineaSentido.charAt(0);
+
+                    System.out.print("Nombre completo: ");
+                    String nombreLimpio = teclado.nextLine().trim().toUpperCase();
+                    if (nombreLimpio.isEmpty()) {
+                        nombreLimpio = "N/D";
+                    }
+
+                    Fichaje nuevoFichaje;
+
+                    if (sentidoTransito == 'S') {
+                        nuevoFichaje = tornoActivo.registrarSalida(nombreLimpio);
+                        if (nuevoFichaje.isAutorizado()) {
+                            System.out.println(">> VEREDICTO: [SALIDA AUTORIZADA] Torno exterior abierto.");
+                        } else {
+                            System.err.println(">> ALERTA: Imposible autorizar salida; recinto vacío.");
+                        }
+                    } else {
+                        double tempVestibulo = 0.0;
+                        String dniPersonaLimpio = "N/D";
+                        char perfilNormalizado = '?';
+                        boolean datosSintacticamenteCorrectos = true;
+                        String motivoError = "";
+
+                        try {
+                            System.out.print("Temperatura (ºC): ");
+                            tempVestibulo = Double.parseDouble(teclado.nextLine().trim());
+                            System.out.print("DNI: ");
+                            dniPersonaLimpio = teclado.nextLine().trim().toUpperCase();
+                            System.out.print("Perfil (E/D/V/A): ");
+                            String lineaPerfil = teclado.nextLine().trim();
+                            perfilNormalizado = lineaPerfil.isEmpty() ? '?' : Character.toUpperCase(lineaPerfil.charAt(0));
+                        } catch (NumberFormatException e) {
+                            datosSintacticamenteCorrectos = false;
+                            motivoError = "Error de formato numérico.";
+                        }
+
+                        nuevoFichaje = tornoActivo.registrarEntrada(dniPersonaLimpio, nombreLimpio,
+                                perfilNormalizado, tempVestibulo, datosSintacticamenteCorrectos, motivoError);
+
+                        System.out.printf(">> VEREDICTO: %s [Token: %s]%n",
+                                nuevoFichaje.isAutorizado()
+                                        ? "[ENTRADA AUTORIZADA]"
+                                        : "[ENTRADA DENEGADA - " + nuevoFichaje.getMotivo() + "]",
+                                nuevoFichaje.getToken());
+
+                        if (nuevoFichaje.isAutorizado()) {
+                            System.out.printf("   Zona asignada: %s (Estancia máx: %d min)%n",
+                                    nuevoFichaje.obtenerZonaAutorizada(), nuevoFichaje.obtenerEstanciaMaximaMinutos());
+                        }
+
+                        Fichaje previo = tornoActivo.getPenultimoFichaje();
+                        if (nuevoFichaje.esMismoSolicitante(previo)
+                                && nuevoFichaje.getSentido() == previo.getSentido()) {
+                            System.out.println(">> AVISO ANTI-REBOTE: El DNI " + nuevoFichaje.getDni()
+                                    + " coincide con el tránsito anterior de este mismo torno.");
+                        }
+                    }
+
+                    System.out.println(">> Objeto Fichaje registrado: " + nuevoFichaje);
+                    break;
+
+                case 2:
+                    System.out.printf("%n--- [MODO 2: RÁFAGA EN TORNO #%d] ---%n", tornoActivo.getIdTerminal());
+                    System.out.print("Personas en cola para esta ráfaga: ");
+                    int personasEnCola = 0;
+                    try {
+                        personasEnCola = Integer.parseInt(teclado.nextLine().trim());
+                    } catch (NumberFormatException e) {
+                        personasEnCola = 0;
+                    }
+
+                    int restantes = tornoActivo.procesarRafaga(personasEnCola);
+                    System.out.printf(">> Estado tras ráfaga. Plazas disponibles en campus: %d | Restantes en cola: %d%n",
+                            tornoActivo.getAforoDisponibleCampus(), restantes);
+                    break;
+
+                case 3:
+                    System.out.println("\n--- [MODO 3: MONITOR DE TELEMETRÍA SINCRONIZADA] ---");
+                    tornoActivo.mostrarTelemetria();
+                    break;
+
+                case 4:
+                    System.out.println("\n--- [MODO 4: INSPECCIÓN PERIMETRAL ESTRUCTURADA (SESE)] ---");
+                    iesElCaminas.ejecutarDiagnosticoPerimetral(false);
+                    System.out.println("-------------------------------------------------------------------");
+                    break;
+
+                case 5:
+                    System.out.println("\n--- [MODO 5: PROTOCOLO DE EVACUACIÓN DE EMERGENCIA] ---");
+                    tornoActivo.activarEvacuacion();
+                    break;
+
+                case 6:
+                    System.out.println("\n--- [MODO 6: COPIA DEFENSIVA E IGUALDAD (CONSTRUCTOR COPIA)] ---");
+                    Fichaje original = tornoActivo.getUltimoFichaje();
+                    Fichaje copiaRespaldo = tornoActivo.crearCopiaDefensivaUltimo();
+
+                    if (copiaRespaldo == null) {
+                        System.out.println(">> No existe ningún fichaje previo en este torno para clonar.");
+                    } else {
+                        System.out.println("Original en torno:                   " + original);
+                        System.out.println("Copia fabricada con new(original):   " + copiaRespaldo);
+                        System.out.println("¿Misma dirección en memoria (==)?    " + (copiaRespaldo == original));
+                        System.out.println("¿Mismo contenido inicial (equals)?   " + copiaRespaldo.equals(original));
+
+                        System.out.print("Introduce nueva observación para la copia rectificada: ");
+                        String nuevoMotivo = teclado.nextLine().trim();
+                        copiaRespaldo.setMotivo(nuevoMotivo);
+
+                        System.out.println("Copia tras editar motivo:            " + copiaRespaldo);
+                        System.out.println("Original tras editar la copia:       " + original);
+                        System.out.println("¿Siguen siendo equals tras editar?   " + copiaRespaldo.equals(original));
+                    }
+                    break;
+
+                case 7:
+                    System.out.println("\n>> Desconectando terminales de presencia de forma ordenada...");
+                    sesionActiva = false;
+                    break;
+
+                default:
+                    System.err.println(">> Error: Opción no válida. Seleccione una operación entre 0 y 7.");
+                    break;
+            }
+
+        } while (sesionActiva);
+
+        iesElCaminas.mostrarAuditoriaFinal();
+        System.out.printf("DESGLOSE TORNO #101 (Vestíbulo): %d operaciones procesadas%n", tornoVestibulo.getOperacionesLocales());
+        System.out.printf("DESGLOSE TORNO #102 (Norte):     %d operaciones procesadas%n", tornoNorte.getOperacionesLocales());
+        System.out.println("ESTADO DEL DISPOSITIVO:          Sistema multi-torno desconectado.");
+        System.out.println("======================================================================");
+
+        teclado.close();
+    }
+}
+```
+
+**Archivo 5: `pr/src/es/azahartech/caminas/pruebas/PruebasSistemaAcceso.java`**
+```java
+package es.azahartech.caminas.pruebas;
+
+import es.azahartech.caminas.dispositivos.Torno;
+import es.azahartech.caminas.modelo.Campus;
+import es.azahartech.caminas.modelo.Fichaje;
+
+/**
+ * Banco de pruebas automatizadas de integración y regresión para el sistema
+ * de control de accesos del IES El Caminàs ({@code v4.0 Oficial}).
+ *
+ * @author Equipo AzaharTech (Alba Torres, Pau Ferrer, Laia Claramunt)
+ * @version 4.0 Oficial (Diciembre 2026)
+ * @since JDK 21 LTS
+ */
+public class PruebasSistemaAcceso {
+
+    private static int totalPruebas = 0;
+    private static int pruebasSuperadas = 0;
+
+    /**
+     * Evalúa el resultado booleano de un caso de prueba, actualiza los contadores
+     * globales de la batería e imprime el veredicto en consola.
+     *
+     * @param nombrePrueba Descripción legible del comportamiento verificado.
+     * @param condicion    Resultado booleano de la comprobación ({@code true} si pasa).
+     */
+    public static void verificar(String nombrePrueba, boolean condicion) {
+        totalPruebas++;
+        if (condicion) {
+            pruebasSuperadas++;
+            System.out.println("  [OK]    " + nombrePrueba);
+        } else {
+            System.err.println("  [FALLO] " + nombrePrueba);
+        }
+    }
+
+    /**
+     * Ejecuta secuencialmente la batería completa de pruebas automatizadas de cierre v4.0.
+     *
+     * @param args Argumentos de línea de comandos (no utilizados).
+     */
+    public static void main(String[] args) {
+        System.out.println("======================================================================");
+        System.out.println("   AZAHARTECH · SUITE DE PRUEBAS OFICIAL (RELEASE v4.0)               ");
+        System.out.println("======================================================================");
+
+        System.out.println("\n--- [1. Validaciones estáticas y fronteras en Fichaje] ---");
+        verificar("Temperatura exacta en límite inferior (35.0) válida", Fichaje.esTemperaturaSegura(35.0));
+        verificar("Temperatura exacta en límite superior (37.5) válida", Fichaje.esTemperaturaSegura(37.5));
+        verificar("Temperatura con fiebre (37.6) rechazada", !Fichaje.esTemperaturaSegura(37.6));
+        verificar("DNI nulo rechazado sin lanzar NullPointerException", !Fichaje.esDniValido(null));
+        verificar("Perfil inválido ('X') rechazado", !Fichaje.esPerfilValido('X'));
+
+        System.out.println("\n--- [2. Encapsulación y Setters defensivos] ---");
+        Fichaje fPrueba = new Fichaje("12345678z", "  ana garcía ", 'E', 'E', 36.5, true, "OK", "TKN1");
+        Fichaje fSegundo = new Fichaje("87654321x", "luis", 'D', 'E', 36.2, true, "OK", "TKN2");
+
+        verificar("Normalización de DNI y nombre en constructor",
+                fPrueba.getDni().equals("12345678Z") && fPrueba.getNombre().equals("ANA GARCÍA"));
+        verificar("Autonumeración secuencial única entre instancias",
+                fSegundo.getId() == fPrueba.getId() + 1);
+
+        fPrueba.setTemperatura(-500.0);
+        verificar("Setter de temperatura bloquea valor imposible (-500.0 -> 0.0)",
+                fPrueba.getTemperatura() == 0.0);
+
+        fPrueba.setNombre("   ");
+        verificar("Setter de nombre protege contra cadena en blanco (-> N/D)",
+                fPrueba.getNombre().equals("N/D"));
+
+        System.out.println("\n--- [3. Constructor copia, igualdad equals y nulos] ---");
+        Fichaje clon = new Fichaje(fSegundo);
+
+        verificar("El clon ocupa distinta dirección en memoria (== es false)", clon != fSegundo);
+        verificar("El clon tiene idéntico contenido lógico (equals es true)", clon.equals(fSegundo));
+
+        clon.setMotivo("Rectificado en prueba");
+        verificar("Modificar el clon NO altera el original",
+                fSegundo.getMotivo().equals("OK") && !clon.equals(fSegundo));
+        verificar("equals(null) devuelve false sin lanzar excepción", !fSegundo.equals(null));
+        verificar("equals(\"Texto\") devuelve false ante otro tipo de objeto", !fSegundo.equals("Texto"));
+
+        System.out.println("\n--- [4. Integración Campus + Multi-Torno + Diagnóstico + Underflow] ---");
+        Campus campusTest = new Campus("IES Test", 100, 98);
+        Torno tVestibulo = new Torno(101, "Vestíbulo", campusTest);
+        Torno tNorte = new Torno(102, "Norte", campusTest);
+
+        Fichaje paso1 = tVestibulo.registrarEntrada("11111111A", "MARTA", 'E', 36.5, true, "");
+        Fichaje paso2 = tNorte.registrarEntrada("22222222B", "JORGE", 'D', 36.4, true, "");
+        Fichaje paso3Bloqueado = tVestibulo.registrarEntrada("33333333C", "ELENA", 'E', 36.3, true, "");
+
+        verificar("Entradas en distintos tornos sincronizan el aforo compartido",
+                paso1.isAutorizado() && paso2.isAutorizado() && campusTest.getPersonasEnCentro() == 100);
+        verificar("Tercer acceso rechazado automáticamente al llenarse el aforo",
+                !paso3Bloqueado.isAutorizado() && tNorte.getAforoDisponibleCampus() == 0);
+
+        Fichaje copiaSeguraTorno = tNorte.crearCopiaDefensivaUltimo();
+        copiaSeguraTorno.setMotivo("Intento de alteración externa");
+        verificar("Copia defensiva de Torno protege su historial interno",
+                tNorte.getUltimoFichaje().getMotivo().equals("Acceso concedido"));
+
+        verificar("Diagnóstico perimetral sano devuelve true",
+                campusTest.ejecutarDiagnosticoPerimetral(false));
+        verificar("Simulación de sabotaje perimetral detiene barrido y devuelve false",
+                !campusTest.ejecutarDiagnosticoPerimetral(true));
+
+        campusTest.activarEvacuacion();
+        Fichaje salidaEnVacio = tNorte.registrarSalida("FANTASMA");
+        verificar("Evacuación vacía el campus y la guardia underflow bloquea salidas en 0",
+                campusTest.getPersonasEnCentro() == 0 && !salidaEnVacio.isAutorizado());
+
+        System.out.println("\n======================================================================");
+        System.out.printf("   RESULTADO DE LA BATERÍA: %d / %d PRUEBAS SUPERADAS%n",
+                pruebasSuperadas, totalPruebas);
+        if (pruebasSuperadas == totalPruebas) {
+            System.out.println("   ESTADO: [CERTIFICADO EN VERDE - RELEASE v4.0 APROBADA]");
+        } else {
+            System.err.println("   ESTADO: [ALERTA - EXISTEN PRUEBAS FALLIDAS]");
+        }
+        System.out.println("======================================================================");
+    }
+}
+```
+
+</details>
+
+---
+
+#### 4. Segunda sesión: dojo de entrenamiento y katas de código
+
+*(Redactadas con instrucciones claras, directas y paso a paso).*
+
+##### Kata 1 (Cinturón blanco). Limpieza final y cero avisos amarillos en tu proyecto
+
+Abre cada uno de los archivos `.java` de tu proyecto dentro de `src/` y déjalos completamente limpios para la entrega final `v4.0`:
+1. Pulsa **`Ctrl + Alt + L`** en cada archivo para autoformatear los márgenes e indentación.
+2. Pulsa **`Ctrl + Alt + O`** en cada archivo para borrar automáticamente cualquier `import` que no se esté usando.
+3. Fíjate en la esquina superior derecha del editor de IntelliJ: debe aparecer el icono verde (**✔**). Si ves un triángulo amarillo (**⚠**), coloca el ratón encima para leer qué avisa IntelliJ (por ejemplo, una variable creada que nunca lees o una condición que siempre da lo mismo) y corrígelo.
+
+Revisa estos últimos detalles según tu proyecto:
+
+* **Aventura conversacional:** Asegúrate de que `MiProyecto.java` solo pinta el menú de consola, que toda la lógica de combate y vida está dentro de `Personaje`, `Objeto` y `Escena`, y que tus archivos están ordenados en paquetes con `toString()`, `equals()` y Javadoc.
+* **Motor de recomendación:** Comprueba que `Item`, `Etiqueta` y `Usuario` validan sus rangos (`[0.0, 10.0]`), que el constructor copia aísla bien los objetos, y que todos tus paquetes y Javadoc están libres de avisos amarillos.
+* **Simulador de físicas 2D:** Verifica que `Bola`, `EntornoFisico` y `Escenario` comparten los parámetros sin duplicar constantes de gravedad, que `MiProyecto` solo controla el menú interactivo y que no quedan variables sin usar.
+* **Bóveda de contraseñas:** Comprueba que `Credencial` nunca muestra la contraseña real en `toString()` ni en `getClave()`, que `PoliticaSeguridad` compartida gobierna las validaciones y que todos los métodos públicos tienen su Javadoc.
+
+---
+
+##### Kata 2 (Cinturón marrón). Inspección global del proyecto y prueba final de humo
+
+1. En el menú superior de IntelliJ haz clic en **`Code` $\rightarrow$ `Inspect Code...`** (o `Analyze` $\rightarrow$ `Inspect Code...`), elige **Whole project** y pulsa **Analyze**.
+2. Comprueba en la pestaña inferior si queda algún error de compilación, riesgo de `NullPointerException` o aviso de Javadoc y resuélvelo.
+3. Ejecuta primero **`PruebasProyecto.java`** y confirma que todas tus pruebas automáticas salen en verde (**`[OK]`** al 100 %).
+4. Ejecuta después **`MiProyecto.java`** en `.app` y haz una prueba rápida navegando por todas las opciones del menú hasta salir ordenadamente.
+
+---
+
+##### Kata 3 (Cinturón negro). Publicación visual en GitHub y etiqueta oficial `v4.0` desde IntelliJ
+
+Sube tu entrega definitiva del Sprint 4 utilizando únicamente la interfaz gráfica de IntelliJ IDEA:
+
+1. **Commit y Push de tu versión final:**
+   * Abre la pestaña lateral **Commit** (`Ctrl + K`), marca **únicamente tus archivos `.java`** dentro de `src/` (asegúrate de no marcar carpetas temporales de salida ni `docs_javadoc/`), escribe el mensaje `feat(pr): entrega consolidada v4.0 - fin de sprint 4` y pulsa **Commit and Push...** (`Ctrl + Alt + K`).
+2. **Creación y subida de la etiqueta de versión (*Tag*):**
+   * En el menú superior, ve a **`Git` $\rightarrow$ `New Tag...`**.
+   * Escribe como nombre de etiqueta **`v0.4.0-sprint4`** y como mensaje `Release v4.0: POO propia completa`. Pulsa **Create Tag**.
+   * Ve a **`Git` $\rightarrow$ `Push...`** (`Ctrl + Shift + K`), marca la casilla **`Push Tags`** abajo a la izquierda y pulsa **Push**.
+3. **Comprobación final:**
+   * Entra en la web de tu repositorio de GitHub y verifica que aparecen tus carpetas de paquetes actualizadas y la etiqueta **`v0.4.0-sprint4`** lista para el **Hito de Consolidación del 1.er Trimestre**.
+
