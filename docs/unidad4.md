@@ -7690,6 +7690,7 @@ Hasta hoy, como todos tus archivos estaban en la misma carpeta, si olvidabas pon
 ---
 
 ## Semana 12. Igualdad, Javadoc y consolidación
+
 ---
 
 ### Día 44 - 2 sesiones
