@@ -6780,6 +6780,10 @@ Demuestra visualmente en memoria el modelo de agregación compartida sin necesid
 
 ---
 
+## Semana 12. Igualdad, Javadoc y consolidación
+
+---
+
 ### Día 43 - 2 sesiones
 
 ---
