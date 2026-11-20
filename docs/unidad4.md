@@ -6780,10 +6780,6 @@ Demuestra visualmente en memoria el modelo de agregación compartida sin necesid
 
 ---
 
-## Semana 12. Igualdad, Javadoc y consolidación
-
----
-
 ### Día 43 - 2 sesiones
 
 ---
@@ -7691,6 +7687,9 @@ Hasta hoy, como todos tus archivos estaban en la misma carpeta, si olvidabas pon
 3. **¿Qué pasa si dos paquetes tienen una clase con el mismo nombre?**  
    Responde brevemente en un comentario de `MiProyecto.java` cómo los paquetes permiten tener clases con el mismo nombre sin que choquen (por ejemplo, `java.util.Date` frente a `java.sql.Date`) usando la ruta completa delante cuando haga falta.
 
+---
+
+## Semana 12. Igualdad, Javadoc y consolidación
 ---
 
 ### Día 44 - 2 sesiones
