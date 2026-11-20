@@ -4746,9 +4746,6 @@ Inspecciona en tiempo de ejecución cómo separa la JVM la memoria compartida de
 3. **Verificación de persistencia tras limpieza:**  
    Asigna `obj1 = null; obj2 = null;`, avanza un paso con **`F8`** e invoca en la consola de evaluación (`Alt + F8`) el *getter* estático de tu clase (`TuClase.getTotalCreados()`). Certifica en la cabecera Javadoc de tu clase que el contador estático sobrevive intacto en el área de clases aunque los objetos individuales hayan quedado huérfanos en el *Heap*.
 
-# Sprint 4. Desarrollo de clases
-## Semana 11. Miembros static y composición
-
 ---
 
 ### Día 41 - 2 sesiones
