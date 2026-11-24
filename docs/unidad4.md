@@ -72,13 +72,13 @@ classDiagram
 
 En Java, cada clase pública reside en su propio archivo `.java`:
 
-* **Clase orquestadora (`ControlAccesoQR.java`):** Contiene el método `public static void main` y coordina la interacción con el usuario y el flujo del programa.  
-* **Clase entidad (`Fichaje.java`):** **No contiene método `main`**, pues no está diseñada para arrancar sola, sino para ser instanciada tantas veces como tránsitos ocurran.  
+* **Clase orquestadora (`ControlAccesoQR.java`).** Contiene el método `public static void main` y coordina la interacción con el usuario y el flujo del programa.  
+* **Clase entidad (`Fichaje.java`).** **No contiene método `main`**, pues no está diseñada para arrancar sola, sino para ser instanciada tantas veces como tránsitos ocurran.  
 
 Sus dos bloques internos fundamentales en este punto del curso son:
 
-1. **Atributos de instancia:** Variables declaradas directamente en la clase (fuera de cualquier método) **sin `static`**. Cada objeto fabricado con `new` posee su propia copia privada.  
-2. **Métodos de instancia:** Funciones declaradas **sin `static`** que operan directamente sobre los atributos del objeto receptor concreto sobre el que se invocan.  
+1. **Atributos de instancia.** Variables declaradas directamente en la clase (fuera de cualquier método) **sin `static`**. Cada objeto fabricado con `new` posee su propia copia privada.  
+2. **Métodos de instancia.** Funciones declaradas **sin `static`** que operan directamente sobre los atributos del objeto receptor concreto sobre el que se invocan.  
 
 ##### B. Contraste clave: `static` (Sprints 2–3) frente a instancia (Sprint 4)
 
@@ -132,9 +132,9 @@ flowchart LR
 
 De este modelo se derivan tres consecuencias en nuestros bucles:
 
-1. **Desplazamiento por copia de referencia:** Al hacer `penultimoFichaje = ultimoFichaje; ultimoFichaje = nuevoFichaje;`, no se duplican los datos en el *Heap*; simplemente se reorientan los punteros del *Stack* para mantener trazabilidad de los dos últimos tránsitos.  
-2. **Seguridad contra `null`:** Si intentamos invocar `ultimoFichaje.describir()` antes de que se haya registrado el primer acceso (`ultimoFichaje == null`), la JVM lanzará **`NullPointerException`**. Debemos proteger siempre la llamada con `if (ultimoFichaje != null)`.  
-3. **Ciclo de vida automático:** Cuando ni `ultimoFichaje` ni `penultimoFichaje` apuntan ya a un `Fichaje` antiguo (al llegar un tercero), ese objeto queda huérfano y el *Garbage Collector* libera su memoria automáticamente.  
+1. **Desplazamiento por copia de referencia.** Al hacer `penultimoFichaje = ultimoFichaje; ultimoFichaje = nuevoFichaje;`, no se duplican los datos en el *Heap*; simplemente se reorientan los punteros del *Stack* para mantener trazabilidad de los dos últimos tránsitos.  
+2. **Seguridad contra `null`.** Si intentamos invocar `ultimoFichaje.describir()` antes de que se haya registrado el primer acceso (`ultimoFichaje == null`), la JVM lanzará **`NullPointerException`**. Debemos proteger siempre la llamada con `if (ultimoFichaje != null)`.  
+3. **Ciclo de vida automático.** Cuando ni `ultimoFichaje` ni `penultimoFichaje` apuntan ya a un `Fichaje` antiguo (al llegar un tercero), ese objeto queda huérfano y el *Garbage Collector* libera su memoria automáticamente.  
 
 ```mermaid
 stateDiagram-v2
@@ -152,8 +152,8 @@ stateDiagram-v2
 
 Evolucionamos la solución dividiendo el proyecto en **dos archivos independientes** dentro de `pr/src/`:
 
-1. **`Fichaje.java` (Nueva clase entidad desacoplada):** Modela de forma autónoma los 10 atributos de cada tránsito y dos métodos de instancia (`obtenerPerfilLegible` y `describir`), sin depender de `ControlAccesoQR`.  
-2. **`ControlAccesoQR.java` (`v3.1`):** Instancia un nuevo objeto `Fichaje` en cada tránsito de la Opción 1, mantiene vivas las referencias `ultimoFichaje` y `penultimoFichaje` fuera del bucle e incorpora guardias contra `null` en el monitor de telemetría (Opción 3).  
+1. **`Fichaje.java` (Nueva clase entidad desacoplada).** Modela de forma autónoma los 10 atributos de cada tránsito y dos métodos de instancia (`obtenerPerfilLegible` y `describir`), sin depender de `ControlAccesoQR`.  
+2. **`ControlAccesoQR.java` (`v3.1`).** Instancia un nuevo objeto `Fichaje` en cada tránsito de la Opción 1, mantiene vivas las referencias `ultimoFichaje` y `penultimoFichaje` fuera del bucle e incorpora guardias contra `null` en el monitor de telemetría (Opción 3).  
 
 ##### A. Comparativa de cambios respecto a v3.0 (`diff`)
 
@@ -885,10 +885,10 @@ Dos objetos distintos pueden contener exactamente los mismos datos y, sin embarg
 
 Crea un archivo `.java` nuevo dentro de la carpeta `pr/src/` (sin método `main`) para la clase principal de tu proyecto. Ponle **4 atributos** (variables de clase sin `static`) y **2 métodos** propios (sin `static`). Después, ve a `MiProyecto.java` (`main`), crea **dos objetos distintos** con `new`, rellena sus datos usando el punto (`.`) y llama a sus métodos para comprobar que cada uno tiene sus propios datos:
 
-* **Aventura conversacional:** Crea `Personaje.java` con los atributos `nombre`, `salud`, `ataque` y `esAliado`. Añade un método `describir()` que devuelva una frase con sus datos y otro método `estaVivo()` que devuelva `true` si su salud es mayor que 0. En `main`, crea un héroe y un enemigo distintos e imprime sus fichas.
-* **Motor de recomendación:** Crea `Item.java` con los atributos `titulo`, `categoria`, `valoracionMedia` y `disponible`. Añade un método `describir()` que devuelva la línea del catálogo y otro método `esDestacado()` que devuelva `true` si la valoración es mayor o igual a 7.5. En `main`, crea dos ítems de categorías diferentes e imprime sus fichas.
-* **Simulador de físicas 2D:** Crea `Bola.java` con los atributos `nombre`, `x`, `y`, `velocidadX` y `velocidadY`. Añade un método `calcularRapidez()` que devuelva el módulo de la velocidad usando `Math.sqrt` y otro método `describir()` con sus coordenadas actuales. En `main`, crea una bola lenta y otra rápida y muestra la rapidez de ambas.
-* **Bóveda de contraseñas:** Crea `Credencial.java` con los atributos `servicio`, `usuario`, `clave` y `diasCaducidad`. Añade un método `obtenerLongitudClave()` que devuelva cuántos caracteres tiene la clave y otro método `describir()` que muestre el servicio y el usuario **sin** mostrar la contraseña real (por ejemplo, con asteriscos). En `main`, crea dos credenciales de servicios distintos.
+* **Aventura conversacional.** Crea `Personaje.java` con los atributos `nombre`, `salud`, `ataque` y `esAliado`. Añade un método `describir()` que devuelva una frase con sus datos y otro método `estaVivo()` que devuelva `true` si su salud es mayor que 0. En `main`, crea un héroe y un enemigo distintos e imprime sus fichas.
+* **Motor de recomendación.** Crea `Item.java` con los atributos `titulo`, `categoria`, `valoracionMedia` y `disponible`. Añade un método `describir()` que devuelva la línea del catálogo y otro método `esDestacado()` que devuelva `true` si la valoración es mayor o igual a 7.5. En `main`, crea dos ítems de categorías diferentes e imprime sus fichas.
+* **Simulador de físicas 2D.** Crea `Bola.java` con los atributos `nombre`, `x`, `y`, `velocidadX` y `velocidadY`. Añade un método `calcularRapidez()` que devuelva el módulo de la velocidad usando `Math.sqrt` y otro método `describir()` con sus coordenadas actuales. En `main`, crea una bola lenta y otra rápida y muestra la rapidez de ambas.
+* **Bóveda de contraseñas.** Crea `Credencial.java` con los atributos `servicio`, `usuario`, `clave` y `diasCaducidad`. Añade un método `obtenerLongitudClave()` que devuelva cuántos caracteres tiene la clave y otro método `describir()` que muestre el servicio y el usuario **sin** mostrar la contraseña real (por ejemplo, con asteriscos). En `main`, crea dos credenciales de servicios distintos.
 
 ---
 
@@ -938,8 +938,10 @@ Son las 15:00 h del **martes 17 de noviembre de 2026**. En la sede de **AzaharTe
 > // ...
 > ```
 > *Tenemos dos problemas graves de diseño:*
-> 1. * **Objetos nacidos en estado inconsistente:** Entre la línea donde ejecutamos `new Fichaje()` y la línea donde rellenamos su último atributo, el objeto vaga por la memoria medio vacío (con `id = 0`, `dni = "N/D"` y `hora = 00:00`). Si alguien olvida asignar el DNI o la hora en una nueva rama del código, el objeto queda corrupto para siempre.*
-> 2. * **Casuísticas distintas según el tránsito:** Una **entrada** requiere 9 datos completos (DNI, perfil, temperatura, token...), mientras que una **salida** solo necesita 5 datos básicos (ID, nombre, sentido, autorización y motivo).*
+> 
+> 
+> 1. * **Objetos nacidos en estado inconsistente.** Entre la línea donde ejecutamos `new Fichaje()` y la línea donde rellenamos su último atributo, el objeto vaga por la memoria medio vacío (con `id = 0`, `dni = "N/D"` y `hora = 00:00`). Si alguien olvida asignar el DNI o la hora en una nueva rama del código, el objeto queda corrupto para siempre.*  
+> 2. * **Casuísticas distintas según el tránsito.** Una **entrada** requiere 9 datos completos (DNI, perfil, temperatura, token...), mientras que una **salida** solo necesita 5 datos básicos (ID, nombre, sentido, autorización y motivo).*
 >
 > *No podemos depender eternamente del constructor vacío que regala Java. Necesitamos que todo objeto `Fichaje` nazca **completamente inicializado y coherente desde el mismo instante de su creación**»*.
 
@@ -982,8 +984,10 @@ classDiagram
 ##### A. Reglas sintácticas de un constructor
 
 Un constructor se diferencia de un método convencional por dos reglas inquebrantables:
-1. **Mismo nombre exacto que la clase:** Si la clase se llama `Fichaje`, el constructor debe llamarse `Fichaje` (respetando mayúsculas).
-2. **Sin tipo de retorno:** No devuelve ningún valor, **ni siquiera `void`**. Si escribes `public void Fichaje()`, Java lo interpretará como un método común y no como un constructor.
+
+
+1. **Mismo nombre exacto que la clase.** Si la clase se llama `Fichaje`, el constructor debe llamarse `Fichaje` (respetando mayúsculas).  
+2. **Sin tipo de retorno.** No devuelve ningún valor, **ni siquiera `void`**. Si escribes `public void Fichaje()`, Java lo interpretará como un método común y no como un constructor.  
 
 ```mermaid
 sequenceDiagram
@@ -1059,9 +1063,11 @@ public Fichaje(int id, String nombre, char sentido, boolean autorizado, String m
 #### 3. Evolución del caso guía a `ControlAccesoQR v3.2` (Java nativo)
 
 Evolucionamos la versión `v3.1` a la **`v3.2`**. Mantenemos los archivos separados `Fichaje.java` y `ControlAccesoQR.java`, incorporando:
-1. Dos **constructores sobrecargados** en `Fichaje.java`: uno completo de 9 parámetros para entradas y otro simplificado de 5 parámetros para salidas que delega mediante `this(...)`.
-2. Inicialización automática e infalible de `this.hora = LocalTime.now()` en el momento exacto de la creación del objeto.
-3. Creación atómica de cada `Fichaje` en `ControlAccesoQR.java` una vez evaluadas las reglas de acceso, eliminando por completo las asignaciones sueltas dispersas y asegurando que ningún objeto nazca a medias.
+
+
+1. Dos **constructores sobrecargados** en `Fichaje.java`: uno completo de 9 parámetros para entradas y otro simplificado de 5 parámetros para salidas que delega mediante `this(...)`.  
+2. Inicialización automática e infalible de `this.hora = LocalTime.now()` en el momento exacto de la creación del objeto.  
+3. Creación atómica de cada `Fichaje` en `ControlAccesoQR.java` una vez evaluadas las reglas de acceso, eliminando por completo las asignaciones sueltas dispersas y asegurando que ningún objeto nazca a medias.  
 
 ##### A. Comparativa de cambios respecto a v3.1 (`diff`)
 
@@ -1796,10 +1802,10 @@ Realiza una traza paso a paso del nacimiento de un objeto en memoria utilizando 
 
 Abre la clase que creaste ayer (`Personaje`, `Item`, `Bola` o `Credencial`) y añade **dos constructores** (recuerda que llevan exactamente el mismo nombre de la clase y **no** llevan `void`): uno largo con todos los datos y otro más corto que llame al largo usando `this(...)` para rellenar el resto automáticamente. Después, ve a `MiProyecto.java` y sustituye las líneas sueltas de ayer (`obj.dato = ...`) por una única llamada al `new` con parámetros:
 
-* **Aventura conversacional:** En `Personaje.java`, haz un constructor que reciba `nombre`, `salud`, `ataque` y `esAliado`. Haz un segundo constructor que solo reciba `nombre` y `esAliado`, y que llame al primero con `this(...)` poniéndole `100` de salud y `15` de ataque por defecto.
-* **Motor de recomendación:** En `Item.java`, haz un constructor que reciba `titulo`, `categoria`, `valoracionMedia` y `disponible`. Haz un segundo constructor para estrenos que solo reciba `titulo` y `categoria`, y que llame al primero con `this(...)` poniendo `0.0` de valoración y `true` en disponible.
-* **Simulador de físicas 2D:** En `Bola.java`, haz un constructor que reciba `nombre`, `x`, `y`, `velocidadX` y `velocidadY`. Haz un segundo constructor para bolas quietas que solo reciba `nombre`, `x` e `y`, y que llame al primero con `this(...)` poniendo `0.0` en ambas velocidades.
-* **Bóveda de contraseñas:** En `Credencial.java`, haz un constructor que reciba `servicio`, `usuario`, `clave` y `diasCaducidad`. Haz un segundo constructor para cuentas temporales que solo reciba `servicio`, `usuario` y `clave`, y que llame al primero con `this(...)` poniendo `30` días de caducidad por defecto.
+* **Aventura conversacional.** En `Personaje.java`, haz un constructor que reciba `nombre`, `salud`, `ataque` y `esAliado`. Haz un segundo constructor que solo reciba `nombre` y `esAliado`, y que llame al primero con `this(...)` poniéndole `100` de salud y `15` de ataque por defecto.
+* **Motor de recomendación.** En `Item.java`, haz un constructor que reciba `titulo`, `categoria`, `valoracionMedia` y `disponible`. Haz un segundo constructor para estrenos que solo reciba `titulo` y `categoria`, y que llame al primero con `this(...)` poniendo `0.0` de valoración y `true` en disponible.
+* **Simulador de físicas 2D.** En `Bola.java`, haz un constructor que reciba `nombre`, `x`, `y`, `velocidadX` y `velocidadY`. Haz un segundo constructor para bolas quietas que solo reciba `nombre`, `x` e `y`, y que llame al primero con `this(...)` poniendo `0.0` en ambas velocidades.
+* **Bóveda de contraseñas.** En `Credencial.java`, haz un constructor que reciba `servicio`, `usuario`, `clave` y `diasCaducidad`. Haz un segundo constructor para cuentas temporales que solo reciba `servicio`, `usuario` y `clave`, y que llame al primero con `this(...)` poniendo `30` días de caducidad por defecto.
 
 ---
 
@@ -1906,10 +1912,10 @@ flowchart TD
     Ext -- "double t = obj.getTemperatura();" --> Lectura["<b>Getter (Solo lectura)</b><br/>Devuelve copia del valor actual"]
 ```
 
-1. **Métodos de consulta (*Getters*):** Devuelven el valor de un atributo privado sin permitir alterarlo.
-   * Convención estándar JavaBeans: `public Tipo getNombreAtributo()`.
-   * **Excepción para `boolean`:** Por convención profesional, el *getter* de un atributo booleano comienza por **`is`** en lugar de `get` (ejemplo: `public boolean isAutorizado()`).
-2. **Métodos modificadores (*Setters*):** Reciben un parámetro, **validan** que cumpla las reglas invariantes de la clase y, solo si es legítimo, actualizan el atributo privado (`public void setNombre(String nombre)`).
+1. **Métodos de consulta (*Getters*).** Devuelven el valor de un atributo privado sin permitir alterarlo.
+   a. * Convención estándar JavaBeans. `public Tipo getNombreAtributo()`.
+   b. * **Excepción para `boolean`.** Por convención profesional, el *getter* de un atributo booleano comienza por **`is`** en lugar de `get` (ejemplo: `public boolean isAutorizado()`).
+2. **Métodos modificadores (*Setters*).** Reciben un parámetro, **validan** que cumpla las reglas invariantes de la clase y, solo si es legítimo, actualizan el atributo privado (`public void setNombre(String nombre)`).
 
 ##### C. Inmutabilidad selectiva: ¿todos los atributos deben tener *Setter*?
 
@@ -1927,10 +1933,12 @@ Para no duplicar las reglas de validación (principio DRY), el constructor maest
 #### 3. Evolución del caso guía a `ControlAccesoQR v3.3` (Java nativo)
 
 Evolucionamos la versión `v3.2` a la **`v3.3`**. Mantenemos los archivos separados `Fichaje.java` y `ControlAccesoQR.java`, incorporando:
-1. **Ocultación total de atributos** en `Fichaje.java` mediante `private`.
-2. **Getters públicos** siguiendo la convención JavaBeans (`getId()`, `getNombre()`, `isAutorizado()`, `getHora()`, etc.).
-3. **Setters defensivos selectivos** (`setNombre`, `setTemperatura`, `setMotivo`) e **inmutabilidad tras construcción** en `id`, `dni`, `sentido`, `autorizado`, `token` y `hora`.
-4. Adaptación de `ControlAccesoQR.java` (Opción 3) para consultar los atributos encapsulados a través de sus *getters* públicos.
+
+
+1. **Ocultación total de atributos** en `Fichaje.java` mediante `private`.  
+2. **Getters públicos** siguiendo la convención JavaBeans (`getId()`, `getNombre()`, `isAutorizado()`, `getHora()`, etc.).  
+3. **Setters defensivos selectivos** (`setNombre`, `setTemperatura`, `setMotivo`) e **inmutabilidad tras construcción** en `id`, `dni`, `sentido`, `autorizado`, `token` y `hora`.  
+4. Adaptación de `ControlAccesoQR.java` (Opción 3) para consultar los atributos encapsulados a través de sus *getters* públicos.  
 
 ##### A. Comparativa de cambios respecto a v3.2 (`diff`)
 
@@ -2762,14 +2770,16 @@ Demuestra empíricamente que tu clase entidad es ahora inmune a la corrupción d
 ##### Kata 1 (Cinturón blanco). Proteger los datos con `private`
 
 Abre tu clase (`Personaje`, `Item`, `Bola` o `Credencial`) y pon la palabra **`private`** delante de todos sus atributos para que nadie pueda modificarlos directamente desde fuera. Después:
-1. Crea métodos **getters** públicos (`getNombre()`, `isAliado()`, etc.) para poder leerlos desde `main`.
-2. Crea métodos **setters** públicos **solo** para los atributos que sí deban poder cambiar después, poniendo un `if` dentro para bloquear valores absurdos. Los atributos fijos déjalos **sin setter**.
-3. En tu constructor largo, sustituye las asignaciones directas (`this.salud = salud;`) por llamadas a tus setters (`this.setSalud(salud);`) para validar también cuando nace el objeto.
 
-* **Aventura conversacional:** Pon `private` a todo. Crea *getters* para todo. Crea `setSalud(int)` comprobando que si pasan un número negativo, la salud se quede en `0` (nunca negativa). No hagas `setEsAliado` para que nadie pueda cambiar de bando por trampa.
-* **Motor de recomendación:** Pon `private` a todo. Crea *getters* para todo. Crea `setValoracionMedia(double)` asegurando que si pasan menos de `0.0` o más de `10.0`, se quede acotado entre `0` y `10`. No hagas `setTitulo` ni `setCategoria` para que no se altere el producto después de crearlo.
-* **Simulador de físicas 2D:** Pon `private` a todo. Crea *getters* para todo. Crea `setX(double)` y `setY(double)` comprobando que las coordenadas no sean negativas (si pasan negativo, poner `0.0`). Deja el `nombre` de la bola sin setter.
-* **Bóveda de contraseñas:** Pon `private` a todo. Crea *getters* para todo (pero en `getClave()`, devuelve una versión tapada con asteriscos o solo los dos últimos caracteres, nunca la clave entera). Crea `setClave(String)` para que solo cambie la contraseña si la nueva tiene al menos 8 caracteres, y `setDiasCaducidad(int)` para que no acepte días negativos. No hagas `setServicio`.
+
+1. Crea métodos **getters** públicos (`getNombre()`, `isAliado()`, etc.) para poder leerlos desde `main`.  
+2. Crea métodos **setters** públicos **solo** para los atributos que sí deban poder cambiar después, poniendo un `if` dentro para bloquear valores absurdos. Los atributos fijos déjalos **sin setter**.  
+3. En tu constructor largo, sustituye las asignaciones directas (`this.salud = salud;`) por llamadas a tus setters (`this.setSalud(salud);`) para validar también cuando nace el objeto.  
+
+* **Aventura conversacional.** Pon `private` a todo. Crea *getters* para todo. Crea `setSalud(int)` comprobando que si pasan un número negativo, la salud se quede en `0` (nunca negativa). No hagas `setEsAliado` para que nadie pueda cambiar de bando por trampa.
+* **Motor de recomendación.** Pon `private` a todo. Crea *getters* para todo. Crea `setValoracionMedia(double)` asegurando que si pasan menos de `0.0` o más de `10.0`, se quede acotado entre `0` y `10`. No hagas `setTitulo` ni `setCategoria` para que no se altere el producto después de crearlo.
+* **Simulador de físicas 2D.** Pon `private` a todo. Crea *getters* para todo. Crea `setX(double)` y `setY(double)` comprobando que las coordenadas no sean negativas (si pasan negativo, poner `0.0`). Deja el `nombre` de la bola sin setter.
+* **Bóveda de contraseñas.** Pon `private` a todo. Crea *getters* para todo (pero en `getClave()`, devuelve una versión tapada con asteriscos o solo los dos últimos caracteres, nunca la clave entera). Crea `setClave(String)` para que solo cambie la contraseña si la nueva tiene al menos 8 caracteres, y `setDiasCaducidad(int)` para que no acepte días negativos. No hagas `setServicio`.
 
 ---
 
@@ -2787,8 +2797,8 @@ No hace falta que escribas todos los *getters* a mano letra por letra:
 
 Haz la siguiente prueba rápida al principio de tu `main` para comprobar que tu clase es segura:
 
-1. **Bloqueo de acceso directo:** Escribe una línea en `main` intentando cambiar un atributo directamente (por ejemplo, `heroe.salud = -500;` o `item.valoracionMedia = 999;`). Comprueba que IntelliJ te da un error rojo diciendo que es `private`. **Comenta esa línea** (`// ...`) para que el programa vuelva a compilar.
-2. **Prueba con datos malos en los setters:** Llama a tus *setters* pasando valores trampa a propósito (una nota de `500.0`, una salud de `-200`, una clave de `"123"`, un texto vacío `""` o `null`).
+1. **Bloqueo de acceso directo.** Escribe una línea en `main` intentando cambiar un atributo directamente (por ejemplo, `heroe.salud = -500;` o `item.valoracionMedia = 999;`). Comprueba que IntelliJ te da un error rojo diciendo que es `private`. **Comenta esa línea** (`// ...`) para que el programa vuelva a compilar.
+2. **Prueba con datos malos en los setters.** Llama a tus *setters* pasando valores trampa a propósito (una nota de `500.0`, una salud de `-200`, una clave de `"123"`, un texto vacío `""` o `null`).
 3. Imprime los datos del objeto después usando tus *getters* y comprueba en la consola que tu clase **ha bloqueado o corregido** todos los datos malos manteniendo el objeto sano.
 
 ---
@@ -2804,9 +2814,11 @@ Son las 15:00 h del **jueves 19 de noviembre de 2026**. En la sede de **AzaharTe
 Sin embargo, durante la revisión de código de cierre de semana, **Alba Torres** detecta tres síntomas de diseño que aún deben pulirse en el **IES El Caminàs**:
 
 > *«Equipo, hemos encapsulado los datos de `Fichaje`, pero mirad cómo seguimos tratando al objeto desde `ControlAccesoQR`:*
-> 1. * **Clase medio anémica:** Métodos como `determinarZonaAutorizada(char)` y `obtenerEstanciaMaximaPorPerfil(char)` siguen viviendo dentro de `ControlAccesoQR` como funciones estáticas sueltas, obligándonos a sacar el `perfil` del fichaje para preguntarlo fuera. Esos comportamientos pertenecen a `Fichaje`.*
-> 2. * **Llamada manual a `.describir()`:** Cada vez que imprimimos un objeto directamente en consola o lo inspeccionamos en el depurador sin llamar a `.describir()`, Java muestra algo críptico como `Fichaje@4a574795`. Java tiene un mecanismo estándar para que cualquier objeto sepa presentarse a sí mismo automáticamente: el método **`toString()`**.*
-> 3. * **Detección de doble lectura accidental (anti-rebote):** El conserje nos pidió detectar si un alumno pasa dos veces seguidas su tarjeta por el lector en el mismo sentido (`ultimoFichaje` y el nuevo tránsito tienen el mismo DNI). Para resolverlo sin extraer datos en el `main`, un objeto `Fichaje` debe saber **compararse directamente con otro objeto `Fichaje` recibido como parámetro**»*.
+> 
+> 
+> 1. * **Clase medio anémica.** Métodos como `determinarZonaAutorizada(char)` y `obtenerEstanciaMaximaPorPerfil(char)` siguen viviendo dentro de `ControlAccesoQR` como funciones estáticas sueltas, obligándonos a sacar el `perfil` del fichaje para preguntarlo fuera. Esos comportamientos pertenecen a `Fichaje`.*  
+> 2. * **Llamada manual a `.describir()`.** Cada vez que imprimimos un objeto directamente en consola o lo inspeccionamos en el depurador sin llamar a `.describir()`, Java muestra algo críptico como `Fichaje@4a574795`. Java tiene un mecanismo estándar para que cualquier objeto sepa presentarse a sí mismo automáticamente: el método **`toString()`**.*  
+> 3. * **Detección de doble lectura accidental (anti-rebote).** El conserje nos pidió detectar si un alumno pasa dos veces seguidas su tarjeta por el lector en el mismo sentido (`ultimoFichaje` y el nuevo tránsito tienen el mismo DNI). Para resolverlo sin extraer datos en el `main`, un objeto `Fichaje` debe saber **compararse directamente con otro objeto `Fichaje` recibido como parámetro**»*.  
 
 **Laia Claramunt** y **Pau Ferrer** concretan el cierre técnico de la Semana 10:
 
